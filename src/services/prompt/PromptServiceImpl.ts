@@ -70,7 +70,7 @@ export class PromptServiceImpl implements PromptService {
       await this.apiService.post<
         void,
         { promptValues: Array<{ prompt_id: string; value: string | number }> }
-      >(`${this.baseEndpoint}/submit-prompts`, { promptValues });
+      >(`${this.baseEndpoint}/submit-prompts/`, { promptValues });
     } catch (error) {
       console.error("Error in submitPromptValues:", error);
       throw new Error("Failed to submit prompt values");
