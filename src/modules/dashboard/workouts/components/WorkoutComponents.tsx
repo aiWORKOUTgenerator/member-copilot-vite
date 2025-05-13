@@ -81,7 +81,7 @@ export const ExerciseCard = ({ exercise }: { exercise: Exercise }) => {
           <ExerciseCard exercise={exercise.superset_exercise} />
         </div>
       )}
-      <style jsx>{`
+      <style>{`
         .stat-box {
           background: rgba(0, 0, 0, 0.05);
           padding: 0.5rem;

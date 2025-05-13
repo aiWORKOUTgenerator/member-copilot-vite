@@ -1,6 +1,6 @@
 "use client";
 
-import { SubscriptionTier } from "@/lib/context/SubscriptionContext";
+import { SubscriptionTier } from "@/domain/entities/subscriptionTier";
 
 interface PricingComponentProps {
   tiers: SubscriptionTier[];

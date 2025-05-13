@@ -1,5 +1,5 @@
-import { SubscriptionTier } from "@/lib/context/SubscriptionContext";
 import { StripeSubscription } from "@/domain/entities/StripeSubscription";
+import { SubscriptionTier } from "@/domain/entities/subscriptionTier";
 
 // Define portal configuration types
 export type PortalConfiguration =

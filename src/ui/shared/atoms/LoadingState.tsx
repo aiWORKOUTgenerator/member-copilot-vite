@@ -1,7 +1,5 @@
 "use client";
 
-import React from "react";
-
 interface LoadingStateProps {
   className?: string;
   size?: "xs" | "sm" | "md" | "lg" | "xl";
