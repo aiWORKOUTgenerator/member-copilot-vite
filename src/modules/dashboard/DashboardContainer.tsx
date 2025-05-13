@@ -1,0 +1,41 @@
+import { Route, Routes } from "react-router";
+import DashboardPage from "./pages/DashboardPage";
+import StackedLayout from "@/ui/shared/templates/StackedLayout";
+import { TitleProvider } from "@/contexts/TitleContext";
+import BillingContainer from "./billing/pages/BillingContainer";
+import BillingPaymentTab from "./billing/pages/BillingPaymentTab";
+import BillingUsageTab from "./billing/pages/BillingUsageTab";
+import BillingHistoryTab from "./billing/pages/BillingHistoryTab";
+import BillingSubscriptionTab from "./billing/pages/BillingSubscriptionTab";
+import WorkoutsPage from "./workouts/WorkoutsPage";
+import GeneratePage from "./workouts/GeneratePage";
+import WorkoutDetailPage from "./workouts/WorkoutDetailPage";
+import ProfileContainer from "./profile/ProfileContainer";
+import AttributeDetailPage from "./profile/pages/AttributeDetailPage";
+
+export default function DashboardContainer() {
+  return (
+    <TitleProvider>
+      <StackedLayout>
+        <Routes>
+          <Route path="/" element={<DashboardPage />} />
+          <Route path="/billing" element={<BillingContainer />}>
+            <Route path="/billing" element={<BillingSubscriptionTab />} />
+            <Route path="/billing/payment" element={<BillingPaymentTab />} />
+            <Route path="/billing/usage" element={<BillingUsageTab />} />
+            <Route path="/billing/history" element={<BillingHistoryTab />} />
+          </Route>
+          <Route path="/workouts" element={<WorkoutsPage />} />
+          <Route path="/workouts/generate" element={<GeneratePage />} />
+          <Route path="/workouts/:id" element={<WorkoutDetailPage />} />
+          <Route path="/profile" element={<ProfileContainer />}>
+            <Route
+              path="/profile/:attributeTypeId"
+              element={<AttributeDetailPage />}
+            />
+          </Route>
+        </Routes>
+      </StackedLayout>
+    </TitleProvider>
+  );
+}
