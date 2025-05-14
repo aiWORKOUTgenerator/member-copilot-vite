@@ -81,54 +81,52 @@ export default function TrainingProfileLayout() {
           <span className="loading loading-spinner loading-lg"></span>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-          <RadioGroupOfCards
-            items={attributeTypes.map((attributeType) => {
-              // Find completion info for this attribute type
-              const completion = attributeCompletions.find(
-                (c) => c.attributeType.id === attributeType.id
-              );
+        <RadioGroupOfCards
+          items={attributeTypes.map((attributeType) => {
+            // Find completion info for this attribute type
+            const completion = attributeCompletions.find(
+              (c) => c.attributeType.id === attributeType.id
+            );
 
-              return {
-                id: attributeType.id,
-                title: attributeType.name,
-                description: attributeType.description || "",
-                tertiary: completion ? (
-                  <div className="flex flex-col g">
-                    <div className="flex justify-between mb-1">
-                      <span className="text-xs">
-                        {completion.completedPrompts}/{completion.totalPrompts}{" "}
-                        complete
-                      </span>
-                      <span className="text-xs">
-                        {completion.percentComplete}%
-                      </span>
-                    </div>
-                    <progress
-                      className={`progress ${
-                        completion.percentComplete === 100
-                          ? "progress-success"
-                          : completion.hasProvidedValue
-                          ? "progress-primary"
-                          : "progress-secondary"
-                      }`}
-                      value={completion.percentComplete}
-                      max="100"
-                    ></progress>
+            return {
+              id: attributeType.id,
+              title: attributeType.name,
+              description: attributeType.description || "",
+              tertiary: completion ? (
+                <div className="flex flex-col g">
+                  <div className="flex justify-between mb-1">
+                    <span className="text-xs">
+                      {completion.completedPrompts}/{completion.totalPrompts}{" "}
+                      complete
+                    </span>
+                    <span className="text-xs">
+                      {completion.percentComplete}%
+                    </span>
                   </div>
-                ) : null,
-              } as SelectableItem;
-            })}
-            selected={defaultSelected}
-            onChange={(selected: SelectableItem | SelectableItem[]) => {
-              // Navigate to the selected attribute page
-              if (!Array.isArray(selected)) {
-                // For single selection, navigate to the attribute page
-                navigate(`/dashboard/profile/${selected.id}`);
-              }
-            }}
-          />
-        </div>
+                  <progress
+                    className={`progress ${
+                      completion.percentComplete === 100
+                        ? "progress-success"
+                        : completion.hasProvidedValue
+                        ? "progress-primary"
+                        : "progress-secondary"
+                    }`}
+                    value={completion.percentComplete}
+                    max="100"
+                  ></progress>
+                </div>
+              ) : null,
+            } as SelectableItem;
+          })}
+          selected={defaultSelected}
+          onChange={(selected: SelectableItem | SelectableItem[]) => {
+            // Navigate to the selected attribute page
+            if (!Array.isArray(selected)) {
+              // For single selection, navigate to the attribute page
+              navigate(`/dashboard/profile/${selected.id}`);
+            }
+          }}
+        />
       )}
       <div>
         <Outlet />

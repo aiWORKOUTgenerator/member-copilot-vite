@@ -10,31 +10,19 @@ import {
 const MOCK_SUBSCRIPTION_TIERS: SubscriptionTier[] = [
   {
     id: "free",
-    stripePriceId: "price_1RLcjbCM7MTfmzuuCqxcskqO",
+    stripePriceId: import.meta.env.VITE_STRIPE_PRICE_BASIC,
     name: "Free",
     description: "Perfect for individuals getting started",
-    features: [
-      "Personal fitness tracking",
-      "5 workout templates",
-      "Basic analytics",
-      "Email support",
-    ],
-    price: "$9.99",
+    features: ["5 free workouts per month", "Custom AI workouts"],
+    price: "$0.00",
   },
   {
     id: "premium",
-    stripePriceId: "price_1RLQzHCM7MTfmzuuNXkKr52a",
+    stripePriceId: import.meta.env.VITE_STRIPE_PRICE_PREMIUM,
     name: "Premium",
     description: "Ideal for serious fitness enthusiasts",
-    features: [
-      "Advanced fitness tracking",
-      "Unlimited workout templates",
-      "Detailed analytics and reports",
-      "Priority support",
-      "Personalized workout recommendations",
-      "Access to premium content",
-    ],
-    price: "$19.99",
+    features: ["20 workouts per month", "Priority support"],
+    price: "$10.00 (50% off)",
     isPopular: true,
   },
 ];
