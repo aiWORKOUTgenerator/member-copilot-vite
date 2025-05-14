@@ -75,7 +75,7 @@ export default function GenerateWorkoutPage() {
     try {
       // TODO: Replace with actual API call
       const response = await createWorkout(
-        "01JSHGHV0V6RZC3TN7T2W09P2M",
+        import.meta.env.VITE_GENERATED_WORKOUT_CONFIGURATION_ID,
         workoutParams,
         prompt
       );
