@@ -4,10 +4,7 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router";
 import App from "./App.tsx";
 import { AnalyticsProvider } from "./contexts/AnalyticsContext.tsx";
-import { CombinedProviders } from "./contexts/CombinedProviders.tsx";
-import { ContactProvider } from "./contexts/ContactContext.tsx";
 import { ServiceProvider } from "./contexts/ServiceContext.tsx";
-import { UserAccessProvider } from "./contexts/UserAccessContext.tsx";
 import { VerificationProvider } from "./contexts/VerificationContext.tsx";
 
 // Import your Publishable Key
@@ -23,15 +20,9 @@ createRoot(document.getElementById("root")!).render(
       <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
         <ServiceProvider>
           <VerificationProvider>
-            <ContactProvider>
-              <UserAccessProvider>
-                <CombinedProviders>
-                  <AnalyticsProvider>
-                    <App />
-                  </AnalyticsProvider>
-                </CombinedProviders>
-              </UserAccessProvider>
-            </ContactProvider>
+            <AnalyticsProvider>
+              <App />
+            </AnalyticsProvider>
           </VerificationProvider>
         </ServiceProvider>
       </ClerkProvider>
