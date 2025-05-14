@@ -68,34 +68,6 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-
-        {/* Feature cards */}
-        <div className="container mx-auto px-4 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="card bg-base-100 bg-opacity-70 backdrop-blur-sm shadow-xl">
-              <div className="card-body items-center text-center">
-                <h2 className="card-title">Personalized</h2>
-                <p>
-                  AI-tailored workouts based on your goals and fitness level
-                </p>
-              </div>
-            </div>
-
-            <div className="card bg-base-100 bg-opacity-70 backdrop-blur-sm shadow-xl">
-              <div className="card-body items-center text-center">
-                <h2 className="card-title">Adaptive</h2>
-                <p>Workouts that evolve as your fitness improves</p>
-              </div>
-            </div>
-
-            <div className="card bg-base-100 bg-opacity-70 backdrop-blur-sm shadow-xl">
-              <div className="card-body items-center text-center">
-                <h2 className="card-title">Flexible</h2>
-                <p>Plans for any equipment, schedule, or location</p>
-              </div>
-            </div>
-          </div>
-        </div>
       </main>
     </div>
   );

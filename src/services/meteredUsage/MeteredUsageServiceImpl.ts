@@ -4,7 +4,7 @@ import type { MeteredUsageService as IMeteredUsageService } from "@/domain/inter
 
 export class MeteredUsageServiceImpl implements IMeteredUsageService {
   // Update to use relative path without trailing slash
-  private readonly baseEndpoint = "/members/meter-event-summaries";
+  private readonly baseEndpoint = "/members/meter-event-summaries/";
 
   constructor(private apiService: ApiService) {}
 

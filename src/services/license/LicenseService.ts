@@ -8,7 +8,7 @@ import { LicensePolicyService } from "./LicensePolicyService";
  * Assumes user context is handled by the backend.
  */
 export class LicenseServiceImpl implements ILicenseService {
-  private readonly baseEndpoint = "/members/licenses";
+  private readonly baseEndpoint = "/members/licenses/";
 
   constructor(
     private apiService: ApiService,
