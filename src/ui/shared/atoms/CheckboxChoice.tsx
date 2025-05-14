@@ -20,18 +20,18 @@ export const CheckboxChoice: React.FC<CheckboxChoiceProps> = ({
   disabled = false,
 }) => {
   return (
-    <div className="form-control">
-      <label className="label cursor-pointer justify-start gap-3">
+    <div className="flex items-start space-x-3">
+      <label htmlFor={id} className="flex items-start cursor-pointer">
         <input
           id={id}
           type="checkbox"
           value={value}
           checked={checked}
           onChange={(e) => onChange(value, e.target.checked)}
-          className="checkbox checkbox-primary"
+          className="checkbox checkbox-primary "
           disabled={disabled}
         />
-        <span className="label-text">{label}</span>
+        <span className="ml-3 text-sm break-words leading-normal">{label}</span>
       </label>
     </div>
   );

@@ -21,8 +21,8 @@ export const RadioChoice: React.FC<RadioChoiceProps> = ({
   disabled = false,
 }) => {
   return (
-    <div className="form-control">
-      <label className="label cursor-pointer justify-start gap-3">
+    <div className="flex items-start space-x-3">
+      <label htmlFor={id} className="flex items-start cursor-pointer">
         <input
           id={id}
           type="radio"
@@ -30,10 +30,10 @@ export const RadioChoice: React.FC<RadioChoiceProps> = ({
           value={value}
           checked={checked}
           onChange={() => onChange(value)}
-          className="radio radio-primary"
+          className="radio radio-primary "
           disabled={disabled}
         />
-        <span className="label-text">{label}</span>
+        <span className="ml-3 text-sm break-words leading-normal">{label}</span>
       </label>
     </div>
   );
