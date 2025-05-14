@@ -124,8 +124,10 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
                         key={item.name}
                         to={item.href}
                         className={classNames(
-                          "btn btn-ghost text-white hover:btn-primary-focus",
-                          isCurrentPage ? "btn-active" : "",
+                          "btn text-white hover:btn-secondary",
+                          isCurrentPage
+                            ? "btn-active btn-secondary"
+                            : "btn-ghost",
                           item.enhanced
                             ? "animate-pulse border border-secondary hover:animate-none"
                             : "",
