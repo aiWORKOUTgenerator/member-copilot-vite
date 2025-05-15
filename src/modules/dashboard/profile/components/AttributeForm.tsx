@@ -6,7 +6,7 @@ import { useContact } from "@/contexts/ContactContext";
 import { usePrompts } from "@/contexts/PromptContext";
 import { usePromptService } from "@/hooks";
 import { PromptCard } from "@/ui";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
 
 // Component to display the attribute form with access to context

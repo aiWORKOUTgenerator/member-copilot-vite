@@ -55,6 +55,8 @@ export function AttributeTypeProvider({
 
     try {
       const data = await attributeTypeService.getAllAttributeTypes();
+      // Sort attribute types by display_order
+      data.sort((a, b) => a.display_order - b.display_order);
       setAttributeTypes(data);
       setIsLoaded(true);
     } catch (err) {
