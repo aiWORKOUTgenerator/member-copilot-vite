@@ -3,7 +3,7 @@
 import { Button, FormContainer, Input } from "@/ui";
 import { useSignUp } from "@clerk/clerk-react";
 import { isClerkAPIResponseError } from "@clerk/clerk-react/errors";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router";
 
 export default function EmailOTPSignUpPage() {
@@ -19,6 +19,7 @@ export default function EmailOTPSignUpPage() {
   const [validationError, setValidationError] = useState("");
   const [codeValidationError, setCodeValidationError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [hasAutoSubmitted, setHasAutoSubmitted] = useState(false);
 
   // Email validation function
   const validateEmail = (email: string): boolean => {
@@ -53,74 +54,109 @@ export default function EmailOTPSignUpPage() {
     }
   }, [code]);
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault();
 
-    if (!isLoaded || !signUp) return;
+      if (!isLoaded || !signUp) return;
 
-    // Don't submit if email is invalid
-    if (!validateEmail(emailAddress)) {
-      setValidationError("Please enter a valid email address");
-      return;
-    }
+      // Don't submit if email is invalid
+      if (!validateEmail(emailAddress)) {
+        setValidationError("Please enter a valid email address");
+        return;
+      }
 
-    setLoading(true);
-    setError("");
+      setLoading(true);
+      setError("");
 
-    try {
-      // Start the sign-up process using the email method
-      await signUp.create({
-        emailAddress,
-      });
+      try {
+        // Start the sign-up process using the email method
+        await signUp.create({
+          emailAddress,
+        });
 
-      // Send the verification code email
-      await signUp.prepareEmailAddressVerification({
-        strategy: "email_code",
-      });
+        // Send the verification code email
+        await signUp.prepareEmailAddressVerification({
+          strategy: "email_code",
+        });
 
-      // Switch to verification mode to collect the OTP code
-      setVerifying(true);
-    } catch (err) {
-      console.error("Error:", JSON.stringify(err, null, 2));
+        // Switch to verification mode to collect the OTP code
+        setVerifying(true);
+      } catch (err) {
+        console.error("Error:", JSON.stringify(err, null, 2));
 
-      if (err instanceof Error) {
-        if (isClerkAPIResponseError(err)) {
-          // Check if the error is due to user already existing
-          const identifierExists = err.errors.some(
-            (error) => error.code === "form_identifier_exists"
-          );
+        if (err instanceof Error) {
+          if (isClerkAPIResponseError(err)) {
+            // Check if the error is due to user already existing
+            const identifierExists = err.errors.some(
+              (error) => error.code === "form_identifier_exists"
+            );
 
-          if (identifierExists) {
-            // If user exists, redirect to the email verification sign-in page with email prefilled
-            // This will create a fresh authentication session through the standard sign-in flow
-            console.log("User already exists, redirecting to sign-in...");
+            if (identifierExists) {
+              // If user exists, redirect to the email verification sign-in page with email prefilled
+              // This will create a fresh authentication session through the standard sign-in flow
+              console.log("User already exists, redirecting to sign-in...");
 
-            // Use a short timeout to ensure any pending state updates are complete before navigation
-            setTimeout(() => {
-              navigate(
-                `/sign-in/email-otp?email=${encodeURIComponent(
-                  emailAddress
-                )}&from=signup`
-              );
-            }, 100);
-            return;
+              // Use a short timeout to ensure any pending state updates are complete before navigation
+              setTimeout(() => {
+                navigate(
+                  `/sign-in/email-otp?email=${encodeURIComponent(
+                    emailAddress
+                  )}&from=signup`
+                );
+              }, 100);
+              return;
+            }
+
+            // For other errors, display the message
+            setError(
+              err.errors[0]?.longMessage ||
+                "An error occurred sending the verification code."
+            );
+          } else {
+            setError("An error occurred. Please try again.");
           }
-
-          // For other errors, display the message
-          setError(
-            err.errors[0]?.longMessage ||
-              "An error occurred sending the verification code."
-          );
         } else {
           setError("An error occurred. Please try again.");
         }
-      } else {
-        setError("An error occurred. Please try again.");
+      } finally {
+        setLoading(false);
       }
-    } finally {
-      setLoading(false);
+    },
+    [isLoaded, signUp, emailAddress, navigate]
+  );
+
+  // Auto-submit form if auto-submit=1 parameter is present with valid email
+  useEffect(() => {
+    const autoSubmitParam = searchParams?.get("auto-submit");
+
+    if (
+      autoSubmitParam === "1" &&
+      emailAddress &&
+      validateEmail(emailAddress) &&
+      !hasAutoSubmitted &&
+      !verifying &&
+      !loading &&
+      isLoaded &&
+      signUp
+    ) {
+      setHasAutoSubmitted(true);
+      // Trigger form submission
+      const syntheticEvent = {
+        preventDefault: () => {},
+      } as React.FormEvent;
+      handleSubmit(syntheticEvent);
     }
-  }
+  }, [
+    emailAddress,
+    searchParams,
+    hasAutoSubmitted,
+    verifying,
+    loading,
+    isLoaded,
+    signUp,
+    handleSubmit,
+  ]);
 
   async function handleVerification(e: React.FormEvent) {
     e.preventDefault();
@@ -276,11 +312,37 @@ export default function EmailOTPSignUpPage() {
   }
 
   if (verifying) {
+    const verificationMessage = searchParams?.get("verification-message");
+
     return (
       <FormContainer
         title="Verify your email"
-        subtitle={`We've sent a verification code to ${emailAddress}`}
+        subtitle={
+          verificationMessage
+            ? undefined
+            : `We've sent a verification code to ${emailAddress}`
+        }
       >
+        {verificationMessage && (
+          <div className="mb-6">
+            <div className="alert alert-info">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                className="stroke-current shrink-0 w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <span>{verificationMessage}</span>
+            </div>
+          </div>
+        )}
         <form onSubmit={handleVerification} className="space-y-6">
           <Input
             type="text"
