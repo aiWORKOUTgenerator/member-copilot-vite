@@ -13,7 +13,15 @@ import { useUserAccess } from "@/hooks";
 import { MeteredFeature } from "@/hooks/useUserAccess";
 import AccessAwareComponent from "@/ui/shared/molecules/AccessAwareComponent";
 import { ActionCard } from "@/ui/shared/molecules/ActionCard";
-import { Info, AlertTriangle, Dumbbell, UserCircle } from "lucide-react";
+import {
+  Info,
+  AlertTriangle,
+  Dumbbell,
+  UserCircle,
+  Star,
+  Zap,
+  TrendingUp,
+} from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router";
 
@@ -31,11 +39,35 @@ export default function DashboardHomePage() {
   const prompts = usePromptsData();
   const promptsLoaded = usePromptsLoaded();
   const attributesLoaded = useAttributesLoaded();
-  const { isMeterLimitReached } = useUserAccess();
+  const {
+    isMeterLimitReached,
+    activeLicenses,
+    getTotalAggregatedValueForMeter,
+    getHighestLimitForMeter,
+  } = useUserAccess();
 
   const isWorkoutGenerationLimitReached = isMeterLimitReached(
     MeteredFeature.WORKOUTS_GENERATED
   );
+
+  // Check if user is on basic/free tier
+  const isOnBasicTier = useMemo(() => {
+    const basicPriceId = import.meta.env.VITE_STRIPE_PRICE_BASIC;
+    if (!basicPriceId || activeLicenses.length === 0) return false;
+
+    return activeLicenses.some(
+      (license) => license.policy?.stripe_price_id === basicPriceId
+    );
+  }, [activeLicenses]);
+
+  // Get workout usage stats for the banner
+  const workoutUsage = useMemo(() => {
+    const used = getTotalAggregatedValueForMeter(
+      MeteredFeature.WORKOUTS_GENERATED
+    );
+    const limit = getHighestLimitForMeter(MeteredFeature.WORKOUTS_GENERATED);
+    return { used, limit };
+  }, [getTotalAggregatedValueForMeter, getHighestLimitForMeter]);
 
   // Calculate attribute completion status
   useEffect(() => {
@@ -86,8 +118,64 @@ export default function DashboardHomePage() {
     navigate("/dashboard/profile");
   };
 
+  // Navigate to billing/upgrade page
+  const navigateToUpgrade = () => {
+    navigate("/dashboard/billing");
+  };
+
   return (
     <div className="p-4">
+      {/* Conversion Banner for Basic Tier Users */}
+      {isOnBasicTier && (
+        <div className="mb-6">
+          <div className="card bg-gradient-to-r from-primary to-secondary text-primary-content">
+            <div className="card-body">
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Star className="w-5 h-5 text-warning" />
+                    <h3 className="card-title text-lg">
+                      You're on the Free Plan
+                    </h3>
+                    <div className="badge badge-warning badge-outline">
+                      {workoutUsage.used}/{workoutUsage.limit} workouts used
+                    </div>
+                  </div>
+                  <p className="text-primary-content/90 mb-3">
+                    Unlock unlimited AI-powered workouts, advanced
+                    customization, and priority support with our Premium plan
+                    (only $10/month).
+                  </p>
+                  <div className="flex flex-wrap gap-4 text-sm">
+                    <div className="flex items-center gap-1">
+                      <Zap className="w-4 h-4" />
+                      <span>100 workouts</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <TrendingUp className="w-4 h-4" />
+                      <span>Advanced AI generation</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Star className="w-4 h-4" />
+                      <span>Priority support</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <button
+                    className="btn btn-accent btn-xl"
+                    onClick={navigateToUpgrade}
+                  >
+                    <Star className="w-4 h-4" />
+                    Upgrade Now
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Incomplete Profile Alerts */}
       {incompleteAttributes.length > 0 && (
         <div className="space-y-4 mb-4">

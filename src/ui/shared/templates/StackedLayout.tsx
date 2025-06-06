@@ -9,6 +9,7 @@ import { useContactData } from "@/contexts/ContactContext";
 import { usePromptsData, usePromptsLoaded } from "@/contexts/PromptContext";
 import { useTitle } from "@/contexts/TitleContext";
 import { ContactUtils } from "@/domain";
+import { useUserAccess } from "@/hooks";
 import { UserButton } from "@clerk/clerk-react";
 import { MenuIcon } from "lucide-react";
 import React, { ReactNode, useMemo } from "react";
@@ -19,6 +20,7 @@ interface NavigationItem {
   href: string;
   badgeCount?: number;
   enhanced?: boolean;
+  isUpgrade?: boolean;
 }
 
 interface StackedLayoutProps {
@@ -50,6 +52,19 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
   const promptsLoaded = usePromptsLoaded();
   const attributeTypesLoaded = useAttributeTypesLoaded();
   const attributesLoaded = useAttributesLoaded();
+
+  // Get user access data
+  const { activeLicenses } = useUserAccess();
+
+  // Check if user is on basic/free tier
+  const isOnBasicTier = useMemo(() => {
+    const basicPriceId = import.meta.env.VITE_STRIPE_PRICE_BASIC;
+    if (!basicPriceId || activeLicenses.length === 0) return false;
+
+    return activeLicenses.some(
+      (license) => license.policy?.stripe_price_id === basicPriceId
+    );
+  }, [activeLicenses]);
 
   // Calculate attribute completion status and count incomplete attributes
   const incompleteAttributesCount = useMemo(() => {
@@ -91,12 +106,13 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
           incompleteAttributesCount > 0 ? incompleteAttributesCount : undefined,
       },
       {
-        name: "Billing",
+        name: isOnBasicTier ? "Upgrade Now $10/mo" : "Billing",
         href: "/dashboard/billing",
         enhanced: true,
+        isUpgrade: isOnBasicTier,
       },
     ];
-  }, [incompleteAttributesCount]);
+  }, [incompleteAttributesCount, isOnBasicTier]);
 
   // Determine container class based on containerStyle prop
   const getContainerClass = () => {
@@ -128,8 +144,11 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
                           isCurrentPage
                             ? "btn-active btn-secondary"
                             : "btn-ghost",
-                          item.enhanced
+                          item.enhanced && !item.isUpgrade
                             ? "animate-pulse border border-secondary hover:animate-none"
+                            : "",
+                          item.isUpgrade
+                            ? "btn-accent font-bold text-accent-content border-2 border-warning animate-pulse hover:animate-none hover:btn-warning hover:scale-105 transition-all duration-200"
                             : "",
                           "rounded-md font-medium"
                         )}
@@ -178,7 +197,12 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
                           isCurrentPage
                             ? "menu-active bg-primary text-white"
                             : "hover:bg-primary/10",
-                          item.enhanced ? "border border-secondary" : ""
+                          item.enhanced && !item.isUpgrade
+                            ? "border border-secondary"
+                            : "",
+                          item.isUpgrade
+                            ? "bg-accent text-accent-content font-bold border-2 border-warning hover:bg-warning hover:text-warning-content"
+                            : ""
                         )}
                       >
                         {item.name}
