@@ -12,6 +12,11 @@ export enum MeteredFeature {
    * Tracks the number of AI-driven profile generations.
    */
   PROFILE_AI_GENERATIONS = "profile_ai_generations",
+
+  /**
+   * Tracks the number of stored workouts a user can access.
+   */
+  STORED_WORKOUTS = "workouts_stored",
 }
 
 /**
