@@ -7,6 +7,8 @@ import {
 import { ArrowBigLeft, ChevronUp, ChevronDown } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
+import WorkoutCustomization from "./components/WorkoutCustomization";
+import { PerWorkoutOptions } from "./components/types";
 
 // 15 workout prompt examples
 const WORKOUT_PROMPTS = [
@@ -38,9 +40,12 @@ export default function GenerateWorkoutPage() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [workoutParams, setWorkoutParams] = useState<WorkoutParams>({});
+  const [perWorkoutOptions, setPerWorkoutOptions] = useState<PerWorkoutOptions>(
+    {}
+  );
   const { createWorkout } = useGeneratedWorkouts();
   const [errors, setErrors] = useState<
-    Partial<Record<keyof WorkoutParams, string>>
+    Partial<Record<keyof WorkoutParams | keyof PerWorkoutOptions, string>>
   >({});
   const [displayPrompts, setDisplayPrompts] = useState<string[]>([]);
 
@@ -55,8 +60,20 @@ export default function GenerateWorkoutPage() {
 
     if (!prompt.trim()) return;
 
+    // Validate workout duration if provided
+    const newErrors: Partial<
+      Record<keyof WorkoutParams | keyof PerWorkoutOptions, string>
+    > = {};
+
+    if (perWorkoutOptions.workoutDuration !== undefined) {
+      const duration = Number(perWorkoutOptions.workoutDuration);
+      if (isNaN(duration) || duration < 5 || duration > 300) {
+        newErrors.workoutDuration =
+          "Duration must be between 5 and 300 minutes";
+      }
+    }
+
     // Validate rest between sets if provided
-    const newErrors: Partial<Record<keyof WorkoutParams, string>> = {};
     if (workoutParams.restBetweenSets !== undefined) {
       const rest = Number(workoutParams.restBetweenSets);
       if (isNaN(rest) || rest < 0) {
@@ -73,10 +90,15 @@ export default function GenerateWorkoutPage() {
     setIsGenerating(true);
 
     try {
-      // TODO: Replace with actual API call
+      // Combine per-workout options with workout params
+      const combinedParams = {
+        ...workoutParams,
+        ...perWorkoutOptions,
+      };
+
       const response = await createWorkout(
         import.meta.env.VITE_GENERATED_WORKOUT_CONFIGURATION_ID,
-        workoutParams,
+        combinedParams,
         prompt
       );
 
@@ -104,6 +126,24 @@ export default function GenerateWorkoutPage() {
       setErrors({
         ...errors,
         [param]: undefined,
+      });
+    }
+  };
+
+  const handlePerWorkoutOptionChange = (
+    option: keyof PerWorkoutOptions,
+    value: unknown
+  ) => {
+    setPerWorkoutOptions({
+      ...perWorkoutOptions,
+      [option]: value,
+    });
+
+    // Clear error for this field if it exists
+    if (errors[option]) {
+      setErrors({
+        ...errors,
+        [option]: undefined,
       });
     }
   };
@@ -144,11 +184,18 @@ export default function GenerateWorkoutPage() {
       <div className="card card-border max-w-3xl mx-auto">
         <div className="card-body">
           <h2 className="card-title">Generate a New Workout</h2>
+          <p className="text-sm text-base-content/70 mb-4">
+            Describe what you want, then customize options below (all optional
+            except description)
+          </p>
 
           <form onSubmit={handleSubmit}>
             <div className="mb-6">
               <label className="block mb-2 font-medium flex justify-between items-center">
-                <span>Describe your workout needs</span>
+                <span>
+                  Describe your workout needs{" "}
+                  <span className="text-error">*</span>
+                </span>
                 <button
                   type="button"
                   className="btn btn-sm btn-ghost"
@@ -208,6 +255,15 @@ export default function GenerateWorkoutPage() {
               )}
             </div>
 
+            {/* Per Workout Options - Now using the component-based approach */}
+            <WorkoutCustomization
+              options={perWorkoutOptions}
+              onChange={handlePerWorkoutOptionChange}
+              errors={errors}
+              disabled={isGenerating}
+            />
+
+            {/* Advanced Options (unchanged) */}
             <div className="mb-6">
               <button
                 type="button"
