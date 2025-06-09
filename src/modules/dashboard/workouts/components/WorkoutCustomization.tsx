@@ -27,7 +27,7 @@ export default function WorkoutCustomization({
     if (!value) return null;
 
     switch (config.key) {
-      case "workoutDuration": {
+      case "customization_duration": {
         const duration = value as number;
         if (duration >= 60) {
           const hours = Math.floor(duration / 60);
@@ -41,7 +41,7 @@ export default function WorkoutCustomization({
         return `${duration} min`;
       }
 
-      case "focusAreas": {
+      case "customization_areas": {
         const areas = value as string[];
         if (areas.length === 0) return null;
         if (areas.length === 1) {
@@ -53,7 +53,7 @@ export default function WorkoutCustomization({
         return `${areas.length} areas`;
       }
 
-      case "availableEquipment": {
+      case "customization_equipment": {
         const equipment = value as string[];
         if (equipment.length === 0) return null;
         if (equipment.length === 1) {
@@ -68,7 +68,7 @@ export default function WorkoutCustomization({
         return `${equipment.length} items`;
       }
 
-      case "soreness": {
+      case "customization_soreness": {
         const soreAreas = value as string[];
         if (soreAreas.length === 0) return null;
         if (soreAreas.length === 1) {
@@ -80,7 +80,7 @@ export default function WorkoutCustomization({
         return `${soreAreas.length} areas`;
       }
 
-      case "workoutFocus": {
+      case "customization_focus": {
         const focus = value as string;
         // Convert snake_case to display format
         return focus
@@ -88,19 +88,19 @@ export default function WorkoutCustomization({
           .replace(/\b\w/g, (l) => l.toUpperCase());
       }
 
-      case "sleepQuality": {
+      case "customization_sleep": {
         const rating = value as number;
         const labels = ["", "Very Poor", "Poor", "Fair", "Good", "Excellent"];
         return `${labels[rating]} (${rating}/5)`;
       }
 
-      case "energyLevel": {
+      case "customization_energy": {
         const rating = value as number;
         const labels = ["", "Very Low", "Low", "Moderate", "High", "Very High"];
         return `${labels[rating]} (${rating}/5)`;
       }
 
-      case "stressLevel": {
+      case "customization_stress": {
         const rating = value as number;
         const labels = ["", "Very Low", "Low", "Moderate", "High", "Very High"];
         return `${labels[rating]} (${rating}/5)`;
@@ -167,21 +167,21 @@ export default function WorkoutCustomization({
                   {!config.comingSoon ? (
                     <>
                       <p className="text-sm text-base-content/70 mb-3">
-                        {config.key === "workoutDuration" &&
+                        {config.key === "customization_duration" &&
                           "Choose how long you want your workout to be"}
-                        {config.key === "focusAreas" &&
+                        {config.key === "customization_areas" &&
                           "Select the body parts or workout types you want to focus on"}
-                        {config.key === "workoutFocus" &&
+                        {config.key === "customization_focus" &&
                           "What's your main goal for this workout?"}
-                        {config.key === "availableEquipment" &&
+                        {config.key === "customization_equipment" &&
                           "Tell us what equipment you have available"}
-                        {config.key === "sleepQuality" &&
+                        {config.key === "customization_sleep" &&
                           "How well did you sleep last night?"}
-                        {config.key === "energyLevel" &&
+                        {config.key === "customization_energy" &&
                           "How energetic are you feeling today?"}
-                        {config.key === "stressLevel" &&
+                        {config.key === "customization_stress" &&
                           "What's your current stress level?"}
-                        {config.key === "soreness" &&
+                        {config.key === "customization_soreness" &&
                           "Are you experiencing any soreness?"}
                       </p>
                       <CustomizationComponent

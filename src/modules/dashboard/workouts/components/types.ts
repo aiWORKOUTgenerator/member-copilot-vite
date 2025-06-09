@@ -1,13 +1,12 @@
 export interface PerWorkoutOptions {
-  workoutDuration?: number;
-  availableEquipment?: string[];
-  workoutFocus?: string;
-  energyLevel?: number;
-  bodyFocus?: string;
-  focusAreas?: string[];
-  soreness?: string[];
-  stressLevel?: number;
-  sleepQuality?: number;
+  customization_duration?: number;
+  customization_equipment?: string[];
+  customization_focus?: string;
+  customization_energy?: number;
+  customization_areas?: string[];
+  customization_soreness?: string[];
+  customization_stress?: number;
+  customization_sleep?: number;
 }
 
 export interface CustomizationComponentProps<T = unknown> {

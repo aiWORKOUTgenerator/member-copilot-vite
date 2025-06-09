@@ -1,6 +1,6 @@
 # Workout Customization Components
 
-This directory contains a modular, extensible system for workout customization options that follows DRY principles with an accordion-based UI.
+This directory contains a modular, extensible system for workout customization options that follows DRY principles with an accordion-based UI. All customizations use the `customization_` prefix and are converted to string format for backend submission.
 
 ## Architecture
 
@@ -28,6 +28,43 @@ components/
 1. **WorkoutCustomization.tsx** - Main accordion container that dynamically renders all customization options
 2. **types.ts** - Defines shared interfaces including `PerWorkoutOptions` and `CustomizationComponentProps`
 3. **customizations/index.ts** - Central configuration file that defines all available customizations
+
+## Customization IDs and Backend Format
+
+All customization options use the `customization_` prefix for consistent identification:
+
+### Customization Keys
+- `customization_duration` - Workout duration in minutes
+- `customization_areas` - Focus areas for workout targeting
+- `customization_focus` - Main workout goal/type
+- `customization_equipment` - Available equipment
+- `customization_sleep` - Sleep quality rating (1-5)
+- `customization_energy` - Energy level rating (1-5)
+- `customization_stress` - Stress level rating (1-5)
+- `customization_soreness` - Current sore body parts
+
+### Backend String Format
+When submitted to the backend, all values are converted to strings:
+
+```typescript
+// Example backend payload
+{
+  "customization_duration": "45",
+  "customization_areas": "Upper Body, Core",
+  "customization_focus": "Strength Training",
+  "customization_equipment": "Dumbbells, Bench, Pull-up Bar",
+  "customization_sleep": "4",
+  "customization_energy": "3",
+  "customization_stress": "2",
+  "customization_soreness": "Lower Back, Shoulders"
+}
+```
+
+### Array to String Conversion
+- **Single values**: Converted directly to strings
+- **Arrays**: Joined with `", "` (comma + space)
+- **Numbers**: Converted to string representation
+- **Empty arrays**: Omitted from submission
 
 ## User Interface Design
 
@@ -66,16 +103,16 @@ Add your new option to the `PerWorkoutOptions` interface in `types.ts`:
 
 ```typescript
 export interface PerWorkoutOptions {
-  workoutDuration?: number;
-  focusAreas?: string[];
-  workoutFocus?: string;
-  availableEquipment?: string[];
-  soreness?: string[];
-  sleepQuality?: number;
-  energyLevel?: number;
-  stressLevel?: number;
-  // Add your new option here
-  newOption?: string;
+  customization_duration?: number;
+  customization_areas?: string[];
+  customization_focus?: string;
+  customization_equipment?: string[];
+  customization_soreness?: string[];
+  customization_sleep?: number;
+  customization_energy?: number;
+  customization_stress?: number;
+  // Add your new option here with customization_ prefix
+  customization_new_option?: string;
 }
 ```
 
@@ -127,7 +164,7 @@ import NewOptionCustomization from "./NewOptionCustomization";
 export const CUSTOMIZATION_CONFIG: CustomizationConfig[] = [
   // ... existing configurations
   {
-    key: "newOption",
+    key: "customization_new_option",
     component: NewOptionCustomization,
     label: "New Option",
     icon: Settings,
@@ -146,13 +183,24 @@ export { default as NewOptionCustomization } from "./NewOptionCustomization";
 If you want custom formatting for the selection display, update the `formatCurrentSelection` function in `WorkoutCustomization.tsx`:
 
 ```typescript
-case "newOption": {
+case "customization_new_option": {
   const option = value as string;
   return option.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 }
 ```
 
-That's it! Your new customization option will automatically appear in the accordion with proper validation and state management.
+### 6. Update Context Description (Optional)
+Add context description in `WorkoutCustomization.tsx`:
+
+```typescript
+{config.key === "customization_new_option" && "Describe what this new option does"}
+```
+
+That's it! Your new customization option will automatically:
+- Appear in the accordion UI
+- Be converted to string format for backend submission  
+- Follow the `customization_` naming convention
+- Include proper validation and state management
 
 ## Component Requirements
 
@@ -173,14 +221,14 @@ Validation logic should be handled in the parent `GeneratePage` component. The c
 
 ## Current Customizations
 
-- ✅ **Workout Duration** - Dropdown with presets (15 min - 2.5 hours)
-- ✅ **Focus Areas** - Multi-select checkboxes (upper body, lower body, core, back, shoulders, chest, arms, mobility/flexibility, cardio, recovery/stretching)
-- ✅ **Workout Focus** - Single-select buttons (strength training, muscle building, fat loss, cardio endurance, HIIT, flexibility & mobility, recovery & stretching, powerlifting, bodyweight training, functional fitness)
-- ✅ **Available Equipment** - Multi-select checkboxes (22 equipment options including bodyweight only, dumbbells, kettlebells, barbell, bench, pull-up bar, resistance bands, TRX, yoga mat, medicine ball, jump rope, stability ball, foam roller, cardio machines, and more)
-- ✅ **Current Soreness** - Multi-select checkboxes (16 common body parts using everyday terminology: neck, shoulders, upper back, lower back, chest, arms, wrists, elbows, abs/core, hips, glutes, thighs, hamstrings, knees, calves, ankles)
-- ✅ **Sleep Quality** - 5-point rating scale based on Pittsburgh Sleep Quality Index (Very Poor to Excellent)
-- ✅ **Energy Level** - 5-point rating scale based on RPE assessments (Very Low to Very High)
-- ✅ **Stress Level** - 5-point rating scale based on sports psychology assessments (Very Low to Very High)
+- ✅ **customization_duration** - Dropdown with presets (15 min - 2.5 hours)
+- ✅ **customization_areas** - Multi-select checkboxes (upper body, lower body, core, back, shoulders, chest, arms, mobility/flexibility, cardio, recovery/stretching)
+- ✅ **customization_focus** - Single-select buttons (strength training, muscle building, fat loss, cardio endurance, HIIT, flexibility & mobility, recovery & stretching, powerlifting, bodyweight training, functional fitness)
+- ✅ **customization_equipment** - Multi-select checkboxes (22 equipment options including bodyweight only, dumbbells, kettlebells, barbell, bench, pull-up bar, resistance bands, TRX, yoga mat, medicine ball, jump rope, stability ball, foam roller, cardio machines, and more)
+- ✅ **customization_soreness** - Multi-select checkboxes (16 common body parts using everyday terminology: neck, shoulders, upper back, lower back, chest, arms, wrists, elbows, abs/core, hips, glutes, thighs, hamstrings, knees, calves, ankles)
+- ✅ **customization_sleep** - 5-point rating scale based on Pittsburgh Sleep Quality Index (Very Poor to Excellent)
+- ✅ **customization_energy** - 5-point rating scale based on RPE assessments (Very Low to Very High)
+- ✅ **customization_stress** - 5-point rating scale based on sports psychology assessments (Very Low to Very High)
 
 ## Professional Medical/Fitness Standards
 
@@ -228,7 +276,7 @@ Common body parts using everyday terminology:
 ## Benefits of This Architecture
 
 1. **DRY Principle** - No code duplication between customizations
-2. **Easy to Extend** - Add new options in 4-5 simple steps
+2. **Easy to Extend** - Add new options in 5-6 simple steps
 3. **Consistent UI** - All options follow the same accordion pattern
 4. **Type Safety** - Full TypeScript support with proper typing
 5. **Mobile Optimized** - Accordion design is perfect for mobile
@@ -237,4 +285,5 @@ Common body parts using everyday terminology:
 8. **Scalable** - Can easily add many more options without cluttering the UI
 9. **Professional Standards** - Uses medically/scientifically validated rating scales
 10. **Enhanced Visibility** - Improved contrast and typography for better usability
-11. **Complete Coverage** - All 8 customization options fully implemented 
+11. **Complete Coverage** - All 8 customization options fully implemented
+12. **Backend Ready** - Automatic string conversion with consistent naming 

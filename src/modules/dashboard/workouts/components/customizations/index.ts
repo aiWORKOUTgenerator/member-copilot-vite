@@ -31,49 +31,49 @@ export { default as SorenessCustomization } from "./SorenessCustomization";
 // Configuration for all available customizations
 export const CUSTOMIZATION_CONFIG: CustomizationConfig[] = [
   {
-    key: "workoutDuration",
+    key: "customization_duration",
     component: WorkoutDurationCustomization,
     label: "Workout Duration",
     icon: Clock,
   },
   {
-    key: "focusAreas",
+    key: "customization_areas",
     component: FocusAreaCustomization,
     label: "Focus Areas",
     icon: Target,
   },
   {
-    key: "workoutFocus",
+    key: "customization_focus",
     component: WorkoutFocusCustomization,
     label: "Workout Focus",
     icon: Heart,
   },
   {
-    key: "availableEquipment",
+    key: "customization_equipment",
     component: AvailableEquipmentCustomization,
     label: "Available Equipment",
     icon: Activity,
   },
   {
-    key: "sleepQuality",
+    key: "customization_sleep",
     component: SleepQualityCustomization,
     label: "Sleep Quality",
     icon: Moon,
   },
   {
-    key: "energyLevel",
+    key: "customization_energy",
     component: EnergyLevelCustomization,
     label: "Energy Level",
     icon: Zap,
   },
   {
-    key: "stressLevel",
+    key: "customization_stress",
     component: StressLevelCustomization,
     label: "Stress Level",
     icon: Brain,
   },
   {
-    key: "soreness",
+    key: "customization_soreness",
     component: SorenessCustomization,
     label: "Current Soreness",
     icon: AlertTriangle,

@@ -55,6 +55,30 @@ export default function GenerateWorkoutPage() {
     setDisplayPrompts(shuffled.slice(0, 3));
   }, []);
 
+  // Convert per-workout options to string format for backend submission
+  const convertOptionsToStrings = (
+    options: PerWorkoutOptions
+  ): Record<string, string> => {
+    const stringOptions: Record<string, string> = {};
+
+    // Convert each option to string format
+    Object.entries(options).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        if (Array.isArray(value)) {
+          // Convert arrays to comma-separated strings
+          if (value.length > 0) {
+            stringOptions[key] = value.join(", ");
+          }
+        } else {
+          // Convert numbers and strings to strings
+          stringOptions[key] = String(value);
+        }
+      }
+    });
+
+    return stringOptions;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -65,10 +89,10 @@ export default function GenerateWorkoutPage() {
       Record<keyof WorkoutParams | keyof PerWorkoutOptions, string>
     > = {};
 
-    if (perWorkoutOptions.workoutDuration !== undefined) {
-      const duration = Number(perWorkoutOptions.workoutDuration);
+    if (perWorkoutOptions.customization_duration !== undefined) {
+      const duration = Number(perWorkoutOptions.customization_duration);
       if (isNaN(duration) || duration < 5 || duration > 300) {
-        newErrors.workoutDuration =
+        newErrors.customization_duration =
           "Duration must be between 5 and 300 minutes";
       }
     }
@@ -90,10 +114,13 @@ export default function GenerateWorkoutPage() {
     setIsGenerating(true);
 
     try {
-      // Combine per-workout options with workout params
+      // Convert per-workout options to string format
+      const stringOptions = convertOptionsToStrings(perWorkoutOptions);
+
+      // Combine workout params with string-formatted customization options
       const combinedParams = {
         ...workoutParams,
-        ...perWorkoutOptions,
+        ...stringOptions,
       };
 
       const response = await createWorkout(
@@ -103,6 +130,7 @@ export default function GenerateWorkoutPage() {
       );
 
       console.log("Generated workout:", response);
+      console.log("Submitted customization options:", stringOptions);
 
       // Redirect to the generated workout page
       navigate(`/dashboard/workouts/${response.id}`);
