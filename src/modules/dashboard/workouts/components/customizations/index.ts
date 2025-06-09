@@ -7,6 +7,8 @@ import {
   Target,
   AlertTriangle,
   Brain,
+  Plus,
+  Minus,
 } from "lucide-react";
 import { CustomizationConfig } from "../types";
 import WorkoutDurationCustomization from "./WorkoutDurationCustomization";
@@ -17,6 +19,8 @@ import EnergyLevelCustomization from "./EnergyLevelCustomization";
 import StressLevelCustomization from "./StressLevelCustomization";
 import AvailableEquipmentCustomization from "./AvailableEquipmentCustomization";
 import SorenessCustomization from "./SorenessCustomization";
+import IncludeExercisesCustomization from "./IncludeExercisesCustomization";
+import ExcludeExercisesCustomization from "./ExcludeExercisesCustomization";
 
 // Export individual components
 export { default as WorkoutDurationCustomization } from "./WorkoutDurationCustomization";
@@ -27,6 +31,8 @@ export { default as EnergyLevelCustomization } from "./EnergyLevelCustomization"
 export { default as StressLevelCustomization } from "./StressLevelCustomization";
 export { default as AvailableEquipmentCustomization } from "./AvailableEquipmentCustomization";
 export { default as SorenessCustomization } from "./SorenessCustomization";
+export { default as IncludeExercisesCustomization } from "./IncludeExercisesCustomization";
+export { default as ExcludeExercisesCustomization } from "./ExcludeExercisesCustomization";
 
 // Configuration for all available customizations
 export const CUSTOMIZATION_CONFIG: CustomizationConfig[] = [
@@ -53,6 +59,18 @@ export const CUSTOMIZATION_CONFIG: CustomizationConfig[] = [
     component: AvailableEquipmentCustomization,
     label: "Available Equipment",
     icon: Activity,
+  },
+  {
+    key: "customization_include",
+    component: IncludeExercisesCustomization,
+    label: "Include Exercises",
+    icon: Plus,
+  },
+  {
+    key: "customization_exclude",
+    component: ExcludeExercisesCustomization,
+    label: "Exclude Exercises",
+    icon: Minus,
   },
   {
     key: "customization_sleep",

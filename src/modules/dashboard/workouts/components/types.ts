@@ -7,6 +7,8 @@ export interface PerWorkoutOptions {
   customization_soreness?: string[];
   customization_stress?: number;
   customization_sleep?: number;
+  customization_include?: string;
+  customization_exclude?: string;
 }
 
 export interface CustomizationComponentProps<T = unknown> {

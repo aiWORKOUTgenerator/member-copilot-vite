@@ -48,19 +48,25 @@ export default function WorkoutList({
       hour12: true,
     }).format(createdDate);
 
+    const handleClick = () => {
+      if (isRestricted) {
+        handleUpgrade();
+      } else {
+        onWorkoutClick?.(workout);
+      }
+    };
+
     return (
       <li
         key={workout.id}
-        className={`list-row p-2 transition-colors rounded-lg my-1 border border-base-300 relative ${
-          isRestricted
-            ? "opacity-60 cursor-not-allowed"
-            : "hover:bg-base-200 cursor-pointer"
+        className={`list-row p-2 transition-colors rounded-lg my-1 border border-base-300 relative cursor-pointer ${
+          isRestricted ? "opacity-60 hover:opacity-80" : "hover:bg-base-200"
         }`}
-        onClick={() => !isRestricted && onWorkoutClick?.(workout)}
+        onClick={handleClick}
       >
         {/* Overlay for restricted workouts */}
         {isRestricted && (
-          <div className="absolute inset-0 bg-base-300/30 backdrop-blur-[1px] rounded-lg flex items-center justify-center z-10">
+          <div className="absolute inset-0 bg-base-300/30 backdrop-blur-[1px] rounded-lg flex items-center justify-center z-10 pointer-events-none">
             <div className="flex items-center space-x-2 bg-base-100 px-3 py-2 rounded-lg shadow-lg border">
               <Lock className="w-4 h-4 text-warning" />
               <span className="text-sm font-medium">Upgrade to Access</span>

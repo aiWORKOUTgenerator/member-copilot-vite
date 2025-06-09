@@ -1,10 +1,5 @@
 import { useGeneratedWorkouts } from "@/contexts/GeneratedWorkoutContext";
-import {
-  WorkoutParams,
-  WorkoutType,
-  WorkoutStructure,
-} from "@/domain/entities/workoutParams";
-import { ArrowBigLeft, ChevronUp, ChevronDown } from "lucide-react";
+import { ArrowBigLeft } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import WorkoutCustomization from "./components/WorkoutCustomization";
@@ -38,14 +33,12 @@ export default function GenerateWorkoutPage() {
   const navigate = useNavigate();
   const [prompt, setPrompt] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
-  const [showAdvanced, setShowAdvanced] = useState(false);
-  const [workoutParams, setWorkoutParams] = useState<WorkoutParams>({});
   const [perWorkoutOptions, setPerWorkoutOptions] = useState<PerWorkoutOptions>(
     {}
   );
   const { createWorkout } = useGeneratedWorkouts();
   const [errors, setErrors] = useState<
-    Partial<Record<keyof WorkoutParams | keyof PerWorkoutOptions, string>>
+    Partial<Record<keyof PerWorkoutOptions, string>>
   >({});
   const [displayPrompts, setDisplayPrompts] = useState<string[]>([]);
 
@@ -85,23 +78,13 @@ export default function GenerateWorkoutPage() {
     if (!prompt.trim()) return;
 
     // Validate workout duration if provided
-    const newErrors: Partial<
-      Record<keyof WorkoutParams | keyof PerWorkoutOptions, string>
-    > = {};
+    const newErrors: Partial<Record<keyof PerWorkoutOptions, string>> = {};
 
     if (perWorkoutOptions.customization_duration !== undefined) {
       const duration = Number(perWorkoutOptions.customization_duration);
       if (isNaN(duration) || duration < 5 || duration > 300) {
         newErrors.customization_duration =
           "Duration must be between 5 and 300 minutes";
-      }
-    }
-
-    // Validate rest between sets if provided
-    if (workoutParams.restBetweenSets !== undefined) {
-      const rest = Number(workoutParams.restBetweenSets);
-      if (isNaN(rest) || rest < 0) {
-        newErrors.restBetweenSets = "Rest time must be a positive number";
       }
     }
 
@@ -117,11 +100,8 @@ export default function GenerateWorkoutPage() {
       // Convert per-workout options to string format
       const stringOptions = convertOptionsToStrings(perWorkoutOptions);
 
-      // Combine workout params with string-formatted customization options
-      const combinedParams = {
-        ...workoutParams,
-        ...stringOptions,
-      };
+      // Submit string-formatted customization options
+      const combinedParams = stringOptions;
 
       const response = await createWorkout(
         import.meta.env.VITE_GENERATED_WORKOUT_CONFIGURATION_ID,
@@ -137,24 +117,6 @@ export default function GenerateWorkoutPage() {
     } catch (error) {
       console.error("Failed to generate workout:", error);
       setIsGenerating(false);
-    }
-  };
-
-  const handleParamChange = (
-    param: keyof WorkoutParams,
-    value: string | number | WorkoutType | WorkoutStructure | undefined
-  ) => {
-    setWorkoutParams({
-      ...workoutParams,
-      [param]: value,
-    });
-
-    // Clear error for this field if it exists
-    if (errors[param]) {
-      setErrors({
-        ...errors,
-        [param]: undefined,
-      });
     }
   };
 
@@ -174,22 +136,6 @@ export default function GenerateWorkoutPage() {
         [option]: undefined,
       });
     }
-  };
-
-  const validateRestBetweenSets = (value: string) => {
-    const rest = Number(value);
-    if (value && (isNaN(rest) || rest < 0)) {
-      setErrors({
-        ...errors,
-        restBetweenSets: "Rest time must be a positive number",
-      });
-    } else {
-      const newErrors = { ...errors };
-      delete newErrors.restBetweenSets;
-      setErrors(newErrors);
-    }
-
-    handleParamChange("restBetweenSets", value ? Number(value) : undefined);
   };
 
   // Function to use an example prompt
@@ -290,153 +236,6 @@ export default function GenerateWorkoutPage() {
               errors={errors}
               disabled={isGenerating}
             />
-
-            {/* Advanced Options (unchanged) */}
-            <div className="mb-6">
-              <button
-                type="button"
-                className="btn btn-outline w-full flex justify-between items-center"
-                onClick={() => setShowAdvanced(!showAdvanced)}
-              >
-                <span>Advanced Options</span>
-                {showAdvanced ? <ChevronUp /> : <ChevronDown />}
-              </button>
-
-              {showAdvanced && (
-                <div className="mt-4 space-y-4 border p-4 rounded-lg">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block mb-2 text-sm font-medium">
-                        Workout Type
-                      </label>
-                      <select
-                        className="select select-bordered validator w-full"
-                        value={workoutParams.workoutType || ""}
-                        onChange={(e) =>
-                          handleParamChange(
-                            "workoutType",
-                            e.target.value
-                              ? (e.target.value as WorkoutType)
-                              : undefined
-                          )
-                        }
-                        disabled={isGenerating}
-                      >
-                        <option value="">Select type (optional)</option>
-                        {Object.values(WorkoutType).map((type) => (
-                          <option key={type} value={type}>
-                            {type}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block mb-2 text-sm font-medium">
-                        Workout Structure
-                      </label>
-                      <select
-                        className="select select-bordered validator w-full"
-                        value={workoutParams.workoutStructure || ""}
-                        onChange={(e) =>
-                          handleParamChange(
-                            "workoutStructure",
-                            e.target.value
-                              ? (e.target.value as WorkoutStructure)
-                              : undefined
-                          )
-                        }
-                        disabled={isGenerating}
-                      >
-                        <option value="">Select structure (optional)</option>
-                        {Object.values(WorkoutStructure).map((structure) => (
-                          <option key={structure} value={structure}>
-                            {structure}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block mb-2 text-sm font-medium">
-                      Rest Between Sets (seconds)
-                    </label>
-                    <input
-                      type="number"
-                      className="input input-bordered validator w-full"
-                      placeholder="60"
-                      min="0"
-                      value={workoutParams.restBetweenSets || ""}
-                      onChange={(e) => validateRestBetweenSets(e.target.value)}
-                      disabled={isGenerating}
-                    />
-                    {errors.restBetweenSets && (
-                      <p className="validator-hint">{errors.restBetweenSets}</p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block mb-2 text-sm font-medium">
-                      Target Muscle Groups
-                    </label>
-                    <input
-                      type="text"
-                      className="input input-bordered validator w-full"
-                      placeholder="e.g., chest, back, legs"
-                      value={workoutParams.targetMuscleGroups || ""}
-                      onChange={(e) =>
-                        handleParamChange(
-                          "targetMuscleGroups",
-                          e.target.value || undefined
-                        )
-                      }
-                      disabled={isGenerating}
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block mb-2 text-sm font-medium">
-                        Include Exercises
-                      </label>
-                      <input
-                        type="text"
-                        className="input input-bordered validator w-full"
-                        placeholder="e.g., squats, pushups"
-                        value={workoutParams.includeExercises || ""}
-                        onChange={(e) =>
-                          handleParamChange(
-                            "includeExercises",
-                            e.target.value || undefined
-                          )
-                        }
-                        disabled={isGenerating}
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block mb-2 text-sm font-medium">
-                        Exclude Exercises
-                      </label>
-                      <input
-                        type="text"
-                        className="input input-bordered validator w-full"
-                        placeholder="e.g., burpees, jumping jacks"
-                        value={workoutParams.excludeExercises || ""}
-                        onChange={(e) =>
-                          handleParamChange(
-                            "excludeExercises",
-                            e.target.value || undefined
-                          )
-                        }
-                        disabled={isGenerating}
-                      />
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
 
             <div className="card-actions justify-end">
               <button

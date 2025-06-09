@@ -88,6 +88,32 @@ export default function WorkoutCustomization({
           .replace(/\b\w/g, (l) => l.toUpperCase());
       }
 
+      case "customization_include": {
+        const exercises = value as string;
+        const exerciseList = exercises
+          .split(",")
+          .map((e) => e.trim())
+          .filter((e) => e.length > 0);
+        if (exerciseList.length === 0) return null;
+        if (exerciseList.length === 1) {
+          return exerciseList[0];
+        }
+        return `${exerciseList.length} exercises`;
+      }
+
+      case "customization_exclude": {
+        const exercises = value as string;
+        const exerciseList = exercises
+          .split(",")
+          .map((e) => e.trim())
+          .filter((e) => e.length > 0);
+        if (exerciseList.length === 0) return null;
+        if (exerciseList.length === 1) {
+          return exerciseList[0];
+        }
+        return `${exerciseList.length} exercises`;
+      }
+
       case "customization_sleep": {
         const rating = value as number;
         const labels = ["", "Very Poor", "Poor", "Fair", "Good", "Excellent"];
@@ -175,6 +201,10 @@ export default function WorkoutCustomization({
                           "What's your main goal for this workout?"}
                         {config.key === "customization_equipment" &&
                           "Tell us what equipment you have available"}
+                        {config.key === "customization_include" &&
+                          "Specify exercises you definitely want in your workout"}
+                        {config.key === "customization_exclude" &&
+                          "Specify exercises you want to avoid"}
                         {config.key === "customization_sleep" &&
                           "How well did you sleep last night?"}
                         {config.key === "customization_energy" &&
