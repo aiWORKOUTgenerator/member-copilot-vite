@@ -162,8 +162,8 @@ export default function GenerateWorkoutPage() {
   };
 
   return (
-    <div className="p-4">
-      <div className="mb-4">
+    <div className="p-2 sm:p-4">
+      <div className="mb-2 sm:mb-4">
         <button
           onClick={() => navigate(-1)}
           className="btn btn-ghost flex items-center"

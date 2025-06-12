@@ -118,13 +118,13 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
   const getContainerClass = () => {
     if (containerStyle === "none") return "";
     if (containerStyle === "default")
-      return "bg-base-100 shadow-xl border-1 border-base-200 rounded-lg min-h-96 relative";
+      return "bg-base-100 shadow-xl border-1 border-base-200  sm:rounded-lg min-h-96 relative";
     return containerStyle; // Custom class string
   };
 
   return (
     <div className="min-h-full bg-base-300">
-      <div className="bg-primary pb-32">
+      <div className="bg-primary pb-12 sm:pb-32">
         <div className="navbar border-b border-secondary-focus/25 bg-primary">
           <div className="navbar-start">
             <div className="flex items-center">
@@ -221,18 +221,18 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
           </div>
         </div>
 
-        <header className="py-10">
+        <header className="py-2 sm:py-10">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <h1 className="text-3xl font-bold tracking-tight text-white">
+            <h1 className="text-xl sm:text-3xl font-bold tracking-tight text-white">
               {displayTitle}
             </h1>
           </div>
         </header>
       </div>
 
-      <main className="-mt-32">
+      <main className="-mt-12 sm:-mt-32">
         <div className="mx-auto max-w-7xl">
-          <div className="p-4">
+          <div className="sm:p-4">
             {containerStyle === "none" ? (
               children
             ) : (

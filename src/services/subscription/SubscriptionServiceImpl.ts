@@ -26,6 +26,7 @@ const MOCK_SUBSCRIPTION_TIERS: SubscriptionTier[] = [
     name: "Premium",
     description: "Ideal for serious fitness enthusiasts",
     features: [
+      "50% off",
       "100 workouts per month",
       "Unlimited saved workouts",
       "Priority support",
