@@ -155,10 +155,7 @@ export default function GenerateWorkoutPage() {
   // Handle upgrade action
   const handleUpgrade = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    // TODO: Navigate to upgrade page or trigger upgrade flow
-    // For now, we can navigate to a placeholder or show a modal
-    console.log("Upgrade button clicked");
-    // navigate("/upgrade"); // Uncomment when upgrade page exists
+    navigate("/dashboard/billing");
   };
 
   return (
