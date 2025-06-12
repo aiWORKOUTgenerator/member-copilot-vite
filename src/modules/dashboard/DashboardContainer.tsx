@@ -16,6 +16,7 @@ import { ContactProvider } from "@/contexts/ContactContext";
 import { UserAccessProvider } from "@/contexts/UserAccessContext";
 import { CombinedProviders } from "@/contexts/CombinedProviders";
 import { ContactLoadedGuard } from "@/components/ContactLoadedGuard";
+import MyAITrainerPage from "./trainer/pages/MyAITrainerPage";
 
 export default function DashboardContainer() {
   return (
@@ -60,6 +61,7 @@ export default function DashboardContainer() {
                       element={<AttributeDetailPage />}
                     />
                   </Route>
+                  <Route path="/trainer" element={<MyAITrainerPage />} />
                 </Routes>
               </ContactLoadedGuard>
             </StackedLayout>
