@@ -143,6 +143,24 @@ export default function GenerateWorkoutPage() {
     setPrompt(example);
   };
 
+  // Handle workout generation from the upgrade overlay
+  const handleGenerateWorkoutFromOverlay = () => {
+    // Create a synthetic form event and call the existing handleSubmit
+    const syntheticEvent = {
+      preventDefault: () => {},
+    } as React.FormEvent;
+    handleSubmit(syntheticEvent);
+  };
+
+  // Handle upgrade action
+  const handleUpgrade = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    // TODO: Navigate to upgrade page or trigger upgrade flow
+    // For now, we can navigate to a placeholder or show a modal
+    console.log("Upgrade button clicked");
+    // navigate("/upgrade"); // Uncomment when upgrade page exists
+  };
+
   return (
     <div className="p-4">
       <div className="mb-4">
@@ -235,6 +253,8 @@ export default function GenerateWorkoutPage() {
               onChange={handlePerWorkoutOptionChange}
               errors={errors}
               disabled={isGenerating}
+              onGenerateWorkout={handleGenerateWorkoutFromOverlay}
+              onUpgrade={handleUpgrade}
             />
 
             <div className="card-actions justify-end">
