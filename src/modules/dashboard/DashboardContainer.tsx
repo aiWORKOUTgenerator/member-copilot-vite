@@ -17,6 +17,7 @@ import { UserAccessProvider } from "@/contexts/UserAccessContext";
 import { CombinedProviders } from "@/contexts/CombinedProviders";
 import { ContactLoadedGuard } from "@/components/ContactLoadedGuard";
 import MyAITrainerPage from "./trainer/pages/MyAITrainerPage";
+import { TrainerPersonaProvider } from "@/contexts/TrainerPersonaContext";
 
 export default function DashboardContainer() {
   return (
@@ -25,45 +26,53 @@ export default function DashboardContainer() {
         <UserAccessProvider>
           <CombinedProviders>
             <StackedLayout>
-              <ContactLoadedGuard
-                fallback={
-                  <div className="flex items-center h-40 justify-center">
-                    <span className="loading loading-ring loading-xl"></span>
-                  </div>
-                }
-              >
-                <Routes>
-                  <Route path="/" element={<DashboardPage />} />
-                  <Route path="/billing" element={<BillingContainer />}>
+              <TrainerPersonaProvider>
+                <ContactLoadedGuard
+                  fallback={
+                    <div className="flex items-center h-40 justify-center">
+                      <span className="loading loading-ring loading-xl"></span>
+                    </div>
+                  }
+                >
+                  <Routes>
+                    <Route path="/" element={<DashboardPage />} />
+                    <Route path="/billing" element={<BillingContainer />}>
+                      <Route
+                        path="/billing"
+                        element={<BillingSubscriptionTab />}
+                      />
+                      <Route
+                        path="/billing/payment"
+                        element={<BillingPaymentTab />}
+                      />
+                      <Route
+                        path="/billing/usage"
+                        element={<BillingUsageTab />}
+                      />
+                      <Route
+                        path="/billing/history"
+                        element={<BillingHistoryTab />}
+                      />
+                    </Route>
+                    <Route path="/workouts" element={<WorkoutsPage />} />
                     <Route
-                      path="/billing"
-                      element={<BillingSubscriptionTab />}
+                      path="/workouts/generate"
+                      element={<GeneratePage />}
                     />
                     <Route
-                      path="/billing/payment"
-                      element={<BillingPaymentTab />}
+                      path="/workouts/:id"
+                      element={<WorkoutDetailPage />}
                     />
-                    <Route
-                      path="/billing/usage"
-                      element={<BillingUsageTab />}
-                    />
-                    <Route
-                      path="/billing/history"
-                      element={<BillingHistoryTab />}
-                    />
-                  </Route>
-                  <Route path="/workouts" element={<WorkoutsPage />} />
-                  <Route path="/workouts/generate" element={<GeneratePage />} />
-                  <Route path="/workouts/:id" element={<WorkoutDetailPage />} />
-                  <Route path="/profile" element={<ProfileContainer />}>
-                    <Route
-                      path="/profile/:attributeTypeId"
-                      element={<AttributeDetailPage />}
-                    />
-                  </Route>
-                  <Route path="/trainer" element={<MyAITrainerPage />} />
-                </Routes>
-              </ContactLoadedGuard>
+                    <Route path="/profile" element={<ProfileContainer />}>
+                      <Route
+                        path="/profile/:attributeTypeId"
+                        element={<AttributeDetailPage />}
+                      />
+                    </Route>
+                    <Route path="/trainer" element={<MyAITrainerPage />} />
+                  </Routes>
+                </ContactLoadedGuard>
+              </TrainerPersonaProvider>
             </StackedLayout>
           </CombinedProviders>
         </UserAccessProvider>

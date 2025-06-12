@@ -106,6 +106,10 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
           incompleteAttributesCount > 0 ? incompleteAttributesCount : undefined,
       },
       {
+        name: "AI Trainer",
+        href: "/dashboard/trainer",
+      },
+      {
         name: isOnBasicTier ? "Upgrade Now $10/mo" : "Billing",
         href: "/dashboard/billing",
         enhanced: true,
