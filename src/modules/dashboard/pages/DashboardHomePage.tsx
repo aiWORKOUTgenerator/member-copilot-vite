@@ -137,7 +137,7 @@ export default function DashboardHomePage() {
                     <h3 className="card-title text-lg">
                       You're on the Free Plan
                     </h3>
-                    <div className="badge badge-warning badge-outline">
+                    <div className="badge badge-warning badge-outline whitespace-nowrap">
                       {workoutUsage.used}/{workoutUsage.limit} workouts used
                     </div>
                   </div>

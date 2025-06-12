@@ -28,7 +28,9 @@ export function ActionCard({
             {icon && <span className="mr-2">{icon}</span>}
             {title}
             {badgeText && (
-              <div className={`badge ${badgeColor} ml-2`}>{badgeText}</div>
+              <div className={`badge ${badgeColor} ml-2 whitespace-nowrap`}>
+                {badgeText}
+              </div>
             )}
           </div>
         </h2>

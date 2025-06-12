@@ -37,22 +37,22 @@ export default function PricingComponent({
   const formattedTiers = tiers.map(formatTierForDisplay);
 
   return (
-    <div className="py-4">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="isolate mx-auto grid max-w-md grid-cols-1 gap-8 lg:mx-0 lg:max-w-none lg:grid-cols-2">
+    <div className="py-2 sm:py-4">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="isolate mx-auto grid max-w-md grid-cols-1 gap-4 sm:gap-8 lg:mx-0 lg:max-w-none lg:grid-cols-2">
           {formattedTiers.map((tier) => (
             <div
               key={tier.id}
               className={classNames(
                 tier.featured ? "bg-primary ring-primary" : "ring-base-300",
-                "rounded-3xl p-8 ring-1 xl:p-10"
+                "rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 ring-1"
               )}
             >
               <h3
                 id={tier.id}
                 className={classNames(
                   tier.featured ? "text-primary-content" : "text-base-content",
-                  "text-lg font-semibold"
+                  "text-base sm:text-lg font-semibold"
                 )}
               >
                 {tier.name}
@@ -62,18 +62,18 @@ export default function PricingComponent({
                   tier.featured
                     ? "text-primary-content/80"
                     : "text-base-content/70",
-                  "mt-4 text-sm"
+                  "mt-2 sm:mt-4 text-xs sm:text-sm"
                 )}
               >
                 {tier.description}
               </p>
-              <p className="mt-6 flex items-baseline gap-x-1">
+              <p className="mt-4 sm:mt-6 flex items-baseline gap-x-1">
                 <span
                   className={classNames(
                     tier.featured
                       ? "text-primary-content"
                       : "text-base-content",
-                    "text-4xl font-semibold tracking-tight"
+                    "text-2xl sm:text-3xl lg:text-4xl font-semibold tracking-tight"
                   )}
                 >
                   {tier.price}
@@ -83,7 +83,7 @@ export default function PricingComponent({
                     tier.featured
                       ? "text-primary-content/80"
                       : "text-base-content/70",
-                    "text-sm font-semibold"
+                    "text-xs sm:text-sm font-semibold"
                   )}
                 >
                   /month
@@ -97,7 +97,7 @@ export default function PricingComponent({
                   tier.featured
                     ? "btn btn-secondary text-secondary-content"
                     : "btn btn-primary",
-                  "mt-6 w-full",
+                  "mt-4 sm:mt-6 w-full text-sm sm:text-base",
                   selectedTier?.id === tier.id || isProcessing
                     ? "btn-disabled"
                     : ""
@@ -115,15 +115,15 @@ export default function PricingComponent({
                   tier.featured
                     ? "text-primary-content/80"
                     : "text-base-content/70",
-                  "mt-8 space-y-3 text-sm xl:mt-10"
+                  "mt-6 sm:mt-8 space-y-2 sm:space-y-3 text-xs sm:text-sm"
                 )}
               >
                 {tier.features.map((feature) => (
-                  <li key={feature} className="flex gap-x-3">
+                  <li key={feature} className="flex gap-x-2 sm:gap-x-3">
                     <svg
                       className={classNames(
                         tier.featured ? "text-primary-content" : "text-primary",
-                        "h-6 w-5 flex-none"
+                        "h-4 w-4 sm:h-5 sm:w-6 flex-none"
                       )}
                       viewBox="0 0 20 20"
                       fill="currentColor"

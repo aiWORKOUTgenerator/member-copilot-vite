@@ -13,7 +13,11 @@ const MOCK_SUBSCRIPTION_TIERS: SubscriptionTier[] = [
     stripePriceId: import.meta.env.VITE_STRIPE_PRICE_BASIC,
     name: "Free",
     description: "Perfect for individuals getting started",
-    features: ["5 free workouts per month", "Custom AI workouts"],
+    features: [
+      "5 free workouts per month",
+      "Custom AI workouts",
+      "5 saved workouts",
+    ],
     price: "$0.00",
   },
   {
@@ -21,7 +25,12 @@ const MOCK_SUBSCRIPTION_TIERS: SubscriptionTier[] = [
     stripePriceId: import.meta.env.VITE_STRIPE_PRICE_PREMIUM,
     name: "Premium",
     description: "Ideal for serious fitness enthusiasts",
-    features: ["20 workouts per month", "Priority support"],
+    features: [
+      "50% off",
+      "100 workouts per month",
+      "Unlimited saved workouts",
+      "Priority support",
+    ],
     price: "$10.00 (50% off)",
     isPopular: true,
   },

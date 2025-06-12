@@ -1,12 +1,9 @@
 import { useGeneratedWorkouts } from "@/contexts/GeneratedWorkoutContext";
-import {
-  WorkoutParams,
-  WorkoutType,
-  WorkoutStructure,
-} from "@/domain/entities/workoutParams";
-import { ArrowBigLeft, ChevronUp, ChevronDown } from "lucide-react";
+import { ArrowBigLeft } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
+import WorkoutCustomization from "./components/WorkoutCustomization";
+import { PerWorkoutOptions } from "./components/types";
 
 // 15 workout prompt examples
 const WORKOUT_PROMPTS = [
@@ -36,11 +33,12 @@ export default function GenerateWorkoutPage() {
   const navigate = useNavigate();
   const [prompt, setPrompt] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
-  const [showAdvanced, setShowAdvanced] = useState(false);
-  const [workoutParams, setWorkoutParams] = useState<WorkoutParams>({});
+  const [perWorkoutOptions, setPerWorkoutOptions] = useState<PerWorkoutOptions>(
+    {}
+  );
   const { createWorkout } = useGeneratedWorkouts();
   const [errors, setErrors] = useState<
-    Partial<Record<keyof WorkoutParams, string>>
+    Partial<Record<keyof PerWorkoutOptions, string>>
   >({});
   const [displayPrompts, setDisplayPrompts] = useState<string[]>([]);
 
@@ -50,17 +48,43 @@ export default function GenerateWorkoutPage() {
     setDisplayPrompts(shuffled.slice(0, 3));
   }, []);
 
+  // Convert per-workout options to string format for backend submission
+  const convertOptionsToStrings = (
+    options: PerWorkoutOptions
+  ): Record<string, string> => {
+    const stringOptions: Record<string, string> = {};
+
+    // Convert each option to string format
+    Object.entries(options).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        if (Array.isArray(value)) {
+          // Convert arrays to comma-separated strings
+          if (value.length > 0) {
+            stringOptions[key] = value.join(", ");
+          }
+        } else {
+          // Convert numbers and strings to strings
+          stringOptions[key] = String(value);
+        }
+      }
+    });
+
+    return stringOptions;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!prompt.trim()) return;
 
-    // Validate rest between sets if provided
-    const newErrors: Partial<Record<keyof WorkoutParams, string>> = {};
-    if (workoutParams.restBetweenSets !== undefined) {
-      const rest = Number(workoutParams.restBetweenSets);
-      if (isNaN(rest) || rest < 0) {
-        newErrors.restBetweenSets = "Rest time must be a positive number";
+    // Validate workout duration if provided
+    const newErrors: Partial<Record<keyof PerWorkoutOptions, string>> = {};
+
+    if (perWorkoutOptions.customization_duration !== undefined) {
+      const duration = Number(perWorkoutOptions.customization_duration);
+      if (isNaN(duration) || duration < 5 || duration > 300) {
+        newErrors.customization_duration =
+          "Duration must be between 5 and 300 minutes";
       }
     }
 
@@ -73,14 +97,20 @@ export default function GenerateWorkoutPage() {
     setIsGenerating(true);
 
     try {
-      // TODO: Replace with actual API call
+      // Convert per-workout options to string format
+      const stringOptions = convertOptionsToStrings(perWorkoutOptions);
+
+      // Submit string-formatted customization options
+      const combinedParams = stringOptions;
+
       const response = await createWorkout(
         import.meta.env.VITE_GENERATED_WORKOUT_CONFIGURATION_ID,
-        workoutParams,
+        combinedParams,
         prompt
       );
 
       console.log("Generated workout:", response);
+      console.log("Submitted customization options:", stringOptions);
 
       // Redirect to the generated workout page
       navigate(`/dashboard/workouts/${response.id}`);
@@ -90,38 +120,22 @@ export default function GenerateWorkoutPage() {
     }
   };
 
-  const handleParamChange = (
-    param: keyof WorkoutParams,
-    value: string | number | WorkoutType | WorkoutStructure | undefined
+  const handlePerWorkoutOptionChange = (
+    option: keyof PerWorkoutOptions,
+    value: unknown
   ) => {
-    setWorkoutParams({
-      ...workoutParams,
-      [param]: value,
+    setPerWorkoutOptions({
+      ...perWorkoutOptions,
+      [option]: value,
     });
 
     // Clear error for this field if it exists
-    if (errors[param]) {
+    if (errors[option]) {
       setErrors({
         ...errors,
-        [param]: undefined,
+        [option]: undefined,
       });
     }
-  };
-
-  const validateRestBetweenSets = (value: string) => {
-    const rest = Number(value);
-    if (value && (isNaN(rest) || rest < 0)) {
-      setErrors({
-        ...errors,
-        restBetweenSets: "Rest time must be a positive number",
-      });
-    } else {
-      const newErrors = { ...errors };
-      delete newErrors.restBetweenSets;
-      setErrors(newErrors);
-    }
-
-    handleParamChange("restBetweenSets", value ? Number(value) : undefined);
   };
 
   // Function to use an example prompt
@@ -129,9 +143,27 @@ export default function GenerateWorkoutPage() {
     setPrompt(example);
   };
 
+  // Handle workout generation from the upgrade overlay
+  const handleGenerateWorkoutFromOverlay = () => {
+    // Create a synthetic form event and call the existing handleSubmit
+    const syntheticEvent = {
+      preventDefault: () => {},
+    } as React.FormEvent;
+    handleSubmit(syntheticEvent);
+  };
+
+  // Handle upgrade action
+  const handleUpgrade = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    // TODO: Navigate to upgrade page or trigger upgrade flow
+    // For now, we can navigate to a placeholder or show a modal
+    console.log("Upgrade button clicked");
+    // navigate("/upgrade"); // Uncomment when upgrade page exists
+  };
+
   return (
-    <div className="p-4">
-      <div className="mb-4">
+    <div className="p-2 sm:p-4">
+      <div className="mb-2 sm:mb-4">
         <button
           onClick={() => navigate(-1)}
           className="btn btn-ghost flex items-center"
@@ -144,11 +176,18 @@ export default function GenerateWorkoutPage() {
       <div className="card card-border max-w-3xl mx-auto">
         <div className="card-body">
           <h2 className="card-title">Generate a New Workout</h2>
+          <p className="text-sm text-base-content/70 mb-4">
+            Describe what you want, then customize options below (all optional
+            except description)
+          </p>
 
           <form onSubmit={handleSubmit}>
             <div className="mb-6">
               <label className="block mb-2 font-medium flex justify-between items-center">
-                <span>Describe your workout needs</span>
+                <span>
+                  Describe your workout needs{" "}
+                  <span className="text-error">*</span>
+                </span>
                 <button
                   type="button"
                   className="btn btn-sm btn-ghost"
@@ -208,151 +247,15 @@ export default function GenerateWorkoutPage() {
               )}
             </div>
 
-            <div className="mb-6">
-              <button
-                type="button"
-                className="btn btn-outline w-full flex justify-between items-center"
-                onClick={() => setShowAdvanced(!showAdvanced)}
-              >
-                <span>Advanced Options</span>
-                {showAdvanced ? <ChevronUp /> : <ChevronDown />}
-              </button>
-
-              {showAdvanced && (
-                <div className="mt-4 space-y-4 border p-4 rounded-lg">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block mb-2 text-sm font-medium">
-                        Workout Type
-                      </label>
-                      <select
-                        className="select select-bordered validator w-full"
-                        value={workoutParams.workoutType || ""}
-                        onChange={(e) =>
-                          handleParamChange(
-                            "workoutType",
-                            e.target.value
-                              ? (e.target.value as WorkoutType)
-                              : undefined
-                          )
-                        }
-                        disabled={isGenerating}
-                      >
-                        <option value="">Select type (optional)</option>
-                        {Object.values(WorkoutType).map((type) => (
-                          <option key={type} value={type}>
-                            {type}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block mb-2 text-sm font-medium">
-                        Workout Structure
-                      </label>
-                      <select
-                        className="select select-bordered validator w-full"
-                        value={workoutParams.workoutStructure || ""}
-                        onChange={(e) =>
-                          handleParamChange(
-                            "workoutStructure",
-                            e.target.value
-                              ? (e.target.value as WorkoutStructure)
-                              : undefined
-                          )
-                        }
-                        disabled={isGenerating}
-                      >
-                        <option value="">Select structure (optional)</option>
-                        {Object.values(WorkoutStructure).map((structure) => (
-                          <option key={structure} value={structure}>
-                            {structure}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block mb-2 text-sm font-medium">
-                      Rest Between Sets (seconds)
-                    </label>
-                    <input
-                      type="number"
-                      className="input input-bordered validator w-full"
-                      placeholder="60"
-                      min="0"
-                      value={workoutParams.restBetweenSets || ""}
-                      onChange={(e) => validateRestBetweenSets(e.target.value)}
-                      disabled={isGenerating}
-                    />
-                    {errors.restBetweenSets && (
-                      <p className="validator-hint">{errors.restBetweenSets}</p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block mb-2 text-sm font-medium">
-                      Target Muscle Groups
-                    </label>
-                    <input
-                      type="text"
-                      className="input input-bordered validator w-full"
-                      placeholder="e.g., chest, back, legs"
-                      value={workoutParams.targetMuscleGroups || ""}
-                      onChange={(e) =>
-                        handleParamChange(
-                          "targetMuscleGroups",
-                          e.target.value || undefined
-                        )
-                      }
-                      disabled={isGenerating}
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block mb-2 text-sm font-medium">
-                        Include Exercises
-                      </label>
-                      <input
-                        type="text"
-                        className="input input-bordered validator w-full"
-                        placeholder="e.g., squats, pushups"
-                        value={workoutParams.includeExercises || ""}
-                        onChange={(e) =>
-                          handleParamChange(
-                            "includeExercises",
-                            e.target.value || undefined
-                          )
-                        }
-                        disabled={isGenerating}
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block mb-2 text-sm font-medium">
-                        Exclude Exercises
-                      </label>
-                      <input
-                        type="text"
-                        className="input input-bordered validator w-full"
-                        placeholder="e.g., burpees, jumping jacks"
-                        value={workoutParams.excludeExercises || ""}
-                        onChange={(e) =>
-                          handleParamChange(
-                            "excludeExercises",
-                            e.target.value || undefined
-                          )
-                        }
-                        disabled={isGenerating}
-                      />
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
+            {/* Per Workout Options - Now using the component-based approach */}
+            <WorkoutCustomization
+              options={perWorkoutOptions}
+              onChange={handlePerWorkoutOptionChange}
+              errors={errors}
+              disabled={isGenerating}
+              onGenerateWorkout={handleGenerateWorkoutFromOverlay}
+              onUpgrade={handleUpgrade}
+            />
 
             <div className="card-actions justify-end">
               <button
