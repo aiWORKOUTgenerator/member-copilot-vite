@@ -62,22 +62,10 @@ export function TrainerPersonaProvider({
       const data = await trainerPersonaService.getTrainerPersona();
       setTrainerPersona(data);
       setIsLoaded(true);
-    } catch (err) {
-      // Check if it's a 404 error (no trainer persona assigned)
-      if (
-        err &&
-        typeof err === "object" &&
-        "status" in err &&
-        err.status === 404
-      ) {
-        setHasNoPersona(true);
-        setIsLoaded(true);
-      } else {
-        setError(
-          err instanceof Error ? err.message : "Failed to fetch trainer persona"
-        );
-        console.error("Error fetching trainer persona:", err);
-      }
+    } catch (error) {
+      console.error("Error fetching trainer persona:", error);
+      setHasNoPersona(true);
+      setIsLoaded(true);
     } finally {
       setIsLoading(false);
     }

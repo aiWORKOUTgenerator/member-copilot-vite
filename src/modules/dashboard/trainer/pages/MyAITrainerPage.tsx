@@ -31,7 +31,7 @@ const MyAITrainerPage = () => {
 
   if (hasNoPersona) {
     return (
-      <div className="space-y-6">
+      <div className="p-4 space-y-6">
         <h1 className="text-3xl font-bold">My AI Trainer</h1>
 
         <EmptyStateBasic
@@ -102,7 +102,7 @@ const MyAITrainerPage = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="p-4 space-y-6">
       <h1 className="text-3xl font-bold">My AI Trainer</h1>
 
       <div className="card bg-base-100 shadow-xl">
