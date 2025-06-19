@@ -25,7 +25,7 @@ const MyAITrainerPage = () => {
   const navigate = useNavigate();
 
   // Check if user has access to trainer persona feature
-  const hasTrainerAccess = canAccessFeature("trainer_persona");
+  const hasTrainerAccess = canAccessFeature("ai_assistant_advanced");
 
   // Handle access control loading state
   if (isAccessLoading) {
