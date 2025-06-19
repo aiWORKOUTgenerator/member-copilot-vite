@@ -2,9 +2,15 @@ import {
   useGeneratedWorkout,
   useGeneratedWorkouts,
 } from "@/contexts/GeneratedWorkoutContext";
+import { useWorkoutFeedback } from "@/contexts/WorkoutFeedbackContext";
 import { WorkoutStructure } from "@/domain/entities/generatedWorkout";
 import TabBar, { TabOption } from "@/ui/shared/molecules/TabBar";
-import { ArrowBigLeft, ShareIcon } from "lucide-react";
+import {
+  ArrowBigLeft,
+  ShareIcon,
+  MessageSquare,
+  CheckCircle,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { useParams } from "react-router";
@@ -14,6 +20,11 @@ import StructuredWorkoutViewer from "./components/StructuredWorkoutViewer";
 import VerySimpleFormatWorkoutViewer from "./components/VerySimpleFormatWorkoutViewer";
 import WebShareButton from "./components/WebShareButton";
 import { PusherEvent } from "@/contexts/PusherEvent";
+import FeedbackModal, {
+  useFeedbackModal,
+} from "@/ui/shared/molecules/FeedbackModal";
+import WorkoutFeedbackForm from "./components/WorkoutFeedbackForm";
+import FeedbackSuccessState from "./components/FeedbackSuccessState";
 
 interface WorkoutChunkData {
   chunk: string;
@@ -25,6 +36,17 @@ export default function WorkoutDetailPage() {
   const generatedWorkoutId = params?.id as string;
   const generatedWorkout = useGeneratedWorkout(generatedWorkoutId);
   const { refetch } = useGeneratedWorkouts();
+  const { submitFeedback, isSubmitting, error, clearError, userFeedback } =
+    useWorkoutFeedback();
+  const feedbackModal = useFeedbackModal();
+  const [showFeedbackSuccess, setShowFeedbackSuccess] = useState(false);
+
+  // Check if feedback already exists for this workout
+  const existingFeedback = generatedWorkout
+    ? userFeedback.find(
+        (feedback) => feedback.workoutId === generatedWorkout.id
+      )
+    : null;
   const [workoutFormat, setWorkoutFormat] = useState<
     "plain" | "structured" | "step-by-step" | "simple" | "very-simple"
   >("plain");
@@ -102,14 +124,39 @@ export default function WorkoutDetailPage() {
           <ArrowBigLeft className="w-4 h-4" />
           Back to workouts
         </button>
-        <WebShareButton
-          disabled={!verySimpleFormat && !simpleFormat}
-          title="Workout Plan"
-          text={verySimpleFormat || simpleFormat || ""}
-        >
-          <ShareIcon className="w-4 h-4 mr-2" />
-          Share Workout
-        </WebShareButton>
+        <div className="flex gap-2">
+          <button
+            onClick={() => {
+              setShowFeedbackSuccess(false);
+              clearError();
+              feedbackModal.openModal();
+            }}
+            className={`btn ${
+              existingFeedback ? "btn-success" : "btn-outline"
+            }`}
+            disabled={!generatedWorkout}
+            title={
+              existingFeedback
+                ? "Feedback already submitted"
+                : "Leave feedback for this workout"
+            }
+          >
+            {existingFeedback ? (
+              <CheckCircle className="w-4 h-4 mr-2" />
+            ) : (
+              <MessageSquare className="w-4 h-4 mr-2" />
+            )}
+            {existingFeedback ? "Feedback Submitted" : "Leave Feedback"}
+          </button>
+          <WebShareButton
+            disabled={!verySimpleFormat && !simpleFormat}
+            title="Workout Plan"
+            text={verySimpleFormat || simpleFormat || ""}
+          >
+            <ShareIcon className="w-4 h-4 mr-2" />
+            Share Workout
+          </WebShareButton>
+        </div>
       </div>
 
       <TabBar
@@ -211,6 +258,100 @@ export default function WorkoutDetailPage() {
           setIsTextGenerating(false);
         }}
       />
+
+      {/* Feedback Modal */}
+      <FeedbackModal
+        isOpen={feedbackModal.isOpen}
+        onClose={() => {
+          clearError();
+          setShowFeedbackSuccess(false);
+          feedbackModal.closeModal();
+        }}
+        title={
+          existingFeedback
+            ? "Your Workout Feedback"
+            : "Share Your Workout Experience"
+        }
+        subtitle={
+          existingFeedback
+            ? "You've already provided feedback for this workout"
+            : generatedWorkout?.jsonFormat?.title || "How was your workout?"
+        }
+        confirmClose={!existingFeedback}
+        hasUnsavedChanges={!existingFeedback && feedbackModal.hasUnsavedChanges}
+      >
+        {generatedWorkout && (
+          <>
+            {existingFeedback ? (
+              <div className="text-center space-y-6 py-8">
+                <div className="flex justify-center">
+                  <CheckCircle className="w-16 h-16 text-success" />
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-xl font-bold text-success">
+                    Feedback Already Submitted
+                  </h3>
+                  <p className="text-base-content/70">
+                    You provided feedback for this workout on{" "}
+                    {new Date(existingFeedback.createdAt).toLocaleDateString()}
+                  </p>
+                </div>
+                <div className="bg-base-200 rounded-lg p-4 space-y-2 text-left">
+                  <div className="grid grid-cols-3 gap-4 text-sm">
+                    <div>
+                      <span className="font-medium">Overall:</span>{" "}
+                      {existingFeedback.overallRating}/5 ⭐
+                    </div>
+                    <div>
+                      <span className="font-medium">Difficulty:</span>{" "}
+                      {existingFeedback.difficultyRating}/5 ⭐
+                    </div>
+                    <div>
+                      <span className="font-medium">Enjoyment:</span>{" "}
+                      {existingFeedback.enjoymentRating}/5 ⭐
+                    </div>
+                  </div>
+                  {existingFeedback.wouldRecommend && (
+                    <div className="text-sm text-success">
+                      ✓ Would recommend to others
+                    </div>
+                  )}
+                </div>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={() => {
+                    feedbackModal.closeModal();
+                  }}
+                >
+                  Close
+                </button>
+              </div>
+            ) : !showFeedbackSuccess ? (
+              <WorkoutFeedbackForm
+                workoutId={generatedWorkout.id}
+                onSubmit={async (request) => {
+                  await submitFeedback(request);
+                  setShowFeedbackSuccess(true);
+                }}
+                isSubmitting={isSubmitting}
+                error={error}
+                onCancel={() => {
+                  clearError();
+                  feedbackModal.closeModal();
+                }}
+              />
+            ) : (
+              <FeedbackSuccessState
+                onClose={() => {
+                  setShowFeedbackSuccess(false);
+                  feedbackModal.closeModal();
+                }}
+              />
+            )}
+          </>
+        )}
+      </FeedbackModal>
     </div>
   );
 }
