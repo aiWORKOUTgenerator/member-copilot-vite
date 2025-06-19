@@ -28,5 +28,6 @@ export * from "./api/ApiService";
 // Export all service interfaces
 export * from "./services/AttributeService";
 export * from "./services/PromptService";
+export * from "./services/WorkoutFeedbackService";
 
 export * from "./license/LicenseService";

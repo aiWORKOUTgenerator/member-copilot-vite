@@ -12,3 +12,4 @@ export * from "./attribute";
 export * from "./prompt";
 export * from "./license";
 export * from "./trainerPersona";
+export * from "./workoutFeedback";

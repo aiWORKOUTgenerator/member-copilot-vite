@@ -2,9 +2,10 @@ import {
   useGeneratedWorkout,
   useGeneratedWorkouts,
 } from "@/contexts/GeneratedWorkoutContext";
+import { useWorkoutFeedback } from "@/contexts/WorkoutFeedbackContext";
 import { WorkoutStructure } from "@/domain/entities/generatedWorkout";
 import TabBar, { TabOption } from "@/ui/shared/molecules/TabBar";
-import { ArrowBigLeft, ShareIcon } from "lucide-react";
+import { ArrowBigLeft, ShareIcon, MessageSquare } from "lucide-react";
 import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { useParams } from "react-router";
@@ -14,6 +15,11 @@ import StructuredWorkoutViewer from "./components/StructuredWorkoutViewer";
 import VerySimpleFormatWorkoutViewer from "./components/VerySimpleFormatWorkoutViewer";
 import WebShareButton from "./components/WebShareButton";
 import { PusherEvent } from "@/contexts/PusherEvent";
+import FeedbackModal, {
+  useFeedbackModal,
+} from "@/ui/shared/molecules/FeedbackModal";
+import WorkoutFeedbackForm from "./components/WorkoutFeedbackForm";
+import FeedbackSuccessState from "./components/FeedbackSuccessState";
 
 interface WorkoutChunkData {
   chunk: string;
@@ -25,6 +31,10 @@ export default function WorkoutDetailPage() {
   const generatedWorkoutId = params?.id as string;
   const generatedWorkout = useGeneratedWorkout(generatedWorkoutId);
   const { refetch } = useGeneratedWorkouts();
+  const { submitFeedback, isSubmitting, error, clearError } =
+    useWorkoutFeedback();
+  const feedbackModal = useFeedbackModal();
+  const [showFeedbackSuccess, setShowFeedbackSuccess] = useState(false);
   const [workoutFormat, setWorkoutFormat] = useState<
     "plain" | "structured" | "step-by-step" | "simple" | "very-simple"
   >("plain");
@@ -102,14 +112,28 @@ export default function WorkoutDetailPage() {
           <ArrowBigLeft className="w-4 h-4" />
           Back to workouts
         </button>
-        <WebShareButton
-          disabled={!verySimpleFormat && !simpleFormat}
-          title="Workout Plan"
-          text={verySimpleFormat || simpleFormat || ""}
-        >
-          <ShareIcon className="w-4 h-4 mr-2" />
-          Share Workout
-        </WebShareButton>
+        <div className="flex gap-2">
+          <button
+            onClick={() => {
+              setShowFeedbackSuccess(false);
+              clearError();
+              feedbackModal.openModal();
+            }}
+            className="btn btn-outline"
+            disabled={!generatedWorkout}
+          >
+            <MessageSquare className="w-4 h-4 mr-2" />
+            Leave Feedback
+          </button>
+          <WebShareButton
+            disabled={!verySimpleFormat && !simpleFormat}
+            title="Workout Plan"
+            text={verySimpleFormat || simpleFormat || ""}
+          >
+            <ShareIcon className="w-4 h-4 mr-2" />
+            Share Workout
+          </WebShareButton>
+        </div>
       </div>
 
       <TabBar
@@ -211,6 +235,49 @@ export default function WorkoutDetailPage() {
           setIsTextGenerating(false);
         }}
       />
+
+      {/* Feedback Modal */}
+      <FeedbackModal
+        isOpen={feedbackModal.isOpen}
+        onClose={() => {
+          clearError();
+          setShowFeedbackSuccess(false);
+          feedbackModal.closeModal();
+        }}
+        title="Share Your Workout Experience"
+        subtitle={
+          generatedWorkout?.jsonFormat?.title || "How was your workout?"
+        }
+        confirmClose={true}
+        hasUnsavedChanges={feedbackModal.hasUnsavedChanges}
+      >
+        {generatedWorkout && (
+          <>
+            {!showFeedbackSuccess ? (
+              <WorkoutFeedbackForm
+                workoutId={generatedWorkout.id}
+                onSubmit={async (request) => {
+                  await submitFeedback(request);
+                  setShowFeedbackSuccess(true);
+                }}
+                isSubmitting={isSubmitting}
+                error={error}
+                onCancel={() => {
+                  clearError();
+                  feedbackModal.closeModal();
+                }}
+              />
+            ) : (
+              <FeedbackSuccessState
+                onClose={() => {
+                  setShowFeedbackSuccess(false);
+                  feedbackModal.closeModal();
+                }}
+              />
+            )}
+          </>
+        )}
+      </FeedbackModal>
     </div>
   );
 }
