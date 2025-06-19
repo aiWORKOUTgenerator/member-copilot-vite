@@ -18,7 +18,8 @@ import { Link, useLocation } from "react-router";
 interface NavigationItem {
   name: string;
   href: string;
-  badgeCount?: number;
+  badgeCount?: number | string;
+  badgeVariant?: string;
   enhanced?: boolean;
   isUpgrade?: boolean;
 }
@@ -94,6 +95,15 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
     attributesLoaded,
   ]);
 
+  // Check if AI Trainer should show NEW badge (for one month from June 16, 2025)
+  const showTrainerNewBadge = useMemo(() => {
+    const now = new Date();
+    const launchDate = new Date("2025-06-16"); // June 16, 2025
+    const oneMonthAfterLaunch = new Date("2025-07-16"); // One month later
+
+    return now >= launchDate && now <= oneMonthAfterLaunch;
+  }, []);
+
   // Create navigation with badge for profile if there are incomplete attributes
   const navigation = useMemo(() => {
     return [
@@ -108,6 +118,8 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
       {
         name: "AI Trainer",
         href: "/dashboard/trainer",
+        badgeCount: showTrainerNewBadge ? "NEW" : undefined,
+        badgeVariant: "accent",
       },
       {
         name: isOnBasicTier ? "Upgrade Now $10/mo" : "Billing",
@@ -116,7 +128,7 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
         isUpgrade: isOnBasicTier,
       },
     ];
-  }, [incompleteAttributesCount, isOnBasicTier]);
+  }, [incompleteAttributesCount, isOnBasicTier, showTrainerNewBadge]);
 
   // Determine container class based on containerStyle prop
   const getContainerClass = () => {
@@ -160,8 +172,15 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
                       >
                         {item.name}
                         {item.badgeCount !== undefined &&
-                          item.badgeCount > 0 && (
-                            <span className="badge badge-secondary ml-1">
+                          (typeof item.badgeCount === "string" ||
+                            item.badgeCount > 0) && (
+                            <span
+                              className={`badge ${
+                                item.badgeVariant
+                                  ? `badge-${item.badgeVariant}`
+                                  : "badge-secondary"
+                              } ml-1`}
+                            >
                               {item.badgeCount}
                             </span>
                           )}
@@ -211,8 +230,15 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
                       >
                         {item.name}
                         {item.badgeCount !== undefined &&
-                          item.badgeCount > 0 && (
-                            <span className="badge badge-secondary ml-1">
+                          (typeof item.badgeCount === "string" ||
+                            item.badgeCount > 0) && (
+                            <span
+                              className={`badge ${
+                                item.badgeVariant
+                                  ? `badge-${item.badgeVariant}`
+                                  : "badge-secondary"
+                              } ml-1`}
+                            >
                               {item.badgeCount}
                             </span>
                           )}

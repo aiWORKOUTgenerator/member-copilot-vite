@@ -10,6 +10,7 @@ export * from "./atoms/Input";
 export * from "./atoms/Icon";
 export * from "./atoms/IconSet";
 export { WarningIcon } from "./atoms/Icons";
+export * from "./atoms/NewBadge";
 
 // Molecules
 export * from "./molecules/Card";
@@ -19,6 +20,7 @@ export * from "./molecules/FormLoading";
 export * from "./molecules/InfoCard";
 export * from "./molecules/UserDropdown";
 export * from "./molecules/SignOutButton";
+export * from "./molecules/TrainerPersonaCard";
 export * from "./molecules";
 
 // Organisms
