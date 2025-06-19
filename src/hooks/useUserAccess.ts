@@ -31,6 +31,11 @@ export function useUserAccess() {
     isLoading: context.isLoading,
 
     /**
+     * Whether user access data (licenses, policies, usage) is currently loaded.
+     */
+    isLoaded: context.isLoaded,
+
+    /**
      * Checks if the current user can access a specific feature based on their active licenses.
      * @param feature The feature identifier string.
      * @returns True if the user has access, false otherwise.

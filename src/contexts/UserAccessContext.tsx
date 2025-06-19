@@ -26,6 +26,7 @@ interface UserAccessContextType {
   getUsageForMeter: (meterId: MeteredFeature) => MeteredUsage | undefined;
   getHighestLimitForMeter: (meterId: MeteredFeature) => number;
   refreshAccessData: () => Promise<void>; // Combined refresh
+  isLoaded: boolean;
 }
 
 const defaultContextValue: UserAccessContextType = {
@@ -39,6 +40,7 @@ const defaultContextValue: UserAccessContextType = {
   getUsageForMeter: () => undefined,
   getHighestLimitForMeter: () => 0,
   refreshAccessData: async () => {},
+  isLoaded: false,
 };
 
 const UserAccessContext =
@@ -57,6 +59,7 @@ export const UserAccessProvider: React.FC<UserAccessProviderProps> = ({
   const [licensePolicies, setLicensePolicies] = useState<LicensePolicy[]>([]);
   const [meteredUsage, setMeteredUsage] = useState<MeteredUsage[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const licenseService = useLicenseService();
   const meteredUsageService = useMeteredUsageService();
@@ -68,6 +71,7 @@ export const UserAccessProvider: React.FC<UserAccessProviderProps> = ({
       setLicensePolicies([]);
       setMeteredUsage([]);
       setIsLoading(false);
+      setIsLoaded(false);
       return;
     }
 
@@ -82,6 +86,7 @@ export const UserAccessProvider: React.FC<UserAccessProviderProps> = ({
       setActiveLicenses(licenses);
       setLicensePolicies(policies);
       setMeteredUsage(usage);
+      setIsLoaded(true);
     } catch (error) {
       console.error("Error loading user access data:", error);
       setActiveLicenses([]);
@@ -165,6 +170,7 @@ export const UserAccessProvider: React.FC<UserAccessProviderProps> = ({
     getUsageForMeter,
     getHighestLimitForMeter,
     refreshAccessData,
+    isLoaded,
   };
 
   return (

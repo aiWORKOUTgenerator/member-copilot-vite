@@ -23,7 +23,11 @@ const MyAITrainerPage = () => {
   const error = useTrainerPersonaError();
   const generateTrainerPersona = useGenerateTrainerPersona();
   const hasNoPersona = useTrainerPersonaHasNoPersona();
-  const { canAccessFeature, isLoading: isAccessLoading } = useUserAccess();
+  const {
+    canAccessFeature,
+    isLoading: isAccessLoading,
+    isLoaded: isAccessLoaded,
+  } = useUserAccess();
   const navigate = useNavigate();
 
   // Check if user has access to trainer persona feature
@@ -39,7 +43,7 @@ const MyAITrainerPage = () => {
   }
 
   // Show access denied if user doesn't have trainer persona access
-  if (!hasTrainerAccess) {
+  if (!hasTrainerAccess && isAccessLoaded) {
     return (
       <div className="">
         {/* Hero Section */}
@@ -205,11 +209,11 @@ const MyAITrainerPage = () => {
       <div className="">
         <div className="card-body">
           <div className="flex items-start gap-4">
-            {trainerPersona.avatar_photo_url && (
+            {trainerPersona.avatar_url && (
               <div className="avatar">
                 <div className="w-24 rounded-full">
                   <img
-                    src={trainerPersona.avatar_photo_url}
+                    src={trainerPersona.avatar_url}
                     alt={`${trainerPersona.trainer_name}'s avatar`}
                   />
                 </div>
