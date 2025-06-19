@@ -25,4 +25,15 @@ export interface CustomizationConfig {
   label: string;
   icon: React.ComponentType<{ className?: string }>;
   comingSoon?: boolean;
+  category?: string;
+}
+
+export interface WorkoutCustomizationProps {
+  options: PerWorkoutOptions;
+  onChange: (key: keyof PerWorkoutOptions, value: unknown) => void;
+  errors: Partial<Record<keyof PerWorkoutOptions, string>>;
+  disabled?: boolean;
+  onGenerateWorkout?: () => void;
+  onUpgrade?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  mode?: "custom" | "quick";
 }

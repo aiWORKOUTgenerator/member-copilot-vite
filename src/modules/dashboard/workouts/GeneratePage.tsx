@@ -41,6 +41,7 @@ export default function GenerateWorkoutPage() {
     Partial<Record<keyof PerWorkoutOptions, string>>
   >({});
   const [displayPrompts, setDisplayPrompts] = useState<string[]>([]);
+  const [activeTab, setActiveTab] = useState<"custom" | "quick">("custom");
 
   // Select 3 random prompts when the component mounts
   useEffect(() => {
@@ -75,7 +76,10 @@ export default function GenerateWorkoutPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!prompt.trim()) return;
+    // For quick workout, use default prompt if none provided
+    const workoutPrompt = activeTab === "quick" && !prompt.trim() ? "" : prompt;
+
+    if (activeTab === "custom" && !workoutPrompt.trim()) return;
 
     // Validate workout duration if provided
     const newErrors: Partial<Record<keyof PerWorkoutOptions, string>> = {};
@@ -106,7 +110,7 @@ export default function GenerateWorkoutPage() {
       const response = await createWorkout(
         import.meta.env.VITE_GENERATED_WORKOUT_CONFIGURATION_ID,
         combinedParams,
-        prompt
+        workoutPrompt
       );
 
       console.log("Generated workout:", response);
@@ -170,105 +174,151 @@ export default function GenerateWorkoutPage() {
         </button>
       </div>
 
-      <div className="card card-border max-w-3xl mx-auto">
+      <div className="card card-border max-w-4xl mx-auto">
         <div className="card-body">
           <h2 className="card-title">Generate a New Workout</h2>
-          <p className="text-sm text-base-content/70 mb-4">
-            Describe what you want, then customize options below (all optional
-            except description)
-          </p>
+
+          {/* Mode Selection */}
+          <div className="join mb-6 w-fit">
+            <button
+              type="button"
+              className={`btn join-item ${
+                activeTab === "custom" ? "btn-primary" : "btn-outline"
+              }`}
+              onClick={() => setActiveTab("custom")}
+            >
+              Custom Workout
+            </button>
+            <button
+              type="button"
+              className={`btn join-item ${
+                activeTab === "quick" ? "btn-primary" : "btn-outline"
+              }`}
+              onClick={() => setActiveTab("quick")}
+            >
+              Quick Workout
+            </button>
+          </div>
 
           <form onSubmit={handleSubmit}>
-            <div className="mb-6">
-              <label className="block mb-2 font-medium flex justify-between items-center">
-                <span>
-                  Describe your workout needs{" "}
-                  <span className="text-error">*</span>
-                </span>
-                <button
-                  type="button"
-                  className="btn btn-sm btn-ghost"
-                  onClick={() => {
-                    const shuffled = [...WORKOUT_PROMPTS].sort(
-                      () => 0.5 - Math.random()
-                    );
-                    setDisplayPrompts(shuffled.slice(0, 3));
-                  }}
-                  aria-label="Refresh examples"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="lucide lucide-refresh-cw"
-                  >
-                    <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
-                    <path d="M21 3v5h-5" />
-                    <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
-                    <path d="M3 21v-5h5" />
-                  </svg>
-                </button>
-              </label>
+            {activeTab === "custom" ? (
+              <>
+                <p className="text-sm text-base-content/70 mb-6">
+                  Customize your workout with the options below, then optionally
+                  describe additional requirements
+                </p>
 
-              <div className="mockup-code mb-3 text-sm">
-                {displayPrompts.map((example, index) => (
-                  <pre
-                    key={index}
-                    data-prefix=">"
-                    className={`text-${
-                      index === 0 ? "success" : index === 1 ? "info" : "warning"
-                    } cursor-pointer hover:bg-base-300`}
-                    onClick={() => setExamplePrompt(example)}
-                  >
-                    <code>{example}</code>
-                  </pre>
-                ))}
-              </div>
+                {/* Workout Customization - Now above the textarea */}
+                <WorkoutCustomization
+                  options={perWorkoutOptions}
+                  onChange={handlePerWorkoutOptionChange}
+                  errors={errors}
+                  disabled={isGenerating}
+                  onGenerateWorkout={handleGenerateWorkoutFromOverlay}
+                  onUpgrade={handleUpgrade}
+                  mode="custom"
+                />
 
-              <textarea
-                className="textarea textarea-bordered validator w-full min-h-32"
-                placeholder="Describe the type of workout you want, including duration, equipment, fitness goals, etc."
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-                disabled={isGenerating}
-                required
-              ></textarea>
-              {!prompt.trim() && (
-                <p className="validator-hint">Please describe your workout</p>
-              )}
-            </div>
+                {/* Text area - Now below customization */}
+                <div className="mb-6">
+                  <label className="block mb-2 font-medium flex justify-between items-center">
+                    <span>
+                      Additional Requirements{" "}
+                      <span className="text-sm font-normal text-base-content/70">
+                        (optional)
+                      </span>
+                    </span>
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-ghost"
+                      onClick={() => {
+                        const shuffled = [...WORKOUT_PROMPTS].sort(
+                          () => 0.5 - Math.random()
+                        );
+                        setDisplayPrompts(shuffled.slice(0, 3));
+                      }}
+                      aria-label="Refresh examples"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="lucide lucide-refresh-cw"
+                      >
+                        <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+                        <path d="M21 3v5h-5" />
+                        <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+                        <path d="M3 21v-5h5" />
+                      </svg>
+                    </button>
+                  </label>
 
-            {/* Per Workout Options - Now using the component-based approach */}
-            <WorkoutCustomization
-              options={perWorkoutOptions}
-              onChange={handlePerWorkoutOptionChange}
-              errors={errors}
-              disabled={isGenerating}
-              onGenerateWorkout={handleGenerateWorkoutFromOverlay}
-              onUpgrade={handleUpgrade}
-            />
+                  <div className="mockup-code mb-3 text-sm">
+                    {displayPrompts.map((example, index) => (
+                      <pre
+                        key={index}
+                        data-prefix=">"
+                        className={`text-${
+                          index === 0
+                            ? "success"
+                            : index === 1
+                            ? "info"
+                            : "warning"
+                        } cursor-pointer hover:bg-base-300`}
+                        onClick={() => setExamplePrompt(example)}
+                      >
+                        <code>{example}</code>
+                      </pre>
+                    ))}
+                  </div>
+
+                  <textarea
+                    className="textarea textarea-bordered validator w-full min-h-32"
+                    placeholder="Describe any additional requirements, modifications, or specific goals for your workout..."
+                    value={prompt}
+                    onChange={(e) => setPrompt(e.target.value)}
+                    disabled={isGenerating}
+                  ></textarea>
+                </div>
+              </>
+            ) : (
+              <>
+                <p className="text-sm text-base-content/70 mb-6">
+                  Generate a quick workout based on your profile and preferences
+                </p>
+
+                {/* Quick Workout - Only duration */}
+                <WorkoutCustomization
+                  options={perWorkoutOptions}
+                  onChange={handlePerWorkoutOptionChange}
+                  errors={errors}
+                  disabled={isGenerating}
+                  onGenerateWorkout={handleGenerateWorkoutFromOverlay}
+                  onUpgrade={handleUpgrade}
+                  mode="quick"
+                />
+              </>
+            )}
 
             <div className="card-actions justify-end">
               <button
                 type="submit"
                 className="btn btn-primary"
-                disabled={
-                  isGenerating ||
-                  !prompt.trim() ||
-                  Object.keys(errors).length > 0
-                }
+                disabled={isGenerating || Object.keys(errors).length > 0}
               >
                 {isGenerating ? (
                   <>
                     <span className="loading loading-spinner"></span>
                     Generating...
                   </>
+                ) : activeTab === "quick" ? (
+                  "Generate Quick Workout"
                 ) : (
                   "Generate Workout"
                 )}

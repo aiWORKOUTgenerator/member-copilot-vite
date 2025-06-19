@@ -43,6 +43,8 @@ export enum ExerciseType {
   Standard = "Standard",
   Interval = "Interval",
   Circuit = "Circuit",
+  AMRAP = "AMRAP",
+  EMOM = "EMOM",
 }
 
 // Types based on the Pydantic models
