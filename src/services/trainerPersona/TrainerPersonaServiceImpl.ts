@@ -25,4 +25,15 @@ export class TrainerPersonaServiceImpl implements TrainerPersonaService {
   async getTrainerPersona(): Promise<TrainerPersona> {
     return this.apiService.get<TrainerPersona>(`${this.baseEndpoint}/`);
   }
+
+  /**
+   * Generates a new trainer persona for the current user
+   * @returns Promise that resolves when the trainer persona generation is complete
+   */
+  async generateTrainerPersona(): Promise<void> {
+    return this.apiService.post<void, Record<string, unknown>>(
+      `${this.baseEndpoint}/`,
+      {}
+    );
+  }
 }

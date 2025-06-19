@@ -22,6 +22,7 @@ export interface TrainerPersonaState {
   isLoaded: boolean;
   hasNoPersona: boolean;
   refetch: () => Promise<void>;
+  generateTrainerPersona: () => Promise<void>;
 }
 
 /**
@@ -71,6 +72,25 @@ export function TrainerPersonaProvider({
     }
   }, [trainerPersonaService]);
 
+  const generateTrainerPersona = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      await trainerPersonaService.generateTrainerPersona();
+      // After successful generation, fetch the new trainer persona
+      await fetchTrainerPersona();
+    } catch (error) {
+      console.error("Error generating trainer persona:", error);
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Failed to generate trainer persona"
+      );
+      setIsLoading(false);
+    }
+  }, [trainerPersonaService, fetchTrainerPersona]);
+
   useEffect(() => {
     if (!isSignedIn && (trainerPersona || hasNoPersona)) {
       setTrainerPersona(null);
@@ -90,6 +110,7 @@ export function TrainerPersonaProvider({
     isLoaded,
     hasNoPersona,
     refetch: fetchTrainerPersona,
+    generateTrainerPersona: generateTrainerPersona,
   };
 
   return (
@@ -153,4 +174,12 @@ export function useTrainerPersonaError(): string | null {
 export function useTrainerPersonaHasNoPersona(): boolean {
   const { hasNoPersona } = useTrainerPersona();
   return hasNoPersona;
+}
+
+/**
+ * Convenience hook to generate a new trainer persona
+ */
+export function useGenerateTrainerPersona(): () => Promise<void> {
+  const { generateTrainerPersona } = useTrainerPersona();
+  return generateTrainerPersona;
 }

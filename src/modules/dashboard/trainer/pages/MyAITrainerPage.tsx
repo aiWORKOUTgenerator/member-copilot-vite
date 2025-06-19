@@ -1,4 +1,5 @@
 import {
+  useGenerateTrainerPersona,
   useTrainerPersonaData,
   useTrainerPersonaError,
   useTrainerPersonaHasNoPersona,
@@ -20,6 +21,7 @@ const MyAITrainerPage = () => {
   const trainerPersona = useTrainerPersonaData();
   const isLoading = useTrainerPersonaLoading();
   const error = useTrainerPersonaError();
+  const generateTrainerPersona = useGenerateTrainerPersona();
   const hasNoPersona = useTrainerPersonaHasNoPersona();
   const { canAccessFeature, isLoading: isAccessLoading } = useUserAccess();
   const navigate = useNavigate();
@@ -137,9 +139,13 @@ const MyAITrainerPage = () => {
           description="You haven't been assigned an AI trainer persona yet. Your personalized AI trainer will be tailored to your fitness goals, communication preferences, and training style to provide you with the most effective coaching experience."
           actionLabel="Generate My Trainer"
           actionIcon={<Sparkles className="mr-2 size-4" aria-hidden="true" />}
-          onAction={() => {
-            // TODO: Implement trainer persona generation
-            console.log("Generate trainer persona");
+          onAction={async () => {
+            try {
+              await generateTrainerPersona();
+              navigate("/dashboard/trainer/generating");
+            } catch (error) {
+              console.error("Error starting trainer generation:", error);
+            }
           }}
           className="mt-12"
         />
