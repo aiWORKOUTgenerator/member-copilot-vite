@@ -12,3 +12,4 @@ export { useAttributeTypeService } from "./useAttributeTypeService";
 export { useAttributeService } from "./useAttributeService";
 export { useContactService } from "./useContactService";
 export { useVerificationService } from "./useVerificationService";
+export * from "./useTrainerPersonaService";
