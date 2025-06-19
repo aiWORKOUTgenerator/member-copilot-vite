@@ -66,6 +66,7 @@ export interface Section {
   rest_between_rounds?: number;
   time_limit?: number;
   duration?: number;
+  sub_sections?: Section[];
 }
 
 export interface WorkoutStructure {
