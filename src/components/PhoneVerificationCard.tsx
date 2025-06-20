@@ -89,6 +89,7 @@ export function PhoneVerificationCard() {
       title="Phone Number Verified"
       description={`Your phone number ${verifiedPhoneDisplay} is verified and ready to receive notifications.`}
       actionText="Verified"
+      actionCardIsDisabled={true}
       onClick={() => {}} // No action needed for verified state
       icon={<CheckCircle className="w-5 h-5" />}
       badgeText="Verified"
