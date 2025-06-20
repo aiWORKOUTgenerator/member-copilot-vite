@@ -14,6 +14,10 @@ import { MeteredFeature } from "@/hooks/useUserAccess";
 import AccessAwareComponent from "@/ui/shared/molecules/AccessAwareComponent";
 import { ActionCard } from "@/ui/shared/molecules/ActionCard";
 import {
+  PhoneVerificationAlert,
+  PhoneVerificationCard,
+} from "@/components/PhoneVerificationCard";
+import {
   Info,
   AlertTriangle,
   Dumbbell,
@@ -176,6 +180,11 @@ export default function DashboardHomePage() {
         </div>
       )}
 
+      {/* Phone Verification Alert */}
+      <div className="mb-4">
+        <PhoneVerificationAlert />
+      </div>
+
       {/* Incomplete Profile Alerts */}
       {incompleteAttributes.length > 0 && (
         <div className="space-y-4 mb-4">
@@ -246,6 +255,29 @@ export default function DashboardHomePage() {
           badgeColor="badge-accent"
         />
       </div>
+
+      {/* Account Security Section */}
+      <div className="mb-8">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">
+          Account Security
+        </h2>
+        <PhoneVerificationCard />
+      </div>
+
+      {/* Development Testing Links */}
+      {import.meta.env.DEV && (
+        <div className="mb-8 p-4 bg-gray-100 rounded-lg">
+          <h3 className="text-md font-medium text-gray-700 mb-2">
+            Development Testing
+          </h3>
+          <button
+            onClick={() => navigate("/dashboard/phone-verification-demo")}
+            className="btn btn-sm btn-outline"
+          >
+            Phone Verification Demo
+          </button>
+        </div>
+      )}
     </div>
   );
 }

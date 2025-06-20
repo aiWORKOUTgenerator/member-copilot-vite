@@ -21,6 +21,10 @@ export interface ContactState {
   error: string | null;
   isLoaded: boolean;
   refetch: () => Promise<void>;
+  // Phone verification utilities
+  isPhoneVerified: boolean;
+  phoneVerificationDate: Date | null;
+  hasPhoneNumber: boolean;
 }
 
 /**
@@ -71,13 +75,21 @@ export function ContactProvider({ children }: ContactProviderProps) {
     }
   }, [isSignedIn, contact, fetchContact]);
 
-  // Memoized context value
+  // Memoized context value with phone verification utilities
   const contextValue: ContactState = {
     contact,
     isLoading,
     error,
     isLoaded,
     refetch: fetchContact,
+    // Phone verification utilities
+    isPhoneVerified:
+      contact?.phone_verified_at !== null &&
+      contact?.phone_verified_at !== undefined,
+    phoneVerificationDate: contact?.phone_verified_at
+      ? new Date(contact.phone_verified_at)
+      : null,
+    hasPhoneNumber: Boolean(contact?.phone_number),
   };
 
   return (
@@ -131,4 +143,28 @@ export function useContactLoaded(): boolean {
 export function useContactError(): string | null {
   const { error } = useContact();
   return error;
+}
+
+/**
+ * Convenience hook to check if the contact's phone is verified
+ */
+export function useIsPhoneVerified(): boolean {
+  const { isPhoneVerified } = useContact();
+  return isPhoneVerified;
+}
+
+/**
+ * Convenience hook to get the phone verification date
+ */
+export function usePhoneVerificationDate(): Date | null {
+  const { phoneVerificationDate } = useContact();
+  return phoneVerificationDate;
+}
+
+/**
+ * Convenience hook to check if the contact has a phone number
+ */
+export function useHasPhoneNumber(): boolean {
+  const { hasPhoneNumber } = useContact();
+  return hasPhoneNumber;
 }

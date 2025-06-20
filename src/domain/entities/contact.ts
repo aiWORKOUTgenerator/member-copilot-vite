@@ -6,6 +6,7 @@ export interface Contact {
   first_name: string;
   last_name: string;
   phone_number: string;
+  phone_verified_at: string | null;
   source: string;
   status: string;
   attributes: {
@@ -29,6 +30,41 @@ export interface AttributeCompletion {
   completedPrompts: number;
   totalPrompts: number;
   percentComplete: number;
+}
+
+/**
+ * Type guard to check if an object is a valid Contact
+ */
+export function isContact(obj: unknown): obj is Contact {
+  return (
+    obj &&
+    typeof obj === "object" &&
+    obj !== null &&
+    "email" in obj &&
+    "first_name" in obj &&
+    "last_name" in obj &&
+    "phone_number" in obj &&
+    "phone_verified_at" in obj &&
+    "source" in obj &&
+    "status" in obj &&
+    "attributes" in obj &&
+    "registration_status" in obj &&
+    "workout_count" in obj &&
+    "last_workout_date" in obj &&
+    typeof (obj as Contact).email === "string" &&
+    typeof (obj as Contact).first_name === "string" &&
+    typeof (obj as Contact).last_name === "string" &&
+    typeof (obj as Contact).phone_number === "string" &&
+    ((obj as Contact).phone_verified_at === null ||
+      typeof (obj as Contact).phone_verified_at === "string") &&
+    typeof (obj as Contact).source === "string" &&
+    typeof (obj as Contact).status === "string" &&
+    (obj as Contact).attributes &&
+    typeof (obj as Contact).attributes === "object" &&
+    typeof (obj as Contact).registration_status === "string" &&
+    typeof (obj as Contact).workout_count === "number" &&
+    typeof (obj as Contact).last_workout_date === "string"
+  );
 }
 
 /**

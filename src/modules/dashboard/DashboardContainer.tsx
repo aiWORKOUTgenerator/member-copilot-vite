@@ -19,6 +19,7 @@ import { ContactLoadedGuard } from "@/components/ContactLoadedGuard";
 import MyAITrainerPage from "./trainer/pages/MyAITrainerPage";
 import GeneratingTrainerPage from "./trainer/pages/GeneratingTrainerPage";
 import { TrainerPersonaProvider } from "@/contexts/TrainerPersonaContext";
+import { PhoneVerificationDemo } from "@/components/PhoneVerificationDemo";
 
 export default function DashboardContainer() {
   return (
@@ -74,6 +75,14 @@ export default function DashboardContainer() {
                     <Route
                       path="/trainer/generating"
                       element={<GeneratingTrainerPage />}
+                    />
+                    <Route
+                      path="/phone-verification-demo"
+                      element={
+                        <div className="p-6">
+                          <PhoneVerificationDemo />
+                        </div>
+                      }
                     />
                   </Routes>
                 </ContactLoadedGuard>

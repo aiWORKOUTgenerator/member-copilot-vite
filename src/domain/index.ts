@@ -13,6 +13,7 @@ export * from "./interfaces/index";
 
 // Re-export entities
 export * from "./entities";
+export * from "./entities/phoneVerification";
 
 // Re-export interfaces
 export * from "./interfaces/api/ApiService";
