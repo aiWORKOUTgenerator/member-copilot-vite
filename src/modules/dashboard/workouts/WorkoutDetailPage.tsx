@@ -135,18 +135,14 @@ export default function WorkoutDetailPage() {
               existingFeedback ? "btn-success" : "btn-outline"
             }`}
             disabled={!generatedWorkout}
-            title={
-              existingFeedback
-                ? "Feedback already submitted"
-                : "Leave feedback for this workout"
-            }
+            title={existingFeedback ? "Workout Rated" : "Rate This Workout"}
           >
             {existingFeedback ? (
               <CheckCircle className="w-4 h-4 mr-2" />
             ) : (
               <MessageSquare className="w-4 h-4 mr-2" />
             )}
-            {existingFeedback ? "Feedback Submitted" : "Leave Feedback"}
+            {existingFeedback ? "Workout Rated" : "Rate This Workout"}
           </button>
           <WebShareButton
             disabled={!verySimpleFormat && !simpleFormat}
