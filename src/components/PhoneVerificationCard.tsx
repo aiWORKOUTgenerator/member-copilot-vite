@@ -29,7 +29,7 @@ export function PhoneVerificationCard() {
       <>
         <ActionCard
           title="Phone Number Not Provided"
-          description="Add your phone number to enable SMS notifications and improve account security."
+          description="Add your phone number to receive personalized workout reminders, training tips, and stay connected with your AI trainer via SMS."
           actionText="Add Phone Number"
           onClick={() => setShowModal(true)}
           icon={<Phone className="w-5 h-5" />}
@@ -42,7 +42,7 @@ export function PhoneVerificationCard() {
           onClose={() => setShowModal(false)}
           onSuccess={handleVerifySuccess}
           title="Add & Verify Phone Number"
-          description="Add your phone number and verify it to improve account security."
+          description="Add your phone number and verify it."
         />
       </>
     );
@@ -58,7 +58,7 @@ export function PhoneVerificationCard() {
       <>
         <ActionCard
           title="Phone Number Not Verified"
-          description={`Your phone number ${phoneDisplay} needs verification to receive important notifications and enhance account security.`}
+          description={`Your phone number ${phoneDisplay} needs verification to receive important notifications.`}
           actionText="Verify Phone Number"
           onClick={() => setShowModal(true)}
           icon={<Shield className="w-5 h-5" />}
@@ -72,7 +72,7 @@ export function PhoneVerificationCard() {
           onSuccess={handleVerifySuccess}
           initialPhoneNumber={contact?.phone_number}
           title="Verify Phone Number"
-          description="Verify your phone number to enhance account security."
+          description="Verify your phone number."
         />
       </>
     );
@@ -86,7 +86,7 @@ export function PhoneVerificationCard() {
   return (
     <ActionCard
       title="Phone Number Verified"
-      description={`Your phone number ${verifiedPhoneDisplay} is verified and ready to receive notifications.`}
+      description={`Your phone number ${verifiedPhoneDisplay} is verified. You can now receive notifications.`}
       actionText="Verified"
       actionCardIsDisabled={true}
       onClick={() => {}} // No action needed for verified state
