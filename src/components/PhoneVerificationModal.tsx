@@ -34,6 +34,7 @@ export function PhoneVerificationModal({
 
   const {
     isSending,
+    isVerifying,
     isResending,
     error,
     showVerificationInput,
@@ -136,19 +137,32 @@ export function PhoneVerificationModal({
                   onChange={setVerificationCode}
                   onComplete={handleVerifyCode}
                   error={error?.message}
+                  disabled={isVerifying}
                 />
+
+                {/* Loading state during verification */}
+                {isVerifying && (
+                  <div className="flex items-center justify-center py-3">
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+                    <span className="ml-2 text-sm text-gray-600">
+                      Verifying code...
+                    </span>
+                  </div>
+                )}
+
                 <div className="flex justify-between items-center mt-4">
                   <button
                     onClick={() => setCurrentStep(VerificationStep.ENTER_PHONE)}
                     className="text-gray-600 hover:text-gray-800 text-sm"
+                    disabled={isVerifying}
                   >
                     ← Back to phone number
                   </button>
                   {canResend && (
                     <button
                       onClick={actions.resendCode}
-                      disabled={isResending}
-                      className="text-blue-600 hover:text-blue-800 text-sm"
+                      disabled={isResending || isVerifying}
+                      className="text-blue-600 hover:text-blue-800 text-sm disabled:text-gray-400"
                     >
                       {isResending ? "Resending..." : "Resend Code"}
                     </button>

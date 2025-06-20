@@ -1,13 +1,14 @@
-import React, { useState } from "react";
-import { PhoneVerificationModal } from "./PhoneVerificationModal";
-import { PhoneNumberDisplay } from "./PhoneNumberInput";
-import { usePhoneVerificationStatus } from "@/hooks";
 import {
   useContactData,
-  useIsPhoneVerified,
   useHasPhoneNumber,
+  useIsPhoneVerified,
 } from "@/contexts/ContactContext";
-import { Phone, Shield, AlertTriangle, CheckCircle } from "lucide-react";
+import { usePhoneVerificationStatus } from "@/hooks";
+import { AlertTriangle, CheckCircle, Phone, Shield } from "lucide-react";
+import { useState } from "react";
+import { PhoneVerificationModal } from "./PhoneVerificationModal";
+import { ActionCard } from "@/ui/shared/molecules/ActionCard";
+import { formatPhoneNumber } from "react-phone-number-input";
 
 /**
  * Phone verification status card for dashboard
@@ -17,7 +18,6 @@ export function PhoneVerificationCard() {
   const contact = useContactData();
   const isPhoneVerified = useIsPhoneVerified();
   const hasPhoneNumber = useHasPhoneNumber();
-  const { canVerify } = usePhoneVerificationStatus();
 
   const handleVerifySuccess = (phoneNumber: string) => {
     console.log(`Phone verified successfully: ${phoneNumber}`);
@@ -28,30 +28,15 @@ export function PhoneVerificationCard() {
   if (!hasPhoneNumber) {
     return (
       <>
-        <div className="card bg-yellow-50 border border-yellow-200">
-          <div className="card-body">
-            <div className="flex items-start gap-4">
-              <div className="bg-yellow-100 p-2 rounded-full">
-                <Phone className="w-5 h-5 text-yellow-600" />
-              </div>
-              <div className="flex-1">
-                <h3 className="card-title text-yellow-800 text-base">
-                  Phone Number Not Provided
-                </h3>
-                <p className="text-yellow-700 text-sm mb-3">
-                  Add your phone number to enable SMS notifications and improve
-                  account security.
-                </p>
-                <button
-                  onClick={() => setShowModal(true)}
-                  className="btn btn-sm btn-warning"
-                >
-                  Add Phone Number
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <ActionCard
+          title="Phone Number Not Provided"
+          description="Add your phone number to enable SMS notifications and improve account security."
+          actionText="Add Phone Number"
+          onClick={() => setShowModal(true)}
+          icon={<Phone className="w-5 h-5" />}
+          badgeText="Not Added"
+          badgeColor="badge-warning"
+        />
 
         <PhoneVerificationModal
           isOpen={showModal}
@@ -66,41 +51,21 @@ export function PhoneVerificationCard() {
 
   // If phone number exists but not verified
   if (!isPhoneVerified) {
+    const phoneDisplay = contact?.phone_number
+      ? formatPhoneNumber(contact.phone_number)
+      : "";
+
     return (
       <>
-        <div className="card bg-orange-50 border border-orange-200">
-          <div className="card-body">
-            <div className="flex items-start gap-4">
-              <div className="bg-orange-100 p-2 rounded-full">
-                <AlertTriangle className="w-5 h-5 text-orange-600" />
-              </div>
-              <div className="flex-1">
-                <h3 className="card-title text-orange-800 text-base">
-                  Phone Number Not Verified
-                </h3>
-                <div className="mb-2">
-                  <PhoneNumberDisplay
-                    phoneNumber={contact?.phone_number || ""}
-                    showVerificationStatus={false}
-                    className="text-orange-700 text-sm"
-                  />
-                </div>
-                <p className="text-orange-700 text-sm mb-3">
-                  Verify your phone number to receive important notifications
-                  and enhance account security.
-                </p>
-                <button
-                  onClick={() => setShowModal(true)}
-                  className="btn btn-sm btn-warning"
-                  disabled={!canVerify}
-                >
-                  <Shield className="w-4 h-4" />
-                  Verify Phone Number
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <ActionCard
+          title="Phone Number Not Verified"
+          description={`Your phone number ${phoneDisplay} needs verification to receive important notifications and enhance account security.`}
+          actionText="Verify Phone Number"
+          onClick={() => setShowModal(true)}
+          icon={<Shield className="w-5 h-5" />}
+          badgeText="Not Verified"
+          badgeColor="badge-warning"
+        />
 
         <PhoneVerificationModal
           isOpen={showModal}
@@ -115,31 +80,20 @@ export function PhoneVerificationCard() {
   }
 
   // If phone number is verified - show success status
+  const verifiedPhoneDisplay = contact?.phone_number
+    ? formatPhoneNumber(contact.phone_number)
+    : "";
+
   return (
-    <div className="card bg-green-50 border border-green-200">
-      <div className="card-body">
-        <div className="flex items-start gap-4">
-          <div className="bg-green-100 p-2 rounded-full">
-            <CheckCircle className="w-5 h-5 text-green-600" />
-          </div>
-          <div className="flex-1">
-            <h3 className="card-title text-green-800 text-base">
-              Phone Number Verified
-            </h3>
-            <div className="mb-2">
-              <PhoneNumberDisplay
-                phoneNumber={contact?.phone_number || ""}
-                showVerificationStatus={true}
-                className="text-green-700 text-sm"
-              />
-            </div>
-            <p className="text-green-700 text-sm">
-              Your phone number is verified and ready to receive notifications.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
+    <ActionCard
+      title="Phone Number Verified"
+      description={`Your phone number ${verifiedPhoneDisplay} is verified and ready to receive notifications.`}
+      actionText="Verified"
+      onClick={() => {}} // No action needed for verified state
+      icon={<CheckCircle className="w-5 h-5" />}
+      badgeText="Verified"
+      badgeColor="badge-success"
+    />
   );
 }
 

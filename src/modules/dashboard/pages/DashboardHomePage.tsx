@@ -263,21 +263,6 @@ export default function DashboardHomePage() {
         </h2>
         <PhoneVerificationCard />
       </div>
-
-      {/* Development Testing Links */}
-      {import.meta.env.DEV && (
-        <div className="mb-8 p-4 bg-gray-100 rounded-lg">
-          <h3 className="text-md font-medium text-gray-700 mb-2">
-            Development Testing
-          </h3>
-          <button
-            onClick={() => navigate("/dashboard/phone-verification-demo")}
-            className="btn btn-sm btn-outline"
-          >
-            Phone Verification Demo
-          </button>
-        </div>
-      )}
     </div>
   );
 }

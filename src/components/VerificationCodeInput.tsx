@@ -44,9 +44,11 @@ export const VerificationCodeInput = forwardRef<
       (otp: string) => {
         onChange(otp);
 
-        // Auto-submit when all digits are entered
+        // Auto-submit when all digits are entered (with a small delay to ensure state updates)
         if (otp.length === PHONE_VERIFICATION_CONSTANTS.CODE_LENGTH) {
-          onComplete?.(otp);
+          setTimeout(() => {
+            onComplete?.(otp);
+          }, 100);
         }
       },
       [onChange, onComplete]
@@ -101,6 +103,7 @@ export const VerificationCodeInput = forwardRef<
                 inputMode="numeric"
                 pattern="[0-9]*"
                 autoComplete="one-time-code"
+                aria-describedby={ariaDescribedBy}
               />
             )}
             shouldAutoFocus={autoFocus}
