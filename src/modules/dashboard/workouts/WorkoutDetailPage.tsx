@@ -3,6 +3,7 @@ import {
   useGeneratedWorkouts,
 } from "@/contexts/GeneratedWorkoutContext";
 import { useWorkoutFeedback } from "@/contexts/WorkoutFeedbackContext";
+import { useTrainerPersonaData } from "@/contexts/TrainerPersonaContext";
 import { WorkoutStructure } from "@/domain/entities/generatedWorkout";
 import TabBar, { TabOption } from "@/ui/shared/molecules/TabBar";
 import {
@@ -25,6 +26,7 @@ import FeedbackModal, {
 } from "@/ui/shared/molecules/FeedbackModal";
 import WorkoutFeedbackForm from "./components/WorkoutFeedbackForm";
 import FeedbackSuccessState from "./components/FeedbackSuccessState";
+import { TrainerPersonaDisplay } from "./components/TrainerPersonaDisplay";
 
 interface WorkoutChunkData {
   chunk: string;
@@ -40,6 +42,7 @@ export default function WorkoutDetailPage() {
     useWorkoutFeedback();
   const feedbackModal = useFeedbackModal();
   const [showFeedbackSuccess, setShowFeedbackSuccess] = useState(false);
+  const trainerPersona = useTrainerPersonaData();
 
   // Check if feedback already exists for this workout
   const existingFeedback = generatedWorkout
@@ -158,6 +161,16 @@ export default function WorkoutDetailPage() {
           </WebShareButton>
         </div>
       </div>
+
+      {/* Trainer Persona Section */}
+      {trainerPersona && (
+        <div className="mb-4 p-3 bg-base-100 border border-base-300 rounded-lg">
+          <TrainerPersonaDisplay trainerPersona={trainerPersona} />
+          <div className="mt-2 text-sm text-base-content/70">
+            <p>Here's your personalized workout plan:</p>
+          </div>
+        </div>
+      )}
 
       <TabBar
         selectedTab={workoutFormat}

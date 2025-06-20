@@ -13,10 +13,7 @@ import { useUserAccess } from "@/hooks";
 import { MeteredFeature } from "@/hooks/useUserAccess";
 import AccessAwareComponent from "@/ui/shared/molecules/AccessAwareComponent";
 import { ActionCard } from "@/ui/shared/molecules/ActionCard";
-import {
-  PhoneVerificationAlert,
-  PhoneVerificationCard,
-} from "@/components/PhoneVerificationCard";
+import { PhoneVerificationCard } from "@/components/PhoneVerificationCard";
 import {
   Info,
   AlertTriangle,
@@ -179,11 +176,6 @@ export default function DashboardHomePage() {
           </div>
         </div>
       )}
-
-      {/* Phone Verification Alert */}
-      <div className="mb-4">
-        <PhoneVerificationAlert />
-      </div>
 
       {/* Incomplete Profile Alerts */}
       {incompleteAttributes.length > 0 && (
