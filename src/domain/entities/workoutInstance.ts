@@ -59,11 +59,6 @@ export interface ExerciseInstance {
   rest?: number;
   superset_exercise?: ExerciseInstance;
   // Instance-specific fields for actual performance
-  actual_sets?: number;
-  actual_reps?: number;
-  actual_weight?: number;
-  actual_duration?: number;
-  actual_rest?: number;
   completed?: boolean;
   notes?: string;
 }
@@ -79,10 +74,6 @@ export interface SectionInstance {
   duration?: number;
   sub_sections?: SectionInstance[];
   // Instance-specific fields for actual performance
-  actual_rounds?: number;
-  actual_rest_between_exercises?: number;
-  actual_rest_between_rounds?: number;
-  actual_duration?: number;
   completed?: boolean;
   notes?: string;
 }
@@ -93,7 +84,6 @@ export interface WorkoutInstanceStructure {
   sections: SectionInstance[];
   rest_between_sections?: number;
   // Instance-specific fields for actual performance
-  actual_rest_between_sections?: number;
   completed?: boolean;
   performance_notes?: string;
 }

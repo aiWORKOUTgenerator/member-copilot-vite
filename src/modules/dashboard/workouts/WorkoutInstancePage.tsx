@@ -19,10 +19,6 @@ import { TrainerPersonaDisplay } from "./components/TrainerPersonaDisplay";
 interface ExerciseCompletionState {
   [exerciseId: string]: {
     completed: boolean;
-    actualSets?: number;
-    actualReps?: number;
-    actualWeight?: number;
-    actualDuration?: number;
     notes?: string;
   };
 }
@@ -104,10 +100,6 @@ export default function WorkoutInstancePage() {
           ] as ExerciseInstance;
           initialStates[exerciseId] = {
             completed: existingExercise?.completed || false,
-            actualSets: existingExercise?.actual_sets,
-            actualReps: existingExercise?.actual_reps,
-            actualWeight: existingExercise?.actual_weight,
-            actualDuration: existingExercise?.actual_duration,
             notes: existingExercise?.notes,
           };
         });
