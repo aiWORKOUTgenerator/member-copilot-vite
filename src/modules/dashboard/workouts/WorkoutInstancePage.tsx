@@ -68,6 +68,8 @@ export default function WorkoutInstancePage() {
   const [lastCompletedExercise, setLastCompletedExercise] = useState<
     string | null
   >(null);
+  const [showExitConfirm, setShowExitConfirm] = useState(false);
+  const [isMarkingAllComplete, setIsMarkingAllComplete] = useState(false);
 
   // Load the workout instance when component mounts
   useEffect(() => {
@@ -202,7 +204,20 @@ export default function WorkoutInstancePage() {
   }, [lastCompletedExercise, exerciseStates]);
 
   const handleClose = () => {
+    if (progressPercentage > 0 && !currentInstance?.completed) {
+      setShowExitConfirm(true);
+    } else {
+      navigate("/dashboard/workouts");
+    }
+  };
+
+  const handleConfirmExit = () => {
+    setShowExitConfirm(false);
     navigate("/dashboard/workouts");
+  };
+
+  const handleCancelExit = () => {
+    setShowExitConfirm(false);
   };
 
   const handleExerciseComplete = useCallback(
@@ -235,6 +250,55 @@ export default function WorkoutInstancePage() {
     },
     []
   );
+
+  const handleMarkAllComplete = useCallback(async () => {
+    if (!currentInstance?.jsonFormat?.sections) return;
+
+    setIsMarkingAllComplete(true);
+
+    const newStates: ExerciseCompletionState = {};
+    let totalExercises = 0;
+
+    currentInstance.jsonFormat.sections.forEach((section, sectionIndex) => {
+      section.exercises?.forEach((_, exerciseIndex) => {
+        const exerciseId = `section-${sectionIndex}-exercise-${exerciseIndex}`;
+        totalExercises++;
+        newStates[exerciseId] = {
+          ...exerciseStates[exerciseId],
+          completed: true,
+        };
+      });
+    });
+
+    // Animate the completion with a slight delay for visual effect
+    setExerciseStates(newStates);
+    setWorkoutProgress((prev) => ({
+      ...prev,
+      completedExercises: totalExercises,
+    }));
+
+    // Small delay for the animation to complete
+    setTimeout(() => {
+      setIsMarkingAllComplete(false);
+
+      // Scroll to Complete Workout button
+      const completeButton =
+        document.querySelector('button:has-text("Complete Workout")') ||
+        document.querySelector("[data-complete-workout]");
+      if (completeButton) {
+        completeButton.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      } else {
+        // Fallback: scroll to bottom
+        window.scrollTo({
+          top: document.documentElement.scrollHeight,
+          behavior: "smooth",
+        });
+      }
+    }, 1000);
+  }, [currentInstance, exerciseStates]);
 
   const handleCompleteWorkout = async () => {
     if (!currentInstance) return;
@@ -393,7 +457,7 @@ export default function WorkoutInstancePage() {
       <div ref={contentRef} className="pt-24 pb-8 px-4 max-w-4xl mx-auto">
         {/* Workout Header Info */}
         <div className="bg-base-200 rounded-lg p-4 mb-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center mb-4">
             <div>
               <div className="text-2xl font-bold text-primary">
                 {workoutProgress.completedExercises}
@@ -426,6 +490,29 @@ export default function WorkoutInstancePage() {
               <div className="text-xs text-base-content/70">Date</div>
             </div>
           </div>
+
+          {/* Mark All Complete Button */}
+          {progressPercentage < 100 && !currentInstance.completed && (
+            <div className="flex justify-center">
+              <button
+                onClick={handleMarkAllComplete}
+                disabled={isMarkingAllComplete}
+                className="btn btn-outline btn-primary btn-sm gap-2"
+              >
+                {isMarkingAllComplete ? (
+                  <>
+                    <span className="loading loading-spinner loading-sm"></span>
+                    Marking Complete...
+                  </>
+                ) : (
+                  <>
+                    <Check className="w-4 h-4" />
+                    Mark All Complete
+                  </>
+                )}
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Sections */}
@@ -445,12 +532,13 @@ export default function WorkoutInstancePage() {
         </div>
 
         {/* Complete Workout Button */}
-        {progressPercentage === 100 && !currentInstance.completed && (
+        {!currentInstance.completed && (
           <div className="mt-8 text-center">
             <button
               onClick={handleCompleteWorkout}
               disabled={isUpdating}
               className="btn btn-success btn-lg"
+              data-complete-workout
             >
               {isUpdating ? (
                 <>
@@ -461,12 +549,40 @@ export default function WorkoutInstancePage() {
                 <>
                   <Check className="w-5 h-5 mr-2" />
                   Complete Workout
+                  {progressPercentage < 100 && (
+                    <span className="ml-2 text-xs opacity-70">
+                      ({Math.round(progressPercentage)}% done)
+                    </span>
+                  )}
                 </>
               )}
             </button>
           </div>
         )}
       </div>
+
+      {/* Exit Confirmation Modal */}
+      {showExitConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-base-100 rounded-lg shadow-xl max-w-md w-full">
+            <div className="p-6">
+              <h3 className="text-lg font-bold mb-4">Exit Workout?</h3>
+              <p className="text-base-content/70 mb-6">
+                You're {Math.round(progressPercentage)}% through your workout.
+                Are you sure you want to exit? Your progress won't be saved.
+              </p>
+              <div className="flex gap-3 justify-end">
+                <button onClick={handleCancelExit} className="btn btn-ghost">
+                  Continue Workout
+                </button>
+                <button onClick={handleConfirmExit} className="btn btn-error">
+                  Exit Workout
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
