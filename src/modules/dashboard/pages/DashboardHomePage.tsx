@@ -13,6 +13,7 @@ import { useUserAccess } from "@/hooks";
 import { MeteredFeature } from "@/hooks/useUserAccess";
 import AccessAwareComponent from "@/ui/shared/molecules/AccessAwareComponent";
 import { ActionCard } from "@/ui/shared/molecules/ActionCard";
+import { PhoneVerificationCard } from "@/components/PhoneVerificationCard";
 import {
   Info,
   AlertTriangle,
@@ -245,6 +246,11 @@ export default function DashboardHomePage() {
           }
           badgeColor="badge-accent"
         />
+      </div>
+
+      {/* Account Security Section */}
+      <div className="mb-8">
+        <PhoneVerificationCard />
       </div>
     </div>
   );

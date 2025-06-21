@@ -9,6 +9,7 @@ interface ActionCardProps {
   icon?: ReactNode;
   badgeText?: string;
   badgeColor?: string;
+  actionCardIsDisabled?: boolean;
 }
 
 export function ActionCard({
@@ -19,6 +20,7 @@ export function ActionCard({
   icon,
   badgeText,
   badgeColor = "badge-secondary",
+  actionCardIsDisabled = false,
 }: ActionCardProps) {
   return (
     <div className="card bg-base-100 shadow-sm">
@@ -36,7 +38,11 @@ export function ActionCard({
         </h2>
         <p>{description}</p>
         <div className="justify-end card-actions">
-          <button className="btn btn-primary" onClick={onClick}>
+          <button
+            className="btn btn-primary"
+            onClick={onClick}
+            disabled={actionCardIsDisabled}
+          >
             {actionText}
           </button>
         </div>

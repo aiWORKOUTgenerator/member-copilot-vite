@@ -13,5 +13,8 @@ export { useAttributeTypeService } from "./useAttributeTypeService";
 export { useAttributeService } from "./useAttributeService";
 export { useContactService } from "./useContactService";
 export { useVerificationService } from "./useVerificationService";
+export { usePhoneVerificationService } from "./usePhoneVerificationService";
+export * from "./usePhoneVerification";
+export * from "./usePhoneNumber";
 export { useWorkoutFeedbackService } from "./useWorkoutFeedbackService";
 export * from "./useTrainerPersonaService";

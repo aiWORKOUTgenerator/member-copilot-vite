@@ -2,31 +2,32 @@ import {
   useGeneratedWorkout,
   useGeneratedWorkouts,
 } from "@/contexts/GeneratedWorkoutContext";
+import { PusherEvent } from "@/contexts/PusherEvent";
+import { useTrainerPersonaData } from "@/contexts/TrainerPersonaContext";
 import { useWorkoutFeedback } from "@/contexts/WorkoutFeedbackContext";
 import { useWorkoutInstances } from "@/contexts/WorkoutInstanceContext";
 import { WorkoutStructure } from "@/domain/entities/generatedWorkout";
-import TabBar, { TabOption } from "@/ui/shared/molecules/TabBar";
-import {
-  ArrowBigLeft,
-  ShareIcon,
-  MessageSquare,
-  CheckCircle,
-  Play,
-} from "lucide-react";
-import { useEffect, useState } from "react";
-import ReactMarkdown from "react-markdown";
-import { useParams, useNavigate } from "react-router";
-import SimpleFormatWorkoutViewer from "./components/SimpleFormatWorkoutViewer";
-import StepByStepWorkoutViewer from "./components/StepByStepWorkoutViewer";
-import StructuredWorkoutViewer from "./components/StructuredWorkoutViewer";
-import VerySimpleFormatWorkoutViewer from "./components/VerySimpleFormatWorkoutViewer";
-import WebShareButton from "./components/WebShareButton";
-import { PusherEvent } from "@/contexts/PusherEvent";
 import FeedbackModal, {
   useFeedbackModal,
 } from "@/ui/shared/molecules/FeedbackModal";
-import WorkoutFeedbackForm from "./components/WorkoutFeedbackForm";
+import TabBar, { TabOption } from "@/ui/shared/molecules/TabBar";
+import {
+  ArrowBigLeft,
+  CheckCircle,
+  MessageSquare,
+  ShareIcon,
+} from "lucide-react";
+import { useEffect, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import { useNavigate, useParams } from "react-router";
 import FeedbackSuccessState from "./components/FeedbackSuccessState";
+import SimpleFormatWorkoutViewer from "./components/SimpleFormatWorkoutViewer";
+import StepByStepWorkoutViewer from "./components/StepByStepWorkoutViewer";
+import StructuredWorkoutViewer from "./components/StructuredWorkoutViewer";
+import { TrainerPersonaDisplay } from "./components/TrainerPersonaDisplay";
+import VerySimpleFormatWorkoutViewer from "./components/VerySimpleFormatWorkoutViewer";
+import WebShareButton from "./components/WebShareButton";
+import WorkoutFeedbackForm from "./components/WorkoutFeedbackForm";
 
 interface WorkoutChunkData {
   chunk: string;
@@ -44,6 +45,7 @@ export default function WorkoutDetailPage() {
   const { createInstance } = useWorkoutInstances();
   const feedbackModal = useFeedbackModal();
   const [showFeedbackSuccess, setShowFeedbackSuccess] = useState(false);
+  const trainerPersona = useTrainerPersonaData();
   const [isCreatingInstance, setIsCreatingInstance] = useState(false);
 
   // Check if feedback already exists for this workout
@@ -154,7 +156,7 @@ export default function WorkoutDetailPage() {
           Back to workouts
         </button>
         <div className="flex gap-2">
-          <button
+          {/* <button
             onClick={handleStartWorkout}
             className="btn btn-primary"
             disabled={!generatedWorkout || isCreatingInstance}
@@ -162,7 +164,7 @@ export default function WorkoutDetailPage() {
           >
             <Play className="w-4 h-4 mr-2" />
             {isCreatingInstance ? "Starting..." : "Start Workout"}
-          </button>
+          </button> */}
           <button
             onClick={() => {
               setShowFeedbackSuccess(false);
@@ -192,6 +194,16 @@ export default function WorkoutDetailPage() {
           </WebShareButton>
         </div>
       </div>
+
+      {/* Trainer Persona Section */}
+      {trainerPersona && (
+        <div className="mb-4 p-3 bg-base-100 border border-base-300 rounded-lg">
+          <TrainerPersonaDisplay trainerPersona={trainerPersona} />
+          <div className="mt-2 text-sm text-base-content/70">
+            <p>Here's your personalized workout plan:</p>
+          </div>
+        </div>
+      )}
 
       <TabBar
         selectedTab={workoutFormat}

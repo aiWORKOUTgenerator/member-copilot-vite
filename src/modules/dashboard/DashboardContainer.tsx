@@ -1,25 +1,25 @@
-import { Route, Routes } from "react-router";
-import DashboardPage from "./pages/DashboardPage";
-import StackedLayout from "@/ui/shared/templates/StackedLayout";
+import { ContactLoadedGuard } from "@/components/ContactLoadedGuard";
+import { CombinedProviders } from "@/contexts/CombinedProviders";
+import { ContactProvider } from "@/contexts/ContactContext";
 import { TitleProvider } from "@/contexts/TitleContext";
+import { TrainerPersonaProvider } from "@/contexts/TrainerPersonaContext";
+import { UserAccessProvider } from "@/contexts/UserAccessContext";
+import StackedLayout from "@/ui/shared/templates/StackedLayout";
+import { Route, Routes } from "react-router";
 import BillingContainer from "./billing/pages/BillingContainer";
-import BillingPaymentTab from "./billing/pages/BillingPaymentTab";
-import BillingUsageTab from "./billing/pages/BillingUsageTab";
 import BillingHistoryTab from "./billing/pages/BillingHistoryTab";
+import BillingPaymentTab from "./billing/pages/BillingPaymentTab";
 import BillingSubscriptionTab from "./billing/pages/BillingSubscriptionTab";
-import WorkoutsPage from "./workouts/WorkoutsPage";
+import BillingUsageTab from "./billing/pages/BillingUsageTab";
+import DashboardPage from "./pages/DashboardPage";
+import ProfileContainer from "./profile/ProfileContainer";
+import AttributeDetailPage from "./profile/pages/AttributeDetailPage";
+import GeneratingTrainerPage from "./trainer/pages/GeneratingTrainerPage";
+import MyAITrainerPage from "./trainer/pages/MyAITrainerPage";
 import GeneratePage from "./workouts/GeneratePage";
 import WorkoutDetailPage from "./workouts/WorkoutDetailPage";
 import WorkoutInstancePage from "./workouts/WorkoutInstancePage";
-import ProfileContainer from "./profile/ProfileContainer";
-import AttributeDetailPage from "./profile/pages/AttributeDetailPage";
-import { ContactProvider } from "@/contexts/ContactContext";
-import { UserAccessProvider } from "@/contexts/UserAccessContext";
-import { CombinedProviders } from "@/contexts/CombinedProviders";
-import { ContactLoadedGuard } from "@/components/ContactLoadedGuard";
-import MyAITrainerPage from "./trainer/pages/MyAITrainerPage";
-import GeneratingTrainerPage from "./trainer/pages/GeneratingTrainerPage";
-import { TrainerPersonaProvider } from "@/contexts/TrainerPersonaContext";
+import WorkoutsPage from "./workouts/WorkoutsPage";
 
 export default function DashboardContainer() {
   return (
