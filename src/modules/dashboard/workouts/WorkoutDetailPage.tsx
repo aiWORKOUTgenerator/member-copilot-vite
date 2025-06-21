@@ -157,7 +157,7 @@ export default function WorkoutDetailPage() {
           Back to workouts
         </button>
         <div className="flex gap-2">
-          <button
+          {/* <button
             onClick={handleStartWorkout}
             className="btn btn-primary"
             disabled={!generatedWorkout || isCreatingInstance}
@@ -165,7 +165,7 @@ export default function WorkoutDetailPage() {
           >
             <Play className="w-4 h-4 mr-2" />
             {isCreatingInstance ? "Starting..." : "Start Workout"}
-          </button>
+          </button> */}
           <button
             onClick={() => {
               setShowFeedbackSuccess(false);
