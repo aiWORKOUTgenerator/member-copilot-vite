@@ -13,6 +13,8 @@ import { Exercise, Section } from "@/domain/entities/generatedWorkout";
 import { Check, X, Clock, Target } from "lucide-react";
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import { useParams, useNavigate } from "react-router";
+import { useTrainerPersonaData } from "@/contexts/TrainerPersonaContext";
+import { TrainerPersonaDisplay } from "./components/TrainerPersonaDisplay";
 
 interface ExerciseCompletionState {
   [exerciseId: string]: {
@@ -49,6 +51,7 @@ export default function WorkoutInstancePage() {
     useWorkoutInstances();
   const currentInstance = useCurrentWorkoutInstance();
   const isLoading = useCurrentWorkoutInstanceLoading();
+  const trainerPersona = useTrainerPersonaData();
 
   const [exerciseStates, setExerciseStates] = useState<ExerciseCompletionState>(
     {}
@@ -455,6 +458,21 @@ export default function WorkoutInstancePage() {
 
       {/* Workout Content */}
       <div ref={contentRef} className="pt-24 pb-8 px-4 max-w-4xl mx-auto">
+        {/* Trainer Persona Section */}
+        {trainerPersona && (
+          <div className="bg-base-100 border border-base-300 rounded-lg p-4 mb-6">
+            <TrainerPersonaDisplay
+              trainerPersona={trainerPersona}
+              className="justify-center md:justify-start"
+            />
+            <div className="mt-3 text-center md:text-left">
+              <p className="text-sm text-base-content/70">
+                Your AI trainer is here to guide you through this workout
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Workout Header Info */}
         <div className="bg-base-200 rounded-lg p-4 mb-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center mb-4">
