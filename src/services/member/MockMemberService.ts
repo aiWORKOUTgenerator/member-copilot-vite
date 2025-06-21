@@ -39,6 +39,7 @@ export class MockMemberService implements MemberService {
       first_name: "John",
       last_name: "Doe",
       phone_number: "1234567890",
+      phone_verified_at: null,
       source: "website",
       status: "new",
       attributes: {

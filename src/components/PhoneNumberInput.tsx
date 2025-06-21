@@ -1,5 +1,5 @@
-import { useIsPhoneVerified, usePhoneVerificationStatus } from "@/hooks";
-import React, { forwardRef, useCallback, useState } from "react";
+import { usePhoneVerificationStatus } from "@/hooks";
+import React, { useCallback, useState } from "react";
 import PhoneInput, {
   formatPhoneNumber,
   isValidPhoneNumber,
@@ -26,135 +26,123 @@ export interface PhoneNumberInputProps {
 /**
  * Phone number input component with formatting, validation, and verification status
  */
-export const PhoneNumberInput = forwardRef<
-  HTMLInputElement,
-  PhoneNumberInputProps
->(
-  (
-    {
-      value,
-      onChange,
-      onBlur,
-      placeholder = "Enter phone number",
-      disabled = false,
-      required = false,
-      error,
-      className = "",
-      showVerificationStatus = true,
-      onVerifyClick,
-      id,
-      name,
-      "aria-label": ariaLabel,
-      "aria-describedby": ariaDescribedBy,
+export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
+  value,
+  onChange,
+  onBlur,
+  placeholder = "Enter phone number",
+  disabled = false,
+  required = false,
+  error,
+  className = "",
+  showVerificationStatus = true,
+  onVerifyClick,
+  id,
+  name,
+  "aria-label": ariaLabel,
+  "aria-describedby": ariaDescribedBy,
+}) => {
+  const [isFocused, setIsFocused] = useState(false);
+
+  const { status } = usePhoneVerificationStatus();
+
+  // Validation state
+  const isValid = value ? isValidPhoneNumber(value) : true;
+  const showError = error || (!isValid && value && !isFocused);
+
+  // Handle phone number change
+  const handleChange = useCallback(
+    (phoneValue: string | undefined) => {
+      onChange?.(phoneValue);
     },
-    ref
-  ) => {
-    const [isFocused, setIsFocused] = useState(false);
-    const isPhoneVerified = useIsPhoneVerified();
-    const { status } = usePhoneVerificationStatus();
+    [onChange]
+  );
 
-    // Validation state
-    const isValid = value ? isValidPhoneNumber(value) : true;
-    const showError = error || (!isValid && value && !isFocused);
+  // Handle focus states
+  const handleFocus = useCallback(() => {
+    setIsFocused(true);
+  }, []);
 
-    // Handle phone number change
-    const handleChange = useCallback(
-      (phoneValue: string | undefined) => {
-        onChange?.(phoneValue);
-      },
-      [onChange]
-    );
+  const handleBlur = useCallback(() => {
+    setIsFocused(false);
+    onBlur?.();
+  }, [onBlur]);
 
-    // Handle focus states
-    const handleFocus = useCallback(() => {
-      setIsFocused(true);
-    }, []);
+  // Get verification status styling
+  const getVerificationStatusStyles = () => {
+    if (!showVerificationStatus || !value) return "";
 
-    const handleBlur = useCallback(() => {
-      setIsFocused(false);
-      onBlur?.();
-    }, [onBlur]);
+    switch (status) {
+      case "verified":
+        return "border-green-500 focus:border-green-500";
+      case "pending":
+        return "border-yellow-500 focus:border-yellow-500";
+      default:
+        return "";
+    }
+  };
 
-    // Get verification status styling
-    const getVerificationStatusStyles = () => {
-      if (!showVerificationStatus || !value) return "";
+  // Get verification badge
+  const getVerificationBadge = () => {
+    if (!showVerificationStatus || !value) return null;
 
-      switch (status) {
-        case "verified":
-          return "border-green-500 focus:border-green-500";
-        case "pending":
-          return "border-yellow-500 focus:border-yellow-500";
-        default:
-          return "";
-      }
-    };
-
-    // Get verification badge
-    const getVerificationBadge = () => {
-      if (!showVerificationStatus || !value) return null;
-
-      switch (status) {
-        case "verified":
-          return (
-            <div className="flex items-center gap-1 text-green-600 text-sm">
+    switch (status) {
+      case "verified":
+        return (
+          <div className="flex items-center gap-1 text-green-600 text-sm">
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fillRule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clipRule="evenodd"
+              />
+            </svg>
+            <span>Verified</span>
+          </div>
+        );
+      case "pending":
+        return (
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 text-yellow-600 text-sm">
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                 <path
                   fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
                   clipRule="evenodd"
                 />
               </svg>
-              <span>Verified</span>
+              <span>Not verified</span>
             </div>
-          );
-        case "pending":
-          return (
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1 text-yellow-600 text-sm">
-                <svg
-                  className="w-4 h-4"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span>Not verified</span>
-              </div>
-              {onVerifyClick && (
-                <button
-                  type="button"
-                  onClick={onVerifyClick}
-                  className="text-blue-600 hover:text-blue-800 text-sm underline"
-                >
-                  Verify
-                </button>
-              )}
-            </div>
-          );
-        default:
-          return null;
-      }
-    };
+            {onVerifyClick && (
+              <button
+                type="button"
+                onClick={onVerifyClick}
+                className="text-blue-600 hover:text-blue-800 text-sm underline"
+              >
+                Verify
+              </button>
+            )}
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
 
-    return (
-      <div className="space-y-2">
-        <div className="relative">
-          <PhoneInput
-            ref={ref}
-            id={id}
-            name={name}
-            value={value}
-            onChange={handleChange}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-            placeholder={placeholder}
-            disabled={disabled}
-            required={required}
-            className={`
+  return (
+    <div className="space-y-2">
+      <div className="relative">
+        <PhoneInput
+          id={id}
+          name={name}
+          value={value}
+          onChange={handleChange}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          placeholder={placeholder}
+          disabled={disabled}
+          required={required}
+          className={`
               w-full px-3 py-2 border rounded-lg shadow-sm transition-colors duration-200
               ${
                 showError
@@ -165,36 +153,35 @@ export const PhoneNumberInput = forwardRef<
               ${disabled ? "bg-gray-50 cursor-not-allowed" : "bg-white"}
               ${className}
             `}
-            aria-label={ariaLabel || "Phone number"}
-            aria-describedby={ariaDescribedBy}
-            aria-invalid={showError ? "true" : "false"}
-            aria-required={required}
-            international
-            countryCallingCodeEditable
-            defaultCountry="US"
-          />
-        </div>
-
-        {/* Error message */}
-        {showError && (
-          <p className="text-red-600 text-sm flex items-center gap-1">
-            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                fillRule="evenodd"
-                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                clipRule="evenodd"
-              />
-            </svg>
-            {error || "Please enter a valid phone number"}
-          </p>
-        )}
-
-        {/* Verification status badge */}
-        {getVerificationBadge()}
+          aria-label={ariaLabel || "Phone number"}
+          aria-describedby={ariaDescribedBy}
+          aria-invalid={showError ? "true" : "false"}
+          aria-required={required}
+          international
+          countryCallingCodeEditable
+          defaultCountry="US"
+        />
       </div>
-    );
-  }
-);
+
+      {/* Error message */}
+      {showError && (
+        <p className="text-red-600 text-sm flex items-center gap-1">
+          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+            <path
+              fillRule="evenodd"
+              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+              clipRule="evenodd"
+            />
+          </svg>
+          {error || "Please enter a valid phone number"}
+        </p>
+      )}
+
+      {/* Verification status badge */}
+      {getVerificationBadge()}
+    </div>
+  );
+};
 
 PhoneNumberInput.displayName = "PhoneNumberInput";
 
@@ -205,7 +192,6 @@ export interface PhoneNumberDisplayProps {
   phoneNumber: string;
   showVerificationStatus?: boolean;
   className?: string;
-  format?: "international" | "national";
   maskNumber?: boolean;
 }
 
@@ -213,20 +199,14 @@ export function PhoneNumberDisplay({
   phoneNumber,
   showVerificationStatus = true,
   className = "",
-  format = "international",
   maskNumber = false,
 }: PhoneNumberDisplayProps) {
-  const isPhoneVerified = useIsPhoneVerified();
   const { status } = usePhoneVerificationStatus();
-
-  if (!phoneNumber) {
-    return (
-      <span className={`text-gray-500 ${className}`}>No phone number</span>
-    );
-  }
 
   // Format the phone number
   const formattedNumber = React.useMemo(() => {
+    if (!phoneNumber) return "";
+
     try {
       if (maskNumber) {
         // Simple masking: show first 3 and last 4 digits
@@ -239,11 +219,17 @@ export function PhoneNumberDisplay({
         }
       }
 
-      return formatPhoneNumber(phoneNumber, format.toUpperCase() as any);
+      return formatPhoneNumber(phoneNumber);
     } catch {
       return phoneNumber;
     }
-  }, [phoneNumber, format, maskNumber]);
+  }, [phoneNumber, maskNumber]);
+
+  if (!phoneNumber) {
+    return (
+      <span className={`text-gray-500 ${className}`}>No phone number</span>
+    );
+  }
 
   // Get verification status icon
   const getStatusIcon = () => {
