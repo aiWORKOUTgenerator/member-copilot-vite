@@ -1,4 +1,8 @@
-import { WorkoutInstance } from "@/domain/entities/workoutInstance";
+import {
+  WorkoutInstance,
+  WorkoutInstanceStructure,
+  ExerciseType,
+} from "@/domain/entities/workoutInstance";
 import {
   WorkoutInstanceService,
   CreateWorkoutInstanceRequest,
@@ -38,7 +42,7 @@ import {
 interface MockWorkoutInstanceData {
   id: string;
   generated_workout_id: string;
-  json_format?: string | null;
+  json_format?: WorkoutInstanceStructure | null;
   performed_at: string;
   duration?: number;
   notes?: string;
@@ -62,14 +66,14 @@ export class MockWorkoutInstanceService implements WorkoutInstanceService {
       {
         id: "instance-1",
         generated_workout_id: "workout-123",
-        json_format: JSON.stringify({
+        json_format: {
           title: "Upper Body Strength Training",
           description:
             "A focused upper body workout targeting chest, back, and shoulders",
           sections: [
             {
               name: "Warm-up",
-              type: "Standard",
+              type: "Standard" as ExerciseType,
               exercises: [
                 {
                   name: "Arm circles",
@@ -81,7 +85,7 @@ export class MockWorkoutInstanceService implements WorkoutInstanceService {
             },
             {
               name: "Main Workout",
-              type: "Standard",
+              type: "Standard" as ExerciseType,
               exercises: [
                 { name: "Push-ups", sets: 3, reps: 12 },
                 { name: "Dumbbell rows", sets: 3, reps: 10 },
@@ -89,7 +93,7 @@ export class MockWorkoutInstanceService implements WorkoutInstanceService {
               ],
             },
           ],
-        }),
+        },
         performed_at: "2024-01-15T09:00:00Z",
         duration: 35,
         notes: "Felt strong today! Increased weight on overhead press.",
@@ -100,14 +104,14 @@ export class MockWorkoutInstanceService implements WorkoutInstanceService {
       {
         id: "instance-2",
         generated_workout_id: "workout-456",
-        json_format: JSON.stringify({
+        json_format: {
           title: "HIIT Cardio Blast",
           description:
             "High-intensity interval training for maximum calorie burn - Flattened into linear rounds",
           sections: [
             {
               name: "HIIT Circuit - Round 1",
-              type: "Interval",
+              type: "Interval" as ExerciseType,
               rounds: 1,
               exercises: [
                 { name: "Burpees", duration: 45 },
@@ -119,7 +123,7 @@ export class MockWorkoutInstanceService implements WorkoutInstanceService {
             },
             {
               name: "HIIT Circuit - Round 2",
-              type: "Interval",
+              type: "Interval" as ExerciseType,
               rounds: 1,
               exercises: [
                 { name: "Burpees", duration: 45 },
@@ -131,7 +135,7 @@ export class MockWorkoutInstanceService implements WorkoutInstanceService {
             },
             {
               name: "HIIT Circuit - Round 3",
-              type: "Interval",
+              type: "Interval" as ExerciseType,
               rounds: 1,
               exercises: [
                 { name: "Burpees", duration: 45 },
@@ -143,7 +147,7 @@ export class MockWorkoutInstanceService implements WorkoutInstanceService {
             },
             {
               name: "HIIT Circuit - Round 4",
-              type: "Interval",
+              type: "Interval" as ExerciseType,
               rounds: 1,
               exercises: [
                 { name: "Burpees", duration: 45 },
@@ -154,7 +158,7 @@ export class MockWorkoutInstanceService implements WorkoutInstanceService {
               rest_between_exercises: 15,
             },
           ],
-        }),
+        },
         performed_at: "2024-01-14T18:30:00Z",
         duration: 25,
         notes: "Tough workout! Had to take extra rest during round 3.",
@@ -165,14 +169,14 @@ export class MockWorkoutInstanceService implements WorkoutInstanceService {
       {
         id: "instance-3",
         generated_workout_id: "workout-789",
-        json_format: JSON.stringify({
+        json_format: {
           title: "Full Body Strength Circuit",
           description:
             "Complete full body strength training workout - Linear format for tracking",
           sections: [
             {
               name: "Full Body Circuit - Round 1",
-              type: "Circuit",
+              type: "Circuit" as ExerciseType,
               rounds: 1,
               exercises: [
                 { name: "Squats", sets: 1, reps: 15 },
@@ -183,7 +187,7 @@ export class MockWorkoutInstanceService implements WorkoutInstanceService {
             },
             {
               name: "Full Body Circuit - Round 2",
-              type: "Circuit",
+              type: "Circuit" as ExerciseType,
               rounds: 1,
               exercises: [
                 { name: "Squats", sets: 1, reps: 15 },
@@ -194,7 +198,7 @@ export class MockWorkoutInstanceService implements WorkoutInstanceService {
             },
             {
               name: "Full Body Circuit - Round 3",
-              type: "Circuit",
+              type: "Circuit" as ExerciseType,
               rounds: 1,
               exercises: [
                 { name: "Squats", sets: 1, reps: 15 },
@@ -204,7 +208,7 @@ export class MockWorkoutInstanceService implements WorkoutInstanceService {
               ],
             },
           ],
-        }),
+        },
         performed_at: "2024-01-16T07:00:00Z",
         duration: 40,
         notes: "Morning workout - felt energized!",
@@ -277,7 +281,7 @@ export class MockWorkoutInstanceService implements WorkoutInstanceService {
     const newId = this.generateId();
 
     // Note: The flattening should already be done on the client side
-    // before calling this service, so we just store the flattened JSON format
+    // before calling this service, so we just store the flattened workout structure
     const newInstanceData: MockWorkoutInstanceData = {
       id: newId,
       generated_workout_id: request.generatedWorkoutId,

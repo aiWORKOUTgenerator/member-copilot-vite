@@ -15,7 +15,7 @@ export class WorkoutInstance {
   constructor(props: {
     id: string;
     generated_workout_id: string;
-    json_format?: string | null;
+    json_format?: WorkoutInstanceStructure | null;
     performed_at: string;
     duration?: number;
     notes?: string;
@@ -29,16 +29,7 @@ export class WorkoutInstance {
     this.duration = props.duration;
     this.notes = props.notes;
     this.completed = props.completed;
-    this.jsonFormat = props.json_format
-      ? (() => {
-          try {
-            return JSON.parse(props.json_format as string);
-          } catch (error) {
-            console.log("Error parsing JSON format:", error);
-            return null;
-          }
-        })()
-      : null;
+    this.jsonFormat = props.json_format || null;
     this.createdAt = props.created_at;
     this.updatedAt = props.updated_at;
   }

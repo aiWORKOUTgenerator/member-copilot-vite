@@ -96,9 +96,7 @@ export default function WorkoutDetailPage() {
         generatedWorkoutId: generatedWorkout.id,
         performedAt: new Date().toISOString(),
         completed: false,
-        jsonFormat: flattenedJsonFormat
-          ? JSON.stringify(flattenedJsonFormat)
-          : undefined,
+        jsonFormat: flattenedJsonFormat,
       });
 
       // Navigate to the workout instance page

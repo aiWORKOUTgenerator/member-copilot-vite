@@ -1,4 +1,7 @@
-import { WorkoutInstance } from "@/domain/entities/workoutInstance";
+import {
+  WorkoutInstance,
+  WorkoutInstanceStructure,
+} from "@/domain/entities/workoutInstance";
 
 export interface CreateWorkoutInstanceRequest {
   generatedWorkoutId: string;
@@ -6,7 +9,7 @@ export interface CreateWorkoutInstanceRequest {
   duration?: number;
   notes?: string;
   completed: boolean;
-  jsonFormat?: string;
+  jsonFormat?: WorkoutInstanceStructure;
 }
 
 export interface UpdateWorkoutInstanceRequest {
@@ -14,7 +17,7 @@ export interface UpdateWorkoutInstanceRequest {
   duration?: number;
   notes?: string;
   completed?: boolean;
-  jsonFormat?: string;
+  jsonFormat?: WorkoutInstanceStructure;
 }
 
 export interface WorkoutInstanceService {
