@@ -103,12 +103,12 @@ export class MockWorkoutInstanceService implements WorkoutInstanceService {
         json_format: JSON.stringify({
           title: "HIIT Cardio Blast",
           description:
-            "High-intensity interval training for maximum calorie burn",
+            "High-intensity interval training for maximum calorie burn - Flattened into linear rounds",
           sections: [
             {
-              name: "HIIT Circuit",
+              name: "HIIT Circuit - Round 1",
               type: "Interval",
-              rounds: 4,
+              rounds: 1,
               exercises: [
                 { name: "Burpees", duration: 45 },
                 { name: "Mountain climbers", duration: 45 },
@@ -116,7 +116,42 @@ export class MockWorkoutInstanceService implements WorkoutInstanceService {
                 { name: "High knees", duration: 45 },
               ],
               rest_between_exercises: 15,
-              rest_between_rounds: 60,
+            },
+            {
+              name: "HIIT Circuit - Round 2",
+              type: "Interval",
+              rounds: 1,
+              exercises: [
+                { name: "Burpees", duration: 45 },
+                { name: "Mountain climbers", duration: 45 },
+                { name: "Jump squats", duration: 45 },
+                { name: "High knees", duration: 45 },
+              ],
+              rest_between_exercises: 15,
+            },
+            {
+              name: "HIIT Circuit - Round 3",
+              type: "Interval",
+              rounds: 1,
+              exercises: [
+                { name: "Burpees", duration: 45 },
+                { name: "Mountain climbers", duration: 45 },
+                { name: "Jump squats", duration: 45 },
+                { name: "High knees", duration: 45 },
+              ],
+              rest_between_exercises: 15,
+            },
+            {
+              name: "HIIT Circuit - Round 4",
+              type: "Interval",
+              rounds: 1,
+              exercises: [
+                { name: "Burpees", duration: 45 },
+                { name: "Mountain climbers", duration: 45 },
+                { name: "Jump squats", duration: 45 },
+                { name: "High knees", duration: 45 },
+              ],
+              rest_between_exercises: 15,
             },
           ],
         }),
@@ -131,17 +166,41 @@ export class MockWorkoutInstanceService implements WorkoutInstanceService {
         id: "instance-3",
         generated_workout_id: "workout-789",
         json_format: JSON.stringify({
-          title: "Full Body Strength",
-          description: "Complete full body strength training workout",
+          title: "Full Body Strength Circuit",
+          description:
+            "Complete full body strength training workout - Linear format for tracking",
           sections: [
             {
-              name: "Main Workout",
-              type: "Standard",
+              name: "Full Body Circuit - Round 1",
+              type: "Circuit",
+              rounds: 1,
               exercises: [
-                { name: "Squats", sets: 4, reps: 15 },
-                { name: "Deadlifts", sets: 4, reps: 12 },
-                { name: "Bench press", sets: 4, reps: 10 },
-                { name: "Pull-ups", sets: 3, reps: 8 },
+                { name: "Squats", sets: 1, reps: 15 },
+                { name: "Deadlifts", sets: 1, reps: 12 },
+                { name: "Bench press", sets: 1, reps: 10 },
+                { name: "Pull-ups", sets: 1, reps: 8 },
+              ],
+            },
+            {
+              name: "Full Body Circuit - Round 2",
+              type: "Circuit",
+              rounds: 1,
+              exercises: [
+                { name: "Squats", sets: 1, reps: 15 },
+                { name: "Deadlifts", sets: 1, reps: 12 },
+                { name: "Bench press", sets: 1, reps: 10 },
+                { name: "Pull-ups", sets: 1, reps: 8 },
+              ],
+            },
+            {
+              name: "Full Body Circuit - Round 3",
+              type: "Circuit",
+              rounds: 1,
+              exercises: [
+                { name: "Squats", sets: 1, reps: 15 },
+                { name: "Deadlifts", sets: 1, reps: 12 },
+                { name: "Bench press", sets: 1, reps: 10 },
+                { name: "Pull-ups", sets: 1, reps: 8 },
               ],
             },
           ],
@@ -217,6 +276,8 @@ export class MockWorkoutInstanceService implements WorkoutInstanceService {
     const now = new Date().toISOString();
     const newId = this.generateId();
 
+    // Note: The flattening should already be done on the client side
+    // before calling this service, so we just store the flattened JSON format
     const newInstanceData: MockWorkoutInstanceData = {
       id: newId,
       generated_workout_id: request.generatedWorkoutId,

@@ -1,7 +1,7 @@
-import React, { useState, useCallback, useEffect } from "react";
+import { usePhoneVerification } from "@/hooks/usePhoneVerification";
+import { useCallback, useEffect, useState } from "react";
 import { PhoneNumberInput } from "./PhoneNumberInput";
 import { VerificationCodeInput } from "./VerificationCodeInput";
-import { usePhoneVerification } from "@/hooks/usePhoneVerification";
 
 export interface PhoneVerificationModalProps {
   isOpen: boolean;

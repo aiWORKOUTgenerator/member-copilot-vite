@@ -6,7 +6,7 @@ import { PusherEvent } from "@/contexts/PusherEvent";
 import { useTrainerPersonaData } from "@/contexts/TrainerPersonaContext";
 import { useWorkoutFeedback } from "@/contexts/WorkoutFeedbackContext";
 import { useWorkoutInstances } from "@/contexts/WorkoutInstanceContext";
-import { WorkoutStructure } from "@/domain/entities/generatedWorkout";
+import { WorkoutStructure, Section } from "@/domain/entities/generatedWorkout";
 import FeedbackModal, {
   useFeedbackModal,
 } from "@/ui/shared/molecules/FeedbackModal";
@@ -87,12 +87,17 @@ export default function WorkoutDetailPage() {
 
     setIsCreatingInstance(true);
     try {
+      // Flatten the workout structure for linear tracking
+      const flattenedJsonFormat = generatedWorkout.jsonFormat
+        ? flattenWorkoutForInstance(generatedWorkout.jsonFormat)
+        : undefined;
+
       const newInstance = await createInstance({
         generatedWorkoutId: generatedWorkout.id,
         performedAt: new Date().toISOString(),
         completed: false,
-        jsonFormat: generatedWorkout.jsonFormat
-          ? JSON.stringify(generatedWorkout.jsonFormat)
+        jsonFormat: flattenedJsonFormat
+          ? JSON.stringify(flattenedJsonFormat)
           : undefined,
       });
 
@@ -104,6 +109,43 @@ export default function WorkoutDetailPage() {
     } finally {
       setIsCreatingInstance(false);
     }
+  };
+
+  // Function to flatten workout rounds into linear sections for instance tracking
+  const flattenWorkoutForInstance = (workoutStructure: WorkoutStructure) => {
+    const flattenedSections: Section[] = [];
+
+    workoutStructure.sections.forEach((section) => {
+      const rounds = section.rounds || 1;
+
+      if (rounds > 1) {
+        // Create separate sections for each round
+        for (let round = 1; round <= rounds; round++) {
+          flattenedSections.push({
+            ...section,
+            name: `${section.name} - Round ${round}`,
+            rounds: 1, // Each flattened section is now a single round
+            exercises:
+              section.exercises?.map((exercise) => ({
+                ...exercise,
+                // Add round context to exercise names if helpful
+                // name: `${exercise.name} (Round ${round})`
+              })) || [],
+          });
+        }
+      } else {
+        // Single round or no rounds specified - keep as is
+        flattenedSections.push({
+          ...section,
+          exercises: section.exercises || [],
+        });
+      }
+    });
+
+    return {
+      ...workoutStructure,
+      sections: flattenedSections,
+    };
   };
 
   // Clear loading states when refetching completes

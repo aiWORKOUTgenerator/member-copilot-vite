@@ -36,7 +36,7 @@ export interface AttributeCompletion {
  * Type guard to check if an object is a valid Contact
  */
 export function isContact(obj: unknown): obj is Contact {
-  return (
+  return !!(
     obj &&
     typeof obj === "object" &&
     obj !== null &&
