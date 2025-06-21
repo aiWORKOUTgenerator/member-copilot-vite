@@ -7,6 +7,7 @@ import { PromptProvider } from "./PromptContext";
 import { GeneratedWorkoutProvider } from "./GeneratedWorkoutContext";
 import { SubscriptionProvider } from "./SubscriptionContext";
 import { WorkoutFeedbackProvider } from "./WorkoutFeedbackContext";
+import { WorkoutInstanceProvider } from "./WorkoutInstanceContext";
 
 interface CombinedProvidersProps {
   children: ReactNode;
@@ -22,11 +23,13 @@ export function CombinedProviders({ children }: CombinedProvidersProps) {
     <AttributeTypeProvider>
       <PromptProvider>
         <GeneratedWorkoutProvider>
-          <WorkoutFeedbackProvider>
-            <SubscriptionProvider>
-              <AttributeProvider>{children}</AttributeProvider>
-            </SubscriptionProvider>
-          </WorkoutFeedbackProvider>
+          <WorkoutInstanceProvider>
+            <WorkoutFeedbackProvider>
+              <SubscriptionProvider>
+                <AttributeProvider>{children}</AttributeProvider>
+              </SubscriptionProvider>
+            </WorkoutFeedbackProvider>
+          </WorkoutInstanceProvider>
         </GeneratedWorkoutProvider>
       </PromptProvider>
     </AttributeTypeProvider>
