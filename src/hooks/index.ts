@@ -6,6 +6,7 @@ export { useLicensePolicyService } from "./useLicensePolicyService";
 export { useSubscriptionService } from "./useSubscriptionService";
 export { useApiService } from "./useApiService";
 export { useGeneratedWorkoutService } from "./useGeneratedWorkoutService";
+export { useWorkoutInstanceService } from "./useWorkoutInstanceService";
 export { useMemberService } from "./useMemberService";
 export { usePromptService } from "./usePromptService";
 export { useAttributeTypeService } from "./useAttributeTypeService";
