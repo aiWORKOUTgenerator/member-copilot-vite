@@ -5,7 +5,7 @@ import {
 import { PusherEvent } from "@/contexts/PusherEvent";
 import { useTrainerPersonaData } from "@/contexts/TrainerPersonaContext";
 import { useWorkoutFeedback } from "@/contexts/WorkoutFeedbackContext";
-import { WorkoutStructure } from "@/domain/entities/generatedWorkout";
+import { Section, WorkoutStructure } from "@/domain/entities/generatedWorkout";
 import FeedbackModal, {
   useFeedbackModal,
 } from "@/ui/shared/molecules/FeedbackModal";
@@ -14,11 +14,12 @@ import {
   ArrowBigLeft,
   CheckCircle,
   MessageSquare,
+  Play,
   ShareIcon,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import FeedbackSuccessState from "./components/FeedbackSuccessState";
 import SimpleFormatWorkoutViewer from "./components/SimpleFormatWorkoutViewer";
 import StepByStepWorkoutViewer from "./components/StepByStepWorkoutViewer";
@@ -27,6 +28,7 @@ import { TrainerPersonaDisplay } from "./components/TrainerPersonaDisplay";
 import VerySimpleFormatWorkoutViewer from "./components/VerySimpleFormatWorkoutViewer";
 import WebShareButton from "./components/WebShareButton";
 import WorkoutFeedbackForm from "./components/WorkoutFeedbackForm";
+import { useWorkoutInstances } from "@/contexts/WorkoutInstanceContext";
 
 interface WorkoutChunkData {
   chunk: string;
@@ -35,17 +37,17 @@ interface WorkoutChunkData {
 
 export default function WorkoutDetailPage() {
   const params = useParams();
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const generatedWorkoutId = params?.id as string;
   const generatedWorkout = useGeneratedWorkout(generatedWorkoutId);
   const { refetch } = useGeneratedWorkouts();
   const { submitFeedback, isSubmitting, error, clearError, userFeedback } =
     useWorkoutFeedback();
-  //  const { createInstance } = useWorkoutInstances();
+  const { createInstance } = useWorkoutInstances();
   const feedbackModal = useFeedbackModal();
   const [showFeedbackSuccess, setShowFeedbackSuccess] = useState(false);
   const trainerPersona = useTrainerPersonaData();
-  // const [isCreatingInstance, setIsCreatingInstance] = useState(false);
+  const [isCreatingInstance, setIsCreatingInstance] = useState(false);
 
   // Check if feedback already exists for this workout
   const existingFeedback = generatedWorkout
@@ -80,71 +82,71 @@ export default function WorkoutDetailPage() {
     ? (generatedWorkout.jsonFormat as WorkoutStructure)
     : undefined;
 
-  // const handleStartWorkout = async () => {
-  //   if (!generatedWorkout) return;
+  const handleStartWorkout = async () => {
+    if (!generatedWorkout) return;
 
-  //   setIsCreatingInstance(true);
-  //   try {
-  //     // Flatten the workout structure for linear tracking
-  //     const flattenedJsonFormat = generatedWorkout.jsonFormat
-  //       ? flattenWorkoutForInstance(generatedWorkout.jsonFormat)
-  //       : undefined;
+    setIsCreatingInstance(true);
+    try {
+      // Flatten the workout structure for linear tracking
+      const flattenedJsonFormat = generatedWorkout.jsonFormat
+        ? flattenWorkoutForInstance(generatedWorkout.jsonFormat)
+        : undefined;
 
-  //     const newInstance = await createInstance({
-  //       generatedWorkoutId: generatedWorkout.id,
-  //       performedAt: new Date().toISOString(),
-  //       completed: false,
-  //       jsonFormat: flattenedJsonFormat
-  //         ? JSON.stringify(flattenedJsonFormat)
-  //         : undefined,
-  //     });
+      const newInstance = await createInstance({
+        generatedWorkoutId: generatedWorkout.id,
+        performedAt: new Date().toISOString(),
+        completed: false,
+        jsonFormat: flattenedJsonFormat
+          ? JSON.stringify(flattenedJsonFormat)
+          : undefined,
+      });
 
-  //     // Navigate to the workout instance page
-  //     navigate(`/dashboard/workouts/instances/${newInstance.id}`);
-  //   } catch (error) {
-  //     console.error("Failed to create workout instance:", error);
-  //     // You could add error handling here (toast notification, etc.)
-  //   } finally {
-  //     setIsCreatingInstance(false);
-  //   }
-  // };
+      // Navigate to the workout instance page
+      navigate(`/dashboard/workouts/instances/${newInstance.id}`);
+    } catch (error) {
+      console.error("Failed to create workout instance:", error);
+      // You could add error handling here (toast notification, etc.)
+    } finally {
+      setIsCreatingInstance(false);
+    }
+  };
 
   // Function to flatten workout rounds into linear sections for instance tracking
-  // const flattenWorkoutForInstance = (workoutStructure: WorkoutStructure) => {
-  //   const flattenedSections: Section[] = [];
+  const flattenWorkoutForInstance = (workoutStructure: WorkoutStructure) => {
+    const flattenedSections: Section[] = [];
 
-  //   workoutStructure.sections.forEach((section) => {
-  //     const rounds = section.rounds || 1;
+    workoutStructure.sections.forEach((section) => {
+      const rounds = section.rounds || 1;
 
-  //     if (rounds > 1) {
-  //       // Create separate sections for each round
-  //       for (let round = 1; round <= rounds; round++) {
-  //         flattenedSections.push({
-  //           ...section,
-  //           name: `${section.name} - Round ${round}`,
-  //           rounds: 1, // Each flattened section is now a single round
-  //           exercises:
-  //             section.exercises?.map((exercise) => ({
-  //               ...exercise,
-  //               // Add round context to exercise names if helpful
-  //               // name: `${exercise.name} (Round ${round})`
-  //             })) || [],
-  //         });
-  //       }
-  //     } else {
-  //       // Single round or no rounds specified - keep as is
-  //       flattenedSections.push({
-  //         ...section,
-  //         exercises: section.exercises || [],
-  //       });
-  //     }
-  //   });
+      if (rounds > 1) {
+        // Create separate sections for each round
+        for (let round = 1; round <= rounds; round++) {
+          flattenedSections.push({
+            ...section,
+            name: `${section.name} - Round ${round}`,
+            rounds: 1, // Each flattened section is now a single round
+            exercises:
+              section.exercises?.map((exercise) => ({
+                ...exercise,
+                // Add round context to exercise names if helpful
+                // name: `${exercise.name} (Round ${round})`
+              })) || [],
+          });
+        }
+      } else {
+        // Single round or no rounds specified - keep as is
+        flattenedSections.push({
+          ...section,
+          exercises: section.exercises || [],
+        });
+      }
+    });
 
-  //   return {
-  //     ...workoutStructure,
-  //     sections: flattenedSections,
-  //   };
-  // };
+    return {
+      ...workoutStructure,
+      sections: flattenedSections,
+    };
+  };
 
   // Clear loading states when refetching completes
   useEffect(() => {
@@ -197,7 +199,7 @@ export default function WorkoutDetailPage() {
           Back to workouts
         </button>
         <div className="flex gap-2">
-          {/* <button
+          <button
             onClick={handleStartWorkout}
             className="btn btn-primary"
             disabled={!generatedWorkout || isCreatingInstance}
@@ -205,7 +207,7 @@ export default function WorkoutDetailPage() {
           >
             <Play className="w-4 h-4 mr-2" />
             {isCreatingInstance ? "Starting..." : "Start Workout"}
-          </button> */}
+          </button>
           <button
             onClick={() => {
               setShowFeedbackSuccess(false);
