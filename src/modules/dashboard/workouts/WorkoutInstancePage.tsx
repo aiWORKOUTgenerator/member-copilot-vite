@@ -11,7 +11,7 @@ import {
 } from "@/domain/entities/workoutInstance";
 import { Exercise, Section } from "@/domain/entities/generatedWorkout";
 import { Check, X, Clock, Target } from "lucide-react";
-import { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import { useParams, useNavigate } from "react-router";
 
 interface ExerciseCompletionState {
@@ -32,10 +32,18 @@ interface WorkoutProgress {
   currentExerciseIndex: number;
 }
 
+interface ScrollProgress {
+  scrollPercentage: number;
+  currentSectionIndex: number;
+  sectionsInView: boolean[];
+}
+
 export default function WorkoutInstancePage() {
   const params = useParams();
   const navigate = useNavigate();
   const instanceId = params?.id as string;
+  const contentRef = useRef<HTMLDivElement>(null);
+  const sectionRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const { loadCurrentInstance, clearCurrentInstance, updateInstance } =
     useWorkoutInstances();
@@ -51,7 +59,15 @@ export default function WorkoutInstancePage() {
     currentSectionIndex: 0,
     currentExerciseIndex: 0,
   });
+  const [scrollProgress, setScrollProgress] = useState<ScrollProgress>({
+    scrollPercentage: 0,
+    currentSectionIndex: 0,
+    sectionsInView: [],
+  });
   const [isUpdating, setIsUpdating] = useState(false);
+  const [lastCompletedExercise, setLastCompletedExercise] = useState<
+    string | null
+  >(null);
 
   // Load the workout instance when component mounts
   useEffect(() => {
@@ -100,8 +116,90 @@ export default function WorkoutInstancePage() {
           (state) => state.completed
         ).length,
       }));
+
+      // Initialize section refs array
+      sectionRefs.current = new Array(sections.length).fill(null);
+      setScrollProgress((prev) => ({
+        ...prev,
+        sectionsInView: new Array(sections.length).fill(false),
+      }));
     }
   }, [currentInstance]);
+
+  // Scroll progress tracking
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!contentRef.current) return;
+
+      const scrollTop = window.scrollY;
+      const documentHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
+      const scrollPercentage =
+        documentHeight > 0 ? (scrollTop / documentHeight) * 100 : 0;
+
+      // Find which section is currently most visible
+      let currentSectionIndex = 0;
+      const sectionsInView = new Array(sectionRefs.current.length).fill(false);
+
+      sectionRefs.current.forEach((ref, index) => {
+        if (ref) {
+          const rect = ref.getBoundingClientRect();
+          const isInView =
+            rect.top < window.innerHeight / 2 &&
+            rect.bottom > window.innerHeight / 2;
+          sectionsInView[index] = isInView;
+
+          if (isInView) {
+            currentSectionIndex = index;
+          }
+        }
+      });
+
+      setScrollProgress({
+        scrollPercentage: Math.min(scrollPercentage, 100),
+        currentSectionIndex,
+        sectionsInView,
+      });
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    handleScroll(); // Initial call
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [currentInstance?.jsonFormat?.sections]);
+
+  // Auto-scroll to next exercise on desktop when one is completed
+  useEffect(() => {
+    if (!lastCompletedExercise || window.innerWidth < 1024) return; // Only on desktop (lg and up)
+
+    const scrollToNextIncompleteExercise = () => {
+      const exerciseElements = document.querySelectorAll("[data-exercise-id]");
+      let nextIncompleteElement: Element | null = null;
+
+      for (const element of exerciseElements) {
+        const exerciseId = element.getAttribute("data-exercise-id");
+        if (exerciseId && !exerciseStates[exerciseId]?.completed) {
+          nextIncompleteElement = element;
+          break;
+        }
+      }
+
+      if (nextIncompleteElement) {
+        const rect = nextIncompleteElement.getBoundingClientRect();
+        const offset =
+          window.scrollY + rect.top - window.innerHeight / 2 + rect.height / 2;
+
+        window.scrollTo({
+          top: Math.max(0, offset),
+          behavior: "smooth",
+        });
+      }
+    };
+
+    // Small delay to allow state to update
+    const timeoutId = setTimeout(scrollToNextIncompleteExercise, 300);
+    return () => clearTimeout(timeoutId);
+  }, [lastCompletedExercise, exerciseStates]);
 
   const handleClose = () => {
     navigate("/dashboard/workouts");
@@ -129,6 +227,11 @@ export default function WorkoutInstancePage() {
 
         return newStates;
       });
+
+      // Track last completed exercise for auto-scroll
+      if (completed) {
+        setLastCompletedExercise(exerciseId);
+      }
     },
     []
   );
@@ -265,6 +368,15 @@ export default function WorkoutInstancePage() {
         </div>
       </div>
 
+      {/* Vertical Progress Indicator (Desktop) */}
+      <div className="hidden lg:block fixed left-6 top-1/2 transform -translate-y-1/2 z-40">
+        <VerticalProgressIndicator
+          sections={currentInstance.jsonFormat.sections}
+          scrollProgress={scrollProgress}
+          exerciseStates={exerciseStates}
+        />
+      </div>
+
       {/* Fixed Progress Indicator (Mobile) */}
       <div className="fixed bottom-6 right-6 z-40 lg:hidden">
         <div className="bg-primary text-primary-content rounded-full w-16 h-16 flex items-center justify-center shadow-lg">
@@ -278,7 +390,7 @@ export default function WorkoutInstancePage() {
       </div>
 
       {/* Workout Content */}
-      <div className="pt-24 pb-8 px-4 max-w-4xl mx-auto">
+      <div ref={contentRef} className="pt-24 pb-8 px-4 max-w-4xl mx-auto">
         {/* Workout Header Info */}
         <div className="bg-base-200 rounded-lg p-4 mb-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
@@ -321,6 +433,9 @@ export default function WorkoutInstancePage() {
           {currentInstance.jsonFormat.sections.map((section, sectionIndex) => (
             <SectionCard
               key={sectionIndex}
+              ref={(el) => {
+                sectionRefs.current[sectionIndex] = el;
+              }}
               section={section}
               sectionIndex={sectionIndex}
               exerciseStates={exerciseStates}
@@ -356,18 +471,91 @@ export default function WorkoutInstancePage() {
   );
 }
 
-// Section Component
-function SectionCard({
-  section,
-  sectionIndex,
+// Vertical Progress Indicator Component
+function VerticalProgressIndicator({
+  sections,
+  scrollProgress,
   exerciseStates,
-  onExerciseComplete,
 }: {
-  section: Section;
-  sectionIndex: number;
+  sections: Section[];
+  scrollProgress: ScrollProgress;
   exerciseStates: ExerciseCompletionState;
-  onExerciseComplete: (exerciseId: string, completed: boolean) => void;
 }) {
+  const getSectionCompletion = (sectionIndex: number) => {
+    const section = sections[sectionIndex];
+    if (!section.exercises) return { completed: 0, total: 0 };
+
+    const exercises = section.exercises;
+    const total = exercises.length;
+    const completed = exercises.filter(
+      (_, idx) =>
+        exerciseStates[`section-${sectionIndex}-exercise-${idx}`]?.completed
+    ).length;
+
+    return { completed, total };
+  };
+
+  return (
+    <div className="flex flex-col items-center space-y-2">
+      {/* Main progress line */}
+      <div className="relative w-1 h-64 bg-base-300 rounded-full overflow-hidden">
+        <div
+          className="absolute top-0 left-0 w-full bg-primary transition-all duration-300 ease-out"
+          style={{ height: `${scrollProgress.scrollPercentage}%` }}
+        />
+      </div>
+
+      {/* Section dots */}
+      <div className="absolute top-0 left-1/2 transform -translate-x-1/2 flex flex-col h-64 justify-between py-2">
+        {sections.map((section, index) => {
+          const { completed, total } = getSectionCompletion(index);
+          const isActive = scrollProgress.sectionsInView[index];
+          const isCompleted = completed === total && total > 0;
+
+          return (
+            <div
+              key={index}
+              className={`relative group transition-all duration-200 ${
+                isActive ? "scale-125" : "scale-100"
+              }`}
+            >
+              <div
+                className={`w-3 h-3 rounded-full border-2 transition-all duration-200 ${
+                  isCompleted
+                    ? "bg-success border-success"
+                    : isActive
+                    ? "bg-primary border-primary"
+                    : "bg-base-100 border-base-300"
+                }`}
+              />
+
+              {/* Tooltip */}
+              <div className="absolute left-6 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+                <div className="bg-base-100 border border-base-300 rounded-lg px-3 py-2 shadow-lg text-sm whitespace-nowrap">
+                  <div className="font-medium">{section.name}</div>
+                  <div className="text-xs text-base-content/70">
+                    {completed}/{total} exercises
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// Section Component
+const SectionCard = React.forwardRef<
+  HTMLDivElement,
+  {
+    section: Section;
+    sectionIndex: number;
+    exerciseStates: ExerciseCompletionState;
+    onExerciseComplete: (exerciseId: string, completed: boolean) => void;
+  }
+>(({ section, sectionIndex, exerciseStates, onExerciseComplete }, ref) => {
   const [isExpanded, setIsExpanded] = useState(true);
 
   const exercises = Array.isArray(section.exercises) ? section.exercises : [];
@@ -377,7 +565,10 @@ function SectionCard({
   ).length;
 
   return (
-    <div className="bg-base-100 rounded-lg shadow-sm border border-base-300">
+    <div
+      ref={ref}
+      className="bg-base-100 rounded-lg shadow-sm border border-base-300"
+    >
       <div
         className="p-4 flex justify-between items-center cursor-pointer"
         onClick={() => setIsExpanded(!isExpanded)}
@@ -422,7 +613,9 @@ function SectionCard({
       )}
     </div>
   );
-}
+});
+
+SectionCard.displayName = "SectionCard";
 
 // Exercise Card Component
 function ExerciseCard({
@@ -449,6 +642,7 @@ function ExerciseCard({
 
   return (
     <div
+      data-exercise-id={exerciseId}
       className={`p-4 rounded-lg border-2 transition-all duration-200 ${
         isCompleted
           ? "bg-success bg-opacity-10 border-success"

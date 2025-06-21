@@ -5,6 +5,7 @@ import {
 import { PusherEvent } from "@/contexts/PusherEvent";
 import { useTrainerPersonaData } from "@/contexts/TrainerPersonaContext";
 import { useWorkoutFeedback } from "@/contexts/WorkoutFeedbackContext";
+import { useWorkoutInstances } from "@/contexts/WorkoutInstanceContext";
 import { WorkoutStructure } from "@/domain/entities/generatedWorkout";
 import FeedbackModal, {
   useFeedbackModal,
@@ -14,11 +15,12 @@ import {
   ArrowBigLeft,
   CheckCircle,
   MessageSquare,
+  Play,
   ShareIcon,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import FeedbackSuccessState from "./components/FeedbackSuccessState";
 import SimpleFormatWorkoutViewer from "./components/SimpleFormatWorkoutViewer";
 import StepByStepWorkoutViewer from "./components/StepByStepWorkoutViewer";
@@ -35,17 +37,17 @@ interface WorkoutChunkData {
 
 export default function WorkoutDetailPage() {
   const params = useParams();
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const generatedWorkoutId = params?.id as string;
   const generatedWorkout = useGeneratedWorkout(generatedWorkoutId);
   const { refetch } = useGeneratedWorkouts();
   const { submitFeedback, isSubmitting, error, clearError, userFeedback } =
     useWorkoutFeedback();
-  // const { createInstance } = useWorkoutInstances();
+  const { createInstance } = useWorkoutInstances();
   const feedbackModal = useFeedbackModal();
   const [showFeedbackSuccess, setShowFeedbackSuccess] = useState(false);
   const trainerPersona = useTrainerPersonaData();
-  // const [isCreatingInstance, setIsCreatingInstance] = useState(false);
+  const [isCreatingInstance, setIsCreatingInstance] = useState(false);
 
   // Check if feedback already exists for this workout
   const existingFeedback = generatedWorkout
@@ -80,29 +82,29 @@ export default function WorkoutDetailPage() {
     ? (generatedWorkout.jsonFormat as WorkoutStructure)
     : undefined;
 
-  // const handleStartWorkout = async () => {
-  //   if (!generatedWorkout) return;
+  const handleStartWorkout = async () => {
+    if (!generatedWorkout) return;
 
-  //   setIsCreatingInstance(true);
-  //   try {
-  //     const newInstance = await createInstance({
-  //       generatedWorkoutId: generatedWorkout.id,
-  //       performedAt: new Date().toISOString(),
-  //       completed: false,
-  //       jsonFormat: generatedWorkout.jsonFormat
-  //         ? JSON.stringify(generatedWorkout.jsonFormat)
-  //         : undefined,
-  //     });
+    setIsCreatingInstance(true);
+    try {
+      const newInstance = await createInstance({
+        generatedWorkoutId: generatedWorkout.id,
+        performedAt: new Date().toISOString(),
+        completed: false,
+        jsonFormat: generatedWorkout.jsonFormat
+          ? JSON.stringify(generatedWorkout.jsonFormat)
+          : undefined,
+      });
 
-  //     // Navigate to the workout instance page
-  //     navigate(`/dashboard/workouts/instances/${newInstance.id}`);
-  //   } catch (error) {
-  //     console.error("Failed to create workout instance:", error);
-  //     // You could add error handling here (toast notification, etc.)
-  //   } finally {
-  //     setIsCreatingInstance(false);
-  //   }
-  // };
+      // Navigate to the workout instance page
+      navigate(`/dashboard/workouts/instances/${newInstance.id}`);
+    } catch (error) {
+      console.error("Failed to create workout instance:", error);
+      // You could add error handling here (toast notification, etc.)
+    } finally {
+      setIsCreatingInstance(false);
+    }
+  };
 
   // Clear loading states when refetching completes
   useEffect(() => {
@@ -155,7 +157,7 @@ export default function WorkoutDetailPage() {
           Back to workouts
         </button>
         <div className="flex gap-2">
-          {/* <button
+          <button
             onClick={handleStartWorkout}
             className="btn btn-primary"
             disabled={!generatedWorkout || isCreatingInstance}
@@ -163,7 +165,7 @@ export default function WorkoutDetailPage() {
           >
             <Play className="w-4 h-4 mr-2" />
             {isCreatingInstance ? "Starting..." : "Start Workout"}
-          </button> */}
+          </button>
           <button
             onClick={() => {
               setShowFeedbackSuccess(false);
