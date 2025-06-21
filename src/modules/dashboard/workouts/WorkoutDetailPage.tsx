@@ -2,33 +2,32 @@ import {
   useGeneratedWorkout,
   useGeneratedWorkouts,
 } from "@/contexts/GeneratedWorkoutContext";
-import { useWorkoutFeedback } from "@/contexts/WorkoutFeedbackContext";
+import { PusherEvent } from "@/contexts/PusherEvent";
 import { useTrainerPersonaData } from "@/contexts/TrainerPersonaContext";
+import { useWorkoutFeedback } from "@/contexts/WorkoutFeedbackContext";
 import { useWorkoutInstances } from "@/contexts/WorkoutInstanceContext";
 import { WorkoutStructure } from "@/domain/entities/generatedWorkout";
-import TabBar, { TabOption } from "@/ui/shared/molecules/TabBar";
-import {
-  ArrowBigLeft,
-  ShareIcon,
-  MessageSquare,
-  CheckCircle,
-  Play,
-} from "lucide-react";
-import { useEffect, useState } from "react";
-import ReactMarkdown from "react-markdown";
-import { useParams, useNavigate } from "react-router";
-import SimpleFormatWorkoutViewer from "./components/SimpleFormatWorkoutViewer";
-import StepByStepWorkoutViewer from "./components/StepByStepWorkoutViewer";
-import StructuredWorkoutViewer from "./components/StructuredWorkoutViewer";
-import VerySimpleFormatWorkoutViewer from "./components/VerySimpleFormatWorkoutViewer";
-import WebShareButton from "./components/WebShareButton";
-import { PusherEvent } from "@/contexts/PusherEvent";
 import FeedbackModal, {
   useFeedbackModal,
 } from "@/ui/shared/molecules/FeedbackModal";
-import WorkoutFeedbackForm from "./components/WorkoutFeedbackForm";
+import TabBar, { TabOption } from "@/ui/shared/molecules/TabBar";
+import {
+  ArrowBigLeft,
+  CheckCircle,
+  MessageSquare,
+  ShareIcon,
+} from "lucide-react";
+import { useEffect, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import { useNavigate, useParams } from "react-router";
 import FeedbackSuccessState from "./components/FeedbackSuccessState";
+import SimpleFormatWorkoutViewer from "./components/SimpleFormatWorkoutViewer";
+import StepByStepWorkoutViewer from "./components/StepByStepWorkoutViewer";
+import StructuredWorkoutViewer from "./components/StructuredWorkoutViewer";
 import { TrainerPersonaDisplay } from "./components/TrainerPersonaDisplay";
+import VerySimpleFormatWorkoutViewer from "./components/VerySimpleFormatWorkoutViewer";
+import WebShareButton from "./components/WebShareButton";
+import WorkoutFeedbackForm from "./components/WorkoutFeedbackForm";
 
 interface WorkoutChunkData {
   chunk: string;
