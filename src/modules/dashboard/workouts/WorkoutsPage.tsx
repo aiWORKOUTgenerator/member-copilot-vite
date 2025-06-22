@@ -90,40 +90,47 @@ export default function AIWorkouts() {
       </AccessAwareComponent>
 
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">My Workouts</h1>
-        <div className="flex gap-2">
-          <button
-            onClick={() => navigate("/dashboard/workouts/history")}
-            className="btn btn-outline"
-            title="View workout history"
-          >
-            <History className="w-4 h-4 mr-2" />
-            History
-          </button>
-          <AccessAwareComponent
-            showSkeleton={true}
-            fallback={<div className="skeleton h-10 w-full"></div>}
-          >
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+          <h1 className="text-2xl font-bold">My Workouts</h1>
+          <div className="flex gap-2">
             <button
-              onClick={
-                isWorkoutGenerationLimitReached
-                  ? navigateToBillingPage
-                  : navigateToGeneratePage
-              }
-              className="btn btn-primary"
-              disabled={false}
-              title={
-                isWorkoutGenerationLimitReached
-                  ? "You have reached your workout generation limit. Click to upgrade your plan."
-                  : "Generate a new workout"
-              }
+              onClick={() => navigate("/dashboard/workouts/history")}
+              className="btn btn-outline"
+              title="View workout history"
             >
-              <Plus className="w-4 h-4 mr-2" />
-              {isWorkoutGenerationLimitReached
-                ? "Upgrade Plan"
-                : "Generate Workout"}
+              <History className="w-4 h-4 sm:mr-2" />
+              <span className="hidden sm:inline">History</span>
             </button>
-          </AccessAwareComponent>
+            <AccessAwareComponent
+              showSkeleton={true}
+              fallback={<div className="skeleton h-10 w-full"></div>}
+            >
+              <button
+                onClick={
+                  isWorkoutGenerationLimitReached
+                    ? navigateToBillingPage
+                    : navigateToGeneratePage
+                }
+                className="btn btn-primary"
+                disabled={false}
+                title={
+                  isWorkoutGenerationLimitReached
+                    ? "You have reached your workout generation limit. Click to upgrade your plan."
+                    : "Generate a new workout"
+                }
+              >
+                <Plus className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">
+                  {isWorkoutGenerationLimitReached
+                    ? "Upgrade Plan"
+                    : "Generate Workout"}
+                </span>
+                <span className="sm:hidden">
+                  {isWorkoutGenerationLimitReached ? "Upgrade" : "Generate"}
+                </span>
+              </button>
+            </AccessAwareComponent>
+          </div>
         </div>
       </div>
       <WorkoutList workouts={workouts} onWorkoutClick={handleWorkoutClick} />
