@@ -237,10 +237,10 @@ export default function WorkoutCustomization({
 
   return (
     <div className="mb-6">
-      <h3 className="text-lg font-semibold mb-4 flex items-center">
-        <Target className="w-5 h-5 mr-2" />
-        Workout Customization
-        <span className="text-sm font-normal text-base-content/70 ml-2">
+      <h3 className="text-lg font-semibold mb-4 flex items-center flex-wrap gap-2">
+        <Target className="w-5 h-5" />
+        <span>Workout Customization</span>
+        <span className="text-sm font-normal text-base-content/70">
           (all optional)
         </span>
       </h3>
