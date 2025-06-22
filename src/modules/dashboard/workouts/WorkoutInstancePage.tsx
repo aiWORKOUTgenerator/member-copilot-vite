@@ -176,13 +176,19 @@ export default function WorkoutInstancePage() {
 
       if (nextIncompleteElement) {
         const rect = nextIncompleteElement.getBoundingClientRect();
-        const offset =
-          window.scrollY + rect.top - window.innerHeight / 2 + rect.height / 2;
+        const currentScrollY = window.scrollY;
+        const elementTop = currentScrollY + rect.top;
 
-        window.scrollTo({
-          top: Math.max(0, offset),
-          behavior: "smooth",
-        });
+        // Only scroll if the next exercise is below the current view
+        // Add some buffer (100px) to avoid scrolling for elements just barely above
+        if (elementTop > currentScrollY + window.innerHeight - 100) {
+          const offset = elementTop - window.innerHeight / 2 + rect.height / 2;
+
+          window.scrollTo({
+            top: Math.max(0, offset),
+            behavior: "smooth",
+          });
+        }
       }
     };
 
@@ -777,6 +783,32 @@ function ExerciseCard({
   const isCompleted = exerciseInstance.completed || false;
   const notes = exerciseInstance.notes || "";
 
+  // Local state for notes editing
+  const [isEditingNotes, setIsEditingNotes] = useState(false);
+  const [localNotes, setLocalNotes] = useState(notes);
+  const notesTextareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Update local notes when exercise notes change
+  useEffect(() => {
+    setLocalNotes(notes);
+  }, [notes]);
+
+  // Focus textarea when editing starts
+  useEffect(() => {
+    if (isEditingNotes && notesTextareaRef.current) {
+      notesTextareaRef.current.focus();
+      // On mobile, scroll the element into view
+      if (window.innerWidth < 768) {
+        setTimeout(() => {
+          notesTextareaRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+        }, 100);
+      }
+    }
+  }, [isEditingNotes]);
+
   const formatExerciseDetails = () => {
     const details = [];
     if (exercise.sets) details.push(`${exercise.sets} sets`);
@@ -784,6 +816,35 @@ function ExerciseCard({
     if (exercise.weight) details.push(`${exercise.weight} lbs`);
     if (exercise.duration) details.push(`${exercise.duration}s`);
     return details.join(" × ");
+  };
+
+  const handleNotesClick = () => {
+    setIsEditingNotes(true);
+  };
+
+  const handleNotesSave = () => {
+    onNotes(exerciseId, localNotes);
+    setIsEditingNotes(false);
+  };
+
+  const handleNotesCancel = () => {
+    setLocalNotes(notes); // Revert to original
+    setIsEditingNotes(false);
+  };
+
+  const handleNotesKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleNotesSave();
+    } else if (e.key === "Escape") {
+      e.preventDefault();
+      handleNotesCancel();
+    }
+  };
+
+  const handleNotesBlur = () => {
+    // Auto-save when losing focus
+    handleNotesSave();
   };
 
   return (
@@ -795,9 +856,9 @@ function ExerciseCard({
           : "bg-base-200 border-base-300 hover:border-primary"
       }`}
     >
-      <div className="flex items-center justify-between">
-        <div className="flex-1">
-          <div className="flex items-center gap-3">
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-3 mb-2">
             <h4
               className={`font-semibold ${
                 isCompleted ? "line-through opacity-70" : ""
@@ -805,52 +866,123 @@ function ExerciseCard({
             >
               {exercise.name}
             </h4>
-            {isCompleted && <Check className="w-5 h-5 text-success" />}
+            {isCompleted && (
+              <Check className="w-5 h-5 text-success flex-shrink-0" />
+            )}
           </div>
 
           {formatExerciseDetails() && (
-            <div className="text-sm text-base-content/70 mt-1">
+            <div className="text-sm text-base-content/70 mb-2">
               <Target className="w-4 h-4 inline mr-1" />
               {formatExerciseDetails()}
             </div>
           )}
 
           {exercise.description && (
-            <div className="text-sm text-base-content/60 mt-1">
+            <div className="text-sm text-base-content/60 mb-2">
               {exercise.description}
             </div>
           )}
 
           {exercise.rest && (
-            <div className="text-sm text-base-content/60 mt-1">
+            <div className="text-sm text-base-content/60 mb-3">
               <Clock className="w-4 h-4 inline mr-1" />
               Rest: {exercise.rest}s
             </div>
           )}
 
-          {/* Notes Section */}
-          <div className="mt-2">
-            <textarea
-              value={notes}
-              onChange={(e) => onNotes(exerciseId, e.target.value)}
-              placeholder="Add notes about this exercise..."
-              className="w-full text-sm p-2 border border-base-300 rounded resize-none focus:outline-none focus:border-primary"
-              rows={2}
-            />
+          {/* Enhanced Notes Section */}
+          <div className="mt-3">
+            <div className="text-xs font-medium text-base-content/70 mb-2 flex items-center gap-1">
+              <svg
+                className="w-3 h-3"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                />
+              </svg>
+              Notes
+            </div>
+
+            {isEditingNotes ? (
+              <div className="relative">
+                <textarea
+                  ref={notesTextareaRef}
+                  value={localNotes}
+                  onChange={(e) => setLocalNotes(e.target.value)}
+                  onKeyDown={handleNotesKeyDown}
+                  onBlur={handleNotesBlur}
+                  placeholder="Add notes about this exercise..."
+                  className="w-full text-sm p-3 border-2 border-primary rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-primary/20 bg-base-100 transition-all duration-200"
+                  rows={3}
+                  autoComplete="off"
+                />
+                <div className="absolute -bottom-6 left-0 text-xs text-base-content/50">
+                  Press Enter to save, Esc to cancel
+                </div>
+              </div>
+            ) : (
+              <div
+                onClick={handleNotesClick}
+                className={`min-h-[44px] p-3 rounded-lg border border-base-300 cursor-text transition-all duration-200 hover:border-primary/50 hover:bg-base-100/50 ${
+                  notes.trim()
+                    ? "bg-base-100 text-base-content"
+                    : "bg-base-200/50 text-base-content/50"
+                }`}
+              >
+                {notes.trim() ? (
+                  <div className="text-sm whitespace-pre-wrap break-words">
+                    {notes}
+                  </div>
+                ) : (
+                  <div className="text-sm italic">
+                    Tap to add notes about this exercise...
+                  </div>
+                )}
+                <div className="flex items-center gap-1 mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <svg
+                    className="w-3 h-3 text-base-content/40"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                    />
+                  </svg>
+                  <span className="text-xs text-base-content/40">
+                    Click to edit
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
-        <div className="ml-4">
+        {/* Completion Button */}
+        <div className="flex-shrink-0 self-start">
           <button
             onClick={() => onComplete(exerciseId, !isCompleted)}
-            className={`btn btn-circle ${
-              isCompleted ? "btn-success" : "btn-outline btn-primary"
+            className={`btn btn-circle w-12 h-12 transition-all duration-200 ${
+              isCompleted
+                ? "btn-success shadow-lg"
+                : "btn-outline btn-primary hover:scale-105"
             }`}
+            aria-label={isCompleted ? "Mark as incomplete" : "Mark as complete"}
           >
             {isCompleted ? (
-              <Check className="w-5 h-5" />
+              <Check className="w-6 h-6" />
             ) : (
-              <div className="w-5 h-5 border-2 border-current rounded-full" />
+              <div className="w-6 h-6 border-2 border-current rounded-full opacity-60" />
             )}
           </button>
         </div>
