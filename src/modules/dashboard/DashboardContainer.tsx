@@ -18,6 +18,7 @@ import GeneratingTrainerPage from "./trainer/pages/GeneratingTrainerPage";
 import MyAITrainerPage from "./trainer/pages/MyAITrainerPage";
 import GeneratePage from "./workouts/GeneratePage";
 import WorkoutDetailPage from "./workouts/WorkoutDetailPage";
+import WorkoutHistoryPage from "./workouts/WorkoutHistoryPage";
 import WorkoutInstancePage from "./workouts/WorkoutInstancePage";
 import WorkoutsPage from "./workouts/WorkoutsPage";
 
@@ -68,6 +69,10 @@ export default function DashboardContainer() {
                             />
                           </Route>
                           <Route path="/workouts" element={<WorkoutsPage />} />
+                          <Route
+                            path="/workouts/history"
+                            element={<WorkoutHistoryPage />}
+                          />
                           <Route
                             path="/workouts/generate"
                             element={<GeneratePage />}

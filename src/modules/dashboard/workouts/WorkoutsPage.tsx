@@ -10,7 +10,7 @@ import { MeteredFeature } from "@/hooks/useUserAccess";
 import LoadingState from "@/ui/shared/atoms/LoadingState";
 import AccessAwareComponent from "@/ui/shared/molecules/AccessAwareComponent";
 import EmptyStateBasic from "@/ui/shared/molecules/EmptyState";
-import { Plus, AlertTriangle } from "lucide-react";
+import { Plus, AlertTriangle, History } from "lucide-react";
 import { useNavigate } from "react-router";
 import WorkoutList from "./components/WorkoutList";
 
@@ -91,30 +91,40 @@ export default function AIWorkouts() {
 
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">My Workouts</h1>
-        <AccessAwareComponent
-          showSkeleton={true}
-          fallback={<div className="skeleton h-10 w-full"></div>}
-        >
+        <div className="flex gap-2">
           <button
-            onClick={
-              isWorkoutGenerationLimitReached
-                ? navigateToBillingPage
-                : navigateToGeneratePage
-            }
-            className="btn btn-primary"
-            disabled={false}
-            title={
-              isWorkoutGenerationLimitReached
-                ? "You have reached your workout generation limit. Click to upgrade your plan."
-                : "Generate a new workout"
-            }
+            onClick={() => navigate("/dashboard/workouts/history")}
+            className="btn btn-outline"
+            title="View workout history"
           >
-            <Plus className="w-4 h-4 mr-2" />
-            {isWorkoutGenerationLimitReached
-              ? "Upgrade Plan"
-              : "Generate Workout"}
+            <History className="w-4 h-4 mr-2" />
+            History
           </button>
-        </AccessAwareComponent>
+          <AccessAwareComponent
+            showSkeleton={true}
+            fallback={<div className="skeleton h-10 w-full"></div>}
+          >
+            <button
+              onClick={
+                isWorkoutGenerationLimitReached
+                  ? navigateToBillingPage
+                  : navigateToGeneratePage
+              }
+              className="btn btn-primary"
+              disabled={false}
+              title={
+                isWorkoutGenerationLimitReached
+                  ? "You have reached your workout generation limit. Click to upgrade your plan."
+                  : "Generate a new workout"
+              }
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              {isWorkoutGenerationLimitReached
+                ? "Upgrade Plan"
+                : "Generate Workout"}
+            </button>
+          </AccessAwareComponent>
+        </div>
       </div>
       <WorkoutList workouts={workouts} onWorkoutClick={handleWorkoutClick} />
     </div>
