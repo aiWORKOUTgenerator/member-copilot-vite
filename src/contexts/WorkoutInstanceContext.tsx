@@ -1,6 +1,9 @@
 "use client";
 
-import { WorkoutInstance } from "@/domain/entities/workoutInstance";
+import {
+  WorkoutInstance,
+  WorkoutInstanceStructure,
+} from "@/domain/entities/workoutInstance";
 import {
   CreateWorkoutInstanceRequest,
   UpdateWorkoutInstanceRequest,
@@ -39,6 +42,14 @@ export interface WorkoutInstanceState {
   getInstancesByGeneratedWorkoutId: (
     generatedWorkoutId: string
   ) => WorkoutInstance[];
+  // Optimistic update methods
+  updateCurrentInstanceOptimistically: (
+    updates: Partial<WorkoutInstance>
+  ) => void;
+  updateCurrentInstanceJsonFormatOptimistically: (
+    jsonFormat: WorkoutInstanceStructure
+  ) => void;
+  syncCurrentInstanceToServer: () => Promise<void>;
 }
 
 /**
@@ -56,6 +67,7 @@ interface WorkoutInstanceProviderProps {
 /**
  * WorkoutInstanceProvider component that makes workout instance data available to all child components.
  * It fetches workout instance data on mount and provides methods to create, update, and delete instances.
+ * Now supports optimistic updates for better UX.
  */
 export function WorkoutInstanceProvider({
   children,
@@ -69,6 +81,9 @@ export function WorkoutInstanceProvider({
   const [isLoadingCurrentInstance, setIsLoadingCurrentInstance] =
     useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Track whether we have pending changes that need to be synced to server
+  const [hasPendingChanges, setHasPendingChanges] = useState<boolean>(false);
 
   const fetchInstances = useCallback(async () => {
     setIsLoading(true);
@@ -191,6 +206,7 @@ export function WorkoutInstanceProvider({
           instanceId
         );
         setCurrentInstance(instance);
+        setHasPendingChanges(false); // Reset pending changes when loading fresh
       } catch (err) {
         setError(
           err instanceof Error ? err.message : "Failed to load workout instance"
@@ -204,6 +220,7 @@ export function WorkoutInstanceProvider({
 
   const clearCurrentInstance = useCallback(() => {
     setCurrentInstance(null);
+    setHasPendingChanges(false);
   }, []);
 
   const getInstancesByGeneratedWorkoutId = useCallback(
@@ -214,6 +231,91 @@ export function WorkoutInstanceProvider({
     },
     [instances]
   );
+
+  // OPTIMISTIC UPDATE METHODS
+
+  /**
+   * Updates the current instance immediately in local state (optimistic update)
+   * Call syncCurrentInstanceToServer() to persist changes to the server
+   */
+  const updateCurrentInstanceOptimistically = useCallback(
+    (updates: Partial<WorkoutInstance>) => {
+      setCurrentInstance((prev) => {
+        if (!prev) return null;
+
+        const updatedInstance = {
+          ...prev,
+          ...updates,
+          updatedAt: new Date().toISOString(), // Update timestamp
+        };
+
+        // Also update in the instances array if it exists there
+        setInstances((prevInstances) =>
+          prevInstances.map((instance) =>
+            instance.id === prev.id ? updatedInstance : instance
+          )
+        );
+
+        setHasPendingChanges(true);
+        return updatedInstance;
+      });
+    },
+    []
+  );
+
+  /**
+   * Updates the current instance's jsonFormat immediately (optimistic update)
+   * This is useful for exercise completion, notes, etc.
+   */
+  const updateCurrentInstanceJsonFormatOptimistically = useCallback(
+    (jsonFormat: WorkoutInstanceStructure) => {
+      updateCurrentInstanceOptimistically({ jsonFormat });
+    },
+    [updateCurrentInstanceOptimistically]
+  );
+
+  /**
+   * Syncs the current instance state to the server
+   * This should be called after optimistic updates to persist changes
+   */
+  const syncCurrentInstanceToServer = useCallback(async () => {
+    if (!currentInstance || !hasPendingChanges) return;
+
+    try {
+      // Create update request with current state
+      const updateRequest: UpdateWorkoutInstanceRequest = {
+        performedAt: currentInstance.performedAt,
+        duration: currentInstance.duration,
+        notes: currentInstance.notes,
+        completed: currentInstance.completed,
+        jsonFormat: currentInstance.jsonFormat || undefined,
+      };
+
+      // Update on server - this will also update our local state
+      await updateInstance(currentInstance.id, updateRequest);
+      setHasPendingChanges(false);
+    } catch (err) {
+      console.error("Failed to sync instance to server:", err);
+      // Could implement retry logic or show a toast notification here
+      // For now, we'll leave the pending changes flag as true
+      // so the user knows there are unsaved changes
+      throw err;
+    }
+  }, [currentInstance, hasPendingChanges, updateInstance]);
+
+  // Auto-sync to server after a delay (debounced sync)
+  useEffect(() => {
+    if (!hasPendingChanges) return;
+
+    const timeoutId = setTimeout(() => {
+      syncCurrentInstanceToServer().catch((err) => {
+        console.warn("Auto-sync failed:", err);
+        // Silently fail for auto-sync, but keep pending changes flag
+      });
+    }, 2000); // Sync after 2 seconds of inactivity
+
+    return () => clearTimeout(timeoutId);
+  }, [hasPendingChanges, syncCurrentInstanceToServer]);
 
   // Fetch workout instance data when the component mounts
   useEffect(() => {
@@ -238,6 +340,9 @@ export function WorkoutInstanceProvider({
     updateInstance,
     deleteInstance,
     getInstancesByGeneratedWorkoutId,
+    updateCurrentInstanceOptimistically,
+    updateCurrentInstanceJsonFormatOptimistically,
+    syncCurrentInstanceToServer,
   };
 
   return (

@@ -5,23 +5,13 @@ import {
   useCurrentWorkoutInstance,
   useCurrentWorkoutInstanceLoading,
 } from "@/contexts/WorkoutInstanceContext";
-import {
-  ExerciseInstance,
-  SectionInstance,
-} from "@/domain/entities/workoutInstance";
+import { ExerciseInstance } from "@/domain/entities/workoutInstance";
 import { Exercise, Section } from "@/domain/entities/generatedWorkout";
 import { Check, X, Clock, Target } from "lucide-react";
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import { useParams, useNavigate } from "react-router";
 import { useTrainerPersonaData } from "@/contexts/TrainerPersonaContext";
 import { TrainerPersonaDisplay } from "./components/TrainerPersonaDisplay";
-
-interface ExerciseCompletionState {
-  [exerciseId: string]: {
-    completed: boolean;
-    notes?: string;
-  };
-}
 
 interface WorkoutProgress {
   totalExercises: number;
@@ -43,15 +33,17 @@ export default function WorkoutInstancePage() {
   const contentRef = useRef<HTMLDivElement>(null);
   const sectionRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  const { loadCurrentInstance, clearCurrentInstance, updateInstance } =
-    useWorkoutInstances();
+  const {
+    loadCurrentInstance,
+    clearCurrentInstance,
+    updateCurrentInstanceOptimistically,
+    updateCurrentInstanceJsonFormatOptimistically,
+    syncCurrentInstanceToServer,
+  } = useWorkoutInstances();
   const currentInstance = useCurrentWorkoutInstance();
   const isLoading = useCurrentWorkoutInstanceLoading();
   const trainerPersona = useTrainerPersonaData();
 
-  const [exerciseStates, setExerciseStates] = useState<ExerciseCompletionState>(
-    {}
-  );
   const [workoutProgress, setWorkoutProgress] = useState<WorkoutProgress>({
     totalExercises: 0,
     completedExercises: 0,
@@ -63,7 +55,6 @@ export default function WorkoutInstancePage() {
     currentSectionIndex: 0,
     sectionsInView: [],
   });
-  const [isUpdating, setIsUpdating] = useState(false);
   const [lastCompletedExercise, setLastCompletedExercise] = useState<
     string | null
   >(null);
@@ -82,37 +73,28 @@ export default function WorkoutInstancePage() {
     };
   }, [instanceId, loadCurrentInstance, clearCurrentInstance]);
 
-  // Initialize exercise states and calculate progress when instance loads
+  // Calculate progress whenever current instance changes
   useEffect(() => {
     if (currentInstance?.jsonFormat?.sections) {
       const sections = currentInstance.jsonFormat.sections;
       let totalExercises = 0;
-      const initialStates: ExerciseCompletionState = {};
+      let completedExercises = 0;
 
-      sections.forEach((section, sectionIndex) => {
-        section.exercises?.forEach((_, exerciseIndex) => {
-          const exerciseId = `section-${sectionIndex}-exercise-${exerciseIndex}`;
+      sections.forEach((section) => {
+        section.exercises?.forEach((exercise) => {
           totalExercises++;
-
-          // Initialize from existing instance data if available
-          const existingExercise = (section as SectionInstance).exercises?.[
-            exerciseIndex
-          ] as ExerciseInstance;
-          initialStates[exerciseId] = {
-            completed: existingExercise?.completed || false,
-            notes: existingExercise?.notes,
-          };
+          if ((exercise as ExerciseInstance).completed) {
+            completedExercises++;
+          }
         });
       });
 
-      setExerciseStates(initialStates);
-      setWorkoutProgress((prev) => ({
-        ...prev,
+      setWorkoutProgress({
         totalExercises,
-        completedExercises: Object.values(initialStates).filter(
-          (state) => state.completed
-        ).length,
-      }));
+        completedExercises,
+        currentSectionIndex: 0,
+        currentExerciseIndex: 0,
+      });
 
       // Initialize section refs array
       sectionRefs.current = new Array(sections.length).fill(null);
@@ -175,9 +157,20 @@ export default function WorkoutInstancePage() {
 
       for (const element of exerciseElements) {
         const exerciseId = element.getAttribute("data-exercise-id");
-        if (exerciseId && !exerciseStates[exerciseId]?.completed) {
-          nextIncompleteElement = element;
-          break;
+        if (exerciseId) {
+          // Parse exerciseId to find the exercise in our data
+          const [, sectionIndexStr, , exerciseIndexStr] = exerciseId.split("-");
+          const sectionIndex = parseInt(sectionIndexStr);
+          const exerciseIndex = parseInt(exerciseIndexStr);
+
+          const exercise =
+            currentInstance?.jsonFormat?.sections[sectionIndex]?.exercises[
+              exerciseIndex
+            ];
+          if (exercise && !(exercise as ExerciseInstance).completed) {
+            nextIncompleteElement = element;
+            break;
+          }
         }
       }
 
@@ -196,9 +189,16 @@ export default function WorkoutInstancePage() {
     // Small delay to allow state to update
     const timeoutId = setTimeout(scrollToNextIncompleteExercise, 300);
     return () => clearTimeout(timeoutId);
-  }, [lastCompletedExercise, exerciseStates]);
+  }, [lastCompletedExercise, currentInstance]);
 
   const handleClose = () => {
+    const progressPercentage =
+      workoutProgress.totalExercises > 0
+        ? (workoutProgress.completedExercises /
+            workoutProgress.totalExercises) *
+          100
+        : 0;
+
     if (progressPercentage > 0 && !currentInstance?.completed) {
       setShowExitConfirm(true);
     } else {
@@ -217,33 +217,61 @@ export default function WorkoutInstancePage() {
 
   const handleExerciseComplete = useCallback(
     (exerciseId: string, completed: boolean) => {
-      setExerciseStates((prev) => {
-        const newStates = {
-          ...prev,
-          [exerciseId]: {
-            ...prev[exerciseId],
-            completed,
-          },
-        };
+      if (!currentInstance?.jsonFormat) return;
 
-        // Update progress
-        const completedCount = Object.values(newStates).filter(
-          (state) => state.completed
-        ).length;
-        setWorkoutProgress((prev) => ({
-          ...prev,
-          completedExercises: completedCount,
-        }));
+      // Parse the exerciseId to get section and exercise indices
+      const [, sectionIndexStr, , exerciseIndexStr] = exerciseId.split("-");
+      const sectionIndex = parseInt(sectionIndexStr);
+      const exerciseIndex = parseInt(exerciseIndexStr);
 
-        return newStates;
-      });
+      // Create a deep copy of the current jsonFormat
+      const updatedJsonFormat = JSON.parse(
+        JSON.stringify(currentInstance.jsonFormat)
+      );
 
-      // Track last completed exercise for auto-scroll
-      if (completed) {
-        setLastCompletedExercise(exerciseId);
+      // Update the specific exercise
+      if (updatedJsonFormat.sections[sectionIndex]?.exercises[exerciseIndex]) {
+        updatedJsonFormat.sections[sectionIndex].exercises[
+          exerciseIndex
+        ].completed = completed;
+
+        // Update the local state optimistically
+        updateCurrentInstanceJsonFormatOptimistically(updatedJsonFormat);
+
+        // Track last completed exercise for auto-scroll
+        if (completed) {
+          setLastCompletedExercise(exerciseId);
+        }
       }
     },
-    []
+    [currentInstance, updateCurrentInstanceJsonFormatOptimistically]
+  );
+
+  const handleExerciseNotes = useCallback(
+    (exerciseId: string, notes: string) => {
+      if (!currentInstance?.jsonFormat) return;
+
+      // Parse the exerciseId to get section and exercise indices
+      const [, sectionIndexStr, , exerciseIndexStr] = exerciseId.split("-");
+      const sectionIndex = parseInt(sectionIndexStr);
+      const exerciseIndex = parseInt(exerciseIndexStr);
+
+      // Create a deep copy of the current jsonFormat
+      const updatedJsonFormat = JSON.parse(
+        JSON.stringify(currentInstance.jsonFormat)
+      );
+
+      // Update the specific exercise notes
+      if (updatedJsonFormat.sections[sectionIndex]?.exercises[exerciseIndex]) {
+        updatedJsonFormat.sections[sectionIndex].exercises[
+          exerciseIndex
+        ].notes = notes;
+
+        // Update the local state optimistically
+        updateCurrentInstanceJsonFormatOptimistically(updatedJsonFormat);
+      }
+    },
+    [currentInstance, updateCurrentInstanceJsonFormatOptimistically]
   );
 
   const handleMarkAllComplete = useCallback(async () => {
@@ -251,28 +279,23 @@ export default function WorkoutInstancePage() {
 
     setIsMarkingAllComplete(true);
 
-    const newStates: ExerciseCompletionState = {};
-    let totalExercises = 0;
+    // Create a deep copy and mark all exercises as completed
+    const updatedJsonFormat = JSON.parse(
+      JSON.stringify(currentInstance.jsonFormat)
+    );
 
-    currentInstance.jsonFormat.sections.forEach((section, sectionIndex) => {
-      section.exercises?.forEach((_, exerciseIndex) => {
-        const exerciseId = `section-${sectionIndex}-exercise-${exerciseIndex}`;
-        totalExercises++;
-        newStates[exerciseId] = {
-          ...exerciseStates[exerciseId],
-          completed: true,
-        };
-      });
-    });
+    updatedJsonFormat.sections.forEach(
+      (section: { exercises?: { completed: boolean }[] }) => {
+        section.exercises?.forEach((exercise: { completed: boolean }) => {
+          exercise.completed = true;
+        });
+      }
+    );
 
-    // Animate the completion with a slight delay for visual effect
-    setExerciseStates(newStates);
-    setWorkoutProgress((prev) => ({
-      ...prev,
-      completedExercises: totalExercises,
-    }));
+    // Update optimistically
+    updateCurrentInstanceJsonFormatOptimistically(updatedJsonFormat);
 
-    // Small delay for the animation to complete
+    // Small delay for visual effect
     setTimeout(() => {
       setIsMarkingAllComplete(false);
 
@@ -293,25 +316,29 @@ export default function WorkoutInstancePage() {
         });
       }
     }, 1000);
-  }, [currentInstance, exerciseStates]);
+  }, [currentInstance, updateCurrentInstanceJsonFormatOptimistically]);
 
   const handleCompleteWorkout = async () => {
     if (!currentInstance) return;
 
-    setIsUpdating(true);
     try {
-      await updateInstance(currentInstance.id, {
+      // Update workout as completed with duration
+      const duration = Math.round(
+        (new Date().getTime() -
+          new Date(currentInstance.performedAt).getTime()) /
+          60000
+      );
+
+      updateCurrentInstanceOptimistically({
         completed: true,
-        duration: Math.round(
-          (new Date().getTime() -
-            new Date(currentInstance.performedAt).getTime()) /
-            60000
-        ),
+        duration: duration,
       });
+
+      // Sync to server
+      await syncCurrentInstanceToServer();
     } catch (error) {
       console.error("Failed to complete workout:", error);
-    } finally {
-      setIsUpdating(false);
+      // Could show error toast here
     }
   };
 
@@ -432,7 +459,6 @@ export default function WorkoutInstancePage() {
         <VerticalProgressIndicator
           sections={currentInstance.jsonFormat.sections}
           scrollProgress={scrollProgress}
-          exerciseStates={exerciseStates}
         />
       </div>
 
@@ -535,8 +561,8 @@ export default function WorkoutInstancePage() {
               }}
               section={section}
               sectionIndex={sectionIndex}
-              exerciseStates={exerciseStates}
               onExerciseComplete={handleExerciseComplete}
+              onExerciseNotes={handleExerciseNotes}
             />
           ))}
         </div>
@@ -546,11 +572,11 @@ export default function WorkoutInstancePage() {
           <div className="mt-8 text-center">
             <button
               onClick={handleCompleteWorkout}
-              disabled={isUpdating}
+              disabled={isMarkingAllComplete}
               className="btn btn-success btn-lg"
               data-complete-workout
             >
-              {isUpdating ? (
+              {isMarkingAllComplete ? (
                 <>
                   <span className="loading loading-spinner loading-sm"></span>
                   Completing...
@@ -601,11 +627,9 @@ export default function WorkoutInstancePage() {
 function VerticalProgressIndicator({
   sections,
   scrollProgress,
-  exerciseStates,
 }: {
   sections: Section[];
   scrollProgress: ScrollProgress;
-  exerciseStates: ExerciseCompletionState;
 }) {
   const getSectionCompletion = (sectionIndex: number) => {
     const section = sections[sectionIndex];
@@ -614,8 +638,7 @@ function VerticalProgressIndicator({
     const exercises = section.exercises;
     const total = exercises.length;
     const completed = exercises.filter(
-      (_, idx) =>
-        exerciseStates[`section-${sectionIndex}-exercise-${idx}`]?.completed
+      (exercise) => (exercise as ExerciseInstance).completed
     ).length;
 
     return { completed, total };
@@ -678,16 +701,15 @@ const SectionCard = React.forwardRef<
   {
     section: Section;
     sectionIndex: number;
-    exerciseStates: ExerciseCompletionState;
     onExerciseComplete: (exerciseId: string, completed: boolean) => void;
+    onExerciseNotes: (exerciseId: string, notes: string) => void;
   }
->(({ section, sectionIndex, exerciseStates, onExerciseComplete }, ref) => {
+>(({ section, sectionIndex, onExerciseComplete, onExerciseNotes }, ref) => {
   const [isExpanded, setIsExpanded] = useState(true);
 
   const exercises = Array.isArray(section.exercises) ? section.exercises : [];
   const completedInSection = exercises.filter(
-    (_, idx) =>
-      exerciseStates[`section-${sectionIndex}-exercise-${idx}`]?.completed
+    (exercise) => (exercise as ExerciseInstance).completed
   ).length;
 
   return (
@@ -727,12 +749,8 @@ const SectionCard = React.forwardRef<
               key={exerciseIndex}
               exercise={exercise}
               exerciseId={`section-${sectionIndex}-exercise-${exerciseIndex}`}
-              exerciseState={
-                exerciseStates[
-                  `section-${sectionIndex}-exercise-${exerciseIndex}`
-                ]
-              }
               onComplete={onExerciseComplete}
+              onNotes={onExerciseNotes}
             />
           ))}
         </div>
@@ -747,15 +765,17 @@ SectionCard.displayName = "SectionCard";
 function ExerciseCard({
   exercise,
   exerciseId,
-  exerciseState,
   onComplete,
+  onNotes,
 }: {
   exercise: Exercise;
   exerciseId: string;
-  exerciseState?: ExerciseCompletionState[string];
   onComplete: (exerciseId: string, completed: boolean) => void;
+  onNotes: (exerciseId: string, notes: string) => void;
 }) {
-  const isCompleted = exerciseState?.completed || false;
+  const exerciseInstance = exercise as ExerciseInstance;
+  const isCompleted = exerciseInstance.completed || false;
+  const notes = exerciseInstance.notes || "";
 
   const formatExerciseDetails = () => {
     const details = [];
@@ -807,6 +827,17 @@ function ExerciseCard({
               Rest: {exercise.rest}s
             </div>
           )}
+
+          {/* Notes Section */}
+          <div className="mt-2">
+            <textarea
+              value={notes}
+              onChange={(e) => onNotes(exerciseId, e.target.value)}
+              placeholder="Add notes about this exercise..."
+              className="w-full text-sm p-2 border border-base-300 rounded resize-none focus:outline-none focus:border-primary"
+              rows={2}
+            />
+          </div>
         </div>
 
         <div className="ml-4">
