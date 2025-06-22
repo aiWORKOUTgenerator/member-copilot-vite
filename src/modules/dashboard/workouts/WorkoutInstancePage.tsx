@@ -147,53 +147,82 @@ export default function WorkoutInstancePage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [currentInstance?.jsonFormat?.sections]);
 
-  // Auto-scroll to next exercise on desktop when one is completed
+  // Auto-scroll to next incomplete exercise when one is completed
   useEffect(() => {
-    if (!lastCompletedExercise || window.innerWidth < 1024) return; // Only on desktop (lg and up)
+    if (!lastCompletedExercise || !currentInstance?.jsonFormat?.sections)
+      return;
 
     const scrollToNextIncompleteExercise = () => {
-      const exerciseElements = document.querySelectorAll("[data-exercise-id]");
-      let nextIncompleteElement: Element | null = null;
+      // Parse the completed exercise ID to find its position
+      const [, completedSectionIndexStr, , completedExerciseIndexStr] =
+        lastCompletedExercise.split("-");
+      const completedSectionIndex = parseInt(completedSectionIndexStr);
+      const completedExerciseIndex = parseInt(completedExerciseIndexStr);
 
-      for (const element of exerciseElements) {
-        const exerciseId = element.getAttribute("data-exercise-id");
-        if (exerciseId) {
-          // Parse exerciseId to find the exercise in our data
-          const [, sectionIndexStr, , exerciseIndexStr] = exerciseId.split("-");
-          const sectionIndex = parseInt(sectionIndexStr);
-          const exerciseIndex = parseInt(exerciseIndexStr);
+      // Find the next incomplete exercise in the data structure
+      let nextExerciseId: string | null = null;
+      const sections = currentInstance.jsonFormat!.sections;
 
-          const exercise =
-            currentInstance?.jsonFormat?.sections[sectionIndex]?.exercises[
-              exerciseIndex
-            ];
-          if (exercise && !(exercise as ExerciseInstance).completed) {
-            nextIncompleteElement = element;
+      // Start searching from the completed exercise onwards
+      for (
+        let sectionIndex = completedSectionIndex;
+        sectionIndex < sections.length;
+        sectionIndex++
+      ) {
+        const section = sections[sectionIndex];
+        if (!section.exercises) continue;
+
+        // For the same section as completed exercise, start from next exercise
+        // For other sections, start from first exercise
+        const startExerciseIndex =
+          sectionIndex === completedSectionIndex
+            ? completedExerciseIndex + 1
+            : 0;
+
+        for (
+          let exerciseIndex = startExerciseIndex;
+          exerciseIndex < section.exercises.length;
+          exerciseIndex++
+        ) {
+          const exercise = section.exercises[exerciseIndex] as ExerciseInstance;
+          if (!exercise.completed) {
+            nextExerciseId = `section-${sectionIndex}-exercise-${exerciseIndex}`;
             break;
           }
         }
+
+        if (nextExerciseId) break;
       }
 
-      if (nextIncompleteElement) {
-        const rect = nextIncompleteElement.getBoundingClientRect();
-        const currentScrollY = window.scrollY;
-        const elementTop = currentScrollY + rect.top;
+      // If we found a next incomplete exercise, scroll to it
+      if (nextExerciseId) {
+        const nextElement = document.querySelector(
+          `[data-exercise-id="${nextExerciseId}"]`
+        );
+        if (nextElement) {
+          const rect = nextElement.getBoundingClientRect();
+          const currentScrollY = window.scrollY;
+          const elementTop = currentScrollY + rect.top;
 
-        // Only scroll if the next exercise is below the current view
-        // Add some buffer (100px) to avoid scrolling for elements just barely above
-        if (elementTop > currentScrollY + window.innerHeight - 100) {
-          const offset = elementTop - window.innerHeight / 2 + rect.height / 2;
+          // Only scroll if the next exercise is below the current viewport
+          // Add buffer to account for fixed header (120px) plus some extra space (50px)
+          if (elementTop > currentScrollY + window.innerHeight - 170) {
+            // Scroll so the exercise is centered in viewport, accounting for fixed header
+            const headerHeight = 120; // Fixed header height
+            const viewportCenter = window.innerHeight / 2;
+            const targetScrollY = elementTop - viewportCenter - headerHeight;
 
-          window.scrollTo({
-            top: Math.max(0, offset),
-            behavior: "smooth",
-          });
+            window.scrollTo({
+              top: Math.max(0, targetScrollY),
+              behavior: "smooth",
+            });
+          }
         }
       }
     };
 
-    // Small delay to allow state to update
-    const timeoutId = setTimeout(scrollToNextIncompleteExercise, 300);
+    // Small delay to allow DOM to update after state change
+    const timeoutId = setTimeout(scrollToNextIncompleteExercise, 400);
     return () => clearTimeout(timeoutId);
   }, [lastCompletedExercise, currentInstance]);
 
