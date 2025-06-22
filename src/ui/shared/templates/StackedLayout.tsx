@@ -216,6 +216,14 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
                     <li key={item.name}>
                       <Link
                         to={item.href}
+                        onClick={() => {
+                          // Remove focus from dropdown to close it
+                          const activeElement =
+                            document.activeElement as HTMLElement;
+                          if (activeElement) {
+                            activeElement.blur();
+                          }
+                        }}
                         className={classNames(
                           isCurrentPage
                             ? "menu-active bg-primary text-white"
@@ -246,6 +254,12 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
                     </li>
                   );
                 })}
+                {/* User profile for mobile */}
+                <li className="mt-2 pt-2 border-t border-base-200">
+                  <div className="flex justify-center">
+                    <UserButton />
+                  </div>
+                </li>
               </ul>
             </div>
           </div>

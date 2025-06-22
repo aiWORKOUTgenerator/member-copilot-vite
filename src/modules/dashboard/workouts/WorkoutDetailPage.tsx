@@ -188,23 +188,29 @@ export default function WorkoutDetailPage() {
 
   return (
     <div className="p-4">
-      <div className="mb-4 flex justify-between items-center">
+      <div className="mb-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
         <button
           onClick={() => window.history.back()}
-          className="btn btn-ghost flex items-center"
+          className="btn btn-ghost flex items-center self-start"
         >
           <ArrowBigLeft className="w-4 h-4" />
-          Back to workouts
+          <span className="hidden sm:inline ml-2">Back to workouts</span>
+          <span className="sm:hidden ml-2">Back</span>
         </button>
-        <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
           <button
             onClick={handleStartWorkout}
-            className="btn btn-primary"
+            className="btn btn-primary flex-1 sm:flex-initial"
             disabled={!generatedWorkout || isCreatingInstance}
             title="Start a new workout session"
           >
             <Play className="w-4 h-4 mr-2" />
-            {isCreatingInstance ? "Starting..." : "Start Workout"}
+            <span className="hidden sm:inline">
+              {isCreatingInstance ? "Starting..." : "Start Workout"}
+            </span>
+            <span className="sm:hidden">
+              {isCreatingInstance ? "Starting..." : "Start"}
+            </span>
           </button>
           <button
             onClick={() => {
@@ -214,7 +220,7 @@ export default function WorkoutDetailPage() {
             }}
             className={`btn ${
               existingFeedback ? "btn-success" : "btn-outline"
-            }`}
+            } flex-1 sm:flex-initial`}
             disabled={!generatedWorkout}
             title={existingFeedback ? "Workout Rated" : "Rate This Workout"}
           >
@@ -223,16 +229,24 @@ export default function WorkoutDetailPage() {
             ) : (
               <MessageSquare className="w-4 h-4 mr-2" />
             )}
-            {existingFeedback ? "Workout Rated" : "Rate This Workout"}
+            <span className="hidden sm:inline">
+              {existingFeedback ? "Workout Rated" : "Rate This Workout"}
+            </span>
+            <span className="sm:hidden">
+              {existingFeedback ? "Rated" : "Rate"}
+            </span>
           </button>
-          <WebShareButton
-            disabled={!verySimpleFormat && !simpleFormat}
-            title="Workout Plan"
-            text={verySimpleFormat || simpleFormat || ""}
-          >
-            <ShareIcon className="w-4 h-4 mr-2" />
-            Share Workout
-          </WebShareButton>
+          <div className="flex-1 sm:flex-initial">
+            <WebShareButton
+              disabled={!verySimpleFormat && !simpleFormat}
+              title="Workout Plan"
+              text={verySimpleFormat || simpleFormat || ""}
+            >
+              <ShareIcon className="w-4 h-4 mr-2" />
+              <span className="hidden sm:inline">Share Workout</span>
+              <span className="sm:hidden">Share</span>
+            </WebShareButton>
+          </div>
         </div>
       </div>
 
@@ -384,7 +398,7 @@ export default function WorkoutDetailPage() {
                   </p>
                 </div>
                 <div className="bg-base-200 rounded-lg p-4 space-y-2 text-left">
-                  <div className="grid grid-cols-3 gap-4 text-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 text-sm">
                     <div>
                       <span className="font-medium">Overall:</span>{" "}
                       {existingFeedback.overallRating}/5 ⭐
