@@ -1,6 +1,7 @@
 "use client";
 
 import { useWorkoutInstances } from "@/contexts/WorkoutInstanceContext";
+import { useTrainerPersonaData } from "@/contexts/TrainerPersonaContext";
 import { WorkoutInstance } from "@/domain/entities/workoutInstance";
 import LoadingState from "@/ui/shared/atoms/LoadingState";
 import EmptyStateBasic from "@/ui/shared/molecules/EmptyState";
@@ -14,6 +15,7 @@ import {
   formatDate,
 } from "./utils/workoutHistoryUtils";
 import { WorkoutTimeline } from "./components/WorkoutTimeline";
+import { TrainerPersonaDisplay } from "./components/TrainerPersonaDisplay";
 
 /**
  * Simple workout history page showing instances from the last month
@@ -22,6 +24,7 @@ export default function WorkoutHistoryPage() {
   const { instances, isLoading, error } = useWorkoutInstances();
   const navigate = useNavigate();
   const [viewMode, setViewMode] = useState<"timeline" | "list">("timeline");
+  const trainerPersona = useTrainerPersonaData();
 
   // Filter to last month's workouts
   const recentWorkouts = useMemo(() => {
@@ -102,6 +105,16 @@ export default function WorkoutHistoryPage() {
           </button>
         </div>
       </div>
+
+      {/* Trainer Persona Section */}
+      {trainerPersona && (
+        <div className="mb-6 p-3 bg-base-100 border border-base-300 rounded-lg">
+          <TrainerPersonaDisplay trainerPersona={trainerPersona} />
+          <div className="mt-2 text-sm text-base-content/70">
+            <p>Here's your workout history and progress overview:</p>
+          </div>
+        </div>
+      )}
 
       <div className="mb-6">
         <div className="stats shadow stats-horizontal">
