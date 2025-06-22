@@ -59,6 +59,7 @@ export default function WorkoutInstancePage() {
     string | null
   >(null);
   const [showExitConfirm, setShowExitConfirm] = useState(false);
+  const [showCompleteConfirm, setShowCompleteConfirm] = useState(false);
   const [isMarkingAllComplete, setIsMarkingAllComplete] = useState(false);
 
   // Load the workout instance when component mounts
@@ -356,6 +357,26 @@ export default function WorkoutInstancePage() {
   const handleCompleteWorkout = async () => {
     if (!currentInstance) return;
 
+    // If workout is not 100% complete, show confirmation dialog
+    const progressPercentage =
+      workoutProgress.totalExercises > 0
+        ? (workoutProgress.completedExercises /
+            workoutProgress.totalExercises) *
+          100
+        : 0;
+
+    if (progressPercentage < 100) {
+      setShowCompleteConfirm(true);
+      return;
+    }
+
+    // Complete the workout directly if 100% done
+    await completeWorkoutDirectly();
+  };
+
+  const completeWorkoutDirectly = async () => {
+    if (!currentInstance) return;
+
     try {
       // Update workout as completed with duration
       const duration = Math.round(
@@ -371,10 +392,24 @@ export default function WorkoutInstancePage() {
 
       // Sync to server
       await syncCurrentInstanceToServer();
+
+      // Navigate back to workouts page after successful completion
+      setTimeout(() => {
+        navigate("/dashboard/workouts");
+      }, 1000); // Small delay to show success state
     } catch (error) {
       console.error("Failed to complete workout:", error);
       // Could show error toast here
     }
+  };
+
+  const handleConfirmComplete = async () => {
+    setShowCompleteConfirm(false);
+    await completeWorkoutDirectly();
+  };
+
+  const handleCancelComplete = () => {
+    setShowCompleteConfirm(false);
   };
 
   if (isLoading) {
@@ -471,13 +506,42 @@ export default function WorkoutInstancePage() {
               </div>
             </div>
           </div>
-          <button
-            onClick={handleClose}
-            className="btn btn-ghost btn-sm btn-circle"
-            aria-label="Close workout"
-          >
-            <X className="w-5 h-5" />
-          </button>
+
+          {/* Header Actions */}
+          <div className="flex items-center gap-2">
+            {/* Finish Workout Button - Show when there's progress and workout isn't completed */}
+            {progressPercentage > 0 && !currentInstance.completed && (
+              <button
+                onClick={handleCompleteWorkout}
+                disabled={isMarkingAllComplete}
+                className="btn btn-primary btn-sm gap-1 hidden sm:flex"
+                title="Finish workout now"
+              >
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.5-7 1.5 2 2.5 5 2.5 7 2-1 2.657-2.657 2.657-2.657A8 8 0 0117.657 18.657z"
+                  />
+                </svg>
+                <span className="hidden md:inline">Finish</span>
+              </button>
+            )}
+
+            <button
+              onClick={handleClose}
+              className="btn btn-ghost btn-sm btn-circle"
+              aria-label="Close workout"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         {/* Progress Bar */}
@@ -499,14 +563,40 @@ export default function WorkoutInstancePage() {
 
       {/* Fixed Progress Indicator (Mobile) */}
       <div className="fixed bottom-6 right-6 z-40 lg:hidden">
-        <div className="bg-primary text-primary-content rounded-full w-16 h-16 flex items-center justify-center shadow-lg">
-          <div className="text-center">
-            <div className="text-xs font-bold">
-              {Math.round(progressPercentage)}%
+        {!currentInstance.completed && progressPercentage > 0 ? (
+          <button
+            onClick={handleCompleteWorkout}
+            disabled={isMarkingAllComplete}
+            className="bg-primary hover:bg-primary-focus text-primary-content rounded-full w-16 h-16 flex items-center justify-center shadow-lg transition-all duration-200 hover:scale-105 active:scale-95"
+            title="Finish workout"
+          >
+            <div className="text-center">
+              <svg
+                className="w-5 h-5 mx-auto mb-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
+                />
+              </svg>
+              <div className="text-xs font-bold">Finish</div>
             </div>
-            <div className="text-xs opacity-80">done</div>
+          </button>
+        ) : (
+          <div className="bg-primary text-primary-content rounded-full w-16 h-16 flex items-center justify-center shadow-lg">
+            <div className="text-center">
+              <div className="text-xs font-bold">
+                {Math.round(progressPercentage)}%
+              </div>
+              <div className="text-xs opacity-80">done</div>
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Workout Content */}
@@ -602,24 +692,36 @@ export default function WorkoutInstancePage() {
           ))}
         </div>
 
-        {/* Complete Workout Button */}
+        {/* Finish Workout Button */}
         {!currentInstance.completed && (
           <div className="mt-8 text-center">
             <button
               onClick={handleCompleteWorkout}
               disabled={isMarkingAllComplete}
-              className="btn btn-success btn-lg"
+              className="btn btn-primary btn-lg"
               data-complete-workout
             >
               {isMarkingAllComplete ? (
                 <>
                   <span className="loading loading-spinner loading-sm"></span>
-                  Completing...
+                  Finishing...
                 </>
               ) : (
                 <>
-                  <Check className="w-5 h-5 mr-2" />
-                  Complete Workout
+                  <svg
+                    className="w-5 h-5 mr-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.5-7 1.5 2 2.5 5 2.5 7 2-1 2.657-2.657 2.657-2.657A8 8 0 0117.657 18.657z"
+                    />
+                  </svg>
+                  Finish Workout
                   {progressPercentage < 100 && (
                     <span className="ml-2 text-xs opacity-70">
                       ({Math.round(progressPercentage)}% done)
@@ -648,6 +750,39 @@ export default function WorkoutInstancePage() {
                 </button>
                 <button onClick={handleConfirmExit} className="btn btn-error">
                   Exit Workout
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Complete Workout Confirmation Modal */}
+      {showCompleteConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-base-100 rounded-lg shadow-xl max-w-md w-full">
+            <div className="p-6">
+              <h3 className="text-lg font-bold mb-4">
+                Complete Workout Early?
+              </h3>
+              <p className="text-base-content/70 mb-6">
+                You're {Math.round(progressPercentage)}% through your workout.
+                Are you sure you want to complete it now? You can always come
+                back to finish the remaining exercises later.
+              </p>
+              <div className="flex gap-3 justify-end">
+                <button
+                  onClick={handleCancelComplete}
+                  className="btn btn-ghost"
+                >
+                  Keep Going
+                </button>
+                <button
+                  onClick={handleConfirmComplete}
+                  className="btn btn-success"
+                >
+                  <Check className="w-4 h-4 mr-2" />
+                  Complete Workout
                 </button>
               </div>
             </div>
