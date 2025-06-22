@@ -210,12 +210,17 @@ export function WorkoutTimeline({
   const navigate = (direction: "prev" | "next") => {
     setCurrentDate((prev) => {
       const newDate = new Date(prev);
-      if (viewMode === "week") {
-        // Navigate by week
+
+      // Check if we're on mobile (screen width check via window.innerWidth)
+      // or if we're in week view mode
+      const isMobile = typeof window !== "undefined" && window.innerWidth < 640; // sm breakpoint
+
+      if (viewMode === "week" || isMobile) {
+        // Navigate by week on mobile or when in week view
         const days = direction === "prev" ? -7 : 7;
         newDate.setDate(newDate.getDate() + days);
       } else {
-        // Navigate by month
+        // Navigate by month on desktop month view
         if (direction === "prev") {
           newDate.setMonth(newDate.getMonth() - 1);
         } else {
@@ -351,50 +356,12 @@ export function WorkoutTimeline({
 
   const renderWeeklySummary = (summary: WeekSummary) => {
     return (
-      <div className="bg-base-100 border border-base-200 rounded-lg p-3 min-h-20">
-        <div className="text-xs font-medium text-base-content/70 mb-2">
-          Week Summary
-        </div>
-        <div className="space-y-1">
-          <div className="flex justify-between text-xs">
-            <span>Workouts:</span>
-            <span className="font-medium">{summary.totalWorkouts}</span>
+      <div className="bg-base-100 border border-base-200 rounded-lg p-3 min-h-20 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-2xl font-bold text-primary mb-1">
+            {summary.activeDays}
           </div>
-          <div className="flex justify-between text-xs">
-            <span>Completed:</span>
-            <span
-              className={`font-medium ${
-                summary.completedWorkouts > 0 ? "text-success" : ""
-              }`}
-            >
-              {summary.completedWorkouts}
-            </span>
-          </div>
-          <div className="flex justify-between text-xs">
-            <span>Active days:</span>
-            <span className="font-medium">{summary.activeDays}/7</span>
-          </div>
-          {summary.totalDuration > 0 && (
-            <div className="flex justify-between text-xs">
-              <span>Duration:</span>
-              <span className="font-medium">{summary.totalDuration}min</span>
-            </div>
-          )}
-          {summary.totalWorkouts > 0 && (
-            <div className="text-xs mt-2">
-              <div
-                className={`text-center font-medium ${
-                  summary.completionRate >= 80
-                    ? "text-success"
-                    : summary.completionRate >= 50
-                    ? "text-warning"
-                    : "text-error"
-                }`}
-              >
-                {summary.completionRate}% complete
-              </div>
-            </div>
-          )}
+          <div className="text-xs text-base-content/70">active days</div>
         </div>
       </div>
     );
@@ -408,17 +375,28 @@ export function WorkoutTimeline({
           <button
             onClick={() => navigate("prev")}
             className="btn btn-ghost btn-sm"
-            aria-label={`Previous ${viewMode}`}
+            aria-label={`Previous ${
+              typeof window !== "undefined" && window.innerWidth < 640
+                ? "week"
+                : viewMode
+            }`}
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
           <h2 className="text-lg font-semibold min-w-32 text-center">
-            {viewMode === "week" ? weekRange.text : monthName}
+            <span className="hidden sm:inline">
+              {viewMode === "week" ? weekRange.text : monthName}
+            </span>
+            <span className="sm:hidden">{weekRange.text}</span>
           </h2>
           <button
             onClick={() => navigate("next")}
             className="btn btn-ghost btn-sm"
-            aria-label={`Next ${viewMode}`}
+            aria-label={`Next ${
+              typeof window !== "undefined" && window.innerWidth < 640
+                ? "week"
+                : viewMode
+            }`}
           >
             <ChevronRight className="w-4 h-4" />
           </button>
@@ -515,7 +493,7 @@ export function WorkoutTimeline({
 
       {/* Mobile week navigation info */}
       <div className="mt-4 text-center text-sm text-base-content/70 sm:hidden">
-        Swipe or use arrows to navigate weeks
+        Use arrows to navigate weeks
       </div>
     </div>
   );

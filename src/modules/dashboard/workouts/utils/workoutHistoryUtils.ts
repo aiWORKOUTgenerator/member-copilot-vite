@@ -33,13 +33,22 @@ export function sortByDateDesc(
  */
 export function calculateStats(instances: WorkoutInstance[]) {
   const total = instances.length;
-  const completed = instances.filter((w) => w.completed).length;
-  const completionRate = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+  // Calculate active days percentage for last 2 weeks only
+  const daysInPeriod = 14; // Last 2 weeks
+  const lastTwoWeeks = filterLastDays(instances, 14);
+  const uniqueDates = new Set(
+    lastTwoWeeks.map(
+      (instance) => new Date(instance.performedAt).toISOString().split("T")[0]
+    )
+  );
+  const activeDays = uniqueDates.size;
+  const activeDaysPercent = Math.round((activeDays / daysInPeriod) * 100);
 
   return {
     total,
-    completed,
-    completionRate,
+    activeDays,
+    activeDaysPercent,
   };
 }
 

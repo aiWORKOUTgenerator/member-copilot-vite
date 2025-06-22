@@ -74,13 +74,8 @@ export default function WorkoutHistoryPage() {
           <Calendar className="w-6 h-6 text-primary" />
           <div>
             <h1 className="text-2xl font-bold">Workout History</h1>
-            <p className="text-sm text-base-content/70 sm:hidden">
-              Week view on mobile
-            </p>
+            <p className="text-sm text-base-content/70 sm:hidden">Week view</p>
           </div>
-          <span className="badge badge-outline hidden sm:inline">
-            Last 90 Days
-          </span>
         </div>
 
         {/* View Toggle */}
@@ -109,23 +104,17 @@ export default function WorkoutHistoryPage() {
       </div>
 
       <div className="mb-6">
-        <div className="stats shadow stats-vertical sm:stats-horizontal">
+        <div className="stats shadow stats-horizontal">
+          <div className="stat">
+            <div className="stat-title text-xs">Active Days</div>
+            <div className="stat-value text-lg sm:text-2xl text-primary">
+              {stats.activeDaysPercent}%
+            </div>
+          </div>
           <div className="stat">
             <div className="stat-title text-xs">Total Workouts</div>
-            <div className="stat-value text-lg sm:text-2xl text-primary">
-              {stats.total}
-            </div>
-          </div>
-          <div className="stat">
-            <div className="stat-title text-xs">Completed</div>
             <div className="stat-value text-lg sm:text-2xl text-success">
-              {stats.completed}
-            </div>
-          </div>
-          <div className="stat">
-            <div className="stat-title text-xs">Completion Rate</div>
-            <div className="stat-value text-lg sm:text-2xl text-accent">
-              {stats.completionRate}%
+              {stats.total}
             </div>
           </div>
         </div>
