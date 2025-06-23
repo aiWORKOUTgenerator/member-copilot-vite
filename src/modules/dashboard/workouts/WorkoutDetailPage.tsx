@@ -5,7 +5,8 @@ import {
 import { PusherEvent } from "@/contexts/PusherEvent";
 import { useTrainerPersonaData } from "@/contexts/TrainerPersonaContext";
 import { useWorkoutFeedback } from "@/contexts/WorkoutFeedbackContext";
-import { WorkoutStructure } from "@/domain/entities/generatedWorkout";
+import { Section, WorkoutStructure } from "@/domain/entities/generatedWorkout";
+import { useUserAccess } from "@/hooks";
 import FeedbackModal, {
   useFeedbackModal,
 } from "@/ui/shared/molecules/FeedbackModal";
@@ -14,11 +15,14 @@ import {
   ArrowBigLeft,
   CheckCircle,
   MessageSquare,
+  Play,
   ShareIcon,
+  Crown,
+  Lock,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import FeedbackSuccessState from "./components/FeedbackSuccessState";
 import SimpleFormatWorkoutViewer from "./components/SimpleFormatWorkoutViewer";
 import StepByStepWorkoutViewer from "./components/StepByStepWorkoutViewer";
@@ -27,6 +31,7 @@ import { TrainerPersonaDisplay } from "./components/TrainerPersonaDisplay";
 import VerySimpleFormatWorkoutViewer from "./components/VerySimpleFormatWorkoutViewer";
 import WebShareButton from "./components/WebShareButton";
 import WorkoutFeedbackForm from "./components/WorkoutFeedbackForm";
+import { useWorkoutInstances } from "@/contexts/WorkoutInstancesContext";
 
 interface WorkoutChunkData {
   chunk: string;
@@ -35,17 +40,21 @@ interface WorkoutChunkData {
 
 export default function WorkoutDetailPage() {
   const params = useParams();
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const generatedWorkoutId = params?.id as string;
   const generatedWorkout = useGeneratedWorkout(generatedWorkoutId);
   const { refetch } = useGeneratedWorkouts();
   const { submitFeedback, isSubmitting, error, clearError, userFeedback } =
     useWorkoutFeedback();
-  //  const { createInstance } = useWorkoutInstances();
+  const { createInstance } = useWorkoutInstances();
   const feedbackModal = useFeedbackModal();
   const [showFeedbackSuccess, setShowFeedbackSuccess] = useState(false);
   const trainerPersona = useTrainerPersonaData();
-  // const [isCreatingInstance, setIsCreatingInstance] = useState(false);
+  const [isCreatingInstance, setIsCreatingInstance] = useState(false);
+  const { canAccessFeature } = useUserAccess();
+
+  // Check if user has access to start workouts
+  const canStartWorkouts = canAccessFeature("generate_workout_instances");
 
   // Check if feedback already exists for this workout
   const existingFeedback = generatedWorkout
@@ -80,71 +89,69 @@ export default function WorkoutDetailPage() {
     ? (generatedWorkout.jsonFormat as WorkoutStructure)
     : undefined;
 
-  // const handleStartWorkout = async () => {
-  //   if (!generatedWorkout) return;
+  const handleStartWorkout = async () => {
+    if (!generatedWorkout) return;
 
-  //   setIsCreatingInstance(true);
-  //   try {
-  //     // Flatten the workout structure for linear tracking
-  //     const flattenedJsonFormat = generatedWorkout.jsonFormat
-  //       ? flattenWorkoutForInstance(generatedWorkout.jsonFormat)
-  //       : undefined;
+    setIsCreatingInstance(true);
+    try {
+      // Flatten the workout structure for linear tracking
+      const flattenedJsonFormat = generatedWorkout.jsonFormat
+        ? flattenWorkoutForInstance(generatedWorkout.jsonFormat)
+        : undefined;
 
-  //     const newInstance = await createInstance({
-  //       generatedWorkoutId: generatedWorkout.id,
-  //       performedAt: new Date().toISOString(),
-  //       completed: false,
-  //       jsonFormat: flattenedJsonFormat
-  //         ? JSON.stringify(flattenedJsonFormat)
-  //         : undefined,
-  //     });
+      const newInstance = await createInstance({
+        generatedWorkoutId: generatedWorkout.id,
+        performedAt: new Date().toISOString(),
+        completed: false,
+        jsonFormat: flattenedJsonFormat,
+      });
 
-  //     // Navigate to the workout instance page
-  //     navigate(`/dashboard/workouts/instances/${newInstance.id}`);
-  //   } catch (error) {
-  //     console.error("Failed to create workout instance:", error);
-  //     // You could add error handling here (toast notification, etc.)
-  //   } finally {
-  //     setIsCreatingInstance(false);
-  //   }
-  // };
+      // Navigate to the workout instance page
+      navigate(`/dashboard/workouts/instances/${newInstance.id}`);
+    } catch (error) {
+      console.error("Failed to create workout instance:", error);
+      // You could add error handling here (toast notification, etc.)
+    } finally {
+      setIsCreatingInstance(false);
+    }
+  };
 
   // Function to flatten workout rounds into linear sections for instance tracking
-  // const flattenWorkoutForInstance = (workoutStructure: WorkoutStructure) => {
-  //   const flattenedSections: Section[] = [];
+  const flattenWorkoutForInstance = (workoutStructure: WorkoutStructure) => {
+    const flattenedSections: Section[] = [];
 
-  //   workoutStructure.sections.forEach((section) => {
-  //     const rounds = section.rounds || 1;
+    workoutStructure.sections.forEach((section) => {
+      const rounds = section.rounds || 1;
 
-  //     if (rounds > 1) {
-  //       // Create separate sections for each round
-  //       for (let round = 1; round <= rounds; round++) {
-  //         flattenedSections.push({
-  //           ...section,
-  //           name: `${section.name} - Round ${round}`,
-  //           rounds: 1, // Each flattened section is now a single round
-  //           exercises:
-  //             section.exercises?.map((exercise) => ({
-  //               ...exercise,
-  //               // Add round context to exercise names if helpful
-  //               // name: `${exercise.name} (Round ${round})`
-  //             })) || [],
-  //         });
-  //       }
-  //     } else {
-  //       // Single round or no rounds specified - keep as is
-  //       flattenedSections.push({
-  //         ...section,
-  //         exercises: section.exercises || [],
-  //       });
-  //     }
-  //   });
+      if (rounds > 1) {
+        // Create separate sections for each round
+        for (let round = 1; round <= rounds; round++) {
+          flattenedSections.push({
+            ...section,
+            name: `${section.name} - Round ${round}`,
+            rounds: 1, // Each flattened section is now a single round
+            exercises:
+              section.exercises?.map((exercise) => ({
+                ...exercise,
+                // Add round context to exercise names if helpful
+                // name: `${exercise.name} (Round ${round})`
+              })) || [],
+          });
+        }
+      } else {
+        // Single round or no rounds specified - keep as is
+        flattenedSections.push({
+          ...section,
+          exercises: section.exercises || [],
+        });
+      }
+    });
 
-  //   return {
-  //     ...workoutStructure,
-  //     sections: flattenedSections,
-  //   };
-  // };
+    return {
+      ...workoutStructure,
+      sections: flattenedSections,
+    };
+  };
 
   // Clear loading states when refetching completes
   useEffect(() => {
@@ -188,24 +195,50 @@ export default function WorkoutDetailPage() {
 
   return (
     <div className="p-4">
-      <div className="mb-4 flex justify-between items-center">
+      <div className="mb-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
         <button
           onClick={() => window.history.back()}
-          className="btn btn-ghost flex items-center"
+          className="btn btn-ghost flex items-center self-start"
         >
           <ArrowBigLeft className="w-4 h-4" />
-          Back to workouts
+          <span className="hidden sm:inline ml-2">Back to workouts</span>
+          <span className="sm:hidden ml-2">Back</span>
         </button>
-        <div className="flex gap-2">
-          {/* <button
-            onClick={handleStartWorkout}
-            className="btn btn-primary"
-            disabled={!generatedWorkout || isCreatingInstance}
-            title="Start a new workout session"
-          >
-            <Play className="w-4 h-4 mr-2" />
-            {isCreatingInstance ? "Starting..." : "Start Workout"}
-          </button> */}
+        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+          {canStartWorkouts ? (
+            <button
+              onClick={handleStartWorkout}
+              className="btn btn-primary flex-1 sm:flex-initial"
+              disabled={!generatedWorkout || isCreatingInstance}
+              title="Start a new workout session"
+            >
+              <Play className="w-4 h-4 mr-2" />
+              <span className="hidden sm:inline">
+                {isCreatingInstance ? "Starting..." : "Start Workout"}
+              </span>
+              <span className="sm:hidden">
+                {isCreatingInstance ? "Starting..." : "Start"}
+              </span>
+            </button>
+          ) : (
+            <div
+              className="tooltip tooltip-bottom"
+              data-tip="Upgrade to start workouts"
+            >
+              <button
+                onClick={() => navigate("/dashboard/billing")}
+                className="btn btn-outline btn-warning flex-1 sm:flex-initial relative"
+                disabled={!generatedWorkout}
+              >
+                <div className="flex items-center">
+                  <Lock className="w-4 h-4 mr-2" />
+                  <span className="hidden sm:inline">Start Workout</span>
+                  <span className="sm:hidden">Start</span>
+                  <Crown className="w-3 h-3 ml-1 animate-pulse" />
+                </div>
+              </button>
+            </div>
+          )}
           <button
             onClick={() => {
               setShowFeedbackSuccess(false);
@@ -214,7 +247,7 @@ export default function WorkoutDetailPage() {
             }}
             className={`btn ${
               existingFeedback ? "btn-success" : "btn-outline"
-            }`}
+            } flex-1 sm:flex-initial`}
             disabled={!generatedWorkout}
             title={existingFeedback ? "Workout Rated" : "Rate This Workout"}
           >
@@ -223,16 +256,24 @@ export default function WorkoutDetailPage() {
             ) : (
               <MessageSquare className="w-4 h-4 mr-2" />
             )}
-            {existingFeedback ? "Workout Rated" : "Rate This Workout"}
+            <span className="hidden sm:inline">
+              {existingFeedback ? "Workout Rated" : "Rate This Workout"}
+            </span>
+            <span className="sm:hidden">
+              {existingFeedback ? "Rated" : "Rate"}
+            </span>
           </button>
-          <WebShareButton
-            disabled={!verySimpleFormat && !simpleFormat}
-            title="Workout Plan"
-            text={verySimpleFormat || simpleFormat || ""}
-          >
-            <ShareIcon className="w-4 h-4 mr-2" />
-            Share Workout
-          </WebShareButton>
+          <div className="flex-1 sm:flex-initial">
+            <WebShareButton
+              disabled={!verySimpleFormat && !simpleFormat}
+              title="Workout Plan"
+              text={verySimpleFormat || simpleFormat || ""}
+            >
+              <ShareIcon className="w-4 h-4 mr-2" />
+              <span className="hidden sm:inline">Share Workout</span>
+              <span className="sm:hidden">Share</span>
+            </WebShareButton>
+          </div>
         </div>
       </div>
 
@@ -384,7 +425,7 @@ export default function WorkoutDetailPage() {
                   </p>
                 </div>
                 <div className="bg-base-200 rounded-lg p-4 space-y-2 text-left">
-                  <div className="grid grid-cols-3 gap-4 text-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 text-sm">
                     <div>
                       <span className="font-medium">Overall:</span>{" "}
                       {existingFeedback.overallRating}/5 ⭐

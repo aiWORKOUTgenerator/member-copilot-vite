@@ -57,7 +57,10 @@ export const VerificationCodeInput = forwardRef<
     return (
       <div ref={ref} className={`space-y-3 ${className}`}>
         {/* Label */}
-        <label htmlFor={id} className="block text-sm font-medium text-gray-700">
+        <label
+          htmlFor={id}
+          className="block text-sm font-medium text-base-content"
+        >
           {ariaLabel || placeholder}
         </label>
 
@@ -67,14 +70,15 @@ export const VerificationCodeInput = forwardRef<
             value={value}
             onChange={handleChange}
             numInputs={PHONE_VERIFICATION_CONSTANTS.CODE_LENGTH}
-            renderSeparator={<span className="w-2" />}
+            renderSeparator={<span className="w-1 sm:w-2" />}
             renderInput={(props) => (
               <input
                 {...props}
+                className="verification-code-input"
                 style={{
-                  width: "48px",
-                  height: "48px",
-                  fontSize: "18px",
+                  width: "clamp(36px, 12vw, 48px)",
+                  height: "clamp(36px, 12vw, 48px)",
+                  fontSize: "clamp(14px, 4vw, 18px)",
                   fontWeight: "600",
                   textAlign: "center",
                   border: error ? "2px solid #ef4444" : "2px solid #d1d5db",
@@ -83,6 +87,8 @@ export const VerificationCodeInput = forwardRef<
                   color: disabled ? "#9ca3af" : "#1f2937",
                   outline: "none",
                   transition: "all 0.2s ease-in-out",
+                  maxWidth: "48px",
+                  minWidth: "32px",
                 }}
                 onFocus={(e) => {
                   e.target.style.border = error
@@ -110,7 +116,10 @@ export const VerificationCodeInput = forwardRef<
             containerStyle={{
               display: "flex",
               justifyContent: "center",
-              gap: "8px",
+              gap: "clamp(4px, 2vw, 8px)",
+              width: "100%",
+              maxWidth: "320px",
+              margin: "0 auto",
             }}
           />
         </div>
@@ -130,7 +139,7 @@ export const VerificationCodeInput = forwardRef<
         )}
 
         {/* Help text */}
-        <p className="text-gray-500 text-sm text-center">
+        <p className="text-base-content/60 text-sm text-center">
           Enter the {PHONE_VERIFICATION_CONSTANTS.CODE_LENGTH}-digit code sent
           to your phone
         </p>

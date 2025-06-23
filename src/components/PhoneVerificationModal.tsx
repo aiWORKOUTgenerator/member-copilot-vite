@@ -78,21 +78,22 @@ export function PhoneVerificationModal({
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
-      <div className="flex items-center justify-center min-h-screen px-4">
+      <div className="flex items-center justify-center min-h-screen p-4">
         <div
           className="fixed inset-0 bg-gray-500 bg-opacity-75"
           onClick={onClose}
         ></div>
 
-        <div className="relative bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+        <div className="relative bg-base-100 rounded-lg shadow-xl w-full max-w-sm sm:max-w-md mx-auto p-3 sm:p-6">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-semibold">{title}</h2>
+            <h2 className="text-lg font-semibold text-base-content">{title}</h2>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600"
+              className="btn btn-sm btn-circle btn-ghost"
+              aria-label="Close modal"
             >
               <svg
-                className="w-6 h-6"
+                className="w-4 h-4"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -110,7 +111,7 @@ export function PhoneVerificationModal({
           <div className="space-y-4">
             {currentStep === VerificationStep.ENTER_PHONE && (
               <>
-                <p className="text-sm text-gray-600">{description}</p>
+                <p className="text-sm text-base-content/70">{description}</p>
                 <PhoneNumberInput
                   value={phoneNumber}
                   onChange={(value) => setPhoneNumber(value || "")}
@@ -120,8 +121,11 @@ export function PhoneVerificationModal({
                 <button
                   onClick={handleSendCode}
                   disabled={!phoneNumber || isSending}
-                  className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:bg-gray-400"
+                  className="btn btn-primary w-full"
                 >
+                  {isSending ? (
+                    <span className="loading loading-spinner loading-sm"></span>
+                  ) : null}
                   {isSending ? "Sending..." : "Send Code"}
                 </button>
               </>
@@ -129,7 +133,7 @@ export function PhoneVerificationModal({
 
             {currentStep === VerificationStep.VERIFY_CODE && (
               <>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-base-content/70">
                   Enter the code sent to {phoneNumber}
                 </p>
                 <VerificationCodeInput
@@ -143,8 +147,8 @@ export function PhoneVerificationModal({
                 {/* Loading state during verification */}
                 {isVerifying && (
                   <div className="flex items-center justify-center py-3">
-                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
-                    <span className="ml-2 text-sm text-gray-600">
+                    <span className="loading loading-spinner loading-md text-primary"></span>
+                    <span className="ml-2 text-sm text-base-content/70">
                       Verifying code...
                     </span>
                   </div>
@@ -153,7 +157,7 @@ export function PhoneVerificationModal({
                 <div className="flex justify-between items-center mt-4">
                   <button
                     onClick={() => setCurrentStep(VerificationStep.ENTER_PHONE)}
-                    className="text-gray-600 hover:text-gray-800 text-sm"
+                    className="btn btn-ghost btn-sm"
                     disabled={isVerifying}
                   >
                     ← Back to phone number
@@ -162,8 +166,11 @@ export function PhoneVerificationModal({
                     <button
                       onClick={actions.resendCode}
                       disabled={isResending || isVerifying}
-                      className="text-blue-600 hover:text-blue-800 text-sm disabled:text-gray-400"
+                      className="btn btn-ghost btn-sm text-primary"
                     >
+                      {isResending ? (
+                        <span className="loading loading-spinner loading-xs"></span>
+                      ) : null}
                       {isResending ? "Resending..." : "Resend Code"}
                     </button>
                   )}
@@ -189,17 +196,17 @@ export function PhoneVerificationModal({
                       />
                     </svg>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  <h3 className="text-lg font-semibold text-base-content mb-2">
                     🎉 Phone Number Verified!
                   </h3>
-                  <p className="text-sm text-gray-600 mb-6">
+                  <p className="text-sm text-base-content/70 mb-6">
                     Your phone number <strong>{phoneNumber}</strong> has been
                     successfully verified. Your account security is now
                     enhanced!
                   </p>
                   <button
                     onClick={handleSuccessComplete}
-                    className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors"
+                    className="btn btn-success w-full"
                   >
                     Continue
                   </button>

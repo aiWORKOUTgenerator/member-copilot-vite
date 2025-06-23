@@ -38,10 +38,12 @@ const WebShareButton = ({ title, text, children, disabled }: WebShareProps) => {
   };
 
   return (
-    <div className="flex items-center">
+    <div className="flex items-center w-full">
       <button
         onClick={handleShare}
-        className={`btn btn-secondary btn-sm ${disabled ? "opacity-50" : ""}`}
+        className={`btn btn-secondary btn-sm w-full ${
+          disabled ? "opacity-50" : ""
+        }`}
         disabled={disabled}
       >
         {copied ? "Copied!" : children}

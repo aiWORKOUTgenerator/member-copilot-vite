@@ -15,7 +15,7 @@ export class WorkoutInstance {
   constructor(props: {
     id: string;
     generated_workout_id: string;
-    json_format?: string | null;
+    json_format?: WorkoutInstanceStructure | null;
     performed_at: string;
     duration?: number;
     notes?: string;
@@ -29,16 +29,7 @@ export class WorkoutInstance {
     this.duration = props.duration;
     this.notes = props.notes;
     this.completed = props.completed;
-    this.jsonFormat = props.json_format
-      ? (() => {
-          try {
-            return JSON.parse(props.json_format as string);
-          } catch (error) {
-            console.log("Error parsing JSON format:", error);
-            return null;
-          }
-        })()
-      : null;
+    this.jsonFormat = props.json_format || null;
     this.createdAt = props.created_at;
     this.updatedAt = props.updated_at;
   }
@@ -59,11 +50,6 @@ export interface ExerciseInstance {
   rest?: number;
   superset_exercise?: ExerciseInstance;
   // Instance-specific fields for actual performance
-  actual_sets?: number;
-  actual_reps?: number;
-  actual_weight?: number;
-  actual_duration?: number;
-  actual_rest?: number;
   completed?: boolean;
   notes?: string;
 }
@@ -79,10 +65,6 @@ export interface SectionInstance {
   duration?: number;
   sub_sections?: SectionInstance[];
   // Instance-specific fields for actual performance
-  actual_rounds?: number;
-  actual_rest_between_exercises?: number;
-  actual_rest_between_rounds?: number;
-  actual_duration?: number;
   completed?: boolean;
   notes?: string;
 }
@@ -93,7 +75,6 @@ export interface WorkoutInstanceStructure {
   sections: SectionInstance[];
   rest_between_sections?: number;
   // Instance-specific fields for actual performance
-  actual_rest_between_sections?: number;
   completed?: boolean;
   performance_notes?: string;
 }

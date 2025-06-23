@@ -1,16 +1,16 @@
 "use client";
 
+import { TrainerPersona } from "@/domain/entities/trainerPersona";
+import { useAuth } from "@/hooks/auth";
+import { useTrainerPersonaService } from "@/hooks/useTrainerPersonaService";
 import {
   createContext,
-  useContext,
   ReactNode,
-  useState,
-  useEffect,
   useCallback,
+  useContext,
+  useEffect,
+  useState,
 } from "react";
-import { TrainerPersona } from "@/domain/entities/trainerPersona";
-import { useTrainerPersonaService } from "@/hooks/useTrainerPersonaService";
-import { useAuth } from "@/hooks/auth";
 
 /**
  * TrainerPersonaState interface defines the shape of our trainer persona context value.
@@ -77,8 +77,6 @@ export function TrainerPersonaProvider({
     setError(null);
 
     try {
-      await trainerPersonaService.generateTrainerPersona();
-      // After successful generation, fetch the new trainer persona
       await fetchTrainerPersona();
     } catch (error) {
       console.error("Error generating trainer persona:", error);
@@ -89,7 +87,7 @@ export function TrainerPersonaProvider({
       );
       setIsLoading(false);
     }
-  }, [trainerPersonaService, fetchTrainerPersona]);
+  }, [fetchTrainerPersona]);
 
   useEffect(() => {
     if (!isSignedIn && (trainerPersona || hasNoPersona)) {

@@ -1,4 +1,7 @@
-import { WorkoutInstance } from "@/domain/entities/workoutInstance";
+import {
+  WorkoutInstance,
+  WorkoutInstanceStructure,
+} from "@/domain/entities/workoutInstance";
 import { ApiService } from "@/domain/interfaces/api/ApiService";
 import {
   WorkoutInstanceService,
@@ -9,13 +12,30 @@ import {
 interface WorkoutInstanceProps {
   id: string;
   generated_workout_id: string;
-  json_format?: string | null;
+  json_format?: WorkoutInstanceStructure | null;
   performed_at: string;
   duration?: number;
   notes?: string;
   completed: boolean;
   created_at: string;
   updated_at: string;
+}
+
+interface CreateWorkoutInstancePayload extends Record<string, unknown> {
+  generated_workout_id: string;
+  performed_at: string;
+  duration?: number;
+  notes?: string;
+  completed: boolean;
+  json_format?: WorkoutInstanceStructure;
+}
+
+interface UpdateWorkoutInstancePayload extends Record<string, unknown> {
+  performed_at?: string;
+  duration?: number;
+  notes?: string;
+  completed?: boolean;
+  json_format?: WorkoutInstanceStructure;
 }
 
 export class WorkoutInstanceServiceImpl implements WorkoutInstanceService {
@@ -37,7 +57,13 @@ export class WorkoutInstanceServiceImpl implements WorkoutInstanceService {
         WorkoutInstanceProps[]
       >(`${this.baseEndpoint}/workout-instances/`);
 
-      return workoutInstancesData.map((data) => new WorkoutInstance(data));
+      return workoutInstancesData
+        .map((data) => new WorkoutInstance(data))
+        .sort(
+          (a, b) =>
+            new Date(b.performedAt).getTime() -
+            new Date(a.performedAt).getTime()
+        );
     } catch (error) {
       console.error("Error in getWorkoutInstances:", error);
       throw new Error("Failed to fetch workout instances");
@@ -54,7 +80,13 @@ export class WorkoutInstanceServiceImpl implements WorkoutInstanceService {
         `${this.baseEndpoint}/workout-instances/?generated_workout_id=${generatedWorkoutId}`
       );
 
-      return workoutInstancesData.map((data) => new WorkoutInstance(data));
+      return workoutInstancesData
+        .map((data) => new WorkoutInstance(data))
+        .sort(
+          (a, b) =>
+            new Date(b.performedAt).getTime() -
+            new Date(a.performedAt).getTime()
+        );
     } catch (error) {
       console.error("Error in getWorkoutInstancesByGeneratedWorkoutId:", error);
       throw new Error(
@@ -74,11 +106,12 @@ export class WorkoutInstanceServiceImpl implements WorkoutInstanceService {
 
       return new WorkoutInstance(workoutInstanceData);
     } catch (error) {
-      console.error("Error in getWorkoutInstance:", error);
-      // Return null if not found, throw for other errors
+      // If it's a 404, return null as expected by the interface
       if (error instanceof Error && error.message.includes("404")) {
         return null;
       }
+
+      console.error("Error in getWorkoutInstance:", error);
       throw new Error("Failed to fetch workout instance");
     }
   }
@@ -87,7 +120,7 @@ export class WorkoutInstanceServiceImpl implements WorkoutInstanceService {
     request: CreateWorkoutInstanceRequest
   ): Promise<WorkoutInstance> {
     try {
-      const payload = {
+      const payload: CreateWorkoutInstancePayload = {
         generated_workout_id: request.generatedWorkoutId,
         performed_at: request.performedAt,
         duration: request.duration,
@@ -96,12 +129,12 @@ export class WorkoutInstanceServiceImpl implements WorkoutInstanceService {
         json_format: request.jsonFormat,
       };
 
-      const createdInstance = await this.apiService.post<
+      const createdWorkoutInstance = await this.apiService.post<
         WorkoutInstanceProps,
-        Record<string, unknown>
+        CreateWorkoutInstancePayload
       >(`${this.baseEndpoint}/workout-instances/`, payload);
 
-      return new WorkoutInstance(createdInstance);
+      return new WorkoutInstance(createdWorkoutInstance);
     } catch (error) {
       console.error("Error in createWorkoutInstance:", error);
       throw new Error("Failed to create workout instance");
@@ -113,7 +146,7 @@ export class WorkoutInstanceServiceImpl implements WorkoutInstanceService {
     request: UpdateWorkoutInstanceRequest
   ): Promise<WorkoutInstance> {
     try {
-      const payload = {
+      const payload: UpdateWorkoutInstancePayload = {
         performed_at: request.performedAt,
         duration: request.duration,
         notes: request.notes,
@@ -121,12 +154,17 @@ export class WorkoutInstanceServiceImpl implements WorkoutInstanceService {
         json_format: request.jsonFormat,
       };
 
-      const updatedInstance = await this.apiService.put<
-        WorkoutInstanceProps,
-        Record<string, unknown>
-      >(`${this.baseEndpoint}/workout-instances/${instanceId}/`, payload);
+      // Remove undefined values from payload
+      const cleanPayload = Object.fromEntries(
+        Object.entries(payload).filter(([, value]) => value !== undefined)
+      );
 
-      return new WorkoutInstance(updatedInstance);
+      const updatedWorkoutInstance = await this.apiService.put<
+        WorkoutInstanceProps,
+        Partial<UpdateWorkoutInstancePayload>
+      >(`${this.baseEndpoint}/workout-instances/${instanceId}/`, cleanPayload);
+
+      return new WorkoutInstance(updatedWorkoutInstance);
     } catch (error) {
       console.error("Error in updateWorkoutInstance:", error);
       throw new Error("Failed to update workout instance");
