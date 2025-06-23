@@ -6,6 +6,7 @@ import { PusherEvent } from "@/contexts/PusherEvent";
 import { useTrainerPersonaData } from "@/contexts/TrainerPersonaContext";
 import { useWorkoutFeedback } from "@/contexts/WorkoutFeedbackContext";
 import { Section, WorkoutStructure } from "@/domain/entities/generatedWorkout";
+import { useUserAccess } from "@/hooks";
 import FeedbackModal, {
   useFeedbackModal,
 } from "@/ui/shared/molecules/FeedbackModal";
@@ -16,6 +17,8 @@ import {
   MessageSquare,
   Play,
   ShareIcon,
+  Crown,
+  Lock,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
@@ -48,6 +51,10 @@ export default function WorkoutDetailPage() {
   const [showFeedbackSuccess, setShowFeedbackSuccess] = useState(false);
   const trainerPersona = useTrainerPersonaData();
   const [isCreatingInstance, setIsCreatingInstance] = useState(false);
+  const { canAccessFeature } = useUserAccess();
+
+  // Check if user has access to start workouts
+  const canStartWorkouts = canAccessFeature("generate_workout_instances");
 
   // Check if feedback already exists for this workout
   const existingFeedback = generatedWorkout
@@ -198,20 +205,40 @@ export default function WorkoutDetailPage() {
           <span className="sm:hidden ml-2">Back</span>
         </button>
         <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-          <button
-            onClick={handleStartWorkout}
-            className="btn btn-primary flex-1 sm:flex-initial"
-            disabled={!generatedWorkout || isCreatingInstance}
-            title="Start a new workout session"
-          >
-            <Play className="w-4 h-4 mr-2" />
-            <span className="hidden sm:inline">
-              {isCreatingInstance ? "Starting..." : "Start Workout"}
-            </span>
-            <span className="sm:hidden">
-              {isCreatingInstance ? "Starting..." : "Start"}
-            </span>
-          </button>
+          {canStartWorkouts ? (
+            <button
+              onClick={handleStartWorkout}
+              className="btn btn-primary flex-1 sm:flex-initial"
+              disabled={!generatedWorkout || isCreatingInstance}
+              title="Start a new workout session"
+            >
+              <Play className="w-4 h-4 mr-2" />
+              <span className="hidden sm:inline">
+                {isCreatingInstance ? "Starting..." : "Start Workout"}
+              </span>
+              <span className="sm:hidden">
+                {isCreatingInstance ? "Starting..." : "Start"}
+              </span>
+            </button>
+          ) : (
+            <div
+              className="tooltip tooltip-bottom"
+              data-tip="Upgrade to start workouts"
+            >
+              <button
+                onClick={() => navigate("/dashboard/billing")}
+                className="btn btn-outline btn-warning flex-1 sm:flex-initial relative"
+                disabled={!generatedWorkout}
+              >
+                <div className="flex items-center">
+                  <Lock className="w-4 h-4 mr-2" />
+                  <span className="hidden sm:inline">Start Workout</span>
+                  <span className="sm:hidden">Start</span>
+                  <Crown className="w-3 h-3 ml-1 animate-pulse" />
+                </div>
+              </button>
+            </div>
+          )}
           <button
             onClick={() => {
               setShowFeedbackSuccess(false);

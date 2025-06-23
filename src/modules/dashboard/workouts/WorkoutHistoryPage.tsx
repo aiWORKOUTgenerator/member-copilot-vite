@@ -3,9 +3,19 @@
 import { useTrainerPersonaData } from "@/contexts/TrainerPersonaContext";
 import { useWorkoutInstances } from "@/contexts/WorkoutInstancesContext";
 import { WorkoutInstance } from "@/domain/entities/workoutInstance";
+import { useUserAccess } from "@/hooks";
 import LoadingState from "@/ui/shared/atoms/LoadingState";
 import EmptyStateBasic from "@/ui/shared/molecules/EmptyState";
-import { Activity, Calendar, Grid, List } from "lucide-react";
+import {
+  Activity,
+  Calendar,
+  Grid,
+  List,
+  Crown,
+  ArrowRight,
+  CheckCircle,
+  Shield,
+} from "lucide-react";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router";
 import { TrainerPersonaDisplay } from "./components/TrainerPersonaDisplay";
@@ -29,6 +39,14 @@ export default function WorkoutHistoryPage() {
   const [viewMode, setViewMode] = useState<"timeline" | "list">("timeline");
   const trainerPersona = useTrainerPersonaData();
   const workoutModal = useWorkoutInstanceModal();
+  const {
+    canAccessFeature,
+    isLoading: isAccessLoading,
+    isLoaded: isAccessLoaded,
+  } = useUserAccess();
+
+  // Check if user has access to workout history feature
+  const hasWorkoutHistoryAccess = canAccessFeature("workout_instance_history");
 
   // Filter to last month's workouts
   const recentWorkouts = useMemo(() => {
@@ -47,8 +65,73 @@ export default function WorkoutHistoryPage() {
     navigate(`/dashboard/workouts/instances/${workout.id}`);
   };
 
-  if (isLoading) {
+  // Handle access control loading state
+  if (isAccessLoading || isLoading) {
     return <LoadingState />;
+  }
+
+  // Show upgrade prompt if user doesn't have workout history access
+  if (!hasWorkoutHistoryAccess && isAccessLoaded) {
+    return (
+      <div className="p-4">
+        {/* Upgrade Hero Section */}
+        <div className="hero min-h-[60vh] bg-gradient-to-r from-primary to-secondary rounded-lg">
+          <div className="hero-content text-center text-primary-content max-w-4xl">
+            <div>
+              <div className="flex justify-center mb-6">
+                <div className="relative">
+                  <Calendar
+                    className="size-16 text-primary-content drop-shadow-lg"
+                    strokeWidth={1.5}
+                  />
+                  <div className="absolute -top-2 -right-2">
+                    <Crown className="size-6 text-warning drop-shadow-lg animate-pulse" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="badge badge-warning badge-lg mb-4 font-bold animate-pulse">
+                🏋️ PREMIUM FEATURE
+              </div>
+
+              <h1 className="text-3xl md:text-5xl font-bold mb-6 leading-tight">
+                Unlock Your
+                <span className="text-warning block mt-2">Workout History</span>
+              </h1>
+
+              <p className="text-lg md:text-xl mb-8 text-primary-content/90 leading-relaxed max-w-2xl mx-auto">
+                Track your progress, view detailed workout analytics, and see
+                your fitness journey unfold over time. Get insights into your
+                most effective workouts and stay motivated with comprehensive
+                history tracking.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
+                <button
+                  className="btn btn-warning btn-lg text-lg font-bold shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 min-w-[200px]"
+                  onClick={() => navigate("/dashboard/billing")}
+                >
+                  <Crown className="size-5" />
+                  Upgrade Now
+                  <ArrowRight className="size-4" />
+                </button>
+              </div>
+
+              <div className="flex justify-center items-center gap-6 text-sm text-primary-content/80">
+                <div className="flex items-center gap-1">
+                  <CheckCircle className="size-4" />
+                  <span>Full workout analytics</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Shield className="size-4" />
+                  <span>Progress tracking</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (error) {
