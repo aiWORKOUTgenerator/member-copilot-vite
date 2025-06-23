@@ -15,6 +15,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import { useParams } from "react-router";
 
 /**
  * CurrentWorkoutInstanceState interface for managing a single workout instance
@@ -59,12 +60,10 @@ export function CurrentWorkoutInstanceProvider({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [hasPendingChanges, setHasPendingChanges] = useState<boolean>(false);
+  const params = useParams();
 
   const loadInstance = useCallback(
     async (instanceId: string) => {
-      // Don't reload if we already have this instance
-      if (currentInstance?.id === instanceId && !isLoading) return;
-
       setIsLoading(true);
       setError(null);
 
@@ -82,8 +81,14 @@ export function CurrentWorkoutInstanceProvider({
         setIsLoading(false);
       }
     },
-    [workoutInstanceService, currentInstance, isLoading]
+    [workoutInstanceService]
   );
+
+  useEffect(() => {
+    if (params?.id && isSignedIn) {
+      loadInstance(params.id as string);
+    }
+  }, [params?.id, isSignedIn, loadInstance]);
 
   const clearInstance = useCallback(() => {
     setCurrentInstance(null);

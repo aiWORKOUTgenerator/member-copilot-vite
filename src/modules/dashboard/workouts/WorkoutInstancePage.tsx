@@ -6,7 +6,7 @@ import { Exercise, Section } from "@/domain/entities/generatedWorkout";
 import { ExerciseInstance } from "@/domain/entities/workoutInstance";
 import { Check, Clock, Target, X } from "lucide-react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router";
+import { useNavigate } from "react-router";
 import { TrainerPersonaDisplay } from "./components/TrainerPersonaDisplay";
 
 interface WorkoutProgress {
@@ -23,17 +23,13 @@ interface ScrollProgress {
 }
 
 export default function WorkoutInstancePage() {
-  const params = useParams();
   const navigate = useNavigate();
-  const instanceId = params?.id as string;
   const contentRef = useRef<HTMLDivElement>(null);
   const sectionRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const {
     currentInstance,
     isLoading,
-    loadInstance,
-    clearInstance,
     updateInstanceOptimistically,
     updateInstanceJsonFormatOptimistically,
     syncToServer,
@@ -57,18 +53,6 @@ export default function WorkoutInstancePage() {
   const [showExitConfirm, setShowExitConfirm] = useState(false);
   const [showCompleteConfirm, setShowCompleteConfirm] = useState(false);
   const [isMarkingAllComplete, setIsMarkingAllComplete] = useState(false);
-
-  // Load the workout instance when component mounts
-  useEffect(() => {
-    if (instanceId) {
-      loadInstance(instanceId);
-    }
-
-    // Clear current instance when component unmounts
-    return () => {
-      clearInstance();
-    };
-  }, [instanceId, loadInstance, clearInstance]);
 
   // Calculate progress whenever current instance changes
   useEffect(() => {
