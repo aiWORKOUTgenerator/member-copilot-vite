@@ -16,6 +16,9 @@ import {
 } from "./utils/workoutHistoryUtils";
 import { WorkoutTimeline } from "./components/WorkoutTimeline";
 import { TrainerPersonaDisplay } from "./components/TrainerPersonaDisplay";
+import WorkoutInstanceModal, {
+  useWorkoutInstanceModal,
+} from "./components/WorkoutInstanceModal";
 
 /**
  * Simple workout history page showing instances from the last month
@@ -25,6 +28,7 @@ export default function WorkoutHistoryPage() {
   const navigate = useNavigate();
   const [viewMode, setViewMode] = useState<"timeline" | "list">("timeline");
   const trainerPersona = useTrainerPersonaData();
+  const workoutModal = useWorkoutInstanceModal();
 
   // Filter to last month's workouts
   const recentWorkouts = useMemo(() => {
@@ -35,6 +39,11 @@ export default function WorkoutHistoryPage() {
   const stats = useMemo(() => calculateStats(recentWorkouts), [recentWorkouts]);
 
   const handleWorkoutClick = (workout: WorkoutInstance) => {
+    workoutModal.openModal(workout);
+  };
+
+  const handleViewDetails = (workout: WorkoutInstance) => {
+    workoutModal.closeModal();
     navigate(`/dashboard/workouts/instances/${workout.id}`);
   };
 
@@ -182,6 +191,16 @@ export default function WorkoutHistoryPage() {
             </div>
           ))}
         </div>
+      )}
+
+      {/* Workout Instance Modal */}
+      {workoutModal.workoutInstance && (
+        <WorkoutInstanceModal
+          isOpen={workoutModal.isOpen}
+          onClose={workoutModal.closeModal}
+          workoutInstance={workoutModal.workoutInstance}
+          onViewDetails={() => handleViewDetails(workoutModal.workoutInstance!)}
+        />
       )}
     </div>
   );
