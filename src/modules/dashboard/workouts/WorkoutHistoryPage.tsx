@@ -1,24 +1,24 @@
 "use client";
 
-import { useWorkoutInstances } from "@/contexts/WorkoutInstanceContext";
 import { useTrainerPersonaData } from "@/contexts/TrainerPersonaContext";
+import { useWorkoutInstances } from "@/contexts/WorkoutInstancesContext";
 import { WorkoutInstance } from "@/domain/entities/workoutInstance";
 import LoadingState from "@/ui/shared/atoms/LoadingState";
 import EmptyStateBasic from "@/ui/shared/molecules/EmptyState";
-import { Calendar, Activity, List, Grid } from "lucide-react";
+import { Activity, Calendar, Grid, List } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router";
-import {
-  filterLastDays,
-  sortByDateDesc,
-  calculateStats,
-  formatDate,
-} from "./utils/workoutHistoryUtils";
-import { WorkoutTimeline } from "./components/WorkoutTimeline";
 import { TrainerPersonaDisplay } from "./components/TrainerPersonaDisplay";
 import WorkoutInstanceModal, {
   useWorkoutInstanceModal,
 } from "./components/WorkoutInstanceModal";
+import { WorkoutTimeline } from "./components/WorkoutTimeline";
+import {
+  calculateStats,
+  filterLastDays,
+  formatDate,
+  sortByDateDesc,
+} from "./utils/workoutHistoryUtils";
 
 /**
  * Simple workout history page showing instances from the last month

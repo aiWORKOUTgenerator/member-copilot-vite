@@ -1,16 +1,12 @@
 "use client";
 
-import {
-  useWorkoutInstances,
-  useCurrentWorkoutInstance,
-  useCurrentWorkoutInstanceLoading,
-} from "@/contexts/WorkoutInstanceContext";
-import { ExerciseInstance } from "@/domain/entities/workoutInstance";
-import { Exercise, Section } from "@/domain/entities/generatedWorkout";
-import { Check, X, Clock, Target } from "lucide-react";
-import React, { useEffect, useState, useCallback, useRef } from "react";
-import { useParams, useNavigate } from "react-router";
+import { useCurrentWorkoutInstance } from "@/contexts/CurrentWorkoutInstanceContext";
 import { useTrainerPersonaData } from "@/contexts/TrainerPersonaContext";
+import { Exercise, Section } from "@/domain/entities/generatedWorkout";
+import { ExerciseInstance } from "@/domain/entities/workoutInstance";
+import { Check, Clock, Target, X } from "lucide-react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router";
 import { TrainerPersonaDisplay } from "./components/TrainerPersonaDisplay";
 
 interface WorkoutProgress {
@@ -34,14 +30,14 @@ export default function WorkoutInstancePage() {
   const sectionRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const {
-    loadCurrentInstance,
-    clearCurrentInstance,
-    updateCurrentInstanceOptimistically,
-    updateCurrentInstanceJsonFormatOptimistically,
-    syncCurrentInstanceToServer,
-  } = useWorkoutInstances();
-  const currentInstance = useCurrentWorkoutInstance();
-  const isLoading = useCurrentWorkoutInstanceLoading();
+    currentInstance,
+    isLoading,
+    loadInstance,
+    clearInstance,
+    updateInstanceOptimistically,
+    updateInstanceJsonFormatOptimistically,
+    syncToServer,
+  } = useCurrentWorkoutInstance();
   const trainerPersona = useTrainerPersonaData();
 
   const [workoutProgress, setWorkoutProgress] = useState<WorkoutProgress>({
@@ -65,14 +61,14 @@ export default function WorkoutInstancePage() {
   // Load the workout instance when component mounts
   useEffect(() => {
     if (instanceId) {
-      loadCurrentInstance(instanceId);
+      loadInstance(instanceId);
     }
 
     // Clear current instance when component unmounts
     return () => {
-      clearCurrentInstance();
+      clearInstance();
     };
-  }, [instanceId, loadCurrentInstance, clearCurrentInstance]);
+  }, [instanceId, loadInstance, clearInstance]);
 
   // Calculate progress whenever current instance changes
   useEffect(() => {
@@ -272,7 +268,7 @@ export default function WorkoutInstancePage() {
         ].completed = completed;
 
         // Update the local state optimistically
-        updateCurrentInstanceJsonFormatOptimistically(updatedJsonFormat);
+        updateInstanceJsonFormatOptimistically(updatedJsonFormat);
 
         // Track last completed exercise for auto-scroll
         if (completed) {
@@ -280,7 +276,7 @@ export default function WorkoutInstancePage() {
         }
       }
     },
-    [currentInstance, updateCurrentInstanceJsonFormatOptimistically]
+    [currentInstance, updateInstanceJsonFormatOptimistically]
   );
 
   const handleExerciseNotes = useCallback(
@@ -304,10 +300,10 @@ export default function WorkoutInstancePage() {
         ].notes = notes;
 
         // Update the local state optimistically
-        updateCurrentInstanceJsonFormatOptimistically(updatedJsonFormat);
+        updateInstanceJsonFormatOptimistically(updatedJsonFormat);
       }
     },
-    [currentInstance, updateCurrentInstanceJsonFormatOptimistically]
+    [currentInstance, updateInstanceJsonFormatOptimistically]
   );
 
   const handleMarkAllComplete = useCallback(async () => {
@@ -329,7 +325,7 @@ export default function WorkoutInstancePage() {
     );
 
     // Update optimistically
-    updateCurrentInstanceJsonFormatOptimistically(updatedJsonFormat);
+    updateInstanceJsonFormatOptimistically(updatedJsonFormat);
 
     // Small delay for visual effect
     setTimeout(() => {
@@ -352,7 +348,7 @@ export default function WorkoutInstancePage() {
         });
       }
     }, 1000);
-  }, [currentInstance, updateCurrentInstanceJsonFormatOptimistically]);
+  }, [currentInstance, updateInstanceJsonFormatOptimistically]);
 
   const handleCompleteWorkout = async () => {
     if (!currentInstance) return;
@@ -385,13 +381,13 @@ export default function WorkoutInstancePage() {
           60000
       );
 
-      updateCurrentInstanceOptimistically({
+      updateInstanceOptimistically({
         completed: true,
         duration: duration,
       });
 
       // Sync to server
-      await syncCurrentInstanceToServer();
+      await syncToServer();
 
       // Navigate back to workouts page after successful completion
       setTimeout(() => {

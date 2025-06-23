@@ -28,7 +28,7 @@ import { TrainerPersonaDisplay } from "./components/TrainerPersonaDisplay";
 import VerySimpleFormatWorkoutViewer from "./components/VerySimpleFormatWorkoutViewer";
 import WebShareButton from "./components/WebShareButton";
 import WorkoutFeedbackForm from "./components/WorkoutFeedbackForm";
-import { useWorkoutInstances } from "@/contexts/WorkoutInstanceContext";
+import { useWorkoutInstances } from "@/contexts/WorkoutInstancesContext";
 
 interface WorkoutChunkData {
   chunk: string;
