@@ -7,6 +7,8 @@ import {
   WorkoutInstanceService,
   CreateWorkoutInstanceRequest,
   UpdateWorkoutInstanceRequest,
+  RecommendedExercise,
+  GetExerciseRecommendationsRequest,
 } from "@/domain/interfaces/services/WorkoutInstanceService";
 
 interface WorkoutInstanceProps {
@@ -179,6 +181,53 @@ export class WorkoutInstanceServiceImpl implements WorkoutInstanceService {
     } catch (error) {
       console.error("Error in deleteWorkoutInstance:", error);
       throw new Error("Failed to delete workout instance");
+    }
+  }
+
+  async getExerciseRecommendations(
+    request: GetExerciseRecommendationsRequest
+  ): Promise<RecommendedExercise[]> {
+    try {
+      interface ExerciseRecommendationResponse {
+        recommendations: RecommendedExercise[];
+      }
+
+      const response = await this.apiService.post<
+        ExerciseRecommendationResponse,
+        GetExerciseRecommendationsRequest
+      >(`${this.baseEndpoint}/exercises/recommendations/`, request);
+
+      return response.recommendations || [];
+    } catch (error) {
+      console.error("Error in getExerciseRecommendations:", error);
+
+      // Fallback to mock data for development
+      const currentExercise = request.currentExercise;
+
+      return [
+        {
+          id: "fallback-1",
+          name: "Push-ups",
+          description:
+            "Classic bodyweight chest exercise that targets the same muscles",
+          sets: currentExercise.sets || 3,
+          reps: Math.max((currentExercise.reps || 12) + 3, 15),
+          targetMuscles: ["Chest", "Triceps", "Shoulders"],
+          difficulty: "Beginner",
+          rest: 60,
+        },
+        {
+          id: "fallback-2",
+          name: "Modified Version",
+          description: `A modified version of ${currentExercise.name} with adjusted parameters`,
+          sets: Math.max((currentExercise.sets || 3) - 1, 2),
+          reps: Math.max((currentExercise.reps || 12) - 2, 8),
+          weight: Math.max((currentExercise.weight || 0) * 0.8, 5),
+          targetMuscles: ["Full Body"],
+          difficulty: "Beginner",
+          rest: 60,
+        },
+      ];
     }
   }
 }

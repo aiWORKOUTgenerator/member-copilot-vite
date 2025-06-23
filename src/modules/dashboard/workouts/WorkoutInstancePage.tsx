@@ -1,6 +1,7 @@
 "use client";
 
 import { useCurrentWorkoutInstance } from "@/contexts/CurrentWorkoutInstanceContext";
+import { RecommendedExercise } from "@/domain/interfaces/services/WorkoutInstanceService";
 import { useWorkoutInstances } from "@/contexts/WorkoutInstancesContext";
 import { useTrainerPersonaData } from "@/contexts/TrainerPersonaContext";
 import { Exercise, Section } from "@/domain/entities/generatedWorkout";
@@ -23,6 +24,24 @@ interface ScrollProgress {
   sectionsInView: boolean[];
 }
 
+interface SwapExerciseState {
+  isOpen: boolean;
+  exerciseId: string | null;
+  sectionIndex: number | null;
+  exerciseIndex: number | null;
+  currentExercise: Exercise | null;
+}
+
+interface CustomExercise {
+  name: string;
+  description: string;
+  sets: number | "";
+  reps: number | "";
+  weight: number | "";
+  duration: number | "";
+  rest: number | "";
+}
+
 export default function WorkoutInstancePage() {
   const navigate = useNavigate();
   const contentRef = useRef<HTMLDivElement>(null);
@@ -33,6 +52,7 @@ export default function WorkoutInstancePage() {
     isLoading,
     updateInstance,
     updateInstanceJsonFormatOptimistically,
+    getExerciseRecommendations,
   } = useCurrentWorkoutInstance();
 
   const { updateInstanceInList } = useWorkoutInstances();
@@ -92,6 +112,34 @@ export default function WorkoutInstancePage() {
   const [showExitConfirm, setShowExitConfirm] = useState(false);
   const [showCompleteConfirm, setShowCompleteConfirm] = useState(false);
   const [isMarkingAllComplete, setIsMarkingAllComplete] = useState(false);
+
+  // New state for exercise swapping
+  const [swapExerciseState, setSwapExerciseState] = useState<SwapExerciseState>(
+    {
+      isOpen: false,
+      exerciseId: null,
+      sectionIndex: null,
+      exerciseIndex: null,
+      currentExercise: null,
+    }
+  );
+  const [recommendedExercises, setRecommendedExercises] = useState<
+    RecommendedExercise[]
+  >([]);
+  const [isLoadingRecommendations, setIsLoadingRecommendations] =
+    useState(false);
+  const [activeTab, setActiveTab] = useState<"recommended" | "custom">(
+    "recommended"
+  );
+  const [customExercise, setCustomExercise] = useState<CustomExercise>({
+    name: "",
+    description: "",
+    sets: "",
+    reps: "",
+    weight: "",
+    duration: "",
+    rest: "",
+  });
 
   // Calculate progress whenever current instance changes
   useEffect(() => {
@@ -421,6 +469,131 @@ export default function WorkoutInstancePage() {
     setShowCompleteConfirm(false);
   };
 
+  const handleExerciseSwap = useCallback(
+    (
+      exerciseId: string,
+      sectionIndex: number,
+      exerciseIndex: number,
+      currentExercise: Exercise
+    ) => {
+      if (currentInstance?.completed) {
+        console.log("Cannot swap exercises - workout is already completed");
+        return;
+      }
+
+      setSwapExerciseState({
+        isOpen: true,
+        exerciseId,
+        sectionIndex,
+        exerciseIndex,
+        currentExercise,
+      });
+      setActiveTab("recommended");
+
+      // Load recommended exercises
+      loadRecommendedExercises(currentExercise);
+    },
+    [currentInstance]
+  );
+
+  const loadRecommendedExercises = async (currentExercise: Exercise) => {
+    setIsLoadingRecommendations(true);
+    try {
+      const recommendations = await getExerciseRecommendations(currentExercise);
+      setRecommendedExercises(recommendations);
+    } catch (error) {
+      console.error("Error loading recommendations:", error);
+      setRecommendedExercises([]);
+    } finally {
+      setIsLoadingRecommendations(false);
+    }
+  };
+
+  const handleSwapWithRecommended = (
+    recommendedExercise: RecommendedExercise
+  ) => {
+    if (
+      swapExerciseState.sectionIndex === null ||
+      swapExerciseState.exerciseIndex === null ||
+      !currentInstance?.jsonFormat
+    ) {
+      return;
+    }
+
+    const updatedJsonFormat = JSON.parse(
+      JSON.stringify(currentInstance.jsonFormat)
+    );
+    const newExercise = {
+      name: recommendedExercise.name,
+      description: recommendedExercise.description,
+      sets: recommendedExercise.sets,
+      reps: recommendedExercise.reps,
+      weight: recommendedExercise.weight,
+      duration: recommendedExercise.duration,
+      rest: recommendedExercise.rest,
+      completed: false,
+      notes: "",
+    };
+
+    updatedJsonFormat.sections[swapExerciseState.sectionIndex!].exercises[
+      swapExerciseState.exerciseIndex!
+    ] = newExercise;
+    updateInstanceJsonFormatOptimistically(updatedJsonFormat);
+    closeSwapModal();
+  };
+
+  const handleSwapWithCustom = () => {
+    if (
+      !customExercise.name.trim() ||
+      swapExerciseState.sectionIndex === null ||
+      swapExerciseState.exerciseIndex === null ||
+      !currentInstance?.jsonFormat
+    ) {
+      return;
+    }
+
+    const updatedJsonFormat = JSON.parse(
+      JSON.stringify(currentInstance.jsonFormat)
+    );
+    const newExercise = {
+      name: customExercise.name.trim(),
+      description: customExercise.description.trim(),
+      sets: customExercise.sets || undefined,
+      reps: customExercise.reps || undefined,
+      weight: customExercise.weight || undefined,
+      duration: customExercise.duration || undefined,
+      rest: customExercise.rest || undefined,
+      completed: false,
+      notes: "",
+    };
+
+    updatedJsonFormat.sections[swapExerciseState.sectionIndex].exercises[
+      swapExerciseState.exerciseIndex
+    ] = newExercise;
+    updateInstanceJsonFormatOptimistically(updatedJsonFormat);
+    closeSwapModal();
+  };
+
+  const closeSwapModal = () => {
+    setSwapExerciseState({
+      isOpen: false,
+      exerciseId: null,
+      sectionIndex: null,
+      exerciseIndex: null,
+      currentExercise: null,
+    });
+    setRecommendedExercises([]);
+    setCustomExercise({
+      name: "",
+      description: "",
+      sets: "",
+      reps: "",
+      weight: "",
+      duration: "",
+      rest: "",
+    });
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-base-100">
@@ -731,6 +904,7 @@ export default function WorkoutInstancePage() {
               sectionIndex={sectionIndex}
               onExerciseComplete={handleExerciseComplete}
               onExerciseNotes={handleExerciseNotes}
+              onExerciseSwap={handleExerciseSwap}
               disabled={currentInstance.completed}
             />
           ))}
@@ -833,6 +1007,560 @@ export default function WorkoutInstancePage() {
           </div>
         </div>
       )}
+
+      {/* Exercise Swap Modal */}
+      {swapExerciseState.isOpen && (
+        <SwapExerciseModal
+          isOpen={swapExerciseState.isOpen}
+          onClose={closeSwapModal}
+          currentExercise={swapExerciseState.currentExercise}
+          recommendedExercises={recommendedExercises}
+          isLoadingRecommendations={isLoadingRecommendations}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          customExercise={customExercise}
+          onCustomExerciseChange={setCustomExercise}
+          onSwapWithRecommended={handleSwapWithRecommended}
+          onSwapWithCustom={handleSwapWithCustom}
+        />
+      )}
+    </div>
+  );
+}
+
+// Swap Exercise Modal Component
+function SwapExerciseModal({
+  isOpen,
+  onClose,
+  currentExercise,
+  recommendedExercises,
+  isLoadingRecommendations,
+  activeTab,
+  onTabChange,
+  customExercise,
+  onCustomExerciseChange,
+  onSwapWithRecommended,
+  onSwapWithCustom,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  currentExercise: Exercise | null;
+  recommendedExercises: RecommendedExercise[];
+  isLoadingRecommendations: boolean;
+  activeTab: "recommended" | "custom";
+  onTabChange: (tab: "recommended" | "custom") => void;
+  customExercise: CustomExercise;
+  onCustomExerciseChange: (exercise: CustomExercise) => void;
+  onSwapWithRecommended: (exercise: RecommendedExercise) => void;
+  onSwapWithCustom: () => void;
+}) {
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isOpen]);
+
+  if (!isOpen) return null;
+
+  const handleCustomExerciseFieldChange = (
+    field: keyof CustomExercise,
+    value: string | number
+  ) => {
+    onCustomExerciseChange({
+      ...customExercise,
+      [field]: value,
+    });
+  };
+
+  const isCustomExerciseValid = customExercise.name.trim().length > 0;
+
+  return (
+    <div className="fixed inset-0 bg-base-content/20 backdrop-blur-md flex items-center justify-center z-50">
+      {/* Mobile: Full screen modal */}
+      <div className="lg:hidden fixed inset-0 bg-base-100 flex flex-col">
+        {/* Mobile Header */}
+        <div className="flex items-center justify-between p-4 border-b border-base-300">
+          <h2 className="text-lg font-semibold">Swap Exercise</h2>
+          <button onClick={onClose} className="btn btn-ghost btn-sm btn-circle">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Current Exercise Info */}
+        {currentExercise && (
+          <div className="p-4 bg-base-200 border-b border-base-300">
+            <h3 className="font-medium text-base-content/70 text-sm mb-1">
+              Replacing:
+            </h3>
+            <p className="font-semibold">{currentExercise.name}</p>
+          </div>
+        )}
+
+        {/* Mobile Tabs */}
+        <div className="flex bg-base-200 rounded-xl p-1 m-4 mb-0 gap-1">
+          <button
+            className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-medium transition-all duration-200 ${
+              activeTab === "recommended"
+                ? "bg-primary text-primary-content shadow-lg"
+                : "text-base-content/70 hover:text-base-content hover:bg-base-300"
+            }`}
+            onClick={() => onTabChange("recommended")}
+          >
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M13 10V3L4 14h7v7l9-11h-7z"
+              />
+            </svg>
+            <span className="text-sm font-semibold">AI Recommended</span>
+          </button>
+          <button
+            className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-medium transition-all duration-200 ${
+              activeTab === "custom"
+                ? "bg-secondary text-secondary-content shadow-lg"
+                : "text-base-content/70 hover:text-base-content hover:bg-base-300"
+            }`}
+            onClick={() => onTabChange("custom")}
+          >
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+              />
+            </svg>
+            <span className="text-sm font-semibold">Add Your Own</span>
+          </button>
+        </div>
+
+        {/* Mobile Content */}
+        <div className="flex-1 overflow-y-auto p-4">
+          {activeTab === "recommended" ? (
+            <RecommendedExercisesTab
+              exercises={recommendedExercises}
+              isLoading={isLoadingRecommendations}
+              onSelect={onSwapWithRecommended}
+            />
+          ) : (
+            <CustomExerciseTab
+              exercise={customExercise}
+              onChange={handleCustomExerciseFieldChange}
+              onSubmit={onSwapWithCustom}
+              isValid={isCustomExerciseValid}
+            />
+          )}
+        </div>
+      </div>
+
+      {/* Desktop: Regular modal */}
+      <div className="hidden lg:block max-w-4xl w-full mx-4 max-h-[90vh] bg-base-100 rounded-lg shadow-xl overflow-hidden">
+        {/* Desktop Header */}
+        <div className="flex items-center justify-between p-6 border-b border-base-300">
+          <div>
+            <h2 className="text-xl font-semibold">Swap Exercise</h2>
+            {currentExercise && (
+              <p className="text-sm text-base-content/70 mt-1">
+                Replacing:{" "}
+                <span className="font-medium">{currentExercise.name}</span>
+              </p>
+            )}
+          </div>
+          <button onClick={onClose} className="btn btn-ghost btn-sm btn-circle">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Desktop Tabs */}
+        <div className="flex bg-base-200 rounded-xl p-1 m-6 mb-0 gap-1">
+          <button
+            className={`flex-1 flex items-center justify-center gap-3 py-4 px-6 rounded-lg font-medium transition-all duration-200 ${
+              activeTab === "recommended"
+                ? "bg-primary text-primary-content shadow-lg transform scale-[1.02]"
+                : "text-base-content/70 hover:text-base-content hover:bg-base-300 hover:scale-[1.01]"
+            }`}
+            onClick={() => onTabChange("recommended")}
+          >
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M13 10V3L4 14h7v7l9-11h-7z"
+              />
+            </svg>
+            <span className="text-base font-semibold">AI Recommended</span>
+          </button>
+          <button
+            className={`flex-1 flex items-center justify-center gap-3 py-4 px-6 rounded-lg font-medium transition-all duration-200 ${
+              activeTab === "custom"
+                ? "bg-secondary text-secondary-content shadow-lg transform scale-[1.02]"
+                : "text-base-content/70 hover:text-base-content hover:bg-base-300 hover:scale-[1.01]"
+            }`}
+            onClick={() => onTabChange("custom")}
+          >
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+              />
+            </svg>
+            <span className="text-base font-semibold">Add Your Own</span>
+          </button>
+        </div>
+
+        {/* Desktop Content */}
+        <div className="p-6 overflow-y-auto max-h-[60vh]">
+          {activeTab === "recommended" ? (
+            <RecommendedExercisesTab
+              exercises={recommendedExercises}
+              isLoading={isLoadingRecommendations}
+              onSelect={onSwapWithRecommended}
+            />
+          ) : (
+            <CustomExerciseTab
+              exercise={customExercise}
+              onChange={handleCustomExerciseFieldChange}
+              onSubmit={onSwapWithCustom}
+              isValid={isCustomExerciseValid}
+            />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Recommended Exercises Tab Component
+function RecommendedExercisesTab({
+  exercises,
+  isLoading,
+  onSelect,
+}: {
+  exercises: RecommendedExercise[];
+  isLoading: boolean;
+  onSelect: (exercise: RecommendedExercise) => void;
+}) {
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="text-center">
+          <span className="loading loading-spinner loading-lg text-primary"></span>
+          <p className="text-base-content/70 mt-4">
+            AI is finding the best exercise alternatives...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (exercises.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <div className="bg-base-200 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+          <svg
+            className="w-8 h-8 text-base-content/40"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.034 0-3.9.785-5.291 2.083m10.582 0A7.962 7.962 0 0112 15a7.962 7.962 0 00-5.291 2.083m10.582 0L21 21m-9-6v6m-3-3l3-3m0 0l3 3"
+            />
+          </svg>
+        </div>
+        <h3 className="text-lg font-medium mb-2">
+          No recommendations available
+        </h3>
+        <p className="text-base-content/70">
+          Try the "Add Your Own" tab to create a custom exercise.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      <p className="text-base-content/70 text-sm">
+        Here are AI-recommended alternatives based on your current exercise:
+      </p>
+
+      {exercises.map((exercise) => (
+        <div
+          key={exercise.id}
+          className="bg-base-200 border border-base-300 rounded-lg p-4 hover:border-primary transition-colors"
+        >
+          <div className="flex justify-between items-start gap-4">
+            <div className="flex-1">
+              <h4 className="font-semibold text-lg mb-2">{exercise.name}</h4>
+              <p className="text-base-content/70 text-sm mb-3">
+                {exercise.description}
+              </p>
+
+              <div className="flex flex-wrap gap-2 mb-3">
+                {exercise.sets && (
+                  <div className="badge badge-outline">
+                    {exercise.sets} sets
+                  </div>
+                )}
+                {exercise.reps && (
+                  <div className="badge badge-outline">
+                    {exercise.reps} reps
+                  </div>
+                )}
+                {exercise.weight && (
+                  <div className="badge badge-outline">
+                    {exercise.weight} lbs
+                  </div>
+                )}
+                {exercise.duration && (
+                  <div className="badge badge-outline">
+                    {exercise.duration}s
+                  </div>
+                )}
+                {exercise.rest && (
+                  <div className="badge badge-outline">
+                    Rest: {exercise.rest}s
+                  </div>
+                )}
+              </div>
+
+              <div className="flex flex-wrap gap-2 mb-3">
+                <div
+                  className={`badge ${
+                    exercise.difficulty === "Beginner"
+                      ? "badge-success"
+                      : exercise.difficulty === "Intermediate"
+                      ? "badge-warning"
+                      : "badge-error"
+                  }`}
+                >
+                  {exercise.difficulty}
+                </div>
+                {exercise.targetMuscles.map((muscle) => (
+                  <div
+                    key={muscle}
+                    className="badge badge-primary badge-outline"
+                  >
+                    {muscle}
+                  </div>
+                ))}
+              </div>
+
+              {exercise.equipment && exercise.equipment.length > 0 && (
+                <div className="text-xs text-base-content/60">
+                  Equipment: {exercise.equipment.join(", ")}
+                </div>
+              )}
+            </div>
+
+            <button
+              onClick={() => onSelect(exercise)}
+              className="btn btn-primary btn-sm flex-shrink-0"
+            >
+              Select
+            </button>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// Custom Exercise Tab Component
+function CustomExerciseTab({
+  exercise,
+  onChange,
+  onSubmit,
+  isValid,
+}: {
+  exercise: CustomExercise;
+  onChange: (field: keyof CustomExercise, value: string | number) => void;
+  onSubmit: () => void;
+  isValid: boolean;
+}) {
+  return (
+    <div className="space-y-6">
+      <p className="text-base-content/70 text-sm">
+        Create your own custom exercise with the details below:
+      </p>
+
+      {/* Exercise Name & Description */}
+      <div className="grid gap-4">
+        <div>
+          <label className="label">
+            <span className="label-text font-medium">Exercise Name *</span>
+          </label>
+          <input
+            type="text"
+            value={exercise.name}
+            onChange={(e) => onChange("name", e.target.value)}
+            placeholder="Enter exercise name"
+            className="input input-bordered w-full"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="label">
+            <span className="label-text font-medium">Description</span>
+          </label>
+          <textarea
+            value={exercise.description}
+            onChange={(e) => onChange("description", e.target.value)}
+            placeholder="Describe how to perform this exercise (optional)"
+            className="textarea textarea-bordered w-full"
+            rows={3}
+          />
+        </div>
+      </div>
+
+      {/* Exercise Parameters */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className="label">
+            <span className="label-text font-medium">Sets</span>
+          </label>
+          <input
+            type="number"
+            value={exercise.sets}
+            onChange={(e) =>
+              onChange("sets", e.target.value ? parseInt(e.target.value) : "")
+            }
+            placeholder="Number of sets"
+            className="input input-bordered w-full"
+            min="1"
+          />
+        </div>
+
+        <div>
+          <label className="label">
+            <span className="label-text font-medium">Reps</span>
+          </label>
+          <input
+            type="number"
+            value={exercise.reps}
+            onChange={(e) =>
+              onChange("reps", e.target.value ? parseInt(e.target.value) : "")
+            }
+            placeholder="Reps per set"
+            className="input input-bordered w-full"
+            min="1"
+          />
+        </div>
+
+        <div>
+          <label className="label">
+            <span className="label-text font-medium">Weight (lbs)</span>
+          </label>
+          <input
+            type="number"
+            value={exercise.weight}
+            onChange={(e) =>
+              onChange(
+                "weight",
+                e.target.value ? parseFloat(e.target.value) : ""
+              )
+            }
+            placeholder="Weight in pounds"
+            className="input input-bordered w-full"
+            min="0"
+            step="0.5"
+          />
+        </div>
+
+        <div>
+          <label className="label">
+            <span className="label-text font-medium">Duration (seconds)</span>
+          </label>
+          <input
+            type="number"
+            value={exercise.duration}
+            onChange={(e) =>
+              onChange(
+                "duration",
+                e.target.value ? parseInt(e.target.value) : ""
+              )
+            }
+            placeholder="Duration in seconds"
+            className="input input-bordered w-full"
+            min="1"
+          />
+        </div>
+
+        <div className="md:col-span-2">
+          <label className="label">
+            <span className="label-text font-medium">Rest (seconds)</span>
+          </label>
+          <input
+            type="number"
+            value={exercise.rest}
+            onChange={(e) =>
+              onChange("rest", e.target.value ? parseInt(e.target.value) : "")
+            }
+            placeholder="Rest time in seconds"
+            className="input input-bordered w-full"
+            min="0"
+          />
+        </div>
+      </div>
+
+      {/* Submit Button */}
+      <div className="flex justify-end pt-4">
+        <button
+          onClick={onSubmit}
+          disabled={!isValid}
+          className="btn btn-primary btn-lg"
+        >
+          <svg
+            className="w-5 h-5 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
+            />
+          </svg>
+          Replace Exercise
+        </button>
+      </div>
     </div>
   );
 }
@@ -917,6 +1645,12 @@ const SectionCard = React.forwardRef<
     sectionIndex: number;
     onExerciseComplete: (exerciseId: string, completed: boolean) => void;
     onExerciseNotes: (exerciseId: string, notes: string) => void;
+    onExerciseSwap: (
+      exerciseId: string,
+      sectionIndex: number,
+      exerciseIndex: number,
+      currentExercise: Exercise
+    ) => void;
     disabled?: boolean;
   }
 >(
@@ -926,6 +1660,7 @@ const SectionCard = React.forwardRef<
       sectionIndex,
       onExerciseComplete,
       onExerciseNotes,
+      onExerciseSwap,
       disabled = false,
     },
     ref
@@ -978,6 +1713,7 @@ const SectionCard = React.forwardRef<
                 exerciseId={`section-${sectionIndex}-exercise-${exerciseIndex}`}
                 onComplete={onExerciseComplete}
                 onNotes={onExerciseNotes}
+                onSwap={onExerciseSwap}
                 disabled={disabled}
               />
             ))}
@@ -996,12 +1732,19 @@ function ExerciseCard({
   exerciseId,
   onComplete,
   onNotes,
+  onSwap,
   disabled = false,
 }: {
   exercise: Exercise;
   exerciseId: string;
   onComplete: (exerciseId: string, completed: boolean) => void;
   onNotes: (exerciseId: string, notes: string) => void;
+  onSwap: (
+    exerciseId: string,
+    sectionIndex: number,
+    exerciseIndex: number,
+    currentExercise: Exercise
+  ) => void;
   disabled?: boolean;
 }) {
   const exerciseInstance = exercise as ExerciseInstance;
@@ -1197,8 +1940,39 @@ function ExerciseCard({
           </div>
         </div>
 
-        {/* Completion Button */}
-        <div className="flex-shrink-0 self-start">
+        {/* Action Buttons */}
+        <div className="flex-shrink-0 self-start flex gap-2">
+          {/* Swap Exercise Button */}
+          {!disabled && (
+            <button
+              onClick={() => {
+                const [, sectionIndexStr, , exerciseIndexStr] =
+                  exerciseId.split("-");
+                const sectionIndex = parseInt(sectionIndexStr);
+                const exerciseIndex = parseInt(exerciseIndexStr);
+                onSwap(exerciseId, sectionIndex, exerciseIndex, exercise);
+              }}
+              className="btn btn-ghost btn-circle w-10 h-10 hover:bg-base-300 transition-all duration-200"
+              aria-label="Swap this exercise"
+              title="Swap exercise"
+            >
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
+                />
+              </svg>
+            </button>
+          )}
+
+          {/* Completion Button */}
           <button
             onClick={() => !disabled && onComplete(exerciseId, !isCompleted)}
             disabled={disabled}

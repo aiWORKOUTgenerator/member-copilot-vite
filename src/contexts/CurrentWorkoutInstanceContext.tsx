@@ -4,7 +4,11 @@ import {
   WorkoutInstance,
   WorkoutInstanceStructure,
 } from "@/domain/entities/workoutInstance";
-import { UpdateWorkoutInstanceRequest } from "@/domain/interfaces/services/WorkoutInstanceService";
+import { Exercise } from "@/domain/entities/generatedWorkout";
+import {
+  UpdateWorkoutInstanceRequest,
+  RecommendedExercise,
+} from "@/domain/interfaces/services/WorkoutInstanceService";
 import { useWorkoutInstanceService } from "@/hooks/useWorkoutInstanceService";
 import { useAuth } from "@/hooks/auth";
 import {
@@ -37,6 +41,9 @@ export interface CurrentWorkoutInstanceState {
   ) => void;
   syncToServer: () => Promise<void>;
   hasPendingChanges: boolean;
+  getExerciseRecommendations: (
+    currentExercise: Exercise
+  ) => Promise<RecommendedExercise[]>;
 }
 
 const CurrentWorkoutInstanceContext = createContext<
@@ -196,6 +203,29 @@ export function CurrentWorkoutInstanceProvider({
     }
   }, [currentInstance, hasPendingChanges, workoutInstanceService]);
 
+  const getExerciseRecommendations = useCallback(
+    async (currentExercise: Exercise): Promise<RecommendedExercise[]> => {
+      try {
+        const request = {
+          currentExercise: {
+            name: currentExercise.name,
+            description: currentExercise.description,
+            sets: currentExercise.sets,
+            reps: currentExercise.reps,
+            weight: currentExercise.weight,
+            duration: currentExercise.duration,
+          },
+        };
+
+        return await workoutInstanceService.getExerciseRecommendations(request);
+      } catch (error) {
+        console.error("Error loading recommendations:", error);
+        return [];
+      }
+    },
+    [workoutInstanceService]
+  );
+
   // Auto-sync to server after a delay (debounced sync)
   useEffect(() => {
     if (!hasPendingChanges) return;
@@ -228,6 +258,7 @@ export function CurrentWorkoutInstanceProvider({
     updateInstanceJsonFormatOptimistically,
     syncToServer,
     hasPendingChanges,
+    getExerciseRecommendations,
   };
 
   return (
