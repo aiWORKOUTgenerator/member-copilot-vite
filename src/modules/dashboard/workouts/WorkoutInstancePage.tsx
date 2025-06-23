@@ -1,6 +1,7 @@
 "use client";
 
 import { useCurrentWorkoutInstance } from "@/contexts/CurrentWorkoutInstanceContext";
+import { useWorkoutInstances } from "@/contexts/WorkoutInstancesContext";
 import { useTrainerPersonaData } from "@/contexts/TrainerPersonaContext";
 import { Exercise, Section } from "@/domain/entities/generatedWorkout";
 import { ExerciseInstance } from "@/domain/entities/workoutInstance";
@@ -30,10 +31,48 @@ export default function WorkoutInstancePage() {
   const {
     currentInstance,
     isLoading,
-    updateInstanceOptimistically,
+    updateInstance,
     updateInstanceJsonFormatOptimistically,
-    syncToServer,
   } = useCurrentWorkoutInstance();
+
+  const { updateInstanceInList } = useWorkoutInstances();
+
+  // Direct API call to complete workout immediately
+  const completeWorkoutImmediately = async () => {
+    console.log("completeWorkoutImmediately");
+    if (!currentInstance) {
+      console.error("No current instance available");
+      return;
+    }
+
+    try {
+      console.log("Making immediate API call to complete workout...");
+
+      // Calculate duration
+      const duration = Math.round(
+        (new Date().getTime() -
+          new Date(currentInstance.performedAt).getTime()) /
+          60000
+      );
+
+      // Make direct API call to complete the workout
+      const updatedInstance = await updateInstance(currentInstance.id, {
+        completed: true,
+        duration: duration,
+      });
+
+      console.log("Workout completed successfully via API");
+
+      // Update the workout instances list with the completed instance
+      updateInstanceInList(updatedInstance);
+
+      // Navigate back immediately after API success
+      navigate("/dashboard/workouts");
+    } catch (error) {
+      console.error("Failed to complete workout via API:", error);
+      // Could show error toast here
+    }
+  };
   const trainerPersona = useTrainerPersonaData();
 
   const [workoutProgress, setWorkoutProgress] = useState<WorkoutProgress>({
@@ -235,6 +274,12 @@ export default function WorkoutInstancePage() {
     (exerciseId: string, completed: boolean) => {
       if (!currentInstance?.jsonFormat) return;
 
+      // Don't allow editing if workout is already completed
+      if (currentInstance.completed) {
+        console.log("Cannot modify exercises - workout is already completed");
+        return;
+      }
+
       // Parse the exerciseId to get section and exercise indices
       const [, sectionIndexStr, , exerciseIndexStr] = exerciseId.split("-");
       const sectionIndex = parseInt(sectionIndexStr);
@@ -267,6 +312,12 @@ export default function WorkoutInstancePage() {
     (exerciseId: string, notes: string) => {
       if (!currentInstance?.jsonFormat) return;
 
+      // Don't allow editing if workout is already completed
+      if (currentInstance.completed) {
+        console.log("Cannot modify notes - workout is already completed");
+        return;
+      }
+
       // Parse the exerciseId to get section and exercise indices
       const [, sectionIndexStr, , exerciseIndexStr] = exerciseId.split("-");
       const sectionIndex = parseInt(sectionIndexStr);
@@ -292,6 +343,12 @@ export default function WorkoutInstancePage() {
 
   const handleMarkAllComplete = useCallback(async () => {
     if (!currentInstance?.jsonFormat?.sections) return;
+
+    // Don't allow marking all complete if workout is already completed
+    if (currentInstance.completed) {
+      console.log("Cannot mark all complete - workout is already completed");
+      return;
+    }
 
     setIsMarkingAllComplete(true);
 
@@ -335,6 +392,7 @@ export default function WorkoutInstancePage() {
   }, [currentInstance, updateInstanceJsonFormatOptimistically]);
 
   const handleCompleteWorkout = async () => {
+    console.log("handleCompleteWorkout");
     if (!currentInstance) return;
 
     // If workout is not 100% complete, show confirmation dialog
@@ -350,42 +408,13 @@ export default function WorkoutInstancePage() {
       return;
     }
 
-    // Complete the workout directly if 100% done
-    await completeWorkoutDirectly();
-  };
-
-  const completeWorkoutDirectly = async () => {
-    if (!currentInstance) return;
-
-    try {
-      // Update workout as completed with duration
-      const duration = Math.round(
-        (new Date().getTime() -
-          new Date(currentInstance.performedAt).getTime()) /
-          60000
-      );
-
-      updateInstanceOptimistically({
-        completed: true,
-        duration: duration,
-      });
-
-      // Sync to server
-      await syncToServer();
-
-      // Navigate back to workouts page after successful completion
-      setTimeout(() => {
-        navigate("/dashboard/workouts");
-      }, 1000); // Small delay to show success state
-    } catch (error) {
-      console.error("Failed to complete workout:", error);
-      // Could show error toast here
-    }
+    // Complete the workout immediately via API if 100% done
+    await completeWorkoutImmediately();
   };
 
   const handleConfirmComplete = async () => {
     setShowCompleteConfirm(false);
-    await completeWorkoutDirectly();
+    await completeWorkoutImmediately();
   };
 
   const handleCancelComplete = () => {
@@ -477,13 +506,27 @@ export default function WorkoutInstancePage() {
               {workoutTitle}
             </h1>
             <div className="flex items-center gap-2 mt-1">
-              <div className="text-xs text-base-content/70">
-                {workoutProgress.completedExercises} of{" "}
-                {workoutProgress.totalExercises} exercises
-              </div>
-              <div className="text-xs badge badge-primary">
-                {Math.round(progressPercentage)}%
-              </div>
+              {currentInstance.completed ? (
+                <div className="flex items-center gap-2">
+                  <div className="text-xs badge badge-success gap-1">
+                    <Check className="w-3 h-3" />
+                    Completed
+                  </div>
+                  <div className="text-xs text-base-content/70">
+                    {currentInstance.duration || 0}m duration
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <div className="text-xs text-base-content/70">
+                    {workoutProgress.completedExercises} of{" "}
+                    {workoutProgress.totalExercises} exercises
+                  </div>
+                  <div className="text-xs badge badge-primary">
+                    {Math.round(progressPercentage)}%
+                  </div>
+                </>
+              )}
             </div>
           </div>
 
@@ -596,6 +639,26 @@ export default function WorkoutInstancePage() {
           </div>
         )}
 
+        {/* Completed Workout Notice */}
+        {currentInstance.completed && (
+          <div className="bg-success bg-opacity-10 border border-success rounded-lg p-4 mb-6">
+            <div className="flex items-center gap-3">
+              <div className="bg-success rounded-full p-2">
+                <Check className="w-5 h-5 text-success-content" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-success">
+                  Workout Completed!
+                </h3>
+                <p className="text-sm text-base-content/70">
+                  This workout is now read-only. Exercise completion and notes
+                  cannot be modified.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Workout Header Info */}
         <div className="bg-base-200 rounded-lg p-4 mb-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center mb-4">
@@ -668,6 +731,7 @@ export default function WorkoutInstancePage() {
               sectionIndex={sectionIndex}
               onExerciseComplete={handleExerciseComplete}
               onExerciseNotes={handleExerciseNotes}
+              disabled={currentInstance.completed}
             />
           ))}
         </div>
@@ -853,61 +917,76 @@ const SectionCard = React.forwardRef<
     sectionIndex: number;
     onExerciseComplete: (exerciseId: string, completed: boolean) => void;
     onExerciseNotes: (exerciseId: string, notes: string) => void;
+    disabled?: boolean;
   }
->(({ section, sectionIndex, onExerciseComplete, onExerciseNotes }, ref) => {
-  const [isExpanded, setIsExpanded] = useState(true);
+>(
+  (
+    {
+      section,
+      sectionIndex,
+      onExerciseComplete,
+      onExerciseNotes,
+      disabled = false,
+    },
+    ref
+  ) => {
+    const [isExpanded, setIsExpanded] = useState(true);
 
-  const exercises = Array.isArray(section.exercises) ? section.exercises : [];
-  const completedInSection = exercises.filter(
-    (exercise) => (exercise as ExerciseInstance).completed
-  ).length;
+    const exercises = Array.isArray(section.exercises) ? section.exercises : [];
+    const completedInSection = exercises.filter(
+      (exercise) => (exercise as ExerciseInstance).completed
+    ).length;
 
-  return (
-    <div
-      ref={ref}
-      className="bg-base-100 rounded-lg shadow-sm border border-base-300"
-    >
+    return (
       <div
-        className="p-4 flex justify-between items-center cursor-pointer"
-        onClick={() => setIsExpanded(!isExpanded)}
+        ref={ref}
+        className="bg-base-100 rounded-lg shadow-sm border border-base-300"
       >
-        <div>
-          <h3 className="text-xl font-bold">
-            {section.name || "Unnamed Section"}
-          </h3>
-          <div className="flex gap-2 mt-1">
-            <div className="badge badge-outline">
-              {section.type || "Standard"}
-            </div>
-            {section.rounds && section.rounds > 1 && (
-              <div className="badge badge-primary">{section.rounds} rounds</div>
-            )}
-            <div className="badge badge-success">
-              {completedInSection}/{exercises.length} complete
+        <div
+          className="p-4 flex justify-between items-center cursor-pointer"
+          onClick={() => setIsExpanded(!isExpanded)}
+        >
+          <div>
+            <h3 className="text-xl font-bold">
+              {section.name || "Unnamed Section"}
+            </h3>
+            <div className="flex gap-2 mt-1">
+              <div className="badge badge-outline">
+                {section.type || "Standard"}
+              </div>
+              {section.rounds && section.rounds > 1 && (
+                <div className="badge badge-primary">
+                  {section.rounds} rounds
+                </div>
+              )}
+              <div className="badge badge-success">
+                {completedInSection}/{exercises.length} complete
+              </div>
             </div>
           </div>
+          <button className="btn btn-circle btn-sm">
+            {isExpanded ? "−" : "+"}
+          </button>
         </div>
-        <button className="btn btn-circle btn-sm">
-          {isExpanded ? "−" : "+"}
-        </button>
-      </div>
 
-      {isExpanded && (
-        <div className="p-4 pt-0 space-y-3">
-          {exercises.map((exercise: Exercise, exerciseIndex: number) => (
-            <ExerciseCard
-              key={exerciseIndex}
-              exercise={exercise}
-              exerciseId={`section-${sectionIndex}-exercise-${exerciseIndex}`}
-              onComplete={onExerciseComplete}
-              onNotes={onExerciseNotes}
-            />
-          ))}
-        </div>
-      )}
-    </div>
-  );
-});
+        {isExpanded && (
+          <div className="p-4 pt-0 space-y-3">
+            {exercises.map((exercise: Exercise, exerciseIndex: number) => (
+              <ExerciseCard
+                key={exerciseIndex}
+                exercise={exercise}
+                exerciseId={`section-${sectionIndex}-exercise-${exerciseIndex}`}
+                onComplete={onExerciseComplete}
+                onNotes={onExerciseNotes}
+                disabled={disabled}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
+);
 
 SectionCard.displayName = "SectionCard";
 
@@ -917,11 +996,13 @@ function ExerciseCard({
   exerciseId,
   onComplete,
   onNotes,
+  disabled = false,
 }: {
   exercise: Exercise;
   exerciseId: string;
   onComplete: (exerciseId: string, completed: boolean) => void;
   onNotes: (exerciseId: string, notes: string) => void;
+  disabled?: boolean;
 }) {
   const exerciseInstance = exercise as ExerciseInstance;
   const isCompleted = exerciseInstance.completed || false;
@@ -963,6 +1044,7 @@ function ExerciseCard({
   };
 
   const handleNotesClick = () => {
+    if (disabled) return;
     setIsEditingNotes(true);
   };
 
@@ -1003,15 +1085,12 @@ function ExerciseCard({
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-3 mb-2">
-            <h4
-              className={`font-semibold ${
-                isCompleted ? "line-through opacity-70" : ""
-              }`}
-            >
-              {exercise.name}
-            </h4>
+            <h4 className="font-semibold">{exercise.name}</h4>
             {isCompleted && (
-              <Check className="w-5 h-5 text-success flex-shrink-0" />
+              <div className="badge badge-success badge-sm gap-1">
+                <Check className="w-3 h-3" />
+                Done
+              </div>
             )}
           </div>
 
@@ -1074,7 +1153,11 @@ function ExerciseCard({
             ) : (
               <div
                 onClick={handleNotesClick}
-                className={`min-h-[44px] p-3 rounded-lg border border-base-300 cursor-text transition-all duration-200 hover:border-primary/50 hover:bg-base-100/50 ${
+                className={`min-h-[44px] p-3 rounded-lg border border-base-300 transition-all duration-200 ${
+                  disabled
+                    ? "cursor-default opacity-60"
+                    : "cursor-text hover:border-primary/50 hover:bg-base-100/50"
+                } ${
                   notes.trim()
                     ? "bg-base-100 text-base-content"
                     : "bg-base-200/50 text-base-content/50"
@@ -1086,7 +1169,9 @@ function ExerciseCard({
                   </div>
                 ) : (
                   <div className="text-sm italic">
-                    Tap to add notes about this exercise...
+                    {disabled
+                      ? "Notes (read-only)"
+                      : "Tap to add notes about this exercise..."}
                   </div>
                 )}
                 <div className="flex items-center gap-1 mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -1115,13 +1200,22 @@ function ExerciseCard({
         {/* Completion Button */}
         <div className="flex-shrink-0 self-start">
           <button
-            onClick={() => onComplete(exerciseId, !isCompleted)}
+            onClick={() => !disabled && onComplete(exerciseId, !isCompleted)}
+            disabled={disabled}
             className={`btn btn-circle w-12 h-12 transition-all duration-200 ${
-              isCompleted
+              disabled
+                ? "btn-disabled opacity-60 cursor-not-allowed"
+                : isCompleted
                 ? "btn-success shadow-lg"
                 : "btn-outline btn-primary hover:scale-105"
             }`}
-            aria-label={isCompleted ? "Mark as incomplete" : "Mark as complete"}
+            aria-label={
+              disabled
+                ? "Exercise completion locked (workout completed)"
+                : isCompleted
+                ? "Mark as incomplete"
+                : "Mark as complete"
+            }
           >
             {isCompleted ? (
               <Check className="w-6 h-6" />
