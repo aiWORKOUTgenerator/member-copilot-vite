@@ -24,6 +24,7 @@ export interface WorkoutInstancesState {
   createInstance: (
     request: CreateWorkoutInstanceRequest
   ) => Promise<WorkoutInstance>;
+  updateInstanceInList: (updatedInstance: WorkoutInstance) => void;
   getInstancesByGeneratedWorkoutId: (
     generatedWorkoutId: string
   ) => WorkoutInstance[];
@@ -88,6 +89,17 @@ export function WorkoutInstancesProvider({
     [workoutInstanceService]
   );
 
+  const updateInstanceInList = useCallback(
+    (updatedInstance: WorkoutInstance) => {
+      setInstances((prevInstances) =>
+        prevInstances.map((instance) =>
+          instance.id === updatedInstance.id ? updatedInstance : instance
+        )
+      );
+    },
+    []
+  );
+
   const getInstancesByGeneratedWorkoutId = useCallback(
     (generatedWorkoutId: string) => {
       return instances.filter(
@@ -117,6 +129,7 @@ export function WorkoutInstancesProvider({
     error,
     fetchInstances,
     createInstance,
+    updateInstanceInList,
     getInstancesByGeneratedWorkoutId,
   };
 
