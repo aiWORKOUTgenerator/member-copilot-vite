@@ -12,6 +12,7 @@ import {
 } from "@/ui/shared/molecules/RadioGroupOfCards";
 import { useEffect, useMemo, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 export default function TrainingProfileLayout() {
   const { setTitle } = useTitle();
@@ -66,6 +67,15 @@ export default function TrainingProfileLayout() {
       }
     }
   }, [pathname, attributeTypes]);
+
+  const analytics = useAnalytics();
+
+  // Track profile page views
+  useEffect(() => {
+    analytics.track("Profile Page Viewed", {
+      timestamp: new Date().toISOString(),
+    });
+  }, [analytics]);
 
   // User is authenticated, show Training Profile page
   return (

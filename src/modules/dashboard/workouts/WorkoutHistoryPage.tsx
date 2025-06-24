@@ -16,7 +16,7 @@ import {
   CheckCircle,
   Shield,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { TrainerPersonaDisplay } from "./components/TrainerPersonaDisplay";
 import WorkoutInstanceModal, {
@@ -29,6 +29,7 @@ import {
   formatDate,
   sortByDateDesc,
 } from "./utils/workoutHistoryUtils";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 /**
  * Simple workout history page showing instances from the last month
@@ -44,6 +45,7 @@ export default function WorkoutHistoryPage() {
     isLoading: isAccessLoading,
     isLoaded: isAccessLoaded,
   } = useUserAccess();
+  const analytics = useAnalytics();
 
   // Check if user has access to workout history feature
   const hasWorkoutHistoryAccess = canAccessFeature("workout_instance_history");
@@ -56,13 +58,40 @@ export default function WorkoutHistoryPage() {
   // Calculate statistics
   const stats = useMemo(() => calculateStats(recentWorkouts), [recentWorkouts]);
 
+  // Track workout history page views
+  useEffect(() => {
+    analytics.track("Workout History Viewed", {
+      totalWorkouts: instances?.length || 0,
+      timestamp: new Date().toISOString(),
+    });
+  }, [instances, analytics]);
+
   const handleWorkoutClick = (workout: WorkoutInstance) => {
+    analytics.track("Historical Workout Clicked", {
+      workoutInstanceId: workout.id,
+      completed: workout.completed,
+      timestamp: new Date().toISOString(),
+    });
     workoutModal.openModal(workout);
   };
 
   const handleViewDetails = (workout: WorkoutInstance) => {
+    analytics.track("Workout Instance Details Viewed", {
+      workoutInstanceId: workout.id,
+      source: "history_modal",
+      timestamp: new Date().toISOString(),
+    });
     workoutModal.closeModal();
     navigate(`/dashboard/workouts/instances/${workout.id}`);
+  };
+
+  const handleViewModeChange = (newMode: "timeline" | "list") => {
+    analytics.track("History View Mode Changed", {
+      viewMode: newMode,
+      previousMode: viewMode,
+      timestamp: new Date().toISOString(),
+    });
+    setViewMode(newMode);
   };
 
   // Handle access control loading state
@@ -176,7 +205,7 @@ export default function WorkoutHistoryPage() {
         {/* View Toggle */}
         <div className="flex gap-1 bg-base-200 p-1 rounded-lg">
           <button
-            onClick={() => setViewMode("timeline")}
+            onClick={() => handleViewModeChange("timeline")}
             className={`btn btn-sm ${
               viewMode === "timeline" ? "btn-primary" : "btn-ghost"
             }`}
@@ -186,7 +215,7 @@ export default function WorkoutHistoryPage() {
             Timeline
           </button>
           <button
-            onClick={() => setViewMode("list")}
+            onClick={() => handleViewModeChange("list")}
             className={`btn btn-sm ${
               viewMode === "list" ? "btn-primary" : "btn-ghost"
             }`}

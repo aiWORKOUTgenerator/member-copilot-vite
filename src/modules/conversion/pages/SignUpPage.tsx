@@ -12,6 +12,7 @@ import { useSignIn, useSignUp } from "@clerk/clerk-react";
 import { isClerkAPIResponseError } from "@clerk/clerk-react/errors";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 export default function SignUpPage() {
   const [emailAddress, setEmailAddress] = useState("");
@@ -24,6 +25,38 @@ export default function SignUpPage() {
   const [searchParams] = useSearchParams();
 
   const navigate = useNavigate();
+  const analytics = useAnalytics();
+
+  // Track sign-up page views
+  useEffect(() => {
+    analytics.track("Sign Up Page Viewed", {
+      timestamp: new Date().toISOString(),
+    });
+  }, [analytics]);
+
+  // Track form field interactions
+  const handleFieldFocus = (fieldName: string) => {
+    analytics.track("Sign Up Field Focused", {
+      fieldName,
+      timestamp: new Date().toISOString(),
+    });
+  };
+
+  // Track authentication method selection
+  const handleEmailSignUp = () => {
+    analytics.track("Sign Up Method Selected", {
+      method: "email",
+      location: "signup_page",
+    });
+  };
+
+  // Track form submission attempts
+  const handleFormSubmit = () => {
+    analytics.track("Sign Up Form Submitted", {
+      method: "email",
+      timestamp: new Date().toISOString(),
+    });
+  };
 
   // Email validation function
   const validateEmail = (email: string): boolean => {
@@ -240,6 +273,7 @@ export default function SignUpPage() {
           aria-label="Email address"
           aria-required="true"
           helperText="We'll send you a magic link to sign in"
+          onFocus={() => handleFieldFocus("email")}
         />
         <Button
           type="submit"
@@ -248,6 +282,10 @@ export default function SignUpPage() {
           isLoading={verifying}
           disabled={!!validation || !emailAddress || verifying}
           aria-label="Continue with email"
+          onClick={() => {
+            handleEmailSignUp();
+            handleFormSubmit();
+          }}
         >
           Continue with email
         </Button>
