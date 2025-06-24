@@ -14,6 +14,7 @@ import { MeteredFeature } from "@/hooks/useUserAccess";
 import AccessAwareComponent from "@/ui/shared/molecules/AccessAwareComponent";
 import { ActionCard } from "@/ui/shared/molecules/ActionCard";
 import { PhoneVerificationCard } from "@/components/PhoneVerificationCard";
+import { AnnouncementsSection } from "@/components/announcements/AnnouncementsSection";
 import {
   Info,
   AlertTriangle,
@@ -251,6 +252,12 @@ export default function DashboardHomePage() {
       {/* Account Security Section */}
       <div className="mb-8">
         <PhoneVerificationCard />
+      </div>
+
+      {/* Announcements Section */}
+      <div className="mb-8">
+        <div className="border-t border-gray-200 mb-6"></div>
+        <AnnouncementsSection />
       </div>
     </div>
   );
