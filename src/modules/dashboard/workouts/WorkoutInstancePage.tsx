@@ -1159,6 +1159,7 @@ function SwapExerciseModal({
               exercises={recommendedExercises}
               isLoading={isLoadingRecommendations}
               onSelect={onSwapWithRecommended}
+              currentExercise={currentExercise}
             />
           ) : (
             <CustomExerciseTab
@@ -1246,6 +1247,7 @@ function SwapExerciseModal({
               exercises={recommendedExercises}
               isLoading={isLoadingRecommendations}
               onSelect={onSwapWithRecommended}
+              currentExercise={currentExercise}
             />
           ) : (
             <CustomExerciseTab
@@ -1266,19 +1268,78 @@ function RecommendedExercisesTab({
   exercises,
   isLoading,
   onSelect,
+  currentExercise,
 }: {
   exercises: RecommendedExercise[];
   isLoading: boolean;
   onSelect: (exercise: RecommendedExercise) => void;
+  currentExercise: Exercise | null;
 }) {
+  const trainerPersona = useTrainerPersonaData();
+
+  // Set loading message once when component mounts/loading starts
+  const [loadingMessage] = useState(() => {
+    const exerciseName = currentExercise?.name || "this exercise";
+    const messages = [
+      `Thinking about some great alternatives to ${exerciseName}...`,
+      `Hold on while I analyze better options than ${exerciseName}...`,
+      `Let me find you something even better than ${exerciseName}...`,
+      `Scanning my database for ${exerciseName} alternatives...`,
+      `Cooking up some alternatives to ${exerciseName}...`,
+      `Give me a sec to find the perfect swap for ${exerciseName}...`,
+      `Analyzing movement patterns similar to ${exerciseName}...`,
+      `Finding exercises that'll challenge you like ${exerciseName}...`,
+      `Let me think outside the box for ${exerciseName} alternatives...`,
+      `Searching for the perfect replacement for ${exerciseName}...`,
+      `Working on some creative alternatives to ${exerciseName}...`,
+      `Let me find exercises that target the same muscles as ${exerciseName}...`,
+    ];
+    return messages[Math.floor(Math.random() * messages.length)];
+  });
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="text-center">
-          <span className="loading loading-spinner loading-lg text-primary"></span>
-          <p className="text-base-content/70 mt-4">
-            AI is finding the best exercise alternatives...
-          </p>
+        <div className="text-center max-w-sm">
+          {/* Trainer Avatar */}
+          {trainerPersona && (
+            <div className="flex items-center justify-center mb-4">
+              <div className="avatar">
+                <div className="w-16 h-16 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                  {trainerPersona.avatar_url ? (
+                    <img
+                      src={trainerPersona.avatar_url}
+                      alt={trainerPersona.trainer_name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="bg-primary text-primary-content flex items-center justify-center w-full h-full text-xl font-bold">
+                      {trainerPersona.trainer_name.charAt(0)}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Loading Spinner */}
+          <span className="loading loading-spinner loading-lg text-primary mb-4"></span>
+
+          {/* Trainer Name and Message */}
+          {trainerPersona ? (
+            <div>
+              <p className="font-semibold text-lg mb-2">
+                {trainerPersona.trainer_name}
+              </p>
+              <p className="text-base-content/70 text-sm italic">
+                "{loadingMessage}"
+              </p>
+            </div>
+          ) : (
+            <p className="text-base-content/70">
+              AI is finding the best exercise alternatives...
+            </p>
+          )}
         </div>
       </div>
     );
@@ -1314,6 +1375,35 @@ function RecommendedExercisesTab({
 
   return (
     <div className="space-y-4">
+      {/* Header with trainer persona */}
+      {trainerPersona && (
+        <div className="flex items-center gap-3 p-4 bg-base-200 rounded-lg mb-4">
+          <div className="avatar">
+            <div className="w-10 h-10 rounded-full">
+              {trainerPersona.avatar_url ? (
+                <img
+                  src={trainerPersona.avatar_url}
+                  alt={trainerPersona.trainer_name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="bg-primary text-primary-content flex items-center justify-center w-full h-full text-sm font-bold">
+                  {trainerPersona.trainer_name.charAt(0)}
+                </div>
+              )}
+            </div>
+          </div>
+          <div>
+            <p className="font-medium text-sm">
+              {trainerPersona.trainer_name} suggests:
+            </p>
+            <p className="text-xs text-base-content/70">
+              "These alternatives will keep you moving forward!"
+            </p>
+          </div>
+        </div>
+      )}
+
       <p className="text-base-content/70 text-sm">
         Here are AI-recommended alternatives based on your current exercise:
       </p>
@@ -1412,8 +1502,54 @@ function CustomExerciseTab({
   onSubmit: () => void;
   isValid: boolean;
 }) {
+  const trainerPersona = useTrainerPersonaData();
+
+  // Set encouraging message once when component mounts
+  const [encouragingMessage] = useState(() => {
+    const messages = [
+      "Great choice taking control of your workout!",
+      "I love when you customize your training!",
+      "You know your body best - let's make this work for you!",
+      "Creating your own exercise shows real dedication!",
+      "This is how champions adapt their training!",
+      "Your creativity in training is impressive!",
+      "Let's build something that challenges you perfectly!",
+      "I'm here to support your custom exercise choice!",
+    ];
+    return messages[Math.floor(Math.random() * messages.length)];
+  });
+
   return (
     <div className="space-y-6">
+      {/* Header with trainer persona */}
+      {trainerPersona && (
+        <div className="flex items-center gap-3 p-4 bg-gradient-to-r from-secondary/10 to-accent/10 rounded-lg border border-secondary/20">
+          <div className="avatar">
+            <div className="w-12 h-12 rounded-full">
+              {trainerPersona.avatar_url ? (
+                <img
+                  src={trainerPersona.avatar_url}
+                  alt={trainerPersona.trainer_name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="bg-secondary text-secondary-content flex items-center justify-center w-full h-full text-lg font-bold">
+                  {trainerPersona.trainer_name.charAt(0)}
+                </div>
+              )}
+            </div>
+          </div>
+          <div>
+            <p className="font-medium text-sm">
+              {trainerPersona.trainer_name} says:
+            </p>
+            <p className="text-xs text-base-content/70 italic">
+              "{encouragingMessage}"
+            </p>
+          </div>
+        </div>
+      )}
+
       <p className="text-base-content/70 text-sm">
         Create your own custom exercise with the details below:
       </p>
