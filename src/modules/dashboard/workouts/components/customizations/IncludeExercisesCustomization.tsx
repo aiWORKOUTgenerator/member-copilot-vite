@@ -16,7 +16,7 @@ export default function IncludeExercisesCustomization({
         onChange={(e) => onChange(e.target.value || undefined)}
         disabled={disabled}
       />
-      {error && <p className="validator-hint">{error}</p>}
+      {error && <p className="validator-hint mt-2" role="alert">{error}</p>}
       <p className="text-xs text-base-content/60">
         Specify exercises you want to include in your workout (comma-separated)
       </p>

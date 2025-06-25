@@ -4,11 +4,21 @@ export interface PerWorkoutOptions {
   customization_focus?: string;
   customization_energy?: number;
   customization_areas?: string[];
-  customization_soreness?: string[];
-  customization_stress?: number;
+  customization_soreness?: CategoryRatingData;
+  customization_stress?: CategoryRatingData;
   customization_sleep?: number;
   customization_include?: string;
   customization_exclude?: string;
+}
+
+// Unified interface for category-based customizations with rating scales
+export interface CategoryRatingData {
+  [categoryKey: string]: {
+    selected: boolean;
+    rating?: number;        // 1-5 scale
+    label: string;          // Human-readable category name
+    description?: string;   // Category description
+  }
 }
 
 export interface CustomizationComponentProps<T = unknown> {

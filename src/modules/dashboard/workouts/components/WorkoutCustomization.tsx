@@ -1,5 +1,5 @@
 import { Target } from "lucide-react";
-import { WorkoutCustomizationProps } from "./types";
+import { WorkoutCustomizationProps, CategoryRatingData } from "./types";
 import { CUSTOMIZATION_CONFIG } from "./customizations";
 import { useState } from "react";
 
@@ -17,6 +17,12 @@ export default function WorkoutCustomization({
     value: unknown
   ) => {
     onChange(key, value);
+  };
+
+  // Helper function to convert rating numbers to standardized labels
+  const getRatingLabel = (rating: number): string => {
+    const labels = ["", "Mild", "Low-Moderate", "Moderate", "High", "Severe"];
+    return labels[rating] || "Unknown";
   };
 
   // Helper function to format the current selection for display
@@ -67,14 +73,15 @@ export default function WorkoutCustomization({
       }
 
       case "customization_soreness": {
-        const soreAreas = value as string[];
-        if (soreAreas.length === 0) return null;
-        if (soreAreas.length === 1) {
-          return soreAreas[0]
-            .replace(/_/g, " ")
-            .replace(/\b\w/g, (l) => l.toUpperCase());
+        const categoryData = value as CategoryRatingData;
+        if (!categoryData) return null;
+        const selectedEntries = Object.entries(categoryData).filter(([_, info]) => info.selected);
+        if (selectedEntries.length === 0) return null;
+        if (selectedEntries.length === 1) {
+          const [_, info] = selectedEntries[0];
+          return `${info.label}${info.rating ? ` (${getRatingLabel(info.rating)})` : ''}`;
         }
-        return `${soreAreas.length} areas`;
+        return `${selectedEntries.length} areas`;
       }
 
       case "customization_focus": {
@@ -123,9 +130,15 @@ export default function WorkoutCustomization({
       }
 
       case "customization_stress": {
-        const rating = value as number;
-        const labels = ["", "Very Low", "Low", "Moderate", "High", "Very High"];
-        return `${labels[rating]} (${rating}/5)`;
+        const categoryData = value as CategoryRatingData;
+        if (!categoryData) return null;
+        const selectedEntries = Object.entries(categoryData).filter(([_, info]) => info.selected);
+        if (selectedEntries.length === 0) return null;
+        if (selectedEntries.length === 1) {
+          const [_, info] = selectedEntries[0];
+          return `${info.label}${info.rating ? ` (${getRatingLabel(info.rating)})` : ''}`;
+        }
+        return `${selectedEntries.length} categories`;
       }
 
       default:

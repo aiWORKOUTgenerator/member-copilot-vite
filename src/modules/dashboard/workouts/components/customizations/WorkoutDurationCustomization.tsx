@@ -46,7 +46,7 @@ export default function WorkoutDurationCustomization({
         ))}
       </select>
 
-      {error && <p className="validator-hint mt-1">{error}</p>}
+      {error && <p className="validator-hint mt-2" role="alert">{error}</p>}
 
       {value && (
         <p className="text-xs text-base-content/60 mt-1">

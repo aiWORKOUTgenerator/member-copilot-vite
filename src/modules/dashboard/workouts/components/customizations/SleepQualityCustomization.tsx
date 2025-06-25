@@ -57,31 +57,36 @@ export default function SleepQualityCustomization({
   return (
     <div>
       <div className="mb-4">
-        <p className="text-sm text-base-content/80 mb-3">
-          Rate your sleep quality from last night (1 = Very Poor, 5 = Excellent)
-        </p>
+        <div role="radiogroup" aria-labelledby="sleep-quality-label">
+          <p id="sleep-quality-label" className="text-sm text-base-content/80 mb-3">
+            Rate your sleep quality from last night (1 = Very Poor, 5 = Excellent)
+          </p>
 
-        <div className="rating rating-lg gap-2">
-          {SLEEP_QUALITY_LEVELS.map((level) => {
-            const isSelected = selectedRating === level.value;
+          <div className="rating rating-lg gap-2">
+            {SLEEP_QUALITY_LEVELS.map((level) => {
+              const isSelected = selectedRating === level.value;
 
-            return (
-              <button
-                key={level.value}
-                type="button"
-                className={`btn btn-circle ${
-                  isSelected
-                    ? "btn-primary text-primary-content"
-                    : "btn-outline btn-primary"
-                } ${disabled ? "btn-disabled" : ""} font-bold text-base`}
-                onClick={() => handleRatingChange(level.value)}
-                disabled={disabled}
-                title={`${level.label}: ${level.description}`}
-              >
-                {level.value}
-              </button>
-            );
-          })}
+              return (
+                <button
+                  key={level.value}
+                  type="button"
+                  role="radio"
+                  aria-checked={isSelected}
+                  aria-describedby={error ? "sleep-quality-error" : undefined}
+                  className={`btn btn-circle ${
+                    isSelected
+                      ? "btn-primary text-primary-content"
+                      : "btn-outline btn-primary"
+                  } ${disabled ? "btn-disabled" : ""} font-bold text-base`}
+                  onClick={() => handleRatingChange(level.value)}
+                  disabled={disabled}
+                  title={`${level.label}: ${level.description}`}
+                >
+                  {level.value}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
 
@@ -96,7 +101,7 @@ export default function SleepQualityCustomization({
         </div>
       )}
 
-      {error && <p className="validator-hint mt-2">{error}</p>}
+      {error && <p id="sleep-quality-error" className="validator-hint mt-2" role="alert">{error}</p>}
     </div>
   );
 }
