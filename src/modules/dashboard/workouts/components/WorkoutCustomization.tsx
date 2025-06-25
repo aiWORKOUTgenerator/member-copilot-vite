@@ -1,7 +1,6 @@
 import { Target } from "lucide-react";
 import { WorkoutCustomizationProps } from "./types";
 import { CUSTOMIZATION_CONFIG } from "./customizations";
-import { useUserAccessContext } from "@/contexts/UserAccessContext";
 import { useState } from "react";
 
 export default function WorkoutCustomization({
@@ -9,12 +8,8 @@ export default function WorkoutCustomization({
   onChange,
   errors,
   disabled = false,
-  onGenerateWorkout,
-  onUpgrade,
   mode = "custom",
 }: WorkoutCustomizationProps) {
-  const { canAccessFeature, isLoading } = useUserAccessContext();
-  const hasWorkoutCustomization = canAccessFeature("workout_customization");
   const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
 
   const handleChange = (
@@ -154,45 +149,7 @@ export default function WorkoutCustomization({
     return (
       <div className="mb-6">
         <div className="relative">
-          {/* Upgrade overlay */}
-          {!isLoading && !hasWorkoutCustomization && (
-            <div className="absolute inset-0 bg-base-100/30 backdrop-blur-[1px] rounded-lg z-10 flex items-center justify-center">
-              <div className="text-center p-6 max-w-md bg-base-100/95 backdrop-blur-sm rounded-lg border border-base-300 shadow-lg">
-                <div className="mb-4">
-                  <Target className="w-12 h-12 mx-auto text-primary/50" />
-                </div>
-                <h4 className="text-lg font-semibold mb-2">
-                  Upgrade To Customize
-                </h4>
-                <p className="text-base-content/70 mb-4">
-                  Workout customization features are available with our premium
-                  plans. Upgrade to personalize your workouts with duration,
-                  focus areas, equipment preferences, and more.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                  <button
-                    type="submit"
-                    className="btn btn-outline btn-sm w-full sm:w-auto"
-                    onClick={onGenerateWorkout}
-                  >
-                    Generate Workout Anyway
-                  </button>
-                  <button
-                    className="btn btn-primary btn-sm w-full sm:w-auto"
-                    onClick={onUpgrade}
-                  >
-                    Upgrade Plan
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div
-            className={`border border-base-300 rounded-lg p-4 ${
-              !hasWorkoutCustomization ? "pointer-events-none opacity-80" : ""
-            }`}
-          >
+          <div className={`border border-base-300 rounded-lg p-4`}>
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center">
                 <IconComponent className="w-5 h-5 mr-3" />
@@ -208,7 +165,7 @@ export default function WorkoutCustomization({
               onChange={(newValue) =>
                 handleChange(durationConfig.key, newValue)
               }
-              disabled={disabled || !hasWorkoutCustomization}
+              disabled={disabled}
               error={error}
             />
           </div>
@@ -246,52 +203,13 @@ export default function WorkoutCustomization({
       </h3>
 
       <div className="relative">
-        {/* Upgrade overlay */}
-        {!isLoading && !hasWorkoutCustomization && (
-          <div className="absolute inset-0 bg-base-100/30 backdrop-blur-[1px] rounded-lg z-10 flex items-center justify-center">
-            <div className="text-center p-6 max-w-md bg-base-100/95 backdrop-blur-sm rounded-lg border border-base-300 shadow-lg">
-              <div className="mb-4">
-                <Target className="w-12 h-12 mx-auto text-primary/50" />
-              </div>
-              <h4 className="text-lg font-semibold mb-2">
-                Upgrade To Customize
-              </h4>
-              <p className="text-base-content/70 mb-4">
-                Workout customization features are available with our premium
-                plans. Upgrade to personalize your workouts with duration, focus
-                areas, equipment preferences, and more.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <button
-                  type="submit"
-                  className="btn btn-outline btn-sm w-full sm:w-auto"
-                  onClick={onGenerateWorkout}
-                >
-                  Generate Workout Anyway
-                </button>
-                <button
-                  className="btn btn-primary btn-sm w-full sm:w-auto"
-                  onClick={onUpgrade}
-                >
-                  Upgrade Plan
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        <div
-          className={`space-y-4 ${
-            !hasWorkoutCustomization ? "pointer-events-none opacity-80" : ""
-          }`}
-        >
+        <div className={`space-y-4`}>
           {Object.entries(groupedConfigs).map(([category, configs]) => (
             <div key={category} className="border border-base-300 rounded-lg">
               <button
                 type="button"
                 className="w-full p-4 text-left font-medium hover:bg-base-100 transition-colors rounded-t-lg flex items-center justify-between"
                 onClick={() => toggleCategory(category)}
-                disabled={disabled || !hasWorkoutCustomization}
               >
                 <span>{category}</span>
                 <svg
@@ -379,7 +297,7 @@ export default function WorkoutCustomization({
                                 onChange={(newValue) =>
                                   handleChange(config.key, newValue)
                                 }
-                                disabled={disabled || !hasWorkoutCustomization}
+                                disabled={disabled}
                                 error={error}
                               />
                             </>

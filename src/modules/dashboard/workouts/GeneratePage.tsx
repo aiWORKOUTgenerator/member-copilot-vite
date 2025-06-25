@@ -167,21 +167,6 @@ export default function GenerateWorkoutPage() {
     setPrompt(example);
   };
 
-  // Handle workout generation from the upgrade overlay
-  const handleGenerateWorkoutFromOverlay = () => {
-    // Create a synthetic form event and call the existing handleSubmit
-    const syntheticEvent = {
-      preventDefault: () => {},
-    } as React.FormEvent;
-    handleSubmit(syntheticEvent);
-  };
-
-  // Handle upgrade action
-  const handleUpgrade = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    navigate("/dashboard/billing");
-  };
-
   // Track successful workout generation
   const handleGenerationSuccess = (workoutId: string) => {
     analytics.track("Workout Generated Successfully", {
@@ -259,8 +244,6 @@ export default function GenerateWorkoutPage() {
                   onChange={handlePerWorkoutOptionChange}
                   errors={errors}
                   disabled={isGenerating}
-                  onGenerateWorkout={handleGenerateWorkoutFromOverlay}
-                  onUpgrade={handleUpgrade}
                   mode="custom"
                 />
 
@@ -344,8 +327,6 @@ export default function GenerateWorkoutPage() {
                   onChange={handlePerWorkoutOptionChange}
                   errors={errors}
                   disabled={isGenerating}
-                  onGenerateWorkout={handleGenerateWorkoutFromOverlay}
-                  onUpgrade={handleUpgrade}
                   mode="quick"
                 />
               </>
