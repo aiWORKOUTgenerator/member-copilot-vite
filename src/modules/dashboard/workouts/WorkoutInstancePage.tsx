@@ -1,10 +1,11 @@
 "use client";
 
 import { useCurrentWorkoutInstance } from "@/contexts/CurrentWorkoutInstanceContext";
-import { useWorkoutInstances } from "@/contexts/WorkoutInstancesContext";
 import { useTrainerPersonaData } from "@/contexts/TrainerPersonaContext";
+import { useWorkoutInstances } from "@/contexts/WorkoutInstancesContext";
 import { Exercise, Section } from "@/domain/entities/generatedWorkout";
 import { ExerciseInstance } from "@/domain/entities/workoutInstance";
+import { useAnalytics } from "@/hooks/useAnalytics";
 import { Check, Clock, Target, X } from "lucide-react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
@@ -36,6 +37,22 @@ export default function WorkoutInstancePage() {
   } = useCurrentWorkoutInstance();
 
   const { updateInstanceInList } = useWorkoutInstances();
+
+  const analytics = useAnalytics();
+  const workoutStartTime = useRef<number>(Date.now());
+
+  // Track workout instance start
+  useEffect(() => {
+    if (currentInstance) {
+      analytics.track("Workout Instance Started", {
+        workoutInstanceId: currentInstance.id,
+        generatedWorkoutId: currentInstance.generatedWorkoutId,
+        isExistingInstance: !!currentInstance.performedAt,
+        timestamp: new Date().toISOString(),
+      });
+      workoutStartTime.current = Date.now();
+    }
+  }, [currentInstance, analytics]);
 
   // Direct API call to complete workout immediately
   const completeWorkoutImmediately = async () => {
@@ -262,6 +279,7 @@ export default function WorkoutInstancePage() {
   };
 
   const handleConfirmExit = () => {
+    handleWorkoutAbandon("User exited workout");
     setShowExitConfirm(false);
     navigate("/dashboard/workouts");
   };
@@ -292,9 +310,18 @@ export default function WorkoutInstancePage() {
 
       // Update the specific exercise
       if (updatedJsonFormat.sections[sectionIndex]?.exercises[exerciseIndex]) {
-        updatedJsonFormat.sections[sectionIndex].exercises[
-          exerciseIndex
-        ].completed = completed;
+        const exercise =
+          updatedJsonFormat.sections[sectionIndex].exercises[exerciseIndex];
+        exercise.completed = completed;
+
+        // Track exercise completion
+        analytics.track("Exercise Completed", {
+          workoutInstanceId: currentInstance.id,
+          exerciseId,
+          exerciseName: exercise.name,
+          completed,
+          timestamp: new Date().toISOString(),
+        });
 
         // Update the local state optimistically
         updateInstanceJsonFormatOptimistically(updatedJsonFormat);
@@ -305,7 +332,7 @@ export default function WorkoutInstancePage() {
         }
       }
     },
-    [currentInstance, updateInstanceJsonFormatOptimistically]
+    [currentInstance, updateInstanceJsonFormatOptimistically, analytics]
   );
 
   const handleExerciseNotes = useCallback(
@@ -350,6 +377,14 @@ export default function WorkoutInstancePage() {
       return;
     }
 
+    // Track mark all complete action
+    analytics.track("Mark All Exercises Complete", {
+      workoutInstanceId: currentInstance.id,
+      totalExercises: workoutProgress.totalExercises,
+      previouslyCompleted: workoutProgress.completedExercises,
+      timestamp: new Date().toISOString(),
+    });
+
     setIsMarkingAllComplete(true);
 
     // Create a deep copy and mark all exercises as completed
@@ -389,10 +424,14 @@ export default function WorkoutInstancePage() {
         });
       }
     }, 1000);
-  }, [currentInstance, updateInstanceJsonFormatOptimistically]);
+  }, [
+    currentInstance,
+    updateInstanceJsonFormatOptimistically,
+    analytics,
+    workoutProgress,
+  ]);
 
   const handleCompleteWorkout = async () => {
-    console.log("handleCompleteWorkout");
     if (!currentInstance) return;
 
     // If workout is not 100% complete, show confirmation dialog
@@ -408,6 +447,12 @@ export default function WorkoutInstancePage() {
       return;
     }
 
+    handleWorkoutComplete(
+      currentInstance.duration || 0,
+      workoutProgress.completedExercises,
+      workoutProgress.totalExercises
+    );
+
     // Complete the workout immediately via API if 100% done
     await completeWorkoutImmediately();
   };
@@ -419,6 +464,35 @@ export default function WorkoutInstancePage() {
 
   const handleCancelComplete = () => {
     setShowCompleteConfirm(false);
+  };
+
+  // Track workout completion
+  const handleWorkoutComplete = (
+    totalDuration: number,
+    completedExercises: number,
+    totalExercises: number
+  ) => {
+    analytics.track("Workout Completed", {
+      workoutInstanceId: currentInstance?.id,
+      generatedWorkoutId: currentInstance?.generatedWorkoutId,
+      durationMinutes: totalDuration,
+      completedExercises,
+      totalExercises,
+      completionRate: Math.round((completedExercises / totalExercises) * 100),
+      timestamp: new Date().toISOString(),
+    });
+  };
+
+  // Track workout abandonment
+  const handleWorkoutAbandon = (reason: string) => {
+    analytics.track("Workout Abandoned", {
+      workoutInstanceId: currentInstance?.id,
+      reason,
+      minutesElapsed: Math.floor(
+        (Date.now() - workoutStartTime.current) / 60000
+      ),
+      timestamp: new Date().toISOString(),
+    });
   };
 
   if (isLoading) {
@@ -1007,6 +1081,7 @@ function ExerciseCard({
   const exerciseInstance = exercise as ExerciseInstance;
   const isCompleted = exerciseInstance.completed || false;
   const notes = exerciseInstance.notes || "";
+  const analytics = useAnalytics();
 
   // Local state for notes editing
   const [isEditingNotes, setIsEditingNotes] = useState(false);
@@ -1015,8 +1090,13 @@ function ExerciseCard({
 
   // Update local notes when exercise notes change
   useEffect(() => {
+    analytics.track("Exercise Notes Updated", {
+      exerciseId,
+      notes,
+      timestamp: new Date().toISOString(),
+    });
     setLocalNotes(notes);
-  }, [notes]);
+  }, [notes, exerciseId, analytics]);
 
   // Focus textarea when editing starts
   useEffect(() => {

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import WorkoutCustomization from "./components/WorkoutCustomization";
 import { PerWorkoutOptions } from "./components/types";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 // 15 workout prompt examples
 const WORKOUT_PROMPTS = [
@@ -42,6 +43,14 @@ export default function GenerateWorkoutPage() {
   >({});
   const [displayPrompts, setDisplayPrompts] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<"custom" | "quick">("custom");
+  const analytics = useAnalytics();
+
+  // Track workout generation page views
+  useEffect(() => {
+    analytics.track("Workout Generation Page Viewed", {
+      timestamp: new Date().toISOString(),
+    });
+  }, [analytics]);
 
   // Select 3 random prompts when the component mounts
   useEffect(() => {
@@ -118,9 +127,17 @@ export default function GenerateWorkoutPage() {
 
       // Redirect to the generated workout page
       navigate(`/dashboard/workouts/${response.id}`);
+
+      // Track successful workout generation
+      handleGenerationSuccess(response.id);
     } catch (error) {
       console.error("Failed to generate workout:", error);
       setIsGenerating(false);
+
+      // Track generation failures
+      handleGenerationError(
+        error instanceof Error ? error.message : String(error)
+      );
     }
   };
 
@@ -140,6 +157,9 @@ export default function GenerateWorkoutPage() {
         [option]: undefined,
       });
     }
+
+    // Track preference changes
+    handlePreferenceChange(option, value);
   };
 
   // Function to use an example prompt
@@ -160,6 +180,31 @@ export default function GenerateWorkoutPage() {
   const handleUpgrade = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     navigate("/dashboard/billing");
+  };
+
+  // Track successful workout generation
+  const handleGenerationSuccess = (workoutId: string) => {
+    analytics.track("Workout Generated Successfully", {
+      workoutId,
+      timestamp: new Date().toISOString(),
+    });
+  };
+
+  // Track generation failures
+  const handleGenerationError = (error: string) => {
+    analytics.track("Workout Generation Failed", {
+      error,
+      timestamp: new Date().toISOString(),
+    });
+  };
+
+  // Track preference changes
+  const handlePreferenceChange = (preferenceType: string, value: unknown) => {
+    analytics.track("Workout Preference Changed", {
+      preferenceType,
+      value,
+      timestamp: new Date().toISOString(),
+    });
   };
 
   return (

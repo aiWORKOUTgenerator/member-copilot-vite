@@ -13,6 +13,8 @@ import EmptyStateBasic from "@/ui/shared/molecules/EmptyState";
 import { Plus, AlertTriangle, History } from "lucide-react";
 import { useNavigate } from "react-router";
 import WorkoutList from "./components/WorkoutList";
+import { useAnalytics } from "@/hooks/useAnalytics";
+import { useEffect } from "react";
 
 export default function AIWorkouts() {
   const { workouts } = useGeneratedWorkouts();
@@ -28,20 +30,59 @@ export default function AIWorkouts() {
 
   const isLoading = isLoadingGeneratedWorkouts || isLoadingMeteredUsage;
 
+  const analytics = useAnalytics();
+
+  // Track workouts page views
+  useEffect(() => {
+    analytics.track("Workouts Library Viewed", {
+      workoutCount: workouts?.length || 0,
+      timestamp: new Date().toISOString(),
+    });
+  }, [analytics, workouts]);
+
   if (isLoading) {
     return <LoadingState />;
   }
 
+  // Track workout selection
   const handleWorkoutClick = (workout: GeneratedWorkout) => {
+    analytics.track("Workout Selected", {
+      workoutId: workout.id,
+      location: "workouts_library",
+      timestamp: new Date().toISOString(),
+    });
     navigate(`/dashboard/workouts/${workout.id}`);
   };
 
+  // Track navigation to generation
+  const handleGenerateNewClick = () => {
+    analytics.track("Generate New Workout CTA Clicked", {
+      location: "workouts_library",
+      existingWorkoutCount: workouts?.length || 0,
+      timestamp: new Date().toISOString(),
+    });
+  };
+
   const navigateToGeneratePage = () => {
+    handleGenerateNewClick();
     navigate("/dashboard/workouts/generate");
   };
 
   const navigateToBillingPage = () => {
+    analytics.track("Upgrade Plan CTA Clicked", {
+      location: "workouts_library",
+      reason: "workout_generation_limit_reached",
+      timestamp: new Date().toISOString(),
+    });
     navigate("/dashboard/billing");
+  };
+
+  const navigateToHistory = () => {
+    analytics.track("Workout History CTA Clicked", {
+      location: "workouts_library",
+      timestamp: new Date().toISOString(),
+    });
+    navigate("/dashboard/workouts/history");
   };
 
   if (workouts.length === 0) {
@@ -94,7 +135,7 @@ export default function AIWorkouts() {
           <h1 className="text-2xl font-bold">My Workouts</h1>
           <div className="flex gap-2">
             <button
-              onClick={() => navigate("/dashboard/workouts/history")}
+              onClick={navigateToHistory}
               className="btn btn-outline"
               title="View workout history"
             >

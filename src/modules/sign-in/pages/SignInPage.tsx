@@ -7,9 +7,19 @@ import {
   FormContainer,
   PageLoading,
 } from "@/ui";
+import { useAnalytics } from "@/hooks/useAnalytics";
+import { useEffect } from "react";
 
 export default function SignInPage() {
   const { isLoaded, isSignedIn } = useAuth();
+  const analytics = useAnalytics();
+
+  // Track sign-in page views
+  useEffect(() => {
+    analytics.track("Sign In Page Viewed", {
+      timestamp: new Date().toISOString(),
+    });
+  }, [analytics]);
 
   // Show loading state while checking auth status
   if (!isLoaded) {
