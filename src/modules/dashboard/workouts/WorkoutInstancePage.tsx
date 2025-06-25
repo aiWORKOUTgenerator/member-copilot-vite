@@ -68,7 +68,7 @@ export default function WorkoutInstancePage() {
         workoutInstanceId: currentInstance.id,
         generatedWorkoutId: currentInstance.generatedWorkoutId,
         isExistingInstance: !!currentInstance.performedAt,
-        timestamp: new Date().toISOString(),
+        tracked_at: new Date().toISOString(),
       });
       workoutStartTime.current = Date.now();
     }
@@ -345,7 +345,7 @@ export default function WorkoutInstancePage() {
       completedExercises,
       totalExercises,
       completionRate: Math.round((completedExercises / totalExercises) * 100),
-      timestamp: new Date().toISOString(),
+      tracked_at: new Date().toISOString(),
     });
   };
 
@@ -357,9 +357,9 @@ export default function WorkoutInstancePage() {
       minutesElapsed: Math.floor(
         (Date.now() - workoutStartTime.current) / 60000
       ),
-      timestamp: new Date().toISOString(),
-
+      tracked_at: new Date().toISOString(),
     });
+  };
 
   const handleCancelExit = () => {
     setShowExitConfirm(false);
@@ -397,7 +397,7 @@ export default function WorkoutInstancePage() {
           exerciseId,
           exerciseName: exercise.name,
           completed,
-          timestamp: new Date().toISOString(),
+          tracked_at: new Date().toISOString(),
         });
 
         // Update the local state optimistically
@@ -459,7 +459,7 @@ export default function WorkoutInstancePage() {
       workoutInstanceId: currentInstance.id,
       totalExercises: workoutProgress.totalExercises,
       previouslyCompleted: workoutProgress.completedExercises,
-      timestamp: new Date().toISOString(),
+      tracked_at: new Date().toISOString(),
     });
 
     setIsMarkingAllComplete(true);
