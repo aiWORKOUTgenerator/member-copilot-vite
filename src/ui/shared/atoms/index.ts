@@ -12,3 +12,6 @@ export * from "./ValidationMessage";
 export * from "./Button";
 export * from "./Input";
 export * from "./Icons";
+export * from "./RewardBadge";
+export * from "./ProgressBar";
+export * from "./CouponCode";

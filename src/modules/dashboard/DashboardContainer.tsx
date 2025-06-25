@@ -22,6 +22,7 @@ import WorkoutDetailPage from "./workouts/WorkoutDetailPage";
 import WorkoutHistoryPage from "./workouts/WorkoutHistoryPage";
 import WorkoutInstancePage from "./workouts/WorkoutInstancePage";
 import WorkoutsPage from "./workouts/WorkoutsPage";
+import RewardsPage from "./rewards/RewardsPage";
 import { WorkoutInstancesProvider } from "@/contexts/WorkoutInstancesContext";
 
 export default function DashboardContainer() {
@@ -94,6 +95,7 @@ export default function DashboardContainer() {
                               path="/workouts/:id"
                               element={<WorkoutDetailPage />}
                             />
+                            <Route path="/rewards" element={<RewardsPage />} />
                             <Route
                               path="/profile"
                               element={<ProfileContainer />}

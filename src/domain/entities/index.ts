@@ -13,3 +13,4 @@ export * from "./prompt";
 export * from "./license";
 export * from "./trainerPersona";
 export * from "./workoutFeedback";
+export * from "./reward";

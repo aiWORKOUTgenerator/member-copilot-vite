@@ -3,11 +3,13 @@
 import { ApiService } from "@/domain/interfaces/api/ApiService";
 import { MemberService } from "@/domain/interfaces/services/MemberService";
 import { PusherService } from "@/domain/interfaces/services/PusherService";
+import { RewardService } from "@/domain/interfaces/services/RewardService";
 import { ApiServiceImpl } from "@/services/api/ApiServiceImpl";
 import { MockApiService } from "@/services/api/MockApiService";
 import { MemberServiceImpl } from "@/services/member/MemberServiceImpl";
 import { MockMemberService } from "@/services/member/MockMemberService";
 import { PusherServiceImpl } from "@/services/pusher/PusherServiceImpl";
+import { RewardServiceImpl } from "@/services/rewards/RewardServiceImpl";
 import { createContext, ReactNode, useContext } from "react";
 
 /**
@@ -18,6 +20,7 @@ export interface ServiceContainer {
   apiService: ApiService;
   memberService: MemberService;
   pusherService: PusherService;
+  rewardService: RewardService;
   // Add more services here as they're created
 }
 
@@ -51,6 +54,9 @@ const createServices = (): ServiceContainer => {
     pusherService.initialize();
   }
 
+  // Create reward service (currently always using implementation)
+  const rewardService = new RewardServiceImpl();
+
   // Create higher-level services, injecting dependencies
   return {
     apiService,
@@ -58,6 +64,7 @@ const createServices = (): ServiceContainer => {
       ? new MockMemberService()
       : new MemberServiceImpl(apiService),
     pusherService,
+    rewardService,
     // Add more services here as they're created
   };
 };
@@ -136,4 +143,12 @@ export function useMemberService(): MemberService {
 export function usePusherService(): PusherService {
   const { pusherService } = useServices();
   return pusherService;
+}
+
+/**
+ * Convenience hook to access just the RewardService.
+ */
+export function useRewardService(): RewardService {
+  const { rewardService } = useServices();
+  return rewardService;
 }

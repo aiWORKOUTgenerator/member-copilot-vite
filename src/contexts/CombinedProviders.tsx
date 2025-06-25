@@ -5,6 +5,7 @@ import { AttributeProvider } from "./AttributeContext";
 import { AttributeTypeProvider } from "./AttributeTypeContext";
 import { GeneratedWorkoutProvider } from "./GeneratedWorkoutContext";
 import { PromptProvider } from "./PromptContext";
+import { RewardProvider } from "./RewardContext";
 import { SubscriptionProvider } from "./SubscriptionContext";
 import { WorkoutFeedbackProvider } from "./WorkoutFeedbackContext";
 import { AnnouncementProvider } from "./AnnouncementContext";
@@ -25,9 +26,11 @@ export function CombinedProviders({ children }: CombinedProvidersProps) {
         <GeneratedWorkoutProvider>
           <WorkoutFeedbackProvider>
             <SubscriptionProvider>
-              <AnnouncementProvider>
-                <AttributeProvider>{children}</AttributeProvider>
-              </AnnouncementProvider>
+              <RewardProvider>
+                <AnnouncementProvider>
+                  <AttributeProvider>{children}</AttributeProvider>
+                </AnnouncementProvider>
+              </RewardProvider>
             </SubscriptionProvider>
           </WorkoutFeedbackProvider>
         </GeneratedWorkoutProvider>

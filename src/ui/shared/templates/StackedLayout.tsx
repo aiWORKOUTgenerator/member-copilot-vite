@@ -109,6 +109,7 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
     return [
       { name: "Dashboard", href: "/dashboard" },
       { name: "Workouts", href: "/dashboard/workouts" },
+      { name: "Rewards", href: "/dashboard/rewards" },
       {
         name: "Profile",
         href: "/dashboard/profile",
