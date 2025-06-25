@@ -17,18 +17,6 @@ export interface RecommendedExercise {
   equipment?: string[];
 }
 
-export interface GetExerciseRecommendationsRequest
-  extends Record<string, unknown> {
-  currentExercise: {
-    name: string;
-    description?: string;
-    sets?: number;
-    reps?: number;
-    weight?: number;
-    duration?: number;
-  };
-}
-
 export interface CreateWorkoutInstanceRequest {
   generatedWorkoutId: string;
   performedAt: string;
@@ -98,10 +86,16 @@ export interface WorkoutInstanceService {
 
   /**
    * Get AI-powered exercise recommendations based on a current exercise
-   * @param request The current exercise data to get recommendations for
+   * @param instanceId The ID of the workout instance
+   * @param exerciseName The name of the exercise to get alternatives for
+   * @param reason Optional reason for replacement (e.g., "injury")
+   * @param preferences Optional preferences (e.g., ["bodyweight", "upper_body"])
    * @returns Promise resolving to array of RecommendedExercise
    */
   getExerciseRecommendations(
-    request: GetExerciseRecommendationsRequest
+    instanceId: string,
+    exerciseName: string,
+    reason?: string,
+    preferences?: string[]
   ): Promise<RecommendedExercise[]>;
 }

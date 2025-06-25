@@ -205,25 +205,26 @@ export function CurrentWorkoutInstanceProvider({
 
   const getExerciseRecommendations = useCallback(
     async (currentExercise: Exercise): Promise<RecommendedExercise[]> => {
-      try {
-        const request = {
-          currentExercise: {
-            name: currentExercise.name,
-            description: currentExercise.description,
-            sets: currentExercise.sets,
-            reps: currentExercise.reps,
-            weight: currentExercise.weight,
-            duration: currentExercise.duration,
-          },
-        };
+      if (!currentInstance) {
+        console.error(
+          "No current instance available for exercise recommendations"
+        );
+        return [];
+      }
 
-        return await workoutInstanceService.getExerciseRecommendations(request);
+      try {
+        return await workoutInstanceService.getExerciseRecommendations(
+          currentInstance.id,
+          currentExercise.name,
+          undefined, // reason - could be added as parameter later
+          undefined // preferences - could be added as parameter later
+        );
       } catch (error) {
         console.error("Error loading recommendations:", error);
         return [];
       }
     },
-    [workoutInstanceService]
+    [workoutInstanceService, currentInstance]
   );
 
   // Auto-sync to server after a delay (debounced sync)
