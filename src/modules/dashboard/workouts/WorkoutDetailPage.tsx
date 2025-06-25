@@ -32,6 +32,7 @@ import VerySimpleFormatWorkoutViewer from "./components/VerySimpleFormatWorkoutV
 import WebShareButton from "./components/WebShareButton";
 import WorkoutFeedbackForm from "./components/WorkoutFeedbackForm";
 import { useWorkoutInstances } from "@/contexts/WorkoutInstancesContext";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 interface WorkoutChunkData {
   chunk: string;
@@ -52,6 +53,7 @@ export default function WorkoutDetailPage() {
   const trainerPersona = useTrainerPersonaData();
   const [isCreatingInstance, setIsCreatingInstance] = useState(false);
   const { canAccessFeature } = useUserAccess();
+  const analytics = useAnalytics();
 
   // Check if user has access to start workouts
   const canStartWorkouts = canAccessFeature("generate_workout_instances");
@@ -89,6 +91,20 @@ export default function WorkoutDetailPage() {
     ? (generatedWorkout.jsonFormat as WorkoutStructure)
     : undefined;
 
+  // Track workout detail views
+  useEffect(() => {
+    if (generatedWorkout) {
+      analytics.track("Workout Detail Viewed", {
+        workoutId: generatedWorkout.id,
+        workoutType: generatedWorkout.type,
+        exerciseCount: generatedWorkout.exercises?.length || 0,
+        estimatedDuration: generatedWorkout.duration,
+        timestamp: new Date().toISOString(),
+      });
+    }
+  }, [generatedWorkout, analytics]);
+
+  // Track workout start from detail page
   const handleStartWorkout = async () => {
     if (!generatedWorkout) return;
 
@@ -108,6 +124,14 @@ export default function WorkoutDetailPage() {
 
       // Navigate to the workout instance page
       navigate(`/dashboard/workouts/instances/${newInstance.id}`);
+
+      // Track workout start
+      analytics.track("Workout Started", {
+        workoutId: generatedWorkout.id,
+        location: "workout_detail",
+        workoutType: generatedWorkout.type,
+        timestamp: new Date().toISOString(),
+      });
     } catch (error) {
       console.error("Failed to create workout instance:", error);
       // You could add error handling here (toast notification, etc.)
@@ -151,6 +175,63 @@ export default function WorkoutDetailPage() {
       ...workoutStructure,
       sections: flattenedSections,
     };
+  };
+
+  // Track exercise interactions
+  const handleExerciseClick = (exerciseId: string, exerciseName: string) => {
+    analytics.track("Exercise Viewed", {
+      exerciseId,
+      exerciseName,
+      workoutId: generatedWorkout?.id,
+      location: "workout_detail",
+      timestamp: new Date().toISOString(),
+    });
+  };
+
+  // Track workout modifications
+  const handleWorkoutModify = (modificationType: string, details: any) => {
+    analytics.track("Workout Modified", {
+      workoutId: generatedWorkout?.id,
+      modificationType,
+      details,
+      timestamp: new Date().toISOString(),
+    });
+  };
+
+  // Track workout sharing
+  const handleWorkoutShare = () => {
+    analytics.track("Workout Shared", {
+      workoutId: generatedWorkout?.id,
+      workoutType: generatedWorkout?.type,
+      timestamp: new Date().toISOString(),
+    });
+  };
+
+  // Track workout save/favorite
+  const handleWorkoutSave = () => {
+    analytics.track("Workout Favorited", {
+      workoutId: generatedWorkout?.id,
+      workoutType: generatedWorkout?.type,
+      timestamp: new Date().toISOString(),
+    });
+  };
+
+  // Track workout feedback
+  const handleWorkoutRating = (rating: number) => {
+    analytics.track("Workout Rated", {
+      workoutId: generatedWorkout?.id,
+      rating,
+      timestamp: new Date().toISOString(),
+    });
+  };
+
+  // Track navigation patterns
+  const handleBackNavigation = () => {
+    analytics.track("Workout Detail Back Clicked", {
+      workoutId: generatedWorkout?.id,
+      timeSpentSeconds: Math.floor((Date.now() - pageStartTime) / 1000),
+      timestamp: new Date().toISOString(),
+    });
   };
 
   // Clear loading states when refetching completes

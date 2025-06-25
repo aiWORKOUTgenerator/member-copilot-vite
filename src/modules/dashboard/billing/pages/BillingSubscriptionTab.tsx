@@ -1,18 +1,41 @@
 "use client";
 
-import PricingComponent from "@/ui/shared/organisms/PricingComponent";
-import { useBillingContext } from "@/hooks/useBillingContext";
 import { useSubscription } from "@/contexts/SubscriptionContext";
-import { useState } from "react";
+import { useAnalytics } from "@/hooks/useAnalytics";
+import { useBillingContext } from "@/hooks/useBillingContext";
+import PricingComponent from "@/ui/shared/organisms/PricingComponent";
+import { useEffect, useState } from "react";
 
 export default function SubscriptionPage() {
   const { tiers, selectedTier, isLoadingTiers, createCheckoutSession } =
     useSubscription();
   const [isProcessing, setIsProcessing] = useState(false);
   const { setSuccessMessage, setErrorMessage } = useBillingContext();
+  const analytics = useAnalytics();
+
+  // Track billing page views
+  useEffect(() => {
+    analytics.track("Billing Page Viewed", {
+      timestamp: new Date().toISOString(),
+    });
+  }, [analytics]);
 
   const handleSubscriptionChange = async (stripePriceId: string) => {
     if (isProcessing) return;
+
+    // Find the selected tier for analytics
+    const selectedPlan = tiers.find(
+      (tier) => tier.stripePriceId === stripePriceId
+    );
+
+    // Track upgrade start
+    analytics.track("Subscription Upgrade Started", {
+      planId: selectedPlan?.id,
+      planName: selectedPlan?.name,
+      planPrice: selectedPlan?.price,
+      stripePriceId,
+      timestamp: new Date().toISOString(),
+    });
 
     setIsProcessing(true);
     setSuccessMessage("");
@@ -24,6 +47,14 @@ export default function SubscriptionPage() {
       console.log(`Received checkout URL: ${url}`);
 
       if (url) {
+        // Track successful checkout session creation
+        analytics.track("Checkout Session Created", {
+          planId: selectedPlan?.id,
+          planName: selectedPlan?.name,
+          stripePriceId,
+          timestamp: new Date().toISOString(),
+        });
+
         // Redirect the user to the Stripe Checkout page
         window.location.href = url;
       } else {
@@ -31,6 +62,16 @@ export default function SubscriptionPage() {
       }
     } catch (error) {
       console.error("Failed to change subscription:", error);
+
+      // Track upgrade failure
+      analytics.track("Subscription Upgrade Failed", {
+        planId: selectedPlan?.id,
+        planName: selectedPlan?.name,
+        stripePriceId,
+        error: error instanceof Error ? error.message : "Unknown error",
+        timestamp: new Date().toISOString(),
+      });
+
       // Display error message to user
       if (error instanceof Error) {
         setErrorMessage(error.message);
