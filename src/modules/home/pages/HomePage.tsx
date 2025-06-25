@@ -15,7 +15,7 @@ export default function HomePage() {
     if (isLoaded) {
       analytics.track("Landing Page Viewed", {
         userStatus: isSignedIn ? "authenticated" : "anonymous",
-        timestamp: new Date().toISOString(),
+        tracked_at: new Date().toISOString(),
       });
     }
   }, [isLoaded, isSignedIn, analytics]);

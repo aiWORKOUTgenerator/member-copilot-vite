@@ -73,7 +73,7 @@ export default function TrainingProfileLayout() {
   // Track profile page views
   useEffect(() => {
     analytics.track("Profile Page Viewed", {
-      timestamp: new Date().toISOString(),
+      tracked_at: new Date().toISOString(),
     });
   }, [analytics]);
 

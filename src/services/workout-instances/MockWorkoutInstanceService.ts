@@ -6,6 +6,7 @@ import {
   CreateWorkoutInstanceRequest,
   UpdateWorkoutInstanceRequest,
   WorkoutInstanceService,
+  RecommendedExercise,
 } from "@/domain/interfaces/services/WorkoutInstanceService";
 
 /**
@@ -213,6 +214,50 @@ export class MockWorkoutInstanceService implements WorkoutInstanceService {
 
     this.instanceStore.delete(instanceId);
     this.saveToStorage();
+  }
+
+  async getExerciseRecommendations(
+    instanceId: string,
+    exerciseName: string
+  ): Promise<RecommendedExercise[]> {
+    await this.delay(300); // Simulate network delay
+
+    // Return mock recommendations
+    return [
+      {
+        id: `mock-alt-1-${instanceId}`,
+        name: "Push-ups",
+        description:
+          "Classic bodyweight chest exercise that targets the same muscles as " +
+          exerciseName,
+        sets: 3,
+        reps: 15,
+        targetMuscles: ["Chest", "Triceps", "Shoulders"],
+        difficulty: "Beginner",
+        rest: 60,
+      },
+      {
+        id: `mock-alt-2-${instanceId}`,
+        name: "Modified Version",
+        description: `A modified version of ${exerciseName} with adjusted parameters`,
+        sets: 2,
+        reps: 8,
+        weight: 5,
+        targetMuscles: ["Full Body"],
+        difficulty: "Beginner",
+        rest: 60,
+      },
+      {
+        id: `mock-alt-3-${instanceId}`,
+        name: "Bodyweight Alternative",
+        description: `A bodyweight alternative to ${exerciseName}`,
+        sets: 3,
+        reps: 12,
+        targetMuscles: ["Core", "Upper Body"],
+        difficulty: "Intermediate",
+        rest: 45,
+      },
+    ];
   }
 
   // Helper method for development/testing

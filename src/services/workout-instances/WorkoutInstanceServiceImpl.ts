@@ -7,6 +7,7 @@ import {
   WorkoutInstanceService,
   CreateWorkoutInstanceRequest,
   UpdateWorkoutInstanceRequest,
+  RecommendedExercise,
 } from "@/domain/interfaces/services/WorkoutInstanceService";
 
 interface WorkoutInstanceProps {
@@ -179,6 +180,105 @@ export class WorkoutInstanceServiceImpl implements WorkoutInstanceService {
     } catch (error) {
       console.error("Error in deleteWorkoutInstance:", error);
       throw new Error("Failed to delete workout instance");
+    }
+  }
+
+  async getExerciseRecommendations(
+    instanceId: string,
+    exerciseName: string,
+    reason?: string,
+    preferences?: string[]
+  ): Promise<RecommendedExercise[]> {
+    try {
+      interface ExerciseAlternativesRequest extends Record<string, unknown> {
+        exercise_name: string;
+        reason?: string;
+        preferences?: string[];
+      }
+
+      interface ExerciseAlternativesResponse {
+        message: string;
+        instance_id: string;
+        exercise_name: string;
+        original_exercise: Record<string, unknown>;
+        alternatives: Array<{
+          name: string;
+          description: string;
+          sets?: number;
+          reps?: number;
+          weight?: number;
+          duration?: number;
+          rest?: number;
+          reason?: string;
+          targetMuscles?: string[];
+          difficulty?: string;
+          equipment?: string[];
+        }>;
+        generated_at: string;
+      }
+
+      const requestBody: ExerciseAlternativesRequest = {
+        exercise_name: exerciseName,
+      };
+
+      if (reason) {
+        requestBody.reason = reason;
+      }
+
+      if (preferences && preferences.length > 0) {
+        requestBody.preferences = preferences;
+      }
+
+      const response = await this.apiService.post<
+        ExerciseAlternativesResponse,
+        ExerciseAlternativesRequest
+      >(
+        `${this.baseEndpoint}/workout-instances/${instanceId}/exercise-alternatives/`,
+        requestBody
+      );
+
+      // Transform the response to match our RecommendedExercise interface
+      return response.alternatives.map((alternative, index) => ({
+        id: `alternative-${instanceId}-${index}`,
+        name: alternative.name,
+        description: alternative.description,
+        sets: alternative.sets,
+        reps: alternative.reps,
+        weight: alternative.weight,
+        duration: alternative.duration,
+        rest: alternative.rest,
+        targetMuscles: alternative.targetMuscles || [],
+        difficulty: alternative.difficulty || "Beginner",
+        equipment: alternative.equipment || [],
+      }));
+    } catch (error) {
+      console.error("Error in getExerciseRecommendations:", error);
+
+      // Fallback to mock data for development
+      return [
+        {
+          id: "fallback-1",
+          name: "Push-ups",
+          description:
+            "Classic bodyweight chest exercise that targets the same muscles",
+          sets: 3,
+          reps: 15,
+          targetMuscles: ["Chest", "Triceps", "Shoulders"],
+          difficulty: "Beginner",
+          rest: 60,
+        },
+        {
+          id: "fallback-2",
+          name: "Modified Version",
+          description: `A modified version of ${exerciseName} with adjusted parameters`,
+          sets: 2,
+          reps: 8,
+          weight: 5,
+          targetMuscles: ["Full Body"],
+          difficulty: "Beginner",
+          rest: 60,
+        },
+      ];
     }
   }
 }

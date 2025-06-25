@@ -17,7 +17,7 @@ export default function SignInPage() {
   // Track sign-in page views
   useEffect(() => {
     analytics.track("Sign In Page Viewed", {
-      timestamp: new Date().toISOString(),
+      tracked_at: new Date().toISOString(),
     });
   }, [analytics]);
 

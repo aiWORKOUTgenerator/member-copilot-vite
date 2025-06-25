@@ -3,6 +3,20 @@ import {
   WorkoutInstanceStructure,
 } from "@/domain/entities/workoutInstance";
 
+export interface RecommendedExercise {
+  id: string;
+  name: string;
+  description: string;
+  sets?: number;
+  reps?: number;
+  weight?: number;
+  duration?: number;
+  rest?: number;
+  targetMuscles: string[];
+  difficulty: string;
+  equipment?: string[];
+}
+
 export interface CreateWorkoutInstanceRequest {
   generatedWorkoutId: string;
   performedAt: string;
@@ -69,4 +83,19 @@ export interface WorkoutInstanceService {
    * @returns Promise resolving to void
    */
   deleteWorkoutInstance(instanceId: string): Promise<void>;
+
+  /**
+   * Get AI-powered exercise recommendations based on a current exercise
+   * @param instanceId The ID of the workout instance
+   * @param exerciseName The name of the exercise to get alternatives for
+   * @param reason Optional reason for replacement (e.g., "injury")
+   * @param preferences Optional preferences (e.g., ["bodyweight", "upper_body"])
+   * @returns Promise resolving to array of RecommendedExercise
+   */
+  getExerciseRecommendations(
+    instanceId: string,
+    exerciseName: string,
+    reason?: string,
+    preferences?: string[]
+  ): Promise<RecommendedExercise[]>;
 }

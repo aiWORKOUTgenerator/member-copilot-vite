@@ -99,7 +99,7 @@ export default function WorkoutDetailPage() {
         workoutType: generatedWorkout.type,
         exerciseCount: generatedWorkout.exercises?.length || 0,
         estimatedDuration: generatedWorkout.duration,
-        timestamp: new Date().toISOString(),
+        tracked_at: new Date().toISOString(),
       });
     }
   }, [generatedWorkout, analytics]);
@@ -130,7 +130,7 @@ export default function WorkoutDetailPage() {
         workoutId: generatedWorkout.id,
         location: "workout_detail",
         workoutType: generatedWorkout.type,
-        timestamp: new Date().toISOString(),
+        tracked_at: new Date().toISOString(),
       });
     } catch (error) {
       console.error("Failed to create workout instance:", error);
@@ -184,7 +184,7 @@ export default function WorkoutDetailPage() {
       exerciseName,
       workoutId: generatedWorkout?.id,
       location: "workout_detail",
-      timestamp: new Date().toISOString(),
+      tracked_at: new Date().toISOString(),
     });
   };
 
@@ -194,7 +194,7 @@ export default function WorkoutDetailPage() {
       workoutId: generatedWorkout?.id,
       modificationType,
       details,
-      timestamp: new Date().toISOString(),
+      tracked_at: new Date().toISOString(),
     });
   };
 
@@ -203,7 +203,7 @@ export default function WorkoutDetailPage() {
     analytics.track("Workout Shared", {
       workoutId: generatedWorkout?.id,
       workoutType: generatedWorkout?.type,
-      timestamp: new Date().toISOString(),
+      tracked_at: new Date().toISOString(),
     });
   };
 
@@ -212,7 +212,7 @@ export default function WorkoutDetailPage() {
     analytics.track("Workout Favorited", {
       workoutId: generatedWorkout?.id,
       workoutType: generatedWorkout?.type,
-      timestamp: new Date().toISOString(),
+      tracked_at: new Date().toISOString(),
     });
   };
 
@@ -221,7 +221,7 @@ export default function WorkoutDetailPage() {
     analytics.track("Workout Rated", {
       workoutId: generatedWorkout?.id,
       rating,
-      timestamp: new Date().toISOString(),
+      tracked_at: new Date().toISOString(),
     });
   };
 
@@ -230,7 +230,7 @@ export default function WorkoutDetailPage() {
     analytics.track("Workout Detail Back Clicked", {
       workoutId: generatedWorkout?.id,
       timeSpentSeconds: Math.floor((Date.now() - pageStartTime) / 1000),
-      timestamp: new Date().toISOString(),
+      tracked_at: new Date().toISOString(),
     });
   };
 

@@ -119,7 +119,7 @@ export default function DashboardHomePage() {
         workoutLimitReached: isWorkoutGenerationLimitReached,
         profileCompletionPercentage: Math.round(totalCompletion),
         incompleteAttributeCount: incompleteAttributes.length,
-        timestamp: new Date().toISOString(),
+        tracked_at: new Date().toISOString(),
       });
     }
   }, [

@@ -16,7 +16,7 @@ export default function SubscriptionPage() {
   // Track billing page views
   useEffect(() => {
     analytics.track("Billing Page Viewed", {
-      timestamp: new Date().toISOString(),
+      tracked_at: new Date().toISOString(),
     });
   }, [analytics]);
 
@@ -34,7 +34,7 @@ export default function SubscriptionPage() {
       planName: selectedPlan?.name,
       planPrice: selectedPlan?.price,
       stripePriceId,
-      timestamp: new Date().toISOString(),
+      tracked_at: new Date().toISOString(),
     });
 
     setIsProcessing(true);
@@ -52,7 +52,7 @@ export default function SubscriptionPage() {
           planId: selectedPlan?.id,
           planName: selectedPlan?.name,
           stripePriceId,
-          timestamp: new Date().toISOString(),
+          tracked_at: new Date().toISOString(),
         });
 
         // Redirect the user to the Stripe Checkout page
@@ -69,7 +69,7 @@ export default function SubscriptionPage() {
         planName: selectedPlan?.name,
         stripePriceId,
         error: error instanceof Error ? error.message : "Unknown error",
-        timestamp: new Date().toISOString(),
+        tracked_at: new Date().toISOString(),
       });
 
       // Display error message to user
