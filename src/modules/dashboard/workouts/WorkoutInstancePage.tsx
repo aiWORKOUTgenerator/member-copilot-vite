@@ -1972,7 +1972,7 @@ function ExerciseCard({
     analytics.track("Exercise Notes Updated", {
       exerciseId,
       notes,
-      timestamp: new Date().toISOString(),
+      tracked_at: new Date().toISOString(),
     });
     setLocalNotes(notes);
   }, [notes, exerciseId, analytics]);

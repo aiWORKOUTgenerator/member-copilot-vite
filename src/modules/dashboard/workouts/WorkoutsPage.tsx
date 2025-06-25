@@ -36,7 +36,7 @@ export default function AIWorkouts() {
   useEffect(() => {
     analytics.track("Workouts Library Viewed", {
       workoutCount: workouts?.length || 0,
-      timestamp: new Date().toISOString(),
+      tracked_at: new Date().toISOString(),
     });
   }, [analytics, workouts]);
 
@@ -49,7 +49,7 @@ export default function AIWorkouts() {
     analytics.track("Workout Selected", {
       workoutId: workout.id,
       location: "workouts_library",
-      timestamp: new Date().toISOString(),
+      tracked_at: new Date().toISOString(),
     });
     navigate(`/dashboard/workouts/${workout.id}`);
   };
@@ -59,7 +59,7 @@ export default function AIWorkouts() {
     analytics.track("Generate New Workout CTA Clicked", {
       location: "workouts_library",
       existingWorkoutCount: workouts?.length || 0,
-      timestamp: new Date().toISOString(),
+      tracked_at: new Date().toISOString(),
     });
   };
 
@@ -72,7 +72,7 @@ export default function AIWorkouts() {
     analytics.track("Upgrade Plan CTA Clicked", {
       location: "workouts_library",
       reason: "workout_generation_limit_reached",
-      timestamp: new Date().toISOString(),
+      tracked_at: new Date().toISOString(),
     });
     navigate("/dashboard/billing");
   };
@@ -80,7 +80,7 @@ export default function AIWorkouts() {
   const navigateToHistory = () => {
     analytics.track("Workout History CTA Clicked", {
       location: "workouts_library",
-      timestamp: new Date().toISOString(),
+      tracked_at: new Date().toISOString(),
     });
     navigate("/dashboard/workouts/history");
   };

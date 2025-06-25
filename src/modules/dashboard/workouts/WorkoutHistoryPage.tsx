@@ -62,7 +62,7 @@ export default function WorkoutHistoryPage() {
   useEffect(() => {
     analytics.track("Workout History Viewed", {
       totalWorkouts: instances?.length || 0,
-      timestamp: new Date().toISOString(),
+      tracked_at: new Date().toISOString(),
     });
   }, [instances, analytics]);
 
@@ -70,7 +70,7 @@ export default function WorkoutHistoryPage() {
     analytics.track("Historical Workout Clicked", {
       workoutInstanceId: workout.id,
       completed: workout.completed,
-      timestamp: new Date().toISOString(),
+      tracked_at: new Date().toISOString(),
     });
     workoutModal.openModal(workout);
   };
@@ -79,7 +79,7 @@ export default function WorkoutHistoryPage() {
     analytics.track("Workout Instance Details Viewed", {
       workoutInstanceId: workout.id,
       source: "history_modal",
-      timestamp: new Date().toISOString(),
+      tracked_at: new Date().toISOString(),
     });
     workoutModal.closeModal();
     navigate(`/dashboard/workouts/instances/${workout.id}`);
@@ -89,7 +89,7 @@ export default function WorkoutHistoryPage() {
     analytics.track("History View Mode Changed", {
       viewMode: newMode,
       previousMode: viewMode,
-      timestamp: new Date().toISOString(),
+      tracked_at: new Date().toISOString(),
     });
     setViewMode(newMode);
   };

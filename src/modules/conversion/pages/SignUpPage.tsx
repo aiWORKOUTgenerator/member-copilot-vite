@@ -30,7 +30,7 @@ export default function SignUpPage() {
   // Track sign-up page views
   useEffect(() => {
     analytics.track("Sign Up Page Viewed", {
-      timestamp: new Date().toISOString(),
+      tracked_at: new Date().toISOString(),
     });
   }, [analytics]);
 
@@ -38,7 +38,7 @@ export default function SignUpPage() {
   const handleFieldFocus = (fieldName: string) => {
     analytics.track("Sign Up Field Focused", {
       fieldName,
-      timestamp: new Date().toISOString(),
+      tracked_at: new Date().toISOString(),
     });
   };
 
@@ -54,7 +54,7 @@ export default function SignUpPage() {
   const handleFormSubmit = () => {
     analytics.track("Sign Up Form Submitted", {
       method: "email",
-      timestamp: new Date().toISOString(),
+      tracked_at: new Date().toISOString(),
     });
   };
 

@@ -48,7 +48,7 @@ export default function GenerateWorkoutPage() {
   // Track workout generation page views
   useEffect(() => {
     analytics.track("Workout Generation Page Viewed", {
-      timestamp: new Date().toISOString(),
+      tracked_at: new Date().toISOString(),
     });
   }, [analytics]);
 
@@ -186,7 +186,7 @@ export default function GenerateWorkoutPage() {
   const handleGenerationSuccess = (workoutId: string) => {
     analytics.track("Workout Generated Successfully", {
       workoutId,
-      timestamp: new Date().toISOString(),
+      tracked_at: new Date().toISOString(),
     });
   };
 
@@ -194,7 +194,7 @@ export default function GenerateWorkoutPage() {
   const handleGenerationError = (error: string) => {
     analytics.track("Workout Generation Failed", {
       error,
-      timestamp: new Date().toISOString(),
+      tracked_at: new Date().toISOString(),
     });
   };
 
@@ -203,7 +203,7 @@ export default function GenerateWorkoutPage() {
     analytics.track("Workout Preference Changed", {
       preferenceType,
       value,
-      timestamp: new Date().toISOString(),
+      tracked_at: new Date().toISOString(),
     });
   };
 
