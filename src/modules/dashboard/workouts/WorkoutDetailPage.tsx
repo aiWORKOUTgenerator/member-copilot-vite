@@ -96,9 +96,6 @@ export default function WorkoutDetailPage() {
     if (generatedWorkout) {
       analytics.track("Workout Detail Viewed", {
         workoutId: generatedWorkout.id,
-        workoutType: generatedWorkout.type,
-        exerciseCount: generatedWorkout.exercises?.length || 0,
-        estimatedDuration: generatedWorkout.duration,
         tracked_at: new Date().toISOString(),
       });
     }
@@ -129,7 +126,6 @@ export default function WorkoutDetailPage() {
       analytics.track("Workout Started", {
         workoutId: generatedWorkout.id,
         location: "workout_detail",
-        workoutType: generatedWorkout.type,
         tracked_at: new Date().toISOString(),
       });
     } catch (error) {
@@ -175,63 +171,6 @@ export default function WorkoutDetailPage() {
       ...workoutStructure,
       sections: flattenedSections,
     };
-  };
-
-  // Track exercise interactions
-  const handleExerciseClick = (exerciseId: string, exerciseName: string) => {
-    analytics.track("Exercise Viewed", {
-      exerciseId,
-      exerciseName,
-      workoutId: generatedWorkout?.id,
-      location: "workout_detail",
-      tracked_at: new Date().toISOString(),
-    });
-  };
-
-  // Track workout modifications
-  const handleWorkoutModify = (modificationType: string, details: any) => {
-    analytics.track("Workout Modified", {
-      workoutId: generatedWorkout?.id,
-      modificationType,
-      details,
-      tracked_at: new Date().toISOString(),
-    });
-  };
-
-  // Track workout sharing
-  const handleWorkoutShare = () => {
-    analytics.track("Workout Shared", {
-      workoutId: generatedWorkout?.id,
-      workoutType: generatedWorkout?.type,
-      tracked_at: new Date().toISOString(),
-    });
-  };
-
-  // Track workout save/favorite
-  const handleWorkoutSave = () => {
-    analytics.track("Workout Favorited", {
-      workoutId: generatedWorkout?.id,
-      workoutType: generatedWorkout?.type,
-      tracked_at: new Date().toISOString(),
-    });
-  };
-
-  // Track workout feedback
-  const handleWorkoutRating = (rating: number) => {
-    analytics.track("Workout Rated", {
-      workoutId: generatedWorkout?.id,
-      rating,
-      tracked_at: new Date().toISOString(),
-    });
-  };
-
-  // Track navigation patterns
-  const handleBackNavigation = () => {
-    analytics.track("Workout Detail Back Clicked", {
-      workoutId: generatedWorkout?.id,
-      timeSpentSeconds: Math.floor((Date.now() - pageStartTime) / 1000),
-      tracked_at: new Date().toISOString(),
-    });
   };
 
   // Clear loading states when refetching completes

@@ -68,7 +68,7 @@ export default function WorkoutInstancePage() {
         workoutInstanceId: currentInstance.id,
         generatedWorkoutId: currentInstance.generatedWorkoutId,
         isExistingInstance: !!currentInstance.performedAt,
-        tracked_at: new Date().toISOString(),
+        timestamp: new Date().toISOString(),
       });
       workoutStartTime.current = Date.now();
     }
@@ -110,6 +110,7 @@ export default function WorkoutInstancePage() {
       // Could show error toast here
     }
   };
+
   const trainerPersona = useTrainerPersonaData();
 
   const [workoutProgress, setWorkoutProgress] = useState<WorkoutProgress>({
@@ -311,27 +312,6 @@ export default function WorkoutInstancePage() {
     return () => clearTimeout(timeoutId);
   }, [lastCompletedExercise, currentInstance]);
 
-  const handleClose = () => {
-    const progressPercentage =
-      workoutProgress.totalExercises > 0
-        ? (workoutProgress.completedExercises /
-            workoutProgress.totalExercises) *
-          100
-        : 0;
-
-    if (progressPercentage > 0 && !currentInstance?.completed) {
-      setShowExitConfirm(true);
-    } else {
-      navigate("/dashboard/workouts");
-    }
-  };
-
-  const handleConfirmExit = () => {
-    handleWorkoutAbandon("User exited workout");
-    setShowExitConfirm(false);
-    navigate("/dashboard/workouts");
-  };
-
   // Track workout completion
   const handleWorkoutComplete = (
     totalDuration: number,
@@ -359,6 +339,27 @@ export default function WorkoutInstancePage() {
       ),
       tracked_at: new Date().toISOString(),
     });
+  };
+
+  const handleClose = () => {
+    const progressPercentage =
+      workoutProgress.totalExercises > 0
+        ? (workoutProgress.completedExercises /
+            workoutProgress.totalExercises) *
+          100
+        : 0;
+
+    if (progressPercentage > 0 && !currentInstance?.completed) {
+      setShowExitConfirm(true);
+    } else {
+      navigate("/dashboard/workouts");
+    }
+  };
+
+  const handleConfirmExit = () => {
+    handleWorkoutAbandon("User exited workout");
+    setShowExitConfirm(false);
+    navigate("/dashboard/workouts");
   };
 
   const handleCancelExit = () => {
@@ -459,7 +460,7 @@ export default function WorkoutInstancePage() {
       workoutInstanceId: currentInstance.id,
       totalExercises: workoutProgress.totalExercises,
       previouslyCompleted: workoutProgress.completedExercises,
-      tracked_at: new Date().toISOString(),
+      timestamp: new Date().toISOString(),
     });
 
     setIsMarkingAllComplete(true);
