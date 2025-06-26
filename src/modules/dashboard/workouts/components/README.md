@@ -1,72 +1,271 @@
 # Workout Customization Components
 
-This directory contains a modular, extensible system for workout customization options that follows DRY principles with an accordion-based UI. All customizations use the `customization_` prefix and are converted to string format for backend submission.
+This directory contains a modular, extensible system for workout customization options that follows DRY principles with an accordion-based UI. The architecture supports multiple customization patterns including simple selections, array selections, single ratings, **category-rating combinations**, and **🆕 enhanced duration configurations with progressive disclosure**.
 
 ## Architecture
 
 ### Directory Structure
 ```
 components/
-├── WorkoutCustomization.tsx          # Main accordion component
-├── types.ts                          # Shared interfaces and types
+├── WorkoutCustomization.tsx          # Main accordion component with rich badge display
+├── types.ts                          # Shared interfaces including all data patterns
 ├── customizations/
-│   ├── index.ts                      # Configuration and exports
-│   ├── WorkoutDurationCustomization.tsx  # Duration picker component
-│   ├── FocusAreaCustomization.tsx    # Focus areas checkbox component
-│   ├── WorkoutFocusCustomization.tsx # Workout focus button component
-│   ├── AvailableEquipmentCustomization.tsx # Equipment checkbox component
-│   ├── SleepQualityCustomization.tsx # Sleep quality rating component
-│   ├── EnergyLevelCustomization.tsx  # Energy level rating component
-│   ├── StressLevelCustomization.tsx  # Stress level rating component
-│   ├── SorenessCustomization.tsx     # Current soreness checkbox component
-│   └── ComingSoonCustomization.tsx   # Placeholder for future options
-└── README.md                         # This file
+│   ├── index.ts                      # Centralized exports
+│   ├── FocusAreaCustomization.tsx    # ⭐ Flagship hierarchical selection (3-tier)
+│   ├── WorkoutDurationCustomization.tsx  # 🆕 ⭐ Enhanced duration with progressive disclosure
+│   ├── SorenessCustomization.tsx     # Category-rating pattern
+│   ├── StressLevelCustomization.tsx  # Single rating pattern
+│   ├── EnergyLevelCustomization.tsx  # Single rating pattern
+│   └── [other customizations...]     # Various patterns
+└── README.md                         # This documentation
 ```
 
-### Key Components
+## 🏗️ **Data Architecture Patterns**
 
-1. **WorkoutCustomization.tsx** - Main accordion container that dynamically renders all customization options
-2. **types.ts** - Defines shared interfaces including `PerWorkoutOptions` and `CustomizationComponentProps`
-3. **customizations/index.ts** - Central configuration file that defines all available customizations
+The system supports **six sophisticated data patterns** that handle different types of user input:
 
-## Customization IDs and Backend Format
-
-All customization options use the `customization_` prefix for consistent identification:
-
-### Customization Keys
-- `customization_duration` - Workout duration in minutes
-- `customization_areas` - Focus areas for workout targeting
-- `customization_focus` - Main workout goal/type
-- `customization_equipment` - Available equipment
-- `customization_sleep` - Sleep quality rating (1-5)
-- `customization_energy` - Energy level rating (1-5)
-- `customization_stress` - Stress level rating (1-5)
-- `customization_soreness` - Current sore body parts
-
-### Backend String Format
-When submitted to the backend, all values are converted to strings:
-
+### **Pattern 1: Simple Selection** (`SimpleSelectionData`)
+Single-choice selections with labels and values:
 ```typescript
-// Example backend payload
+{ selected: boolean, label: string, value: string | number, description?: string }
+```
+
+### **Pattern 2: Array Selection** (`string[]`)
+Multiple-choice selections stored as arrays:
+```typescript
+["option1", "option2", "option3"]
+```
+
+### **Pattern 3: Single Rating** (`number`)
+Numeric ratings (1-10 scales):
+```typescript
+7  // Simple numeric value
+```
+
+### **Pattern 4: Category Rating** (`CategoryRatingData`)
+Complex rating systems with multiple categories:
+```typescript
 {
-  "customization_duration": "45",
-  "customization_areas": "Upper Body, Core",
-  "customization_focus": "Strength Training",
-  "customization_equipment": "Dumbbells, Bench, Pull-up Bar",
-  "customization_sleep": "4",
-  "customization_energy": "3",
-  "customization_stress": "2",
-  "customization_soreness": "Lower Back, Shoulders"
+  [categoryKey: string]: {
+    selected: boolean;
+    rating: number;
+    label: string;
+    description?: string;
+  }
 }
 ```
 
-### Array to String Conversion
-- **Single values**: Converted directly to strings
-- **Arrays**: Joined with `", "` (comma + space)
-- **Numbers**: Converted to string representation
-- **Empty arrays**: Omitted from submission
+### **Pattern 5: Hierarchical Selection** (`HierarchicalSelectionData`)
+3-tier progressive disclosure for complex selections:
+```typescript
+{
+  [categoryKey: string]: {
+    selected: boolean;
+    label: string;
+    level: 'primary' | 'secondary' | 'tertiary';
+    parentKey?: string;
+    children?: string[];
+    description?: string;
+  }
+}
+```
 
-## User Interface Design
+### **🆕 Pattern 6: Enhanced Duration Configuration** (`DurationConfigurationData`)
+Sophisticated session planning with nested structure:
+```typescript
+{
+  selected: boolean;
+  totalDuration: number;           // Total workout time
+  label: string;                   // Smart label generation
+  value: number;                   // Backend compatibility
+  description?: string;            // Rich descriptions
+  
+  // Nested session structure
+  warmUp: {
+    included: boolean;
+    duration: number;
+    percentage?: number;
+  };
+  
+  coolDown: {
+    included: boolean;
+    duration: number;
+    percentage?: number;
+  };
+  
+  workingTime: number;             // Auto-calculated active time
+  configuration: 'duration-only' | 'with-warmup' | 'with-cooldown' | 'full-structure';
+  
+  validation?: {
+    isValid: boolean;
+    warnings?: string[];           // Non-blocking suggestions
+    errors?: string[];             // Blocking validation issues
+  };
+}
+```
+
+## 🎯 **Progressive Disclosure Implementation**
+
+### **Flagship Implementation: FocusAreaCustomization**
+The original 3-tier hierarchical selection system:
+- **Primary Regions** (6 categories): Upper Body, Lower Body, Core, etc.
+- **Secondary Muscles** (30+ categories): Chest, Back, Shoulders, etc.
+- **Tertiary Areas** (60+ specific targets): Upper Chest, VMO, etc.
+
+### **🆕 Enhanced Implementation: WorkoutDurationCustomization**
+The sophisticated duration configuration system with **Phase 3 Intelligence**:
+
+#### **Phase 1: Enhanced Data Structure** ✅
+- Rich `DurationConfigurationData` interface
+- Smart preset suggestions with categorization
+- Backward compatibility with `SimpleSelectionData`
+
+#### **Phase 2: Progressive Disclosure UI** ✅
+- **Primary Level**: Duration selection with categorized presets
+- **Secondary Level**: Session structure configuration (warm-up/cool-down toggles)
+- **Tertiary Level**: Time allocation selection (specific duration options)
+
+#### **🚀 Phase 3: Enhanced Integration & Intelligence** ✅
+- **Smart Label Generation**: Context-aware display names
+- **Enhanced Validation**: Warnings and errors with helpful suggestions
+- **Intelligent Session Analysis**: Real-time efficiency feedback
+- **Professional Badge Integration**: Rich parent communication
+
+### **Phase 3 Intelligence Features**
+
+#### **Smart Label Generation**
+```typescript
+// Examples of generated labels:
+"Standard Session"                                    // Duration only
+"Standard Session + 5min warm-up"                   // With warm-up
+"Full Workout + 8min warm-up + 7min cool-down"     // Full structure
+```
+
+#### **Enhanced Validation System**
+```typescript
+// Warning examples:
+"Consider reducing warm-up or cool-down for more working time"
+"Long preparation phases for short sessions may reduce exercise time"
+"Consider longer warm-up for extended sessions"
+
+// Error examples:
+"Warm-up and cool-down times are too long for selected duration"
+```
+
+#### **Intelligent Session Analysis**
+```typescript
+// Efficiency ratings with recommendations:
+'excellent' → "Optimal balance for focused training"
+'good'      → "Good structure with adequate preparation time"
+'moderate'  → "Consider reducing preparation time for more active training"
+'poor'      → "Too much preparation time - consider shorter warm-up/cool-down"
+```
+
+#### **Professional Badge Display**
+```typescript
+// Parent integration examples:
+"Standard Session"                                    // Simple case
+"Standard Session + 5min warm-up (83% active)"      // Complex case with efficiency
+"Full Workout + 8min warm-up + 7min cool-down (75% active)"  // Full structure
+```
+
+## 🎨 **UI Design Patterns**
+
+### **Accordion-Based Layout**
+All customizations use consistent accordion sections with:
+- **Header**: Customization name with rich badge display
+- **Content**: Progressive disclosure interface
+- **State Management**: Controlled expansion/collapse
+
+### **Badge Display Logic**
+The parent component (`WorkoutCustomization.tsx`) displays intelligent badges:
+
+```typescript
+const getBadgeContent = (key: string, value: any) => {
+  switch (key) {
+    case "customization_areas": {
+      const hierarchicalData = value as HierarchicalSelectionData;
+      // Complex hierarchical analysis and display
+      return analyzeAndDisplayHierarchicalSelection(hierarchicalData);
+    }
+    
+    case "customization_duration": {
+      const durationData = value as DurationConfigurationData;
+      
+      if (durationData.configuration === 'duration-only') {
+        return durationData.label;
+      }
+      
+      const workingPercent = Math.round((durationData.workingTime / durationData.totalDuration) * 100);
+      return `${durationData.label} (${workingPercent}% active)`;
+    }
+    
+    case "customization_soreness": {
+      const categoryData = value as CategoryRatingData;
+      // Category-rating analysis and display
+      return analyzeCategoryRatings(categoryData);
+    }
+    
+    // ... other patterns
+  }
+};
+```
+
+### **Responsive Design Standards**
+All components follow mobile-first responsive patterns:
+- **Primary Level**: `grid-cols-2 sm:grid-cols-3 lg:grid-cols-4`
+- **Secondary Level**: Flexible layouts with proper touch targets
+- **Tertiary Level**: Single column on mobile, multi-column on desktop
+
+## 🔧 **Development Guidelines**
+
+### **For Adding New Customization Components**
+
+1. **Choose the appropriate data pattern** from the six established types
+2. **Implement the corresponding interface** with proper TypeScript contracts
+3. **Follow UI consistency** with established visual patterns
+4. **Add parent integration** with meaningful badge display logic
+5. **Test responsive behavior** across all device sizes
+
+### **For Progressive Disclosure Components**
+
+1. **Define the disclosure structure** (Primary → Secondary → Tertiary)
+2. **Implement smart state management** with contextual expansion logic
+3. **Add validation and feedback** where appropriate
+4. **Include intelligent recommendations** for enhanced user experience
+5. **Ensure badge integration** provides meaningful context
+
+### **For Extending Existing Components**
+
+1. **Maintain data structure consistency** when adding new options
+2. **Follow established naming conventions** for domain accuracy
+3. **Test all interaction patterns** thoroughly
+4. **Update parent analysis functions** if needed
+5. **Preserve backward compatibility** with existing implementations
+
+## 🚀 **Architecture Benefits**
+
+### **User Experience Excellence**
+- **Progressive Disclosure**: Complex options remain approachable
+- **Intelligent Feedback**: Real-time validation and recommendations
+- **Contextual Badges**: Rich summaries without overwhelming detail
+- **Professional Polish**: Consistent visual design across all patterns
+
+### **Developer Experience Quality**
+- **Type Safety**: Complete TypeScript coverage across all patterns
+- **Extensible Architecture**: Clear patterns for new customization types
+- **Maintainable Code**: Clean separation of concerns and predictable data flow
+- **Rich Integration**: Structured data communication with parent components
+
+### **System Architecture**
+- **Scalable Design**: Supports arbitrary complexity across different domains
+- **Performance Optimized**: Efficient rendering regardless of selection complexity
+- **Mobile Responsive**: Professional appearance across all device sizes
+- **Accessibility Ready**: Proper ARIA hierarchy and keyboard navigation
+
+## 🎯 **Pattern Adoption Success**
+
+This system has successfully demonstrated **architectural consistency** across:
 
 ### Accordion Pattern
 - **Collapsed State**: Shows option name with current selection in a badge
@@ -286,4 +485,4 @@ Common body parts using everyday terminology:
 9. **Professional Standards** - Uses medically/scientifically validated rating scales
 10. **Enhanced Visibility** - Improved contrast and typography for better usability
 11. **Complete Coverage** - All 8 customization options fully implemented
-12. **Backend Ready** - Automatic string conversion with consistent naming 
+12. **Backend Ready** - Automatic string conversion with consistent naming

@@ -1,5 +1,5 @@
 import { Target } from "lucide-react";
-import { WorkoutCustomizationProps } from "./types";
+import { WorkoutCustomizationProps, CategoryRatingData, HierarchicalSelectionData, DurationConfigurationData, WorkoutFocusConfigurationData } from "./types";
 import { CUSTOMIZATION_CONFIG } from "./customizations";
 import { useState } from "react";
 
@@ -19,6 +19,28 @@ export default function WorkoutCustomization({
     onChange(key, value);
   };
 
+  // Helper function to convert rating numbers to standardized labels
+  const getRatingLabel = (rating: number): string => {
+    const labels = ["", "Mild", "Low-Moderate", "Moderate", "High", "Severe"];
+    return labels[rating] || "Unknown";
+  };
+
+  // Helper function to analyze hierarchical selection data
+  const analyzeHierarchicalSelection = (data: HierarchicalSelectionData) => {
+    const selectedEntries = Object.entries(data).filter(([_, info]) => info.selected);
+    const primarySelections = selectedEntries.filter(([_, info]) => info.level === 'primary');
+    const secondarySelections = selectedEntries.filter(([_, info]) => info.level === 'secondary');
+    const tertiarySelections = selectedEntries.filter(([_, info]) => info.level === 'tertiary');
+    
+    return {
+      total: selectedEntries.length,
+      primary: primarySelections,
+      secondary: secondarySelections,
+      tertiary: tertiarySelections,
+      selectedEntries
+    };
+  };
+
   // Helper function to format the current selection for display
   const formatCurrentSelection = (
     config: (typeof CUSTOMIZATION_CONFIG)[0],
@@ -28,28 +50,51 @@ export default function WorkoutCustomization({
 
     switch (config.key) {
       case "customization_duration": {
-        const duration = value as number;
-        if (duration >= 60) {
-          const hours = Math.floor(duration / 60);
-          const minutes = duration % 60;
-          if (minutes === 0) {
-            return `${hours} hour${hours > 1 ? "s" : ""}`;
-          } else {
-            return `${hours}h ${minutes}m`;
-          }
+        const durationData = value as DurationConfigurationData;
+        if (!durationData?.selected) return null;
+        
+        // Simple case: duration only
+        if (durationData.configuration === 'duration-only') {
+          return durationData.label;
         }
-        return `${duration} min`;
+        
+        // Complex case: show structure summary with working time percentage
+        const workingPercent = Math.round((durationData.workingTime / durationData.totalDuration) * 100);
+        return `${durationData.label} (${workingPercent}% active)`;
       }
 
       case "customization_areas": {
-        const areas = value as string[];
-        if (areas.length === 0) return null;
-        if (areas.length === 1) {
-          return areas[0]
-            .replace(/_/g, " ")
-            .replace(/\b\w/g, (l) => l.toUpperCase());
+        const hierarchicalData = value as HierarchicalSelectionData;
+        if (!hierarchicalData) return null;
+        
+        const analysis = analyzeHierarchicalSelection(hierarchicalData);
+        if (analysis.total === 0) return null;
+        
+        // For single primary selection, show the primary name
+        if (analysis.primary.length === 1 && analysis.total === 1) {
+          return analysis.primary[0][1].label;
         }
-        return `${areas.length} areas`;
+        
+        // For single secondary/tertiary with context, show "Primary > Secondary" format
+        if (analysis.total === 1) {
+          const [_, info] = analysis.selectedEntries[0];
+          if (info.parentKey && hierarchicalData[info.parentKey]) {
+            return `${hierarchicalData[info.parentKey].label} > ${info.label}`;
+          }
+          return info.label;
+        }
+        
+        // For multiple selections, show intelligent summary
+        if (analysis.primary.length > 0) {
+          const primaryNames = analysis.primary.map(([_, info]) => info.label);
+          if (analysis.total === analysis.primary.length) {
+            return primaryNames.join(", ");
+          }
+          return `${primaryNames.join(", ")} + ${analysis.total - analysis.primary.length} specific`;
+        }
+        
+        // All secondary/tertiary selections
+        return `${analysis.total} specific areas`;
       }
 
       case "customization_equipment": {
@@ -67,21 +112,35 @@ export default function WorkoutCustomization({
       }
 
       case "customization_soreness": {
-        const soreAreas = value as string[];
-        if (soreAreas.length === 0) return null;
-        if (soreAreas.length === 1) {
-          return soreAreas[0]
-            .replace(/_/g, " ")
-            .replace(/\b\w/g, (l) => l.toUpperCase());
+        const categoryData = value as CategoryRatingData;
+        if (!categoryData) return null;
+        const selectedEntries = Object.entries(categoryData).filter(([_, info]) => info.selected);
+        if (selectedEntries.length === 0) return null;
+        if (selectedEntries.length === 1) {
+          const [_, info] = selectedEntries[0];
+          return `${info.label}${info.rating ? ` (${getRatingLabel(info.rating)})` : ''}`;
         }
-        return `${soreAreas.length} areas`;
+        return `${selectedEntries.length} areas`;
       }
 
       case "customization_focus": {
-        const focus = value as string;
-        return focus
-          .replace(/_/g, " ")
-          .replace(/\b\w/g, (l) => l.toUpperCase());
+        const focusData = value as WorkoutFocusConfigurationData;
+        if (!focusData?.selected) return null;
+        
+        // For focus-only configuration, show simple label
+        if (focusData.configuration === 'focus-only') {
+          return focusData.focusLabel;
+        }
+        
+        // For focus-with-format, show enhanced label with format indicator
+        if (focusData.configuration === 'focus-with-format' && focusData.format) {
+          // Add intensity indicator for advanced configurations
+          const intensityIndicator = focusData.metadata?.intensity === 'high' ? ' 🔥' : 
+                                   focusData.metadata?.intensity === 'low' ? ' 🌱' : '';
+          return `${focusData.label}${intensityIndicator}`;
+        }
+        
+        return focusData.label;
       }
 
       case "customization_include": {
@@ -123,9 +182,15 @@ export default function WorkoutCustomization({
       }
 
       case "customization_stress": {
-        const rating = value as number;
-        const labels = ["", "Very Low", "Low", "Moderate", "High", "Very High"];
-        return `${labels[rating]} (${rating}/5)`;
+        const categoryData = value as CategoryRatingData;
+        if (!categoryData) return null;
+        const selectedEntries = Object.entries(categoryData).filter(([_, info]) => info.selected);
+        if (selectedEntries.length === 0) return null;
+        if (selectedEntries.length === 1) {
+          const [_, info] = selectedEntries[0];
+          return `${info.label}${info.rating ? ` (${getRatingLabel(info.rating)})` : ''}`;
+        }
+        return `${selectedEntries.length} categories`;
       }
 
       default:
@@ -231,7 +296,7 @@ export default function WorkoutCustomization({
 
               {expandedCategories.includes(category) && (
                 <div className="border-t border-base-300 p-4 space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-4">
                     {configs.map((config) => {
                       const IconComponent = config.icon;
                       const CustomizationComponent = config.component;
