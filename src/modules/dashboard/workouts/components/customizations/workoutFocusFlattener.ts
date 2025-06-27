@@ -651,7 +651,7 @@ function flattenModernWorkoutFocus(data: WorkoutFocusConfigurationData): Enhance
 }
 
 // Calculate complexity score based on focus and format requirements
-function calculateComplexityScore(result: EnhancedWorkoutFocusFlat, data: WorkoutFocusConfigurationData): number {
+function calculateComplexityScore(result: EnhancedWorkoutFocusFlat, _data: WorkoutFocusConfigurationData): number {
   let score = 0;
   
   // Base complexity from focus type
@@ -680,7 +680,7 @@ function calculateComplexityScore(result: EnhancedWorkoutFocusFlat, data: Workou
 }
 
 // Calculate accessibility score (higher = more accessible)
-function calculateAccessibilityScore(result: EnhancedWorkoutFocusFlat, data: WorkoutFocusConfigurationData): number {
+function calculateAccessibilityScore(result: EnhancedWorkoutFocusFlat, _data: WorkoutFocusConfigurationData): number {
   let score = 100;
   
   // Equipment requirements reduce accessibility
@@ -705,7 +705,7 @@ function calculateAccessibilityScore(result: EnhancedWorkoutFocusFlat, data: Wor
 }
 
 // Calculate time efficiency score
-function calculateTimeEfficiencyScore(result: EnhancedWorkoutFocusFlat, data: WorkoutFocusConfigurationData): number {
+function calculateTimeEfficiencyScore(result: EnhancedWorkoutFocusFlat, _data: WorkoutFocusConfigurationData): number {
   let score = 50; // Base score
   
   // HIIT and metabolic work are highly time efficient
@@ -730,7 +730,7 @@ function calculateTimeEfficiencyScore(result: EnhancedWorkoutFocusFlat, data: Wo
 }
 
 // Calculate beginner suitability score
-function calculateBeginnerSuitability(result: EnhancedWorkoutFocusFlat, data: WorkoutFocusConfigurationData): number {
+function calculateBeginnerSuitability(result: EnhancedWorkoutFocusFlat, _data: WorkoutFocusConfigurationData): number {
   let score = 50; // Base score
   
   // All-levels experience boosts suitability
@@ -758,7 +758,7 @@ function calculateBeginnerSuitability(result: EnhancedWorkoutFocusFlat, data: Wo
 }
 
 // Calculate advanced potential score
-function calculateAdvancedPotential(result: EnhancedWorkoutFocusFlat, data: WorkoutFocusConfigurationData): number {
+function calculateAdvancedPotential(result: EnhancedWorkoutFocusFlat, _data: WorkoutFocusConfigurationData): number {
   let score = 50; // Base score
   
   // Advanced focuses have high potential

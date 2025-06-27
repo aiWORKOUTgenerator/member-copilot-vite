@@ -1,10 +1,11 @@
 import { useGeneratedWorkouts } from "@/contexts/GeneratedWorkoutContext";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { ArrowBigLeft } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router";
 import WorkoutCustomization from "./components/WorkoutCustomization";
 import { PerWorkoutOptions } from "./components/types";
+import { sanitizeAnalyticsData } from "./components/utils/validation";
 
 // 15 workout prompt examples
 const WORKOUT_PROMPTS = [
@@ -44,6 +45,21 @@ export default function GenerateWorkoutPage() {
   const [displayPrompts, setDisplayPrompts] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<"custom" | "quick">("custom");
   const analytics = useAnalytics();
+
+  // ✅ FIX: Proper debounced analytics handler to prevent infinite loops
+  const debouncedAnalyticsHandler = useMemo(() => {
+    let timeoutId: ReturnType<typeof setTimeout>;
+    return (...args: unknown[]) => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        analytics.track("Workout Preference Changed", {
+          preferenceType: args[0],
+          value: sanitizeAnalyticsData(args[1]),
+          tracked_at: new Date().toISOString(),
+        });
+      }, 1000);
+    };
+  }, [analytics]);
 
   // Track workout generation page views
   useEffect(() => {
@@ -160,6 +176,9 @@ export default function GenerateWorkoutPage() {
         [option]: undefined,
       });
     }
+
+    // ✅ Track preference changes with debouncing to prevent infinite loops
+    debouncedAnalyticsHandler(option, value);
   };
 
   // Function to use an example prompt
