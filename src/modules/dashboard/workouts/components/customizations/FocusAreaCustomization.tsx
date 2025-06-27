@@ -32,9 +32,9 @@ const SECONDARY_MUSCLES = {
     { label: "Lower Back", value: "lower_back", hasTertiary: true },
   ],
   full_body: [
-    { label: "Olympic Lifts", value: "olympic_lifts", hasTertiary: false },
-    { label: "Bodyweight Circuits", value: "bodyweight_circuits", hasTertiary: false },
-    { label: "Athletic Conditioning", value: "athletic_conditioning", hasTertiary: false },
+    { label: "Core & Stabilizers", value: "full_body_core", hasTertiary: true },
+    { label: "Posterior Chain", value: "posterior_chain", hasTertiary: true },
+    { label: "Functional Movement", value: "functional_movement", hasTertiary: true },
   ],
   mobility: [
     { label: "Hips", value: "hips", hasTertiary: true },
@@ -130,6 +130,24 @@ const TERTIARY_AREAS = {
     { label: "Top Rotator Cuff (Supraspinatus)", value: "supraspinatus" },
     { label: "Back Rotator Cuff (Infraspinatus)", value: "infraspinatus" },
     { label: "Small Rotator Cuff (Teres Minor)", value: "teres_minor" },
+  ],
+  full_body_core: [
+    { label: "Deep Stabilizers (TVA)", value: "deep_stabilizers" },
+    { label: "Diaphragm & Breathing", value: "diaphragm_breathing" },
+    { label: "Multifidus (Spine Stability)", value: "multifidus_spine" },
+    { label: "Pelvic Floor (Foundation)", value: "pelvic_floor_stability" },
+  ],
+  posterior_chain: [
+    { label: "Glutes & Hamstrings", value: "glutes_hamstrings" },
+    { label: "Erector Spinae (Back)", value: "erector_spinae_back" },
+    { label: "Lats & Rhomboids", value: "lats_rhomboids" },
+    { label: "Rear Delts & Traps", value: "rear_delts_traps" },
+  ],
+  functional_movement: [
+    { label: "Hip-Shoulder Integration", value: "hip_shoulder_integration" },
+    { label: "Anti-Rotation (Core)", value: "anti_rotation_core" },
+    { label: "Multi-Planar Movement", value: "multi_planar_movement" },
+    { label: "Compound Movement Patterns", value: "compound_patterns" },
   ],
 };
 
@@ -397,7 +415,7 @@ export default function FocusAreaCustomization({
                   disabled={disabled}
                 >
                   <span className="flex-1 text-left">{region.label}</span>
-                  {isSelected && (SECONDARY_MUSCLES as any)[region.value] && (
+                  {isSelected && (SECONDARY_MUSCLES as Record<string, { value: string; label: string; hasTertiary?: boolean }[]>)[region.value] && (
                     <span className="ml-2 badge badge-primary-content badge-xs flex-shrink-0">
                       {isExpanded ? '−' : '+'}
                     </span>
@@ -412,7 +430,7 @@ export default function FocusAreaCustomization({
         {PRIMARY_REGIONS.map((region) => {
           const isPrimarySelected = selectedAreas.includes(region.value);
           const isExpanded = expandedPrimary.has(region.value);
-          const secondaryMuscles = (SECONDARY_MUSCLES as any)[region.value];
+          const secondaryMuscles = (SECONDARY_MUSCLES as Record<string, { value: string; label: string; hasTertiary?: boolean }[]>)[region.value];
 
           return (
             isPrimarySelected && isExpanded && secondaryMuscles && (

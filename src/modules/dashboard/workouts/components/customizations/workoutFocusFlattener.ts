@@ -638,11 +638,11 @@ function flattenModernWorkoutFocus(data: WorkoutFocusConfigurationData): Enhance
   }
   
   // Calculate analytics scores
-  result.focus_complexity_score = calculateComplexityScore(result, data);
-  result.focus_accessibility_score = calculateAccessibilityScore(result, data);
-  result.focus_time_efficiency_score = calculateTimeEfficiencyScore(result, data);
-  result.focus_beginner_suitability = calculateBeginnerSuitability(result, data);
-  result.focus_advanced_potential = calculateAdvancedPotential(result, data);
+  result.focus_complexity_score = calculateComplexityScore(result);
+  result.focus_accessibility_score = calculateAccessibilityScore(result);
+  result.focus_time_efficiency_score = calculateTimeEfficiencyScore(result);
+  result.focus_beginner_suitability = calculateBeginnerSuitability(result);
+  result.focus_advanced_potential = calculateAdvancedPotential(result);
   
   result.focus_data_json = JSON.stringify(data);
   result.focus_last_updated = new Date().toISOString();
@@ -651,7 +651,7 @@ function flattenModernWorkoutFocus(data: WorkoutFocusConfigurationData): Enhance
 }
 
 // Calculate complexity score based on focus and format requirements
-function calculateComplexityScore(result: EnhancedWorkoutFocusFlat, _data: WorkoutFocusConfigurationData): number {
+function calculateComplexityScore(result: EnhancedWorkoutFocusFlat): number {
   let score = 0;
   
   // Base complexity from focus type
@@ -680,7 +680,7 @@ function calculateComplexityScore(result: EnhancedWorkoutFocusFlat, _data: Worko
 }
 
 // Calculate accessibility score (higher = more accessible)
-function calculateAccessibilityScore(result: EnhancedWorkoutFocusFlat, _data: WorkoutFocusConfigurationData): number {
+function calculateAccessibilityScore(result: EnhancedWorkoutFocusFlat): number {
   let score = 100;
   
   // Equipment requirements reduce accessibility
@@ -705,7 +705,7 @@ function calculateAccessibilityScore(result: EnhancedWorkoutFocusFlat, _data: Wo
 }
 
 // Calculate time efficiency score
-function calculateTimeEfficiencyScore(result: EnhancedWorkoutFocusFlat, _data: WorkoutFocusConfigurationData): number {
+function calculateTimeEfficiencyScore(result: EnhancedWorkoutFocusFlat): number {
   let score = 50; // Base score
   
   // HIIT and metabolic work are highly time efficient
@@ -730,7 +730,7 @@ function calculateTimeEfficiencyScore(result: EnhancedWorkoutFocusFlat, _data: W
 }
 
 // Calculate beginner suitability score
-function calculateBeginnerSuitability(result: EnhancedWorkoutFocusFlat, _data: WorkoutFocusConfigurationData): number {
+function calculateBeginnerSuitability(result: EnhancedWorkoutFocusFlat): number {
   let score = 50; // Base score
   
   // All-levels experience boosts suitability
@@ -758,7 +758,7 @@ function calculateBeginnerSuitability(result: EnhancedWorkoutFocusFlat, _data: W
 }
 
 // Calculate advanced potential score
-function calculateAdvancedPotential(result: EnhancedWorkoutFocusFlat, _data: WorkoutFocusConfigurationData): number {
+function calculateAdvancedPotential(result: EnhancedWorkoutFocusFlat): number {
   let score = 50; // Base score
   
   // Advanced focuses have high potential

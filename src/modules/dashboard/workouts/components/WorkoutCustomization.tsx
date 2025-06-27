@@ -186,7 +186,7 @@ export default function WorkoutCustomization({
       case "customization_soreness": {
         const categoryData = value as CategoryRatingData;
         if (!categoryData) return null;
-        const selectedEntries = Object.entries(categoryData).filter(([_, info]) => info.selected);
+        const selectedEntries = Object.entries(categoryData).filter(([, info]) => info.selected);
         if (selectedEntries.length === 0) return null;
         if (selectedEntries.length === 1) {
           const [, info] = selectedEntries[0];
