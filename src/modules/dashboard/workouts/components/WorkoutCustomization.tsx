@@ -1,5 +1,5 @@
 import { Target } from "lucide-react";
-import { WorkoutCustomizationProps, CategoryRatingData } from "./types";
+import { WorkoutCustomizationProps, CategoryRatingData, HierarchicalSelectionData, DurationConfigurationData, WorkoutFocusConfigurationData } from "./types";
 import { CUSTOMIZATION_CONFIG } from "./customizations";
 import { useState } from "react";
 
@@ -25,6 +25,22 @@ export default function WorkoutCustomization({
     return labels[rating] || "Unknown";
   };
 
+  // Helper function to analyze hierarchical selection data
+  const analyzeHierarchicalSelection = (data: HierarchicalSelectionData) => {
+    const selectedEntries = Object.entries(data).filter(([_, info]) => info.selected);
+    const primarySelections = selectedEntries.filter(([_, info]) => info.level === 'primary');
+    const secondarySelections = selectedEntries.filter(([_, info]) => info.level === 'secondary');
+    const tertiarySelections = selectedEntries.filter(([_, info]) => info.level === 'tertiary');
+    
+    return {
+      total: selectedEntries.length,
+      primary: primarySelections,
+      secondary: secondarySelections,
+      tertiary: tertiarySelections,
+      selectedEntries
+    };
+  };
+
   // Helper function to format the current selection for display
   const formatCurrentSelection = (
     config: (typeof CUSTOMIZATION_CONFIG)[0],
@@ -34,28 +50,78 @@ export default function WorkoutCustomization({
 
     switch (config.key) {
       case "customization_duration": {
-        const duration = value as number;
-        if (duration >= 60) {
-          const hours = Math.floor(duration / 60);
-          const minutes = duration % 60;
-          if (minutes === 0) {
-            return `${hours} hour${hours > 1 ? "s" : ""}`;
-          } else {
-            return `${hours}h ${minutes}m`;
+        // Handle both simple number and enhanced DurationConfigurationData
+        if (typeof value === 'number') {
+          const duration = value as number;
+          if (duration >= 60) {
+            const hours = Math.floor(duration / 60);
+            const minutes = duration % 60;
+            if (minutes === 0) {
+              return `${hours} hour${hours > 1 ? "s" : ""}`;
+            } else {
+              return `${hours}h ${minutes}m`;
+            }
           }
+          return `${duration} min`;
+        } else {
+          const durationData = value as DurationConfigurationData;
+          if (!durationData?.selected) return null;
+          
+          // Simple case: duration only
+          if (durationData.configuration === 'duration-only') {
+            return durationData.label;
+          }
+          
+          // Complex case: show structure summary with working time percentage
+          const workingPercent = Math.round((durationData.workingTime / durationData.totalDuration) * 100);
+          return `${durationData.label} (${workingPercent}% active)`;
         }
-        return `${duration} min`;
       }
 
       case "customization_areas": {
-        const areas = value as string[];
-        if (areas.length === 0) return null;
-        if (areas.length === 1) {
-          return areas[0]
-            .replace(/_/g, " ")
-            .replace(/\b\w/g, (l) => l.toUpperCase());
+        // Handle both simple string[] and enhanced HierarchicalSelectionData
+        if (Array.isArray(value)) {
+          const areas = value as string[];
+          if (areas.length === 0) return null;
+          if (areas.length === 1) {
+            return areas[0]
+              .replace(/_/g, " ")
+              .replace(/\b\w/g, (l) => l.toUpperCase());
+          }
+          return `${areas.length} areas`;
+        } else {
+          const hierarchicalData = value as HierarchicalSelectionData;
+          if (!hierarchicalData) return null;
+          
+          const analysis = analyzeHierarchicalSelection(hierarchicalData);
+          if (analysis.total === 0) return null;
+          
+          // For single primary selection, show the primary name
+          if (analysis.primary.length === 1 && analysis.total === 1) {
+            return analysis.primary[0][1].label;
+          }
+          
+          // For single secondary/tertiary with context, show "Primary > Secondary" format
+          if (analysis.total === 1) {
+            const [_, info] = analysis.selectedEntries[0];
+            if (info.parentKey && hierarchicalData[info.parentKey]) {
+              return `${hierarchicalData[info.parentKey].label} > ${info.label}`;
+            }
+            return info.label;
+          }
+          
+          // For multiple selections, show intelligent summary
+          if (analysis.primary.length > 0) {
+            const primaryNames = analysis.primary.map(([_, info]) => info.label);
+            if (analysis.total === analysis.primary.length) {
+              return primaryNames.join(", ");
+            }
+            return `${primaryNames.join(", ")} + ${analysis.total - analysis.primary.length} specific`;
+          }
+          
+          // All secondary/tertiary selections
+          return `${analysis.total} specific areas`;
         }
-        return `${areas.length} areas`;
       }
 
       case "customization_equipment": {
@@ -130,10 +196,31 @@ export default function WorkoutCustomization({
       }
 
       case "customization_focus": {
-        const focus = value as string;
-        return focus
-          .replace(/_/g, " ")
-          .replace(/\b\w/g, (l) => l.toUpperCase());
+        // Handle both simple string and enhanced WorkoutFocusConfigurationData
+        if (typeof value === 'string') {
+          const focus = value as string;
+          return focus
+            .replace(/_/g, " ")
+            .replace(/\b\w/g, (l) => l.toUpperCase());
+        } else {
+          const focusData = value as WorkoutFocusConfigurationData;
+          if (!focusData?.selected) return null;
+          
+          // For focus-only configuration, show simple label
+          if (focusData.configuration === 'focus-only') {
+            return focusData.focusLabel;
+          }
+          
+          // For focus-with-format, show enhanced label with format indicator
+          if (focusData.configuration === 'focus-with-format' && focusData.format) {
+            // Add intensity indicator for advanced configurations
+            const intensityIndicator = focusData.metadata?.intensity === 'high' ? ' 🔥' : 
+                                     focusData.metadata?.intensity === 'low' ? ' 🌱' : '';
+            return `${focusData.label}${intensityIndicator}`;
+          }
+          
+          return focusData.label;
+        }
       }
 
       case "customization_include": {
