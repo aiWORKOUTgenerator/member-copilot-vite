@@ -1,6 +1,20 @@
 import { useState } from "react";
 import { CustomizationComponentProps, WorkoutFocusConfigurationData } from "../types";
 
+// Type definitions for workout format data
+interface WorkoutFormatOption {
+  label: string;
+  value: string;
+  description: string;
+  intensity: 'low' | 'moderate' | 'high' | 'variable';
+  beginner_friendly: boolean;
+  time_efficient: boolean;
+}
+
+interface WorkoutFormatsData {
+  [focusKey: string]: WorkoutFormatOption[];
+}
+
 // Enhanced workout focus options with categorization and metadata
 const ENHANCED_WORKOUT_FOCUS_OPTIONS = [
   // Strength & Power Category
@@ -478,7 +492,7 @@ const generateSmartLabel = (
 const generateSmartDescription = (
   focusData: typeof ENHANCED_WORKOUT_FOCUS_OPTIONS[0],
   format?: string,
-  formatData?: typeof WORKOUT_FORMATS[keyof typeof WORKOUT_FORMATS][0]
+  formatData?: WorkoutFormatOption
 ): string => {
   if (!format || !formatData) {
     return focusData.description;
@@ -519,7 +533,7 @@ const validateFocusConfiguration = (
   
   // Format-specific recommendations
   if (format && focusData) {
-    const formatData = (WORKOUT_FORMATS as any)[focus]?.find((f: any) => f.value === format);
+    const formatData = (WORKOUT_FORMATS as WorkoutFormatsData)[focus]?.find((f: WorkoutFormatOption) => f.value === format);
     
     if (formatData?.beginner_friendly === false) {
       validation.recommendations!.push(
@@ -572,10 +586,10 @@ export default function WorkoutFocusCustomization({
     formatLabel?: string
   ): WorkoutFocusConfigurationData => {
     const focusData = ENHANCED_WORKOUT_FOCUS_OPTIONS.find(f => f.value === focus);
-    const formatData = format && (WORKOUT_FORMATS as any)[focus]?.find((f: any) => f.value === format);
+    const formatData = format && (WORKOUT_FORMATS as WorkoutFormatsData)[focus]?.find((f: WorkoutFormatOption) => f.value === format);
     
     const label = generateSmartLabel(focus, focusLabel, format, formatLabel);
-    const description = generateSmartDescription(focusData!, format, formatData);
+    const description = generateSmartDescription(focusData!, format, formatData || undefined);
     const configuration = determineConfiguration(!!format);
     const validation = validateFocusConfiguration(focus, format);
     
@@ -613,7 +627,7 @@ export default function WorkoutFocusCustomization({
     const focusOption = ENHANCED_WORKOUT_FOCUS_OPTIONS.find(opt => opt.value === focus);
     if (!focusOption) return;
     
-    const formatOption = format && (WORKOUT_FORMATS as any)[focus]?.find((f: any) => f.value === format);
+    const formatOption = format ? (WORKOUT_FORMATS as WorkoutFormatsData)[focus]?.find((f: WorkoutFormatOption) => f.value === format) : undefined;
     
     const configuration = buildFocusConfiguration(
       focus,
@@ -781,7 +795,7 @@ export default function WorkoutFocusCustomization({
   const renderFormatSelection = () => {
     if (!selectedFocus || !showFormats) return null;
     
-    const availableFormats = (WORKOUT_FORMATS as any)[selectedFocus] || [];
+    const availableFormats = (WORKOUT_FORMATS as WorkoutFormatsData)[selectedFocus] || [];
     
     return (
       <div className="mt-6 pt-4 border-t border-base-300">
@@ -799,7 +813,7 @@ export default function WorkoutFocusCustomization({
         </div>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          {availableFormats.map((format: any) => (
+          {availableFormats.map((format: WorkoutFormatOption) => (
             <button
               key={format.value}
               type="button"
@@ -817,7 +831,7 @@ export default function WorkoutFocusCustomization({
         
         {/* Format Characteristics Display */}
         {selectedFormat && (() => {
-          const formatData = availableFormats.find((f: any) => f.value === selectedFormat);
+          const formatData = availableFormats.find((f: WorkoutFormatOption) => f.value === selectedFormat);
           return formatData ? (
             <div className="mt-3 p-3 bg-base-200 rounded-lg">
               <div className="flex flex-wrap gap-2">

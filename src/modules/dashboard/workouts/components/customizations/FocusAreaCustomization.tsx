@@ -133,6 +133,21 @@ const TERTIARY_AREAS = {
   ],
 };
 
+// Type definitions for the hierarchical focus area data
+interface FocusAreaOption {
+  label: string;
+  value: string;
+  hasTertiary?: boolean;
+}
+
+interface SecondaryMusclesData {
+  [primaryKey: string]: FocusAreaOption[];
+}
+
+interface TertiaryAreasData {
+  [secondaryKey: string]: FocusAreaOption[];
+}
+
 // Helper functions to work with the 3-tier data structure
 const getAllSelectableOptions = () => {
   const options: Array<{ label: string; value: string; level: 'primary' | 'secondary' | 'tertiary' }> = [];
@@ -187,11 +202,11 @@ const getParentKey = (value: string, level: 'primary' | 'secondary' | 'tertiary'
 
 const getChildrenKeys = (value: string, level: 'primary' | 'secondary' | 'tertiary'): string[] | undefined => {
   if (level === 'primary') {
-    return (SECONDARY_MUSCLES as any)[value]?.map((secondary: any) => secondary.value);
+    return (SECONDARY_MUSCLES as SecondaryMusclesData)[value]?.map((secondary: FocusAreaOption) => secondary.value);
   }
   
   if (level === 'secondary') {
-    return (TERTIARY_AREAS as any)[value]?.map((tertiary: any) => tertiary.value);
+    return (TERTIARY_AREAS as TertiaryAreasData)[value]?.map((tertiary: FocusAreaOption) => tertiary.value);
   }
   
   // Tertiary level has no children
@@ -203,19 +218,19 @@ const getAllDescendants = (value: string, level: 'primary' | 'secondary' | 'tert
   
   if (level === 'primary') {
     // Get all secondary and tertiary descendants
-    const secondaries = (SECONDARY_MUSCLES as any)[value] || [];
-    secondaries.forEach((secondary: any) => {
+    const secondaries = (SECONDARY_MUSCLES as SecondaryMusclesData)[value] || [];
+    secondaries.forEach((secondary: FocusAreaOption) => {
       descendants.push(secondary.value);
       
-      const tertiaries = (TERTIARY_AREAS as any)[secondary.value] || [];
-      tertiaries.forEach((tertiary: any) => {
+      const tertiaries = (TERTIARY_AREAS as TertiaryAreasData)[secondary.value] || [];
+      tertiaries.forEach((tertiary: FocusAreaOption) => {
         descendants.push(tertiary.value);
       });
     });
   } else if (level === 'secondary') {
     // Get all tertiary descendants
-    const tertiaries = (TERTIARY_AREAS as any)[value] || [];
-    tertiaries.forEach((tertiary: any) => {
+    const tertiaries = (TERTIARY_AREAS as TertiaryAreasData)[value] || [];
+    tertiaries.forEach((tertiary: FocusAreaOption) => {
       descendants.push(tertiary.value);
     });
   }
@@ -226,10 +241,10 @@ const getAllDescendants = (value: string, level: 'primary' | 'secondary' | 'tert
 
 // Smart summary analysis for intelligent display
 const analyzeSelectionSummary = (hierarchicalData: HierarchicalSelectionData) => {
-  const selectedEntries = Object.entries(hierarchicalData).filter(([_, info]) => info.selected);
-  const primary = selectedEntries.filter(([_, info]) => info.level === 'primary');
-  const secondary = selectedEntries.filter(([_, info]) => info.level === 'secondary');
-  const tertiary = selectedEntries.filter(([_, info]) => info.level === 'tertiary');
+  const selectedEntries = Object.entries(hierarchicalData).filter(([, info]) => info.selected);
+  const primary = selectedEntries.filter(([, info]) => info.level === 'primary');
+  const secondary = selectedEntries.filter(([, info]) => info.level === 'secondary');
+  const tertiary = selectedEntries.filter(([, info]) => info.level === 'tertiary');
   
   return {
     total: selectedEntries.length,
@@ -267,8 +282,8 @@ export default function FocusAreaCustomization({
         // Collapse all related tertiary sections
         setExpandedTertiary(prev => {
           const newTertiary = new Set(prev);
-          const secondaries = (SECONDARY_MUSCLES as any)[primaryValue] || [];
-          secondaries.forEach((secondary: any) => {
+          const secondaries = (SECONDARY_MUSCLES as SecondaryMusclesData)[primaryValue] || [];
+          secondaries.forEach((secondary: FocusAreaOption) => {
             newTertiary.delete(secondary.value);
           });
           return newTertiary;
@@ -300,7 +315,7 @@ export default function FocusAreaCustomization({
 
     if (isSelected) {
       // Smart removal with cascade
-      let newHierarchicalData = { ...hierarchicalData };
+      const newHierarchicalData = { ...hierarchicalData };
       
       // Remove the area itself
       delete newHierarchicalData[areaValue];
@@ -397,7 +412,7 @@ export default function FocusAreaCustomization({
                   disabled={disabled}
                 >
                   <span className="flex-1 text-left">{region.label}</span>
-                  {isSelected && (SECONDARY_MUSCLES as any)[region.value] && (
+                  {isSelected && (SECONDARY_MUSCLES as SecondaryMusclesData)[region.value] && (
                     <span className="ml-2 badge badge-primary-content badge-xs flex-shrink-0">
                       {isExpanded ? '−' : '+'}
                     </span>
@@ -412,7 +427,7 @@ export default function FocusAreaCustomization({
         {PRIMARY_REGIONS.map((region) => {
           const isPrimarySelected = selectedAreas.includes(region.value);
           const isExpanded = expandedPrimary.has(region.value);
-          const secondaryMuscles = (SECONDARY_MUSCLES as any)[region.value];
+          const secondaryMuscles = (SECONDARY_MUSCLES as SecondaryMusclesData)[region.value];
 
           return (
             isPrimarySelected && isExpanded && secondaryMuscles && (
@@ -432,7 +447,7 @@ export default function FocusAreaCustomization({
                     Select specific muscle groups within {region.label.toLowerCase()}:
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    {secondaryMuscles.map((secondary: any) => {
+                    {secondaryMuscles.map((secondary: FocusAreaOption) => {
                       const isSecondarySelected = selectedAreas.includes(secondary.value);
 
                       return (
@@ -442,7 +457,7 @@ export default function FocusAreaCustomization({
                           className={`btn btn-sm justify-start h-auto min-h-[2.25rem] py-2 px-3 ${
                             isSecondarySelected ? "btn-secondary" : "btn-outline"
                           } ${disabled ? "btn-disabled" : ""}`}
-                          onClick={() => handleSecondaryClick(secondary.value, secondary.hasTertiary)}
+                          onClick={() => handleSecondaryClick(secondary.value, secondary.hasTertiary || false)}
                           disabled={disabled}
                           title={secondary.hasTertiary ? "Click to select or expand for specific areas" : ""}
                         >
@@ -459,10 +474,10 @@ export default function FocusAreaCustomization({
                 </div>
 
                 {/* Tertiary Level - Expandable sections for selected secondaries */}
-                {secondaryMuscles.map((secondary: any) => {
+                {secondaryMuscles.map((secondary: FocusAreaOption) => {
                   const isSecondarySelected = selectedAreas.includes(secondary.value);
                   const isTertiaryExpanded = expandedTertiary.has(secondary.value);
-                  const tertiaryAreas = (TERTIARY_AREAS as any)[secondary.value];
+                  const tertiaryAreas = (TERTIARY_AREAS as TertiaryAreasData)[secondary.value];
 
                   return (
                     isSecondarySelected && isTertiaryExpanded && tertiaryAreas && (
@@ -483,7 +498,7 @@ export default function FocusAreaCustomization({
                           Target specific areas within {secondary.label.toLowerCase()}:
                         </p>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                          {tertiaryAreas.map((tertiary: any) => {
+                          {tertiaryAreas.map((tertiary: FocusAreaOption) => {
                             const isTertiarySelected = selectedAreas.includes(tertiary.value);
 
                             return (
@@ -582,7 +597,7 @@ export default function FocusAreaCustomization({
               // Full display for simple selections
               <div className="flex flex-wrap gap-1">
                 {Object.entries(hierarchicalData)
-                  .filter(([_, info]) => info.selected)
+                  .filter(([, info]) => info.selected)
                   .map(([key, info]) => {
                     let badgeClass = "badge badge-sm";
                     let label = info.label;

@@ -27,10 +27,10 @@ export default function WorkoutCustomization({
 
   // Helper function to analyze hierarchical selection data
   const analyzeHierarchicalSelection = (data: HierarchicalSelectionData) => {
-    const selectedEntries = Object.entries(data).filter(([_, info]) => info.selected);
-    const primarySelections = selectedEntries.filter(([_, info]) => info.level === 'primary');
-    const secondarySelections = selectedEntries.filter(([_, info]) => info.level === 'secondary');
-    const tertiarySelections = selectedEntries.filter(([_, info]) => info.level === 'tertiary');
+    const selectedEntries = Object.entries(data).filter(([, info]) => info.selected);
+    const primarySelections = selectedEntries.filter(([, info]) => info.level === 'primary');
+    const secondarySelections = selectedEntries.filter(([, info]) => info.level === 'secondary');
+    const tertiarySelections = selectedEntries.filter(([, info]) => info.level === 'tertiary');
     
     return {
       total: selectedEntries.length,
@@ -103,7 +103,7 @@ export default function WorkoutCustomization({
           
           // For single secondary/tertiary with context, show "Primary > Secondary" format
           if (analysis.total === 1) {
-            const [_, info] = analysis.selectedEntries[0];
+            const [, info] = analysis.selectedEntries[0];
             if (info.parentKey && hierarchicalData[info.parentKey]) {
               return `${hierarchicalData[info.parentKey].label} > ${info.label}`;
             }
@@ -112,7 +112,7 @@ export default function WorkoutCustomization({
           
           // For multiple selections, show intelligent summary
           if (analysis.primary.length > 0) {
-            const primaryNames = analysis.primary.map(([_, info]) => info.label);
+            const primaryNames = analysis.primary.map(([, info]) => info.label);
             if (analysis.total === analysis.primary.length) {
               return primaryNames.join(", ");
             }
@@ -186,10 +186,10 @@ export default function WorkoutCustomization({
       case "customization_soreness": {
         const categoryData = value as CategoryRatingData;
         if (!categoryData) return null;
-        const selectedEntries = Object.entries(categoryData).filter(([_, info]) => info.selected);
+        const selectedEntries = Object.entries(categoryData).filter(([, info]) => info.selected);
         if (selectedEntries.length === 0) return null;
         if (selectedEntries.length === 1) {
-          const [_, info] = selectedEntries[0];
+          const [, info] = selectedEntries[0];
           return `${info.label}${info.rating ? ` (${getRatingLabel(info.rating)})` : ''}`;
         }
         return `${selectedEntries.length} areas`;
@@ -264,10 +264,10 @@ export default function WorkoutCustomization({
       case "customization_stress": {
         const categoryData = value as CategoryRatingData;
         if (!categoryData) return null;
-        const selectedEntries = Object.entries(categoryData).filter(([_, info]) => info.selected);
+        const selectedEntries = Object.entries(categoryData).filter(([, info]) => info.selected);
         if (selectedEntries.length === 0) return null;
         if (selectedEntries.length === 1) {
-          const [_, info] = selectedEntries[0];
+          const [, info] = selectedEntries[0];
           return `${info.label}${info.rating ? ` (${getRatingLabel(info.rating)})` : ''}`;
         }
         return `${selectedEntries.length} categories`;
