@@ -377,16 +377,9 @@ export default function FocusAreaCustomization({
   };
 
   // Handle secondary click logic - for Phase 3 UI
-  const handleSecondaryClick = (secondaryValue: string, hasTertiary: boolean) => {
-    const isSelected = selectedAreas.includes(secondaryValue);
-    
-    if (isSelected && hasTertiary) {
-      // If already selected and has tertiary options, toggle tertiary display
-      toggleTertiaryExpansion(secondaryValue);
-    } else {
-      // Otherwise, toggle selection
-      handleAreaToggle(secondaryValue, 'secondary');
-    }
+  const handleSecondaryClick = (secondaryValue: string, _hasTertiary: boolean) => {
+    // Always toggle selection - handleAreaToggle already handles expansion logic perfectly
+    handleAreaToggle(secondaryValue, 'secondary');
   };
   
 
