@@ -1,6 +1,6 @@
 export interface PerWorkoutOptions {
   customization_duration?: number;
-  customization_equipment?: string[];
+  customization_equipment?: string[] | EquipmentSelectionData;
   customization_focus?: string;
   customization_energy?: number;
   customization_areas?: string[];
@@ -19,6 +19,15 @@ export interface CategoryRatingData {
     label: string;          // Human-readable category name
     description?: string;   // Category description
   }
+}
+
+// Enhanced equipment selection data structure for 4-tier progressive disclosure
+export interface EquipmentSelectionData {
+  location?: string;                    // Selected workout location
+  contexts: string[];                   // Selected equipment contexts
+  specificEquipment: string[];          // Individual equipment items
+  weights?: { [equipmentType: string]: number[] }; // Available weights for weight-supporting equipment
+  lastUpdated?: Date;                   // For smart recommendations
 }
 
 export interface CustomizationComponentProps<T = unknown> {

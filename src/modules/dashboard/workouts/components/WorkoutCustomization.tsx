@@ -59,17 +59,62 @@ export default function WorkoutCustomization({
       }
 
       case "customization_equipment": {
-        const equipment = value as string[];
-        if (equipment.length === 0) return null;
-        if (equipment.length === 1) {
-          const formatted = equipment[0]
-            .replace(/_/g, " ")
-            .replace(/\b\w/g, (l) => l.toUpperCase());
-          return formatted === "Bodyweight Only"
-            ? "Bodyweight Only"
-            : formatted;
+        // Handle both legacy format (string[]) and new format (EquipmentSelectionData)
+        if (Array.isArray(value)) {
+          // Legacy format
+          const equipment = value as string[];
+          if (equipment.length === 0) return null;
+          if (equipment.length === 1) {
+            const formatted = equipment[0]
+              .replace(/_/g, " ")
+              .replace(/\b\w/g, (l) => l.toUpperCase());
+            return formatted === "Bodyweight Only"
+              ? "Bodyweight Only"
+              : formatted;
+          }
+          return `${equipment.length} items`;
+        } else {
+          // New format (EquipmentSelectionData)
+          const equipmentData = value as { location?: string; contexts: string[]; specificEquipment: string[]; weights?: { [key: string]: number[] } };
+          if (!equipmentData || (!equipmentData.location && equipmentData.contexts.length === 0 && equipmentData.specificEquipment.length === 0 && (!equipmentData.weights || Object.keys(equipmentData.weights).length === 0))) {
+            return null;
+          }
+          
+          // Check if weights are specified
+          const hasWeights = equipmentData.weights && Object.keys(equipmentData.weights).some(key => equipmentData.weights![key].length > 0);
+          
+          if (equipmentData.location && equipmentData.contexts.length === 0) {
+            // Only location selected
+            const locationLabels = {
+              home: "Home",
+              home_gym: "Home Gym", 
+              gym: "Gym",
+              hotel: "Hotel",
+              park: "Park",
+              corporate_gym: "Corporate Gym",
+              athletic_club: "Athletic Club"
+            };
+            return locationLabels[equipmentData.location as keyof typeof locationLabels] || equipmentData.location;
+          }
+          
+          if (equipmentData.contexts.length === 1) {
+            return hasWeights ? `${equipmentData.contexts[0]} + weights` : equipmentData.contexts[0];
+          }
+          
+          if (equipmentData.contexts.length > 1) {
+            return hasWeights ? `${equipmentData.contexts.length} types + weights` : `${equipmentData.contexts.length} types`;
+          }
+          
+          if (equipmentData.specificEquipment.length > 0) {
+            return hasWeights ? `${equipmentData.specificEquipment.length} items + weights` : `${equipmentData.specificEquipment.length} items`;
+          }
+          
+          if (hasWeights) {
+            return "Equipment with weights";
+          }
+          
+          return "Equipment selected";
         }
-        return `${equipment.length} items`;
       }
 
       case "customization_soreness": {
@@ -244,7 +289,7 @@ export default function WorkoutCustomization({
 
               {expandedCategories.includes(category) && (
                 <div className="border-t border-base-300 p-4 space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-4">
                     {configs.map((config) => {
                       const IconComponent = config.icon;
                       const CustomizationComponent = config.component;
