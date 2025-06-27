@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+
 import { CustomizationComponentProps, CategoryRatingData } from "../types";
 
 // Stress categories for multi-dimensional assessment
@@ -60,15 +60,12 @@ export default function StressLevelCustomization({
   disabled = false,
   error,
 }: CustomizationComponentProps<CategoryRatingData | undefined>) {
-  const categoryData = useMemo(() => value || {}, [value]);
+  const categoryData = value || {};
   
   // Convert CategoryRatingData to internal format for easier manipulation
-  const selectedStressCategories = useMemo(() => 
-    Object.keys(categoryData).filter(key => categoryData[key].selected),
-    [categoryData]
-  );
+  const selectedStressCategories = Object.keys(categoryData).filter(key => categoryData[key].selected);
 
-  const handleCategoryToggle = useCallback((categoryValue: string) => {
+  const handleCategoryToggle = (categoryValue: string) => {
     const category = STRESS_CATEGORIES.find(c => c.value === categoryValue);
     const isSelected = categoryData[categoryValue]?.selected || false;
 
@@ -89,9 +86,9 @@ export default function StressLevelCustomization({
       };
       onChange(newCategoryData);
     }
-  }, [categoryData, onChange]);
+  };
 
-  const handleStressLevelChange = useCallback((category: string, level: number) => {
+  const handleStressLevelChange = (category: string, level: number) => {
     const newCategoryData = {
       ...categoryData,
       [category]: {
@@ -100,7 +97,7 @@ export default function StressLevelCustomization({
       }
     };
     onChange(newCategoryData);
-  }, [categoryData, onChange]);
+  };
 
   const getStressRecommendation = (category: string, level: number) => {
     const recommendations = {
