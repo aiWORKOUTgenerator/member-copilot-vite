@@ -54,3 +54,5 @@ export interface WorkoutCustomizationProps {
   disabled?: boolean;
   mode?: "custom" | "quick";
 }
+
+

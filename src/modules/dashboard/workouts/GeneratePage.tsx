@@ -72,8 +72,11 @@ export default function GenerateWorkoutPage() {
           if (value.length > 0) {
             stringOptions[key] = value.join(", ");
           }
+        } else if (typeof value === 'object') {
+          // ✅ FIX: Proper JSON serialization for complex objects
+          stringOptions[key] = JSON.stringify(value);
         } else {
-          // Convert numbers and strings to strings
+          // Convert primitives to strings
           stringOptions[key] = String(value);
         }
       }
