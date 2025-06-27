@@ -1,10 +1,10 @@
 import { useGeneratedWorkouts } from "@/contexts/GeneratedWorkoutContext";
+import { useAnalytics } from "@/hooks/useAnalytics";
 import { ArrowBigLeft } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import WorkoutCustomization from "./components/WorkoutCustomization";
 import { PerWorkoutOptions } from "./components/types";
-import { useAnalytics } from "@/hooks/useAnalytics";
 
 // 15 workout prompt examples
 const WORKOUT_PROMPTS = [
@@ -72,7 +72,7 @@ export default function GenerateWorkoutPage() {
           if (value.length > 0) {
             stringOptions[key] = value.join(", ");
           }
-        } else if (typeof value === 'object') {
+        } else if (typeof value === "object") {
           // ✅ FIX: Proper JSON serialization for complex objects
           stringOptions[key] = JSON.stringify(value);
         } else {
@@ -160,9 +160,6 @@ export default function GenerateWorkoutPage() {
         [option]: undefined,
       });
     }
-
-    // Track preference changes
-    handlePreferenceChange(option, value);
   };
 
   // Function to use an example prompt
@@ -182,15 +179,6 @@ export default function GenerateWorkoutPage() {
   const handleGenerationError = (error: string) => {
     analytics.track("Workout Generation Failed", {
       error,
-      tracked_at: new Date().toISOString(),
-    });
-  };
-
-  // Track preference changes
-  const handlePreferenceChange = (preferenceType: string, value: unknown) => {
-    analytics.track("Workout Preference Changed", {
-      preferenceType,
-      value,
       tracked_at: new Date().toISOString(),
     });
   };
