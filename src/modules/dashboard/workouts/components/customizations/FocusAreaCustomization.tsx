@@ -377,7 +377,7 @@ export default function FocusAreaCustomization({
   };
 
   // Handle secondary click logic - for Phase 3 UI
-  const handleSecondaryClick = (secondaryValue: string, _hasTertiary: boolean) => {
+  const handleSecondaryClick = (secondaryValue: string) => {
     // Always toggle selection - handleAreaToggle already handles expansion logic perfectly
     handleAreaToggle(secondaryValue, 'secondary');
   };
@@ -453,7 +453,7 @@ export default function FocusAreaCustomization({
                           className={`btn btn-sm justify-start h-auto min-h-[2.25rem] py-2 px-3 ${
                             isSecondarySelected ? "btn-secondary" : "btn-outline"
                           } ${disabled ? "btn-disabled" : ""}`}
-                          onClick={() => handleSecondaryClick(secondary.value, secondary.hasTertiary || false)}
+                          onClick={() => handleSecondaryClick(secondary.value)}
                           disabled={disabled}
                           title={secondary.hasTertiary ? "Click to select or expand for specific areas" : ""}
                         >
