@@ -1,289 +1,399 @@
 # Workout Customization Components
 
-This directory contains a modular, extensible system for workout customization options that follows DRY principles with an accordion-based UI. All customizations use the `customization_` prefix and are converted to string format for backend submission.
+This directory contains a modular, extensible system for workout customization options that follows DRY principles with an accordion-based UI. The architecture supports multiple customization patterns including simple selections, array selections, single ratings, and **category-rating combinations**.
 
-## Architecture
+## Architecture Overview
 
 ### Directory Structure
 ```
 components/
-├── WorkoutCustomization.tsx          # Main accordion component
-├── types.ts                          # Shared interfaces and types
+├── WorkoutCustomization.tsx          # Main accordion component with rich badge display
+├── types.ts                          # Shared interfaces including CategoryRatingData
 ├── customizations/
 │   ├── index.ts                      # Configuration and exports
-│   ├── WorkoutDurationCustomization.tsx  # Duration picker component
-│   ├── FocusAreaCustomization.tsx    # Focus areas checkbox component
-│   ├── WorkoutFocusCustomization.tsx # Workout focus button component
-│   ├── AvailableEquipmentCustomization.tsx # Equipment checkbox component
-│   ├── SleepQualityCustomization.tsx # Sleep quality rating component
-│   ├── EnergyLevelCustomization.tsx  # Energy level rating component
-│   ├── StressLevelCustomization.tsx  # Stress level rating component
-│   ├── SorenessCustomization.tsx     # Current soreness checkbox component
-│   └── ComingSoonCustomization.tsx   # Placeholder for future options
-└── README.md                         # This file
+│   ├── WorkoutDurationCustomization.tsx      # Duration picker (simple selection)
+│   ├── FocusAreaCustomization.tsx            # Multi-select checkboxes (array pattern)
+│   ├── WorkoutFocusCustomization.tsx         # Single-select buttons (simple pattern)
+│   ├── AvailableEquipmentCustomization.tsx   # Multi-select checkboxes (array pattern)
+│   ├── SleepQualityCustomization.tsx         # Single rating scale (domain-specific)
+│   ├── EnergyLevelCustomization.tsx          # Single rating scale (domain-specific)
+│   ├── StressLevelCustomization.tsx          # Category-rating pattern (CategoryRatingData)
+│   ├── SorenessCustomization.tsx             # Category-rating pattern (CategoryRatingData)
+│   ├── IncludeExercisesCustomization.tsx     # Text input (simple pattern)
+│   ├── ExcludeExercisesCustomization.tsx     # Text input (simple pattern)
+│   └── ComingSoonCustomization.tsx           # Placeholder component
+└── README.md                                 # This file
 ```
 
 ### Key Components
 
-1. **WorkoutCustomization.tsx** - Main accordion container that dynamically renders all customization options
-2. **types.ts** - Defines shared interfaces including `PerWorkoutOptions` and `CustomizationComponentProps`
+1. **WorkoutCustomization.tsx** - Main accordion container with intelligent badge display
+2. **types.ts** - Defines shared interfaces including `PerWorkoutOptions`, `CustomizationComponentProps`, and `CategoryRatingData`
 3. **customizations/index.ts** - Central configuration file that defines all available customizations
 
-## Customization IDs and Backend Format
+## Component Patterns
 
-All customization options use the `customization_` prefix for consistent identification:
+This system supports four distinct architectural patterns for different types of customizations:
 
-### Customization Keys
-- `customization_duration` - Workout duration in minutes
-- `customization_areas` - Focus areas for workout targeting
-- `customization_focus` - Main workout goal/type
-- `customization_equipment` - Available equipment
-- `customization_sleep` - Sleep quality rating (1-5)
-- `customization_energy` - Energy level rating (1-5)
-- `customization_stress` - Stress level rating (1-5)
-- `customization_soreness` - Current sore body parts
-
-### Backend String Format
-When submitted to the backend, all values are converted to strings:
-
+### 1. Simple Selection Pattern
+For single-value selections (strings, numbers):
 ```typescript
-// Example backend payload
+CustomizationComponentProps<string | number | undefined>
+```
+**Examples**: `WorkoutFocusCustomization`, `WorkoutDurationCustomization`
+
+### 2. Array Selection Pattern  
+For multi-value selections:
+```typescript
+CustomizationComponentProps<string[] | undefined>
+```
+**Examples**: `FocusAreaCustomization`, `AvailableEquipmentCustomization`
+
+### 3. Domain-Specific Rating Pattern
+For single rating scales with domain-appropriate labels:
+```typescript
+CustomizationComponentProps<number | undefined>
+```
+**Examples**: `SleepQualityCustomization` (Very Poor → Excellent), `EnergyLevelCustomization` (Very Low → Very High)
+
+### 4. 🆕 Category-Rating Pattern
+For selecting categories and rating each one individually:
+```typescript
+CustomizationComponentProps<CategoryRatingData | undefined>
+```
+**Examples**: `SorenessCustomization`, `StressLevelCustomization`
+
+## CategoryRatingData Pattern (Advanced)
+
+### Overview
+The `CategoryRatingData` pattern is designed for customizations where users:
+1. **Select categories** from a predefined list (e.g., body parts, stress types)
+2. **Rate each selected category** on a 1-5 scale
+3. **Receive contextual feedback** based on category and rating
+
+### Interface Definition
+```typescript
+export interface CategoryRatingData {
+  [categoryKey: string]: {
+    selected: boolean;        // Whether this category is active
+    rating?: number;          // 1-5 scale rating (optional until rated)
+    label: string;            // Human-readable category name
+    description?: string;     // Category description for context
+  }
+}
+```
+
+### Data Flow Example
+```typescript
+// User selects "Lower Back" and rates it 3/5
 {
-  "customization_duration": "45",
-  "customization_areas": "Upper Body, Core",
-  "customization_focus": "Strength Training",
-  "customization_equipment": "Dumbbells, Bench, Pull-up Bar",
-  "customization_sleep": "4",
-  "customization_energy": "3",
-  "customization_stress": "2",
-  "customization_soreness": "Lower Back, Shoulders"
+  "lower_back": {
+    selected: true,
+    rating: 3,
+    label: "Lower Back", 
+    description: undefined
+  }
 }
+
+// Parent displays: "Lower Back (Moderate)"
 ```
 
-### Array to String Conversion
-- **Single values**: Converted directly to strings
-- **Arrays**: Joined with `", "` (comma + space)
-- **Numbers**: Converted to string representation
-- **Empty arrays**: Omitted from submission
+### Implementation Requirements
+Components using this pattern must:
 
-## User Interface Design
-
-### Accordion Pattern
-- **Collapsed State**: Shows option name with current selection in a badge
-- **Expanded State**: Reveals the customization controls (dropdown, checkboxes, ratings, etc.)
-- **Current Selection Display**: Smart formatting shows human-readable selections
-- **Mobile Optimized**: Accordion pattern works excellently on mobile devices
-
-### Selection Display Examples
-- **Workout Duration**: "45 min", "1 hour", "1h 30m"
-- **Focus Areas**: "Upper Body" (single), "3 areas" (multiple)
-- **Workout Focus**: "Strength Training", "Fat Loss", "HIIT"
-- **Available Equipment**: "Dumbbells" (single), "5 items" (multiple)
-- **Current Soreness**: "Lower Back" (single), "3 areas" (multiple)
-- **Sleep Quality**: "Good (4/5)", "Excellent (5/5)"
-- **Energy Level**: "High (4/5)", "Moderate (3/5)"
-- **Stress Level**: "Low (2/5)", "High (4/5)"
-- **Coming Soon**: "Coming Soon" badge for placeholder options
-
-### Rating Components Design
-- **Enhanced Visibility**: Bold, larger text with high-contrast colors
-- **Color Coding**: Each rating type uses different DaisyUI theme colors
-  - Sleep Quality: Primary (blue)
-  - Energy Level: Secondary (purple/pink)
-  - Stress Level: Accent (orange/yellow)
-- **Interactive Feedback**: Clear visual states for selected/unselected ratings
-- **Accessibility**: Proper contrast ratios and hover tooltips
-
-## Adding New Customization Options
-
-To add a new customization option, follow these simple steps:
-
-### 1. Update the Types
-Add your new option to the `PerWorkoutOptions` interface in `types.ts`:
-
+1. **Import the interface**:
 ```typescript
-export interface PerWorkoutOptions {
-  customization_duration?: number;
-  customization_areas?: string[];
-  customization_focus?: string;
-  customization_equipment?: string[];
-  customization_soreness?: string[];
-  customization_sleep?: number;
-  customization_energy?: number;
-  customization_stress?: number;
-  // Add your new option here with customization_ prefix
-  customization_new_option?: string;
-}
+import { CustomizationComponentProps, CategoryRatingData } from "../types";
 ```
 
-### 2. Create the Component
-Create a new component in `customizations/` that implements `CustomizationComponentProps`:
-
+2. **Use correct type signature**:
 ```typescript
-// customizations/NewOptionCustomization.tsx
-import { CustomizationComponentProps } from "../types";
-
-export default function NewOptionCustomization({
+export default function YourCategoryRatingCustomization({
   value,
   onChange,
   disabled = false,
   error,
-}: CustomizationComponentProps<string | undefined>) {
-  const options = [
-    { label: "Option 1", value: "option_1" },
-    { label: "Option 2", value: "option_2" },
-    { label: "Option 3", value: "option_3" },
-  ];
+}: CustomizationComponentProps<CategoryRatingData | undefined>)
+```
 
-  return (
-    <div className="space-y-2">
-      {options.map((option) => (
-        <button
-          key={option.value}
-          type="button"
-          className={`btn btn-sm ${value === option.value ? 'btn-primary' : 'btn-outline'}`}
-          onClick={() => onChange(option.value)}
-          disabled={disabled}
-        >
-          {option.label}
-        </button>
-      ))}
-      {error && <p className="validator-hint">{error}</p>}
-    </div>
-  );
+3. **Handle data conversion**:
+```typescript
+const categoryData = value || {};
+const selectedCategories = Object.keys(categoryData).filter(key => categoryData[key].selected);
+```
+
+4. **Implement category toggle**:
+```typescript
+const handleCategoryToggle = (categoryValue: string) => {
+  const category = CATEGORIES.find(c => c.value === categoryValue);
+  const isSelected = categoryData[categoryValue]?.selected || false;
+
+  if (isSelected) {
+    // Remove category
+    const newCategoryData = { ...categoryData };
+    delete newCategoryData[categoryValue];
+    onChange(Object.keys(newCategoryData).length > 0 ? newCategoryData : undefined);
+  } else {
+    // Add category
+    const newCategoryData = {
+      ...categoryData,
+      [categoryValue]: {
+        selected: true,
+        label: category?.label || categoryValue,
+        description: category?.description
+      }
+    };
+    onChange(newCategoryData);
+  }
+};
+```
+
+5. **Implement rating updates**:
+```typescript
+const handleRatingChange = (categoryKey: string, rating: number) => {
+  const newCategoryData = {
+    ...categoryData,
+    [categoryKey]: {
+      ...categoryData[categoryKey],
+      rating: rating
+    }
+  };
+  onChange(newCategoryData);
+};
+```
+
+### Standardized Rating Scale
+All category-rating components use the unified 5-point scale:
+
+1. **Mild** - Minimal impact, barely noticeable
+2. **Low-Moderate** - Noticeable but manageable  
+3. **Moderate** - Clear impact affecting some activities
+4. **High** - Significant impact limiting performance
+5. **Severe** - Intense impact severely restricting function
+
+### UI Pattern Requirements
+Category-rating components should follow this structure:
+
+1. **Category Selection Phase**: Grid of pill buttons for category selection
+2. **Rating Phase**: 1-5 scale radio buttons for each selected category  
+3. **Feedback Phase**: Rich context cards showing rating descriptions
+4. **Summary Display**: Badge list showing "Category (Rating Level)"
+
+### Parent Integration
+The parent component automatically handles `CategoryRatingData` with rich badge displays:
+
+```typescript
+// Parent receives structured data and displays intelligently
+case "customization_soreness": 
+case "customization_stress": {
+  const categoryData = value as CategoryRatingData;
+  if (!categoryData) return null;
+  const selectedEntries = Object.entries(categoryData).filter(([_, info]) => info.selected);
+  if (selectedEntries.length === 0) return null;
+  if (selectedEntries.length === 1) {
+    const [_, info] = selectedEntries[0];
+    return `${info.label}${info.rating ? ` (${getRatingLabel(info.rating)})` : ''}`;
+  }
+  return `${selectedEntries.length} ${customizationType === 'soreness' ? 'areas' : 'categories'}`;
 }
 ```
 
-### 3. Update the Configuration
-Add your new customization to the `CUSTOMIZATION_CONFIG` array in `customizations/index.ts`:
+## Data Types and Backend Format
+
+### PerWorkoutOptions Interface
+```typescript
+export interface PerWorkoutOptions {
+  // Simple selections
+  customization_duration?: number;
+  customization_focus?: string;
+  customization_include?: string;
+  customization_exclude?: string;
+  
+  // Array selections  
+  customization_equipment?: string[];
+  customization_areas?: string[];
+  
+  // Domain-specific ratings
+  customization_energy?: number;
+  customization_sleep?: number;
+  
+  // Category-rating patterns
+  customization_soreness?: CategoryRatingData;
+  customization_stress?: CategoryRatingData;
+}
+```
+
+### Backend Conversion
+When submitted to the backend, values are converted based on type:
 
 ```typescript
-import { Settings } from "lucide-react";
-import NewOptionCustomization from "./NewOptionCustomization";
+// Simple values: direct conversion
+"customization_duration": "45"
+"customization_focus": "strength_training"
 
-export const CUSTOMIZATION_CONFIG: CustomizationConfig[] = [
-  // ... existing configurations
-  {
-    key: "customization_new_option",
-    component: NewOptionCustomization,
-    label: "New Option",
-    icon: Settings,
+// Arrays: comma-separated strings  
+"customization_equipment": "dumbbells, bench, pull_up_bar"
+"customization_areas": "upper_body, core"
+
+// Ratings: string numbers
+"customization_energy": "4"
+"customization_sleep": "3" 
+
+// CategoryRatingData: serialized format (TBD based on backend requirements)
+"customization_soreness": "{\"lower_back\":{\"selected\":true,\"rating\":3,\"label\":\"Lower Back\"}}"
+```
+
+## User Interface Design
+
+### Accordion Pattern
+- **Collapsed State**: Shows customization name with current selection in a badge
+- **Expanded State**: Reveals the customization controls  
+- **Intelligent Badge Display**: Context-aware formatting for different data types
+- **Mobile Optimized**: Accordion pattern works excellently on mobile devices
+
+### Badge Display Examples
+- **Duration**: "45 min", "1 hour", "1h 30m"
+- **Simple Selections**: "Strength Training", "Fat Loss"  
+- **Array Selections**: "Upper Body" (single), "3 areas" (multiple)
+- **Ratings**: "Good (4/5)", "High (4/5)"
+- **Category-Rating**: "Lower Back (Moderate)" (single), "3 areas" (multiple)
+
+### Visual Design Principles
+- **Enhanced Visibility**: Bold, larger text with high-contrast colors
+- **Color Coding**: Each component type uses different DaisyUI theme colors
+- **Interactive Feedback**: Clear visual states for all interactions
+- **Accessibility**: Proper ARIA labels, contrast ratios, and keyboard navigation
+- **Responsive Design**: Mobile-first with adaptive layouts
+
+## Adding New Customization Options
+
+### For Simple/Array Customizations
+
+Follow the traditional pattern documented in the previous sections of this README.
+
+### 🆕 For Category-Rating Customizations
+
+1. **Define your categories**:
+```typescript
+const YOUR_CATEGORIES = [
+  { 
+    label: "Category 1", 
+    value: "category_1",
+    description: "Description of what this category represents"
   },
+  // ... more categories
 ];
 ```
 
-### 4. Export the Component
-Add the export to `customizations/index.ts`:
-
+2. **Use the CategoryRatingData pattern**:
 ```typescript
-export { default as NewOptionCustomization } from "./NewOptionCustomization";
-```
+import { CustomizationComponentProps, CategoryRatingData } from "../types";
 
-### 5. Update Selection Display (Optional)
-If you want custom formatting for the selection display, update the `formatCurrentSelection` function in `WorkoutCustomization.tsx`:
-
-```typescript
-case "customization_new_option": {
-  const option = value as string;
-  return option.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+export default function YourCategoryRatingCustomization({
+  value,
+  onChange,
+  disabled = false,
+  error,
+}: CustomizationComponentProps<CategoryRatingData | undefined>) {
+  const categoryData = value || {};
+  // ... implement following the pattern examples above
 }
 ```
 
-### 6. Update Context Description (Optional)
-Add context description in `WorkoutCustomization.tsx`:
-
+3. **Add to PerWorkoutOptions**:
 ```typescript
-{config.key === "customization_new_option" && "Describe what this new option does"}
+export interface PerWorkoutOptions {
+  // ... existing options
+  customization_your_new_option?: CategoryRatingData;
+}
 ```
 
-That's it! Your new customization option will automatically:
-- Appear in the accordion UI
-- Be converted to string format for backend submission  
-- Follow the `customization_` naming convention
-- Include proper validation and state management
+4. **Configure in index.ts**:
+```typescript
+{
+  key: "customization_your_new_option",
+  component: YourCategoryRatingCustomization,
+  label: "Your New Option",
+  icon: YourIcon,
+  category: "Current State & Wellness", // or appropriate category
+}
+```
 
-## Component Requirements
-
-Each customization component must:
-
-1. **Implement `CustomizationComponentProps<T>`** where `T` is the type of the value
-2. **Handle the `value` prop** - current selected value
-3. **Call `onChange(newValue)`** when the user makes a selection
-4. **Respect the `disabled` prop** when the form is submitting
-5. **Display the `error` prop** if validation fails
-6. **Be mobile-friendly** with responsive design
-7. **Work well in accordion context** - compact and focused
-8. **Use proper visual styling** - high contrast, clear typography
-
-## Validation
-
-Validation logic should be handled in the parent `GeneratePage` component. The customization components receive errors as props and display them, but don't perform validation themselves.
+The parent component will automatically handle the rich badge display for `CategoryRatingData` types.
 
 ## Current Customizations
 
-- ✅ **customization_duration** - Dropdown with presets (15 min - 2.5 hours)
-- ✅ **customization_areas** - Multi-select checkboxes (upper body, lower body, core, back, shoulders, chest, arms, mobility/flexibility, cardio, recovery/stretching)
-- ✅ **customization_focus** - Single-select buttons (strength training, muscle building, fat loss, cardio endurance, HIIT, flexibility & mobility, recovery & stretching, powerlifting, bodyweight training, functional fitness)
-- ✅ **customization_equipment** - Multi-select checkboxes (22 equipment options including bodyweight only, dumbbells, kettlebells, barbell, bench, pull-up bar, resistance bands, TRX, yoga mat, medicine ball, jump rope, stability ball, foam roller, cardio machines, and more)
-- ✅ **customization_soreness** - Multi-select checkboxes (16 common body parts using everyday terminology: neck, shoulders, upper back, lower back, chest, arms, wrists, elbows, abs/core, hips, glutes, thighs, hamstrings, knees, calves, ankles)
-- ✅ **customization_sleep** - 5-point rating scale based on Pittsburgh Sleep Quality Index (Very Poor to Excellent)
-- ✅ **customization_energy** - 5-point rating scale based on RPE assessments (Very Low to Very High)
-- ✅ **customization_stress** - 5-point rating scale based on sports psychology assessments (Very Low to Very High)
+### Workout Goals & Structure
+- ✅ **customization_duration** - Duration picker with presets (15 min - 2.5 hours)
+- ✅ **customization_areas** - Multi-select focus areas (10 options)
+- ✅ **customization_focus** - Single-select workout types (10 options)
 
-## Professional Medical/Fitness Standards
+### Physical Focus & Equipment  
+- ✅ **customization_equipment** - Multi-select equipment (22 options)
+- ✅ **customization_include** - Text input for required exercises
+- ✅ **customization_exclude** - Text input for exercises to avoid
 
-### Sleep Quality Scale
-Based on the Pittsburgh Sleep Quality Index and clinical sleep assessments:
-- **1 - Very Poor**: Severely disrupted sleep, frequent awakenings, feeling exhausted
-- **2 - Poor**: Difficulty falling asleep, restless night, waking up tired
-- **3 - Fair**: Some sleep interruptions, moderately rested upon waking
-- **4 - Good**: Mostly uninterrupted sleep, feeling refreshed in the morning
-- **5 - Excellent**: Deep, restorative sleep, waking up fully energized and alert
+### Current State & Wellness
+- ✅ **customization_sleep** - Domain-specific rating: Very Poor → Poor → Fair → Good → Excellent
+- ✅ **customization_energy** - Domain-specific rating: Very Low → Low → Moderate → High → Very High  
+- ✅ **customization_stress** - **CategoryRatingData**: Physical, Mental/Emotional, Environmental, Systemic stress categories
+- ✅ **customization_soreness** - **CategoryRatingData**: 16 body parts with standardized rating scale
 
-### Energy Level Scale
-Based on Rate of Perceived Exertion (RPE) and clinical energy assessments:
-- **1 - Very Low**: Extremely fatigued, struggling to stay awake, need rest
-- **2 - Low**: Tired and sluggish, low motivation, minimal energy reserves
-- **3 - Moderate**: Average energy, can perform daily activities comfortably
-- **4 - High**: Feeling energetic and motivated, ready for challenging activities
-- **5 - Very High**: Peak energy, feeling powerful and ready for intense workouts
+## Rating Scales Reference
 
-### Stress Level Scale
-Based on sports psychology assessments and POMS (Profile of Mood States):
-- **1 - Very Low**: Feeling calm, relaxed, and mentally clear with optimal focus
-- **2 - Low**: Minimal stress, composed mindset, ready for performance
-- **3 - Moderate**: Some tension but manageable, maintaining competitive readiness
-- **4 - High**: Elevated stress affecting focus, feeling overwhelmed or anxious
-- **5 - Very High**: Severe stress impacting performance, need stress management techniques
+### Standardized Category-Rating Scale
+Used by `SorenessCustomization` and `StressLevelCustomization`:
+1. **Mild** - Minimal impact, barely noticeable
+2. **Low-Moderate** - Noticeable but manageable  
+3. **Moderate** - Clear impact affecting some activities
+4. **High** - Significant impact limiting performance
+5. **Severe** - Intense impact severely restricting function
 
-### Available Equipment Options
-Comprehensive list of home gym equipment options:
-- **Bodyweight**: None/Bodyweight Only
-- **Free Weights**: Dumbbells, Adjustable Dumbbells, Kettlebells, Barbell
-- **Resistance Training**: Resistance Bands, Resistance Loops/Mini Bands, TRX/Suspension Trainer, Gymnastic Rings
-- **Cardio Equipment**: Jump Rope, Exercise/Stationary Bike, Treadmill, Rowing Machine, Battle Ropes
-- **Accessories**: Yoga Mat, Medicine Ball, Stability Ball, Foam Roller, Ab Wheel
-- **Furniture**: Bench, Pull-up Bar
-- **Machines**: Cable Machine
+### Domain-Specific Scales
 
-### Current Soreness Body Parts
-Common body parts using everyday terminology:
-- **Upper Body**: Neck, Shoulders, Upper Back, Lower Back, Chest, Arms
-- **Extremities**: Wrists, Elbows
-- **Core**: Abs/Core
-- **Lower Body**: Hips, Glutes, Thighs, Hamstrings, Knees, Calves, Ankles
+**Sleep Quality** (Pittsburgh Sleep Quality Index):
+1. Very Poor → 2. Poor → 3. Fair → 4. Good → 5. Excellent
 
-## Benefits of This Architecture
+**Energy Level** (Rate of Perceived Exertion):  
+1. Very Low → 2. Low → 3. Moderate → 4. High → 5. Very High
 
-1. **DRY Principle** - No code duplication between customizations
-2. **Easy to Extend** - Add new options in 5-6 simple steps
-3. **Consistent UI** - All options follow the same accordion pattern
-4. **Type Safety** - Full TypeScript support with proper typing
-5. **Mobile Optimized** - Accordion design is perfect for mobile
-6. **Maintainable** - Clear separation of concerns
-7. **User-Friendly** - Shows current selections without overwhelming the user
-8. **Scalable** - Can easily add many more options without cluttering the UI
-9. **Professional Standards** - Uses medically/scientifically validated rating scales
-10. **Enhanced Visibility** - Improved contrast and typography for better usability
-11. **Complete Coverage** - All 8 customization options fully implemented
-12. **Backend Ready** - Automatic string conversion with consistent naming 
+## Architecture Benefits
+
+### Before CategoryRatingData Pattern
+❌ **Type Contract Violations**: Components used inconsistent data structures  
+❌ **Data Loss**: Rating information lost in parent communication
+❌ **Badge Display Issues**: Parent could only show generic counts like "2 areas"
+❌ **Maintenance Debt**: Each category-rating component needed custom integration
+
+### After CategoryRatingData Pattern  
+✅ **Type Safety**: Unified interface eliminates contract violations
+✅ **Rich Data Flow**: Parent receives labels, ratings, AND descriptions
+✅ **Intelligent Badges**: Displays "Lower Back (Moderate)" instead of "2 areas" 
+✅ **Extensible Design**: New category-rating components follow established pattern
+✅ **Consistent UX**: Users learn one predictable rating scale across components
+
+## Development Guidelines
+
+### Component Requirements
+Each customization component must:
+
+1. **Implement `CustomizationComponentProps<T>`** with appropriate type
+2. **Handle the `value` prop** and call `onChange(newValue)` appropriately
+3. **Respect the `disabled` prop** and display the `error` prop
+4. **Follow responsive design principles** for mobile compatibility
+5. **Use semantic HTML and ARIA labels** for accessibility
+6. **Follow established visual patterns** for consistency
+
+### Testing Considerations
+- **Type Safety**: Ensure TypeScript compilation passes
+- **Data Flow**: Verify parent receives expected data structure
+- **Badge Display**: Test both single and multiple selection scenarios
+- **Error Handling**: Validate error display and disabled states
+- **Accessibility**: Test keyboard navigation and screen reader compatibility
+
+### Performance Notes
+- CategoryRatingData components convert data structures for internal use but maintain the unified interface for parent communication
+- Badge display logic is optimized for common cases (single selection) with fallbacks for multiple selections
+- Component re-renders are minimized through proper state management patterns
+
+This architecture successfully balances **simplicity for common cases** with **powerful extensibility for complex patterns**, providing a solid foundation for current and future workout customization needs. 

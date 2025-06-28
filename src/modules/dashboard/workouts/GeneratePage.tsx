@@ -1,10 +1,11 @@
 import { useGeneratedWorkouts } from "@/contexts/GeneratedWorkoutContext";
+import { useAnalytics } from "@/hooks/useAnalytics";
 import { ArrowBigLeft } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router";
 import WorkoutCustomization from "./components/WorkoutCustomization";
 import { PerWorkoutOptions } from "./components/types";
-import { useAnalytics } from "@/hooks/useAnalytics";
+import { sanitizeAnalyticsData } from "./components/utils/validation";
 
 // 15 workout prompt examples
 const WORKOUT_PROMPTS = [
@@ -45,6 +46,21 @@ export default function GenerateWorkoutPage() {
   const [activeTab, setActiveTab] = useState<"custom" | "quick">("custom");
   const analytics = useAnalytics();
 
+  // ✅ FIX: Proper debounced analytics handler to prevent infinite loops
+  const debouncedAnalyticsHandler = useMemo(() => {
+    let timeoutId: ReturnType<typeof setTimeout>;
+    return (...args: unknown[]) => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        analytics.track("Workout Preference Changed", {
+          preferenceType: args[0],
+          value: sanitizeAnalyticsData(args[1]),
+          tracked_at: new Date().toISOString(),
+        });
+      }, 1000);
+    };
+  }, [analytics]);
+
   // Track workout generation page views
   useEffect(() => {
     analytics.track("Workout Generation Page Viewed", {
@@ -72,8 +88,11 @@ export default function GenerateWorkoutPage() {
           if (value.length > 0) {
             stringOptions[key] = value.join(", ");
           }
+        } else if (typeof value === "object") {
+          // ✅ FIX: Proper JSON serialization for complex objects
+          stringOptions[key] = JSON.stringify(value);
         } else {
-          // Convert numbers and strings to strings
+          // Convert primitives to strings
           stringOptions[key] = String(value);
         }
       }
@@ -158,8 +177,8 @@ export default function GenerateWorkoutPage() {
       });
     }
 
-    // Track preference changes
-    handlePreferenceChange(option, value);
+    // ✅ Track preference changes with debouncing to prevent infinite loops
+    debouncedAnalyticsHandler(option, value);
   };
 
   // Function to use an example prompt
@@ -179,15 +198,6 @@ export default function GenerateWorkoutPage() {
   const handleGenerationError = (error: string) => {
     analytics.track("Workout Generation Failed", {
       error,
-      tracked_at: new Date().toISOString(),
-    });
-  };
-
-  // Track preference changes
-  const handlePreferenceChange = (preferenceType: string, value: unknown) => {
-    analytics.track("Workout Preference Changed", {
-      preferenceType,
-      value,
       tracked_at: new Date().toISOString(),
     });
   };

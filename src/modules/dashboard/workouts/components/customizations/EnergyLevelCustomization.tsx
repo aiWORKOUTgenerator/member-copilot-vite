@@ -57,31 +57,36 @@ export default function EnergyLevelCustomization({
   return (
     <div>
       <div className="mb-4">
-        <p className="text-sm text-base-content/80 mb-3">
-          Rate your current energy level (1 = Very Low, 5 = Very High)
-        </p>
+        <div role="radiogroup" aria-labelledby="energy-level-label">
+          <p id="energy-level-label" className="text-sm text-base-content/80 mb-3">
+            Rate your current energy level (1 = Very Low, 5 = Very High)
+          </p>
 
-        <div className="rating rating-lg gap-2">
-          {ENERGY_LEVELS.map((level) => {
-            const isSelected = selectedRating === level.value;
+          <div className="rating rating-lg gap-2">
+            {ENERGY_LEVELS.map((level) => {
+              const isSelected = selectedRating === level.value;
 
-            return (
-              <button
-                key={level.value}
-                type="button"
-                className={`btn btn-circle ${
-                  isSelected
-                    ? "btn-secondary text-secondary-content"
-                    : "btn-outline btn-secondary"
-                } ${disabled ? "btn-disabled" : ""} font-bold text-base`}
-                onClick={() => handleRatingChange(level.value)}
-                disabled={disabled}
-                title={`${level.label}: ${level.description}`}
-              >
-                {level.value}
-              </button>
-            );
-          })}
+              return (
+                <button
+                  key={level.value}
+                  type="button"
+                  role="radio"
+                  aria-checked={isSelected}
+                  aria-describedby={error ? "energy-error" : undefined}
+                  className={`btn btn-circle ${
+                    isSelected
+                      ? "btn-secondary text-secondary-content"
+                      : "btn-outline btn-secondary"
+                  } ${disabled ? "btn-disabled" : ""} font-bold text-base`}
+                  onClick={() => handleRatingChange(level.value)}
+                  disabled={disabled}
+                  title={`${level.label}: ${level.description}`}
+                >
+                  {level.value}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
 
@@ -96,7 +101,7 @@ export default function EnergyLevelCustomization({
         </div>
       )}
 
-      {error && <p className="validator-hint mt-2">{error}</p>}
+      {error && <p id="energy-error" className="validator-hint mt-2" role="alert">{error}</p>}
     </div>
   );
 }

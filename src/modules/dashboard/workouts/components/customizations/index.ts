@@ -34,6 +34,14 @@ export { default as SorenessCustomization } from "./SorenessCustomization";
 export { default as IncludeExercisesCustomization } from "./IncludeExercisesCustomization";
 export { default as ExcludeExercisesCustomization } from "./ExcludeExercisesCustomization";
 
+// Export flattener utilities
+export { flattenEquipmentData, type EnhancedEquipmentFlat } from './equipmentFlattener';
+export { flattenDurationData, type EnhancedDurationFlat } from './durationFlattener';
+export { flattenFocusAreaData, type EnhancedFocusAreaFlat } from './focusAreaFlattener';
+export { flattenWorkoutFocusData, type EnhancedWorkoutFocusFlat } from './workoutFocusFlattener';
+export { flattenSorenessData, type EnhancedSorenessFlat } from './sorenessFlattener';
+export { flattenStressLevelData, type EnhancedStressLevelFlat } from './stressLevelFlattener';
+
 // Configuration for all available customizations
 export const CUSTOMIZATION_CONFIG: CustomizationConfig[] = [
   {
