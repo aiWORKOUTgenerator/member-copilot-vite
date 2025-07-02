@@ -1,8 +1,52 @@
-import { useState } from "react";
+import { useState, useMemo, useCallback, memo } from "react";
 import { CustomizationComponentProps, WorkoutFocusConfigurationData } from "../types";
+import { 
+  formatSelectionSummary,
+  generateBadgeClass,
+  getCustomizationButtonClass
+} from "../utils/customizationHelpers";
+import { 
+  ErrorDisplay,
+  ValidationDisplay 
+} from "../utils/customizationComponents";
+import {
+  isWorkoutFormatValue,
+  isWorkoutFocusConfigurationData,
+  safeConcat
+} from "../utils/validation";
+import {
+  DEFAULT_FOCUS_METADATA,
+  createFocusMetadata,
+  IntensityLevel,
+  EquipmentLevel,
+  ExperienceLevel,
+  FocusCategory
+} from "../utils/workoutFocusConstants";
+
+// Define format option type
+type WorkoutFormatOption = {
+  label: string;
+  value: string;
+  description: string;
+  intensity: IntensityLevel;
+  beginner_friendly: boolean;
+  time_efficient: boolean;
+};
+
+// Define focus option type
+type WorkoutFocusOption = {
+  label: string;
+  value: string;
+  category: FocusCategory;
+  intensity: IntensityLevel;
+  equipment: EquipmentLevel;
+  experience: ExperienceLevel;
+  duration_compatibility: number[];
+  description: string;
+};
 
 // Enhanced workout focus options with categorization and metadata
-const ENHANCED_WORKOUT_FOCUS_OPTIONS = [
+const ENHANCED_WORKOUT_FOCUS_OPTIONS: WorkoutFocusOption[] = [
   // Strength & Power Category
   {
     label: "Strength Training",
@@ -122,8 +166,12 @@ const ENHANCED_WORKOUT_FOCUS_OPTIONS = [
   },
 ];
 
-// Workout format options by focus type
-const WORKOUT_FORMATS = {
+// Define workout formats type
+type WorkoutFormats = {
+  [K: string]: WorkoutFormatOption[];
+};
+
+const WORKOUT_FORMATS: WorkoutFormats = {
   strength_training: [
     {
       label: "Straight Sets",
@@ -444,41 +492,11 @@ const WORKOUT_FORMATS = {
   ]
 };
 
-// Smart label generation following WorkoutDurationCustomization patterns
-const generateSmartLabel = (
-  focus: string,
-  focusLabel: string,
-  format?: string,
-  formatLabel?: string
-): string => {
-  if (!format) {
-    return focusLabel;
-  }
-  
-  // Smart abbreviation for common combinations
-  const commonCombinations: Record<string, string> = {
-    'strength_training_straight_sets': 'Strength Training',
-    'muscle_building_supersets': 'Muscle Building (Supersets)',
-    'hiit_tabata': 'HIIT (Tabata)',
-    'fat_loss_metabolic_circuits': 'Fat Loss Circuits',
-    'powerlifting_competition_style': 'Competition Powerlifting',
-    'cardio_endurance_steady_state': 'Steady State Cardio',
-  };
-  
-  const combinationKey = `${focus}_${format}`;
-  if (commonCombinations[combinationKey]) {
-    return commonCombinations[combinationKey];
-  }
-  
-  // Default format: "Focus (Format)"
-  return `${focusLabel} (${formatLabel})`;
-};
-
-// Smart description generation
+// Smart description generation with proper types
 const generateSmartDescription = (
-  focusData: typeof ENHANCED_WORKOUT_FOCUS_OPTIONS[0],
+  focusData: WorkoutFocusOption,
   format?: string,
-  formatData?: typeof WORKOUT_FORMATS[keyof typeof WORKOUT_FORMATS][0]
+  formatData?: WorkoutFormatOption
 ): string => {
   if (!format || !formatData) {
     return focusData.description;
@@ -492,7 +510,7 @@ const determineConfiguration = (hasFormat: boolean): WorkoutFocusConfigurationDa
   return hasFormat ? 'focus-with-format' : 'focus-only';
 };
 
-// Smart validation system
+// Smart validation system with proper types
 const validateFocusConfiguration = (
   focus: string,
   format?: string,
@@ -506,8 +524,12 @@ const validateFocusConfiguration = (
   
   const focusData = ENHANCED_WORKOUT_FOCUS_OPTIONS.find(f => f.value === focus);
   
+  if (!focusData) {
+    return validation;
+  }
+  
   // Duration compatibility validation
-  if (selectedDuration && focusData?.duration_compatibility) {
+  if (selectedDuration && focusData.duration_compatibility) {
     if (!focusData.duration_compatibility.includes(selectedDuration)) {
       validation.warnings!.push(
         `${focusData.label} typically works better with ${
@@ -518,108 +540,141 @@ const validateFocusConfiguration = (
   }
   
   // Format-specific recommendations
-  if (format && focusData) {
-    const formatData = (WORKOUT_FORMATS as Record<string, Array<{
-      label: string;
-      value: string;
-      description: string;
-      intensity: "low" | "moderate" | "high" | "variable";
-      beginner_friendly: boolean;
-      time_efficient: boolean;
-    }>>)[focus]?.find((f) => f.value === format);
+  if (format) {
+    const formatData = WORKOUT_FORMATS[focus]?.find((f) => f.value === format);
     
-    if (formatData?.beginner_friendly === false) {
-      validation.recommendations!.push(
-        "This format is advanced - ensure proper form and experience"
-      );
-    }
-    
-    if (selectedDuration && selectedDuration < 30 && !formatData?.time_efficient) {
-      validation.warnings!.push(
-        "This format may need more time than your selected duration"
-      );
-    }
-    
-    if (formatData?.intensity === 'high' && focusData.intensity === 'low') {
-      validation.recommendations!.push(
-        "High-intensity format with low-intensity focus - consider your energy levels"
-      );
+    if (formatData) {
+      if (!formatData.beginner_friendly) {
+        validation.recommendations!.push(
+          "This format is advanced - ensure proper form and experience"
+        );
+      }
+      
+      if (selectedDuration && selectedDuration < 30 && !formatData.time_efficient) {
+        validation.warnings!.push(
+          "This format may need more time than your selected duration"
+        );
+      }
+      
+      if (formatData.intensity === 'high' && focusData.intensity === 'low') {
+        validation.recommendations!.push(
+          "High-intensity format with low-intensity focus - consider your energy levels"
+        );
+      }
     }
   }
   
   return validation;
 };
 
-export default function WorkoutFocusCustomization({
+// ✅ PERFORMANCE OPTIMIZATION: Memoize WorkoutFocusCustomization to prevent unnecessary re-renders
+export default memo(function WorkoutFocusCustomization({
   value,
   onChange,
   disabled = false,
   error,
 }: CustomizationComponentProps<WorkoutFocusConfigurationData | undefined>) {
-  const configData = value || { selected: false, focus: "", focusLabel: "", label: "", value: "", description: "", configuration: 'focus-only' as const };
+  const configData = value || { 
+    selected: false, 
+    focus: "", 
+    focusLabel: "", 
+    label: "", 
+    value: "", 
+    description: "", 
+    configuration: 'focus-only' as const,
+    metadata: DEFAULT_FOCUS_METADATA,
+    validation: {
+      isValid: true,
+      warnings: [],
+      recommendations: []
+    }
+  };
   
   // State management following WorkoutDurationCustomization patterns
-  const [selectedFocus, setSelectedFocus] = useState<string | null>(
-    configData.selected ? configData.focus : null
+  const [selectedFocus, setSelectedFocus] = useState<string>(
+    configData.selected ? configData.focus : ""
   );
-  const [selectedFormat, setSelectedFormat] = useState<string | null>(
-    configData.selected && configData.format ? configData.format : null
+  const [selectedFormat, setSelectedFormat] = useState<string>(
+    configData.selected && configData.format ? configData.format : ""
   );
   const [showFormats, setShowFormats] = useState(false);
   
   // Track current validation state
-  const currentValidation = selectedFocus ? 
-    validateFocusConfiguration(selectedFocus, selectedFormat || undefined) : null;
+  const currentValidation = selectedFocus && selectedFocus !== "" ? 
+    validateFocusConfiguration(selectedFocus, selectedFormat || undefined) : undefined;
 
   // Build configuration data following WorkoutDurationCustomization patterns
-  const buildFocusConfiguration = (
+  const buildFocusConfiguration = useCallback((
     focus: string,
     focusLabel: string,
-    format?: string,
-    formatLabel?: string
+    format?: string | undefined,
+    formatLabel?: string | undefined
   ): WorkoutFocusConfigurationData => {
     const focusData = ENHANCED_WORKOUT_FOCUS_OPTIONS.find(f => f.value === focus);
-    const formatData = format ? (WORKOUT_FORMATS as Record<string, Array<{
-      label: string;
-      value: string;
-      description: string;
-      intensity: "low" | "moderate" | "high" | "variable";
-      beginner_friendly: boolean;
-      time_efficient: boolean;
-    }>>)[focus]?.find((f) => f.value === format) : undefined;
+    if (!focusData) {
+      // If we can't find the focus data, return a basic configuration
+      const value = format && format.length > 0 ? `${focus}_${format}` : focus;
+      return {
+        selected: true,
+        focus,
+        focusLabel,
+        format: format || undefined,
+        formatLabel: formatLabel || undefined,
+        label: focusLabel,
+        value: value,
+        description: focusLabel,
+        configuration: determineConfiguration(!!format),
+        metadata: DEFAULT_FOCUS_METADATA,
+        validation: validateFocusConfiguration(focus, format)
+      };
+    }
+
+    const formatData = format ? WORKOUT_FORMATS[focus]?.find((f) => f.value === format) : undefined;
     
-    const label = generateSmartLabel(focus, focusLabel, format, formatLabel);
-    const description = generateSmartDescription(focusData!, format, formatData);
+    // Ensure label is always a string by providing a fallback
+    const selectionLabel = formatSelectionSummary(
+      [
+        { label: focusData.label, value: focus },
+        ...(format && formatData ? [{ label: formatData.label, value: format }] : [])
+      ],
+      { maxItems: 2, showCount: false }
+    );
+    const label = selectionLabel || focusData.label; // Use focus label as fallback
+    
+    const description = generateSmartDescription(focusData, format, formatData);
     const configuration = determineConfiguration(!!format);
     const validation = validateFocusConfiguration(focus, format);
+    
+    // Ensure value is always a string by using string concatenation with proper type checks
+    const value = format && format.length > 0 ? `${focus}_${format}` : focus;
     
     return {
       selected: true,
       focus,
       focusLabel,
-      format,
-      formatLabel,
-      label,
-      value: format ? `${focus}_${format}` : focus,
+      format: format || undefined,
+      formatLabel: formatLabel || undefined,
+      label, // Now guaranteed to be a string
+      value,
       description,
       configuration,
-      metadata: focusData ? {
-        intensity: focusData.intensity,
-        equipment: focusData.equipment,
-        experience: focusData.experience,
-        duration_compatibility: focusData.duration_compatibility,
-        category: focusData.category as 'strength_power' | 'muscle_building' | 'conditioning_cardio' | 'functional_recovery'
-      } : undefined,
+      metadata: createFocusMetadata(
+        focusData.intensity,
+        focusData.equipment,
+        focusData.experience,
+        focusData.duration_compatibility,
+        focusData.category
+      ),
       validation
     };
-  };
+  }, []);
 
-  // Update parent data
-  const updateParentData = (
-    focus: string | null = selectedFocus,
-    format: string | null = selectedFormat
+  // Update parent data with type safety
+  const updateParentData = useCallback((
+    focus: string = selectedFocus,
+    format: string = selectedFormat
   ) => {
-    if (!focus) {
+    if (!focus || focus === "") {
       onChange(undefined);
       return;
     }
@@ -627,67 +682,117 @@ export default function WorkoutFocusCustomization({
     const focusOption = ENHANCED_WORKOUT_FOCUS_OPTIONS.find(opt => opt.value === focus);
     if (!focusOption) return;
     
-    const formatOption = format ? (WORKOUT_FORMATS as Record<string, Array<{
-      label: string;
-      value: string;
-      description: string;
-      intensity: "low" | "moderate" | "high" | "variable";
-      beginner_friendly: boolean;
-      time_efficient: boolean;
-    }>>)[focus]?.find((f) => f.value === format) : undefined;
+    const formatOption = format && format !== "" ? 
+      WORKOUT_FORMATS[focus]?.find((f) => f.value === format) : 
+      undefined;
     
     const configuration = buildFocusConfiguration(
       focus,
       focusOption.label,
-      format || undefined,
+      format && format !== "" ? format : undefined,
       formatOption?.label
     );
     
-    onChange(configuration);
-  };
+    // Validate configuration before passing to parent
+    if (isWorkoutFocusConfigurationData(configuration)) {
+      onChange(configuration);
+    }
+  }, [selectedFocus, selectedFormat, onChange, buildFocusConfiguration]);
 
   // Handle focus selection
-  const handleFocusSelection = (focusValue: string) => {
+  const handleFocusSelection = useCallback((focusValue: string) => {
     if (selectedFocus === focusValue) {
       // Deselect
-      setSelectedFocus(null);
-      setSelectedFormat(null);
+      setSelectedFocus("");
+      setSelectedFormat("");
       setShowFormats(false);
-      updateParentData(null, null);
+      onChange(undefined);
     } else {
       // Select new focus
       setSelectedFocus(focusValue);
-      setSelectedFormat(null);
+      setSelectedFormat("");
       setShowFormats(true); // Automatically show formats when focus is selected
-      updateParentData(focusValue, null);
+      
+      // Since we know focusValue is a string, we can safely call buildFocusConfiguration
+      const focusOption = ENHANCED_WORKOUT_FOCUS_OPTIONS.find(opt => opt.value === focusValue);
+      if (focusOption) {
+        const configuration = buildFocusConfiguration(
+          focusValue,
+          focusOption.label,
+          undefined,
+          undefined
+        );
+        if (isWorkoutFocusConfigurationData(configuration)) {
+          onChange(configuration);
+        }
+      }
     }
-  };
+  }, [selectedFocus, onChange, buildFocusConfiguration]);
 
-  // Handle format selection
-  const handleFormatSelection = (formatValue: string) => {
+  // Handle format selection with type safety
+  const handleFormatSelection = useCallback((formatValue: string) => {
+    if (!selectedFocus || selectedFocus === "") return;
+    
+    // Validate format value
+    if (!isWorkoutFormatValue(formatValue)) return;
+    
     if (selectedFormat === formatValue) {
       // Deselect format
-      setSelectedFormat(null);
-      updateParentData(selectedFocus, null);
+      setSelectedFormat("");
+      const focusOption = ENHANCED_WORKOUT_FOCUS_OPTIONS.find(opt => opt.value === selectedFocus);
+      if (focusOption) {
+        const configuration = buildFocusConfiguration(
+          selectedFocus,
+          focusOption.label,
+          undefined,
+          undefined
+        );
+        if (isWorkoutFocusConfigurationData(configuration)) {
+          onChange(configuration);
+        }
+      }
     } else {
       // Select new format
       setSelectedFormat(formatValue);
-      updateParentData(selectedFocus, formatValue);
+      const focusOption = ENHANCED_WORKOUT_FOCUS_OPTIONS.find(opt => opt.value === selectedFocus);
+      const formatOption = WORKOUT_FORMATS[selectedFocus]?.find((f) => f.value === formatValue);
+      
+      if (focusOption && formatOption) {
+        const configuration = buildFocusConfiguration(
+          selectedFocus,
+          focusOption.label,
+          formatValue,
+          formatOption.label
+        );
+        if (isWorkoutFocusConfigurationData(configuration)) {
+          onChange(configuration);
+        }
+      }
     }
-  };
+  }, [selectedFocus, selectedFormat, onChange, buildFocusConfiguration]);
 
   // Hide format options
-  const hideFormatOptions = () => {
+  const hideFormatOptions = useCallback(() => {
     setShowFormats(false);
-  };
+  }, []);
 
-  // Categorize focus options
-  const categorizedOptions = {
-    strength_power: ENHANCED_WORKOUT_FOCUS_OPTIONS.filter(opt => opt.category === 'strength_power'),
-    muscle_building: ENHANCED_WORKOUT_FOCUS_OPTIONS.filter(opt => opt.category === 'muscle_building'),
-    conditioning_cardio: ENHANCED_WORKOUT_FOCUS_OPTIONS.filter(opt => opt.category === 'conditioning_cardio'),
-    functional_recovery: ENHANCED_WORKOUT_FOCUS_OPTIONS.filter(opt => opt.category === 'functional_recovery'),
-  };
+  // Memoize categorized options for performance
+  const categorizedOptions = useMemo(() => {
+    return {
+      strength_power: ENHANCED_WORKOUT_FOCUS_OPTIONS.filter(
+        opt => opt.category === "strength_power"
+      ),
+      muscle_building: ENHANCED_WORKOUT_FOCUS_OPTIONS.filter(
+        opt => opt.category === "muscle_building"
+      ),
+      conditioning_cardio: ENHANCED_WORKOUT_FOCUS_OPTIONS.filter(
+        opt => opt.category === "conditioning_cardio"
+      ),
+      functional_recovery: ENHANCED_WORKOUT_FOCUS_OPTIONS.filter(
+        opt => opt.category === "functional_recovery"
+      ),
+    };
+  }, []);
 
   // Render focus selection (Tier 1)
   const renderFocusSelection = () => (
@@ -704,9 +809,7 @@ export default function WorkoutFocusCustomization({
               <button
                 key={option.value}
                 type="button"
-                className={`btn btn-sm justify-start ${
-                  isSelected ? "btn-primary" : "btn-outline"
-                }`}
+                className={getCustomizationButtonClass(isSelected, disabled)}
                 onClick={() => handleFocusSelection(option.value)}
                 disabled={disabled}
                 title={option.description}
@@ -730,9 +833,7 @@ export default function WorkoutFocusCustomization({
               <button
                 key={option.value}
                 type="button"
-                className={`btn btn-sm justify-start ${
-                  isSelected ? "btn-primary" : "btn-outline"
-                }`}
+                className={getCustomizationButtonClass(isSelected, disabled)}
                 onClick={() => handleFocusSelection(option.value)}
                 disabled={disabled}
                 title={option.description}
@@ -756,9 +857,7 @@ export default function WorkoutFocusCustomization({
               <button
                 key={option.value}
                 type="button"
-                className={`btn btn-sm justify-start ${
-                  isSelected ? "btn-primary" : "btn-outline"
-                }`}
+                className={getCustomizationButtonClass(isSelected, disabled)}
                 onClick={() => handleFocusSelection(option.value)}
                 disabled={disabled}
                 title={option.description}
@@ -782,9 +881,7 @@ export default function WorkoutFocusCustomization({
               <button
                 key={option.value}
                 type="button"
-                className={`btn btn-sm justify-start ${
-                  isSelected ? "btn-primary" : "btn-outline"
-                }`}
+                className={getCustomizationButtonClass(isSelected, disabled)}
                 onClick={() => handleFocusSelection(option.value)}
                 disabled={disabled}
                 title={option.description}
@@ -800,16 +897,9 @@ export default function WorkoutFocusCustomization({
 
   // Render format selection (Tier 2)
   const renderFormatSelection = () => {
-    if (!selectedFocus || !showFormats) return null;
+    if (!selectedFocus || selectedFocus === "" || !showFormats) return null;
     
-    const availableFormats = (WORKOUT_FORMATS as Record<string, Array<{
-      label: string;
-      value: string;
-      description: string;
-      intensity: "low" | "moderate" | "high" | "variable";
-      beginner_friendly: boolean;
-      time_efficient: boolean;
-    }>>)[selectedFocus] || [];
+    const availableFormats = WORKOUT_FORMATS[selectedFocus] || [];
     
     return (
       <div className="mt-6 pt-4 border-t border-base-300">
@@ -826,21 +916,22 @@ export default function WorkoutFocusCustomization({
           </button>
         </div>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          {availableFormats.map((format) => (
-            <button
-              key={format.value}
-              type="button"
-              className={`btn btn-sm justify-start ${
-                selectedFormat === format.value ? "btn-primary" : "btn-outline"
-              }`}
-              onClick={() => handleFormatSelection(format.value)}
-              disabled={disabled}
-              title={format.description}
-            >
-              {format.label}
-            </button>
-          ))}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+          {availableFormats.map((format) => {
+            const isSelected = selectedFormat === format.value;
+            return (
+              <button
+                key={format.value}
+                type="button"
+                className={getCustomizationButtonClass(isSelected, disabled)}
+                onClick={() => handleFormatSelection(format.value)}
+                disabled={disabled}
+                title={format.description}
+              >
+                {format.label}
+              </button>
+            );
+          })}
         </div>
         
         {/* Format Characteristics Display */}
@@ -850,20 +941,21 @@ export default function WorkoutFocusCustomization({
             <div className="mt-3 p-3 bg-base-200 rounded-lg">
               <div className="flex flex-wrap gap-2">
                 {formatData.beginner_friendly && (
-                  <span className="badge badge-success badge-sm">
+                  <span className={generateBadgeClass({ level: 'success', size: 'sm' })}>
                     Beginner Friendly
                   </span>
                 )}
                 {formatData.time_efficient && (
-                  <span className="badge badge-info badge-sm">
+                  <span className={generateBadgeClass({ level: 'primary', size: 'sm' })}>
                     Time Efficient
                   </span>
                 )}
-                <span className={`badge badge-sm ${
-                  formatData.intensity === 'high' ? 'badge-error' :
-                  formatData.intensity === 'moderate' ? 'badge-warning' : 
-                  formatData.intensity === 'variable' ? 'badge-accent' : 'badge-success'
-                }`}>
+                <span className={generateBadgeClass({ 
+                  level: formatData.intensity === 'high' ? 'error' :
+                         formatData.intensity === 'moderate' ? 'warning' : 
+                         formatData.intensity === 'variable' ? 'accent' : 'success',
+                  size: 'sm'
+                })}>
                   {formatData.intensity} Intensity
                 </span>
               </div>
@@ -874,38 +966,21 @@ export default function WorkoutFocusCustomization({
     );
   };
 
+  return (
+    <div>
+      {/* Error display */}
+      <ErrorDisplay error={error} />
 
+      {/* Focus selection */}
+      {renderFocusSelection()}
 
-      return (
-      <div>
-        {/* Tier 1: Focus Selection */}
-        {renderFocusSelection()}
-        
-        {/* Tier 2: Format Selection */}
-        {renderFormatSelection()}
-        
-        {/* Error Display */}
-        {error && <p className="validator-hint mt-2">{error}</p>}
-        
-        {/* Validation Display */}
-        {currentValidation && (
-          ((currentValidation.warnings?.length || 0) > 0 || (currentValidation.recommendations?.length || 0) > 0)
-        ) && (
-          <div className="mt-4 space-y-2">
-            {(currentValidation.warnings?.length || 0) > 0 && currentValidation.warnings?.map((warning, index) => (
-              <div key={index} className="flex items-start gap-2 text-sm text-warning">
-                <span>⚠️</span>
-                <span>{warning}</span>
-              </div>
-            ))}
-            {(currentValidation.recommendations?.length || 0) > 0 && currentValidation.recommendations?.map((rec, index) => (
-              <div key={index} className="flex items-start gap-2 text-sm text-info">
-                <span>💡</span>
-                <span>{rec}</span>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    );
-}
+      {/* Format selection */}
+      {renderFormatSelection()}
+
+      {/* Validation display */}
+      {currentValidation && currentValidation.isValid !== undefined && (
+        <ValidationDisplay validation={currentValidation} />
+      )}
+    </div>
+  );
+});
