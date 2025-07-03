@@ -1,3 +1,4 @@
+import { memo, useCallback } from "react";
 import { CustomizationComponentProps, CategoryRatingData } from "../types";
 
 // Body parts using common, everyday terminology
@@ -49,7 +50,7 @@ const SORENESS_LEVELS = [
   },
 ];
 
-export default function SorenessCustomization({
+export default memo(function SorenessCustomization({
   value,
   onChange,
   disabled = false,
@@ -62,7 +63,7 @@ export default function SorenessCustomization({
 
 
 
-  const handleBodyPartToggle = (bodyPartValue: string) => {
+  const handleBodyPartToggle = useCallback((bodyPartValue: string) => {
     const bodyPart = BODY_PARTS.find(bp => bp.value === bodyPartValue);
     const isSelected = categoryData[bodyPartValue]?.selected || false;
 
@@ -83,9 +84,9 @@ export default function SorenessCustomization({
       };
       onChange(newCategoryData);
     }
-  };
+  }, [categoryData, onChange]);
 
-  const handleSorenessLevelChange = (bodyPart: string, level: number) => {
+  const handleSorenessLevelChange = useCallback((bodyPart: string, level: number) => {
     const newCategoryData = {
       ...categoryData,
       [bodyPart]: {
@@ -94,7 +95,7 @@ export default function SorenessCustomization({
       }
     };
     onChange(newCategoryData);
-  };
+  }, [categoryData, onChange]);
 
   return (
     <div>
@@ -218,4 +219,4 @@ export default function SorenessCustomization({
       )}
     </div>
   );
-}
+});

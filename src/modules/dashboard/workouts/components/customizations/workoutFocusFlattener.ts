@@ -3,6 +3,7 @@
 // Generates individual boolean flags for each field as requested by CTO
 
 import { WorkoutFocusConfigurationData } from "../types";
+import { isWorkoutFormatValue, isWorkoutFocusConfigurationData } from "../utils/validation";
 
 // Comprehensive flattened structure - each field gets its own JSON key
 export interface EnhancedWorkoutFocusFlat {
@@ -426,65 +427,143 @@ function flattenLegacyWorkoutFocus(focus: string): EnhancedWorkoutFocusFlat {
 
 // Flatten modern WorkoutFocusConfigurationData format
 function flattenModernWorkoutFocus(data: WorkoutFocusConfigurationData): EnhancedWorkoutFocusFlat {
-  const result = createEmptyWorkoutFocusFlattened();
-  
+  // Validate input data
+  if (!isWorkoutFocusConfigurationData(data)) {
+    throw new Error('Invalid workout focus configuration data');
+  }
+
+  const result: EnhancedWorkoutFocusFlat = {
+    // Initialize all flags to false
+    focus_type_strength_training: false,
+    focus_type_powerlifting: false,
+    focus_type_strength_hypertrophy: false,
+    focus_type_muscle_building: false,
+    focus_type_bodyweight_building: false,
+    focus_type_hiit: false,
+    focus_type_cardio_endurance: false,
+    focus_type_fat_loss: false,
+    focus_type_functional_fitness: false,
+    focus_type_flexibility_mobility: false,
+    focus_type_recovery_stretching: false,
+    focus_category_strength_power: false,
+    focus_category_muscle_building: false,
+    focus_category_conditioning_cardio: false,
+    focus_category_functional_recovery: false,
+    format_straight_sets: false,
+    format_pyramid_sets: false,
+    format_cluster_sets: false,
+    format_rest_pause: false,
+    format_competition_style: false,
+    format_block_periodization: false,
+    format_conjugate_method: false,
+    format_heavy_light: false,
+    format_dup: false,
+    format_push_pull_legs: false,
+    format_straight_sets_hypertrophy: false,
+    format_supersets: false,
+    format_drop_sets: false,
+    format_giant_sets: false,
+    format_progressive_overload: false,
+    format_time_under_tension: false,
+    format_isometric_holds: false,
+    format_tabata: false,
+    format_emom: false,
+    format_circuit_training: false,
+    format_sprint_intervals: false,
+    format_steady_state: false,
+    format_tempo_intervals: false,
+    format_fartlek: false,
+    format_metabolic_circuits: false,
+    format_cardio_strength_fusion: false,
+    format_liss_resistance: false,
+    format_movement_patterns: false,
+    format_sport_specific: false,
+    format_crossfit_style: false,
+    format_dynamic_stretching: false,
+    format_static_stretching: false,
+    format_pnf_stretching: false,
+    format_yoga_flow: false,
+    format_gentle_flow: false,
+    format_foam_rolling: false,
+    format_breathwork: false,
+    intensity_low: false,
+    intensity_moderate: false,
+    intensity_high: false,
+    intensity_variable: false,
+    equipment_minimal: false,
+    equipment_moderate: false,
+    equipment_full_gym: false,
+    experience_all_levels: false,
+    experience_intermediate: false,
+    experience_advanced: false,
+    config_focus_only: false,
+    config_focus_with_format: false,
+    format_beginner_friendly: false,
+    format_time_efficient: false,
+    format_advanced_technique: false,
+    duration_compatible_15min: false,
+    duration_compatible_20min: false,
+    duration_compatible_30min: false,
+    duration_compatible_45min: false,
+    duration_compatible_60min: false,
+    duration_compatible_90min: false,
+    duration_compatible_120min: false,
+    goal_strength_focused: false,
+    goal_muscle_growth: false,
+    goal_fat_loss_focused: false,
+    goal_endurance_focused: false,
+    goal_power_development: false,
+    goal_mobility_focused: false,
+    goal_recovery_focused: false,
+    goal_athletic_performance: false,
+    workout_compound_focused: false,
+    workout_isolation_focused: false,
+    workout_metabolic_focused: false,
+    workout_strength_endurance: false,
+    workout_power_explosive: false,
+    workout_flexibility_focused: false,
+    workout_rehabilitation: false,
+    suitable_home_gym: false,
+    suitable_commercial_gym: false,
+    suitable_minimal_equipment: false,
+    suitable_outdoor: false,
+    suitable_travel: false,
+    compatible_linear_progression: false,
+    compatible_periodization: false,
+    compatible_autoregulation: false,
+    compatible_high_frequency: false,
+    compatible_low_frequency: false,
+    validation_has_warnings: false,
+    validation_has_recommendations: false,
+    validation_warning_count: 0,
+    validation_recommendation_count: 0,
+    focus_complexity_score: 0,
+    focus_accessibility_score: 0,
+    focus_time_efficiency_score: 0,
+    focus_beginner_suitability: 0,
+    focus_advanced_potential: 0,
+    focus_data_json: '',
+    focus_last_updated: new Date().toISOString(),
+    focus_flattener_version: '2.0.0'
+  };
+
   // Map focus type
   switch (data.focus) {
-    case 'strength_training':
-      result.focus_type_strength_training = true;
-      break;
-    case 'powerlifting':
-      result.focus_type_powerlifting = true;
-      break;
-    case 'strength_hypertrophy':
-      result.focus_type_strength_hypertrophy = true;
-      break;
-    case 'muscle_building':
-      result.focus_type_muscle_building = true;
-      break;
-    case 'bodyweight_building':
-      result.focus_type_bodyweight_building = true;
-      break;
-    case 'hiit':
-      result.focus_type_hiit = true;
-      break;
-    case 'cardio_endurance':
-      result.focus_type_cardio_endurance = true;
-      break;
-    case 'fat_loss':
-      result.focus_type_fat_loss = true;
-      break;
-    case 'functional_fitness':
-      result.focus_type_functional_fitness = true;
-      break;
-    case 'flexibility_mobility':
-      result.focus_type_flexibility_mobility = true;
-      break;
-    case 'recovery_stretching':
-      result.focus_type_recovery_stretching = true;
-      break;
+    case 'strength_training': result.focus_type_strength_training = true; break;
+    case 'powerlifting': result.focus_type_powerlifting = true; break;
+    case 'strength_hypertrophy': result.focus_type_strength_hypertrophy = true; break;
+    case 'muscle_building': result.focus_type_muscle_building = true; break;
+    case 'bodyweight_building': result.focus_type_bodyweight_building = true; break;
+    case 'hiit': result.focus_type_hiit = true; break;
+    case 'cardio_endurance': result.focus_type_cardio_endurance = true; break;
+    case 'fat_loss': result.focus_type_fat_loss = true; break;
+    case 'functional_fitness': result.focus_type_functional_fitness = true; break;
+    case 'flexibility_mobility': result.focus_type_flexibility_mobility = true; break;
+    case 'recovery_stretching': result.focus_type_recovery_stretching = true; break;
   }
-  
-  // Map category from metadata
-  if (data.metadata?.category) {
-    switch (data.metadata.category) {
-      case 'strength_power':
-        result.focus_category_strength_power = true;
-        break;
-      case 'muscle_building':
-        result.focus_category_muscle_building = true;
-        break;
-      case 'conditioning_cardio':
-        result.focus_category_conditioning_cardio = true;
-        break;
-      case 'functional_recovery':
-        result.focus_category_functional_recovery = true;
-        break;
-    }
-  }
-  
-  // Map format if present
-  if (data.format) {
+
+  // Map format if present and valid
+  if (data.format && isWorkoutFormatValue(data.format)) {
     switch (data.format) {
       // Strength Training Formats
       case 'straight_sets': result.format_straight_sets = true; break;
@@ -546,107 +625,59 @@ function flattenModernWorkoutFocus(data: WorkoutFocusConfigurationData): Enhance
       case 'breathwork': result.format_breathwork = true; break;
     }
   }
-  
-  // Map intensity from metadata
-  if (data.metadata?.intensity) {
+
+  // Map configuration type
+  result.config_focus_only = data.configuration === 'focus-only';
+  result.config_focus_with_format = data.configuration === 'focus-with-format';
+
+  // Map metadata if present
+  if (data.metadata) {
+    // Map intensity
     switch (data.metadata.intensity) {
       case 'low': result.intensity_low = true; break;
       case 'moderate': result.intensity_moderate = true; break;
       case 'high': result.intensity_high = true; break;
       case 'variable': result.intensity_variable = true; break;
     }
-  }
-  
-  // Map equipment from metadata
-  if (data.metadata?.equipment) {
+
+    // Map equipment
     switch (data.metadata.equipment) {
       case 'minimal': result.equipment_minimal = true; break;
       case 'moderate': result.equipment_moderate = true; break;
       case 'full-gym': result.equipment_full_gym = true; break;
     }
-  }
-  
-  // Map experience from metadata
-  if (data.metadata?.experience) {
+
+    // Map experience level
     switch (data.metadata.experience) {
       case 'all-levels': result.experience_all_levels = true; break;
       case 'intermediate': result.experience_intermediate = true; break;
       case 'advanced': result.experience_advanced = true; break;
     }
+
+    // Map duration compatibility
+    if (data.metadata.duration_compatibility) {
+      data.metadata.duration_compatibility.forEach(duration => {
+        switch (duration) {
+          case 15: result.duration_compatible_15min = true; break;
+          case 20: result.duration_compatible_20min = true; break;
+          case 30: result.duration_compatible_30min = true; break;
+          case 45: result.duration_compatible_45min = true; break;
+          case 60: result.duration_compatible_60min = true; break;
+          case 90: result.duration_compatible_90min = true; break;
+          case 120: result.duration_compatible_120min = true; break;
+        }
+      });
+    }
+
+    // Map category
+    switch (data.metadata.category) {
+      case 'strength_power': result.focus_category_strength_power = true; break;
+      case 'muscle_building': result.focus_category_muscle_building = true; break;
+      case 'conditioning_cardio': result.focus_category_conditioning_cardio = true; break;
+      case 'functional_recovery': result.focus_category_functional_recovery = true; break;
+    }
   }
-  
-  // Map configuration type
-  switch (data.configuration) {
-    case 'focus-only': result.config_focus_only = true; break;
-    case 'focus-with-format': result.config_focus_with_format = true; break;
-  }
-  
-  // Map duration compatibility from metadata
-  if (data.metadata?.duration_compatibility) {
-    data.metadata.duration_compatibility.forEach(duration => {
-      switch (duration) {
-        case 15: result.duration_compatible_15min = true; break;
-        case 20: result.duration_compatible_20min = true; break;
-        case 30: result.duration_compatible_30min = true; break;
-        case 45: result.duration_compatible_45min = true; break;
-        case 60: result.duration_compatible_60min = true; break;
-        case 90: result.duration_compatible_90min = true; break;
-        case 120: result.duration_compatible_120min = true; break;
-      }
-    });
-  }
-  
-  // Set training goals based on focus type and category
-  result.goal_strength_focused = result.focus_category_strength_power;
-  result.goal_muscle_growth = result.focus_category_muscle_building;
-  result.goal_fat_loss_focused = result.focus_type_fat_loss || result.focus_type_hiit;
-  result.goal_endurance_focused = result.focus_type_cardio_endurance;
-  result.goal_power_development = result.focus_type_powerlifting || result.focus_type_strength_hypertrophy;
-  result.goal_mobility_focused = result.focus_type_flexibility_mobility;
-  result.goal_recovery_focused = result.focus_type_recovery_stretching;
-  result.goal_athletic_performance = result.focus_type_functional_fitness;
-  
-  // Set workout characteristics
-  result.workout_compound_focused = result.focus_category_strength_power || result.focus_type_functional_fitness;
-  result.workout_isolation_focused = result.focus_type_muscle_building;
-  result.workout_metabolic_focused = result.focus_type_hiit || result.focus_type_fat_loss;
-  result.workout_strength_endurance = result.focus_type_strength_hypertrophy;
-  result.workout_power_explosive = result.focus_type_powerlifting;
-  result.workout_flexibility_focused = result.focus_type_flexibility_mobility;
-  result.workout_rehabilitation = result.focus_type_recovery_stretching;
-  
-  // Set location suitability
-  result.suitable_home_gym = result.equipment_minimal || result.equipment_moderate;
-  result.suitable_commercial_gym = result.equipment_full_gym || result.equipment_moderate;
-  result.suitable_minimal_equipment = result.equipment_minimal;
-  result.suitable_outdoor = result.focus_type_hiit || result.focus_type_cardio_endurance || result.focus_type_functional_fitness;
-  result.suitable_travel = result.equipment_minimal && (result.focus_type_bodyweight_building || result.focus_type_hiit);
-  
-  // Set programming compatibility
-  result.compatible_linear_progression = result.focus_category_strength_power || result.focus_category_muscle_building;
-  result.compatible_periodization = result.focus_type_powerlifting || result.focus_type_strength_hypertrophy;
-  result.compatible_autoregulation = result.focus_type_strength_training || result.focus_type_functional_fitness;
-  result.compatible_high_frequency = result.focus_type_bodyweight_building || result.focus_type_flexibility_mobility;
-  result.compatible_low_frequency = result.focus_type_powerlifting;
-  
-  // Handle validation
-  if (data.validation) {
-    result.validation_has_warnings = (data.validation.warnings?.length || 0) > 0;
-    result.validation_has_recommendations = (data.validation.recommendations?.length || 0) > 0;
-    result.validation_warning_count = data.validation.warnings?.length || 0;
-    result.validation_recommendation_count = data.validation.recommendations?.length || 0;
-  }
-  
-  // Calculate analytics scores
-  result.focus_complexity_score = calculateComplexityScore(result);
-  result.focus_accessibility_score = calculateAccessibilityScore(result);
-  result.focus_time_efficiency_score = calculateTimeEfficiencyScore(result);
-  result.focus_beginner_suitability = calculateBeginnerSuitability(result);
-  result.focus_advanced_potential = calculateAdvancedPotential(result);
-  
-  result.focus_data_json = JSON.stringify(data);
-  result.focus_last_updated = new Date().toISOString();
-  
+
   return result;
 }
 

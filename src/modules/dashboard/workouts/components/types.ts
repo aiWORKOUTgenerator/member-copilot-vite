@@ -89,12 +89,12 @@ export interface WorkoutFocusConfigurationData {
   configuration: 'focus-only' | 'focus-with-format';
   
   // Enhanced metadata for intelligent display and validation
-  metadata?: {
-    intensity?: 'low' | 'moderate' | 'high' | 'variable';
-    equipment?: 'minimal' | 'moderate' | 'full-gym';
-    experience?: 'beginner' | 'intermediate' | 'advanced' | 'all-levels';
-    duration_compatibility?: number[]; // Compatible duration ranges in minutes
-    category?: 'strength_power' | 'muscle_building' | 'conditioning_cardio' | 'functional_recovery';
+  metadata: {
+    intensity: 'low' | 'moderate' | 'high' | 'variable';
+    equipment: 'minimal' | 'moderate' | 'full-gym';
+    experience: 'beginner' | 'intermediate' | 'advanced' | 'all-levels';
+    duration_compatibility: number[]; // Compatible duration ranges in minutes
+    category: 'strength_power' | 'muscle_building' | 'conditioning_cardio' | 'functional_recovery';
   };
   
   // Smart validation and recommendations

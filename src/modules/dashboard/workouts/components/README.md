@@ -397,3 +397,72 @@ Each customization component must:
 - Component re-renders are minimized through proper state management patterns
 
 This architecture successfully balances **simplicity for common cases** with **powerful extensibility for complex patterns**, providing a solid foundation for current and future workout customization needs. 
+
+## WorkoutSummary Component
+
+The `WorkoutSummary` component provides an **inline review** of user selections that automatically appears as they customize their workout.
+
+### Features
+
+- **Automatic Display**: Appears inline when customizations are selected - no separate step needed
+- **Intelligent Grouping**: Groups customizations by logical categories (Workout Structure, Equipment & Environment, etc.)
+- **Format Consistency**: Uses the same formatting logic as `WorkoutCustomization` via shared utilities
+- **Compact Design**: Clean, space-efficient display that doesn't overwhelm the form
+- **Real-time Updates**: Updates automatically as user changes selections
+- **Preview Mode**: Expandable preview shows exactly what will be sent to the prompt service
+
+### Integration
+
+The component is integrated **inline** within the `GeneratePage.tsx` form:
+
+```
+Customization Options
+        ↓ (automatic)
+Inline Review Summary
+        ↓
+Additional Requirements
+        ↓
+Generate Button
+```
+
+### Shared Utilities
+
+#### `utils/selectionFormatter.ts`
+- `formatWorkoutSelection()`: Formats complex workout data for display
+- `getRatingLabel()`: Converts numeric ratings to human-readable labels
+- `analyzeHierarchicalSelection()`: Analyzes hierarchical selection data
+- `getCustomizationDescription()`: Provides descriptions for each customization type
+
+#### `hooks/useWorkoutAnalytics.ts`
+- Encapsulates all workout-related analytics tracking
+- Provides debounced preference change tracking
+- Tracks page views, generation success/failure, and user interactions
+
+### Usage
+
+```tsx
+{/* Appears automatically inline when customizations exist */}
+<WorkoutSummary
+  options={perWorkoutOptions}
+  mode={activeTab}
+/>
+```
+
+### Data Flow
+
+1. User selects customization options
+2. Summary automatically appears below customizations (if any selected)
+3. Summary displays grouped selections in clean, organized format
+4. User continues to "Additional Requirements" section
+5. User can expand preview to see exactly what will be sent to AI
+6. Final generation includes customizations + additional requirements
+
+### Benefits
+
+- **Seamless UX**: No separate steps - review happens naturally inline
+- **Immediate Feedback**: Users see their selections formatted clearly as they make them
+- **Confidence Building**: Clear review before committing to generation
+- **Space Efficient**: Compact design that doesn't disrupt the form flow
+- **Transparency**: Expandable preview shows exactly what will be sent to AI
+- **Code Reuse**: Leverages existing formatting and validation logic
+- **Performance**: Only renders when needed, lightweight implementation 

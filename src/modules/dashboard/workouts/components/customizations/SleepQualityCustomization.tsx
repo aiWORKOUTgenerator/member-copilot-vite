@@ -1,3 +1,4 @@
+import { memo, useCallback } from "react";
 import { CustomizationComponentProps } from "../types";
 
 // Sleep quality ratings based on Pittsburgh Sleep Quality Index and clinical assessments
@@ -30,7 +31,7 @@ const SLEEP_QUALITY_LEVELS = [
   },
 ];
 
-export default function SleepQualityCustomization({
+export default memo(function SleepQualityCustomization({
   value,
   onChange,
   disabled = false,
@@ -38,14 +39,14 @@ export default function SleepQualityCustomization({
 }: CustomizationComponentProps<number | undefined>) {
   const selectedRating = value as number | undefined;
 
-  const handleRatingChange = (rating: number) => {
+  const handleRatingChange = useCallback((rating: number) => {
     if (selectedRating === rating) {
       // Deselect if clicking the same rating
       onChange(undefined);
     } else {
       onChange(rating);
     }
-  };
+  }, [selectedRating, onChange]);
 
   const getSelectedLevel = () => {
     if (!selectedRating) return null;
@@ -104,4 +105,4 @@ export default function SleepQualityCustomization({
       {error && <p id="sleep-quality-error" className="validator-hint mt-2" role="alert">{error}</p>}
     </div>
   );
-}
+});

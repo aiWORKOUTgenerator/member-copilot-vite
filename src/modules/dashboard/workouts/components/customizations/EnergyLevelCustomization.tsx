@@ -1,3 +1,4 @@
+import { memo, useCallback } from "react";
 import { CustomizationComponentProps } from "../types";
 
 // Energy level ratings based on Rate of Perceived Exertion (RPE) and clinical energy assessments
@@ -30,7 +31,7 @@ const ENERGY_LEVELS = [
   },
 ];
 
-export default function EnergyLevelCustomization({
+export default memo(function EnergyLevelCustomization({
   value,
   onChange,
   disabled = false,
@@ -38,14 +39,14 @@ export default function EnergyLevelCustomization({
 }: CustomizationComponentProps<number | undefined>) {
   const selectedRating = value as number | undefined;
 
-  const handleRatingChange = (rating: number) => {
+  const handleRatingChange = useCallback((rating: number) => {
     if (selectedRating === rating) {
       // Deselect if clicking the same rating
       onChange(undefined);
     } else {
       onChange(rating);
     }
-  };
+  }, [selectedRating, onChange]);
 
   const getSelectedLevel = () => {
     if (!selectedRating) return null;
@@ -104,4 +105,4 @@ export default function EnergyLevelCustomization({
       {error && <p id="energy-error" className="validator-hint mt-2" role="alert">{error}</p>}
     </div>
   );
-}
+});

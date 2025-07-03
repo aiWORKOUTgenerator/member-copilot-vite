@@ -1,4 +1,6 @@
-export default function ComingSoonCustomization() {
+import { memo } from "react";
+
+export default memo(function ComingSoonCustomization() {
   return (
     <div
       className="btn btn-outline btn-sm w-full cursor-not-allowed opacity-50"
@@ -7,4 +9,4 @@ export default function ComingSoonCustomization() {
       Coming soon...
     </div>
   );
-}
+});

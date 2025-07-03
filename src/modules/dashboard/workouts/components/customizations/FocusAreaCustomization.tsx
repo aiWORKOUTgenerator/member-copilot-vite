@@ -1,5 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect, useRef, useCallback, memo } from "react";
 import { CustomizationComponentProps, HierarchicalSelectionData } from "../types";
+import { 
+  generateHierarchicalBadgeClass,
+  getCustomizationButtonClass
+} from "../utils/customizationHelpers";
+import { 
+  ErrorDisplay,
+  SelectionSummary 
+} from "../utils/customizationComponents";
 
 // Primary regions
 const PRIMARY_REGIONS = [
@@ -242,24 +250,10 @@ const getAllDescendants = (value: string, level: 'primary' | 'secondary' | 'tert
 };
 
 
-// Smart summary analysis for intelligent display
-const analyzeSelectionSummary = (hierarchicalData: HierarchicalSelectionData) => {
-  const selectedEntries = Object.entries(hierarchicalData).filter(([, info]) => info.selected);
-  const primary = selectedEntries.filter(([, info]) => info.level === 'primary');
-  const secondary = selectedEntries.filter(([, info]) => info.level === 'secondary');
-  const tertiary = selectedEntries.filter(([, info]) => info.level === 'tertiary');
-  
-  return {
-    total: selectedEntries.length,
-    primary: primary.map(([key, info]) => ({ key, info })),
-    secondary: secondary.map(([key, info]) => ({ key, info })),
-    tertiary: tertiary.map(([key, info]) => ({ key, info })),
-    hasComplexSelection: selectedEntries.length > 6,
-    hasMultipleLevels: primary.length > 0 && (secondary.length > 0 || tertiary.length > 0)
-  };
-};
+// Note: analyzeSelectionSummary replaced with formatHierarchicalSummary from utils
 
-export default function FocusAreaCustomization({
+// ✅ PERFORMANCE OPTIMIZATION: Memoize FocusAreaCustomization to prevent unnecessary re-renders
+export default memo(function FocusAreaCustomization({
   value,
   onChange,
   disabled = false,
@@ -311,7 +305,7 @@ export default function FocusAreaCustomization({
   };
 
   // Advanced cascading selection logic
-  const handleAreaToggle = (areaValue: string, level?: 'primary' | 'secondary' | 'tertiary') => {
+  const handleAreaToggle = useCallback((areaValue: string, level?: 'primary' | 'secondary' | 'tertiary') => {
     const isSelected = selectedAreas.includes(areaValue);
     const optionInfo = findOptionInfo(areaValue);
     const actualLevel = level || optionInfo?.level || 'primary';
@@ -374,13 +368,13 @@ export default function FocusAreaCustomization({
       
       onChange(newHierarchicalData);
     }
-  };
+  }, [selectedAreas, hierarchicalData, onChange]);
 
   // Handle secondary click logic - for Phase 3 UI
-  const handleSecondaryClick = (secondaryValue: string) => {
+  const handleSecondaryClick = useCallback((secondaryValue: string) => {
     // Always toggle selection - handleAreaToggle already handles expansion logic perfectly
     handleAreaToggle(secondaryValue, 'secondary');
-  };
+  }, [handleAreaToggle]);
   
 
 
@@ -401,9 +395,7 @@ export default function FocusAreaCustomization({
                 <button
                   key={region.value}
                   type="button"
-                  className={`btn btn-sm justify-start h-auto min-h-[2.5rem] py-3 px-4 ${
-                    isSelected ? "btn-primary" : "btn-outline"
-                  } ${disabled ? "btn-disabled" : ""}`}
+                  className={`${getCustomizationButtonClass(isSelected, disabled)} h-auto min-h-[2.5rem] py-3 px-4`}
                   onClick={() => handleAreaToggle(region.value)}
                   disabled={disabled}
                 >
@@ -526,111 +518,46 @@ export default function FocusAreaCustomization({
         })}
       </div>
 
-      {error && <p className="validator-hint mt-2" role="alert">{error}</p>}
+      <ErrorDisplay error={error} />
 
-      {selectedAreas.length > 0 && (() => {
-        const summary = analyzeSelectionSummary(hierarchicalData);
-        
-        return (
-          <div className="mt-4">
-            <p className="text-xs text-base-content/60 mb-2">
-              Selected focus areas ({summary.total}):
-            </p>
-            
-            {summary.hasComplexSelection ? (
-              // Compact summary for complex selections
-              <div className="space-y-2">
-                {summary.primary.length > 0 && (
-                  <div>
-                    <span className="text-xs text-base-content/40 mr-2">Regions:</span>
-                    <div className="inline-flex flex-wrap gap-1">
-                      {summary.primary.map(({ key, info }) => (
-                        <span key={key} className="badge badge-primary badge-sm">
-                          {info.label}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                
-                {summary.secondary.length > 0 && (
-                  <div>
-                    <span className="text-xs text-base-content/40 mr-2">Muscles:</span>
-                    <div className="inline-flex flex-wrap gap-1">
-                      {summary.secondary.slice(0, 4).map(({ key, info }) => (
-                        <span key={key} className="badge badge-secondary badge-outline badge-sm">
-                          {info.label}
-                        </span>
-                      ))}
-                      {summary.secondary.length > 4 && (
-                        <span className="badge badge-secondary badge-outline badge-sm">
-                          +{summary.secondary.length - 4} more
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                )}
-                
-                {summary.tertiary.length > 0 && (
-                  <div>
-                    <span className="text-xs text-base-content/40 mr-2">Specific Areas:</span>
-                    <div className="inline-flex flex-wrap gap-1">
-                      {summary.tertiary.slice(0, 3).map(({ key, info }) => (
-                        <span key={key} className="badge badge-accent badge-outline badge-xs">
-                          {info.label}
-                        </span>
-                      ))}
-                      {summary.tertiary.length > 3 && (
-                        <span className="badge badge-accent badge-outline badge-xs">
-                          +{summary.tertiary.length - 3} more
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
-            ) : (
-              // Full display for simple selections
-              <div className="flex flex-wrap gap-1">
-                {Object.entries(hierarchicalData)
-                  .filter(([, info]) => info.selected)
-                  .map(([key, info]) => {
-                    let badgeClass = "badge badge-sm";
-                    let label = info.label;
-                    
-                    if (info.level === 'primary') {
-                      badgeClass += " badge-primary";
-                      
-                    } else if (info.level === 'secondary') {
-                      badgeClass += " badge-secondary badge-outline";
-                      const parent = info.parentKey ? hierarchicalData[info.parentKey] : null;
-                      if (parent) {
-                        label = `${parent.label} > ${info.label}`;
-                      }
-                      
-                    } else if (info.level === 'tertiary') {
-                      badgeClass += " badge-accent badge-outline badge-xs";
-                      const parent = info.parentKey ? hierarchicalData[info.parentKey] : null;
-                      const grandparent = parent?.parentKey ? hierarchicalData[parent.parentKey] : null;
-                      
-                      if (grandparent && parent) {
-                        label = `${grandparent.label} > ${parent.label} > ${info.label}`;
-                      } else if (parent) {
-                        label = `${parent.label} > ${info.label}`;
-                      }
-                    }
-                    
-                    return (
-                      <span key={key} className={badgeClass}>
-                        {label}
-                      </span>
-                    );
-                  })}
-              </div>
-            )}
-          </div>
-        );
-      })()}
+      {selectedAreas.length > 0 && (
+        <SelectionSummary
+          title="Selected focus areas"
+          count={selectedAreas.length}
+        >
+          {Object.entries(hierarchicalData)
+            .filter(([, info]) => info.selected)
+            .map(([key, info]) => {
+              const badgeClass = generateHierarchicalBadgeClass(
+                info.level as 'primary' | 'secondary' | 'tertiary',
+                'sm'
+              );
+              
+              // Build hierarchical label
+              let label = info.label;
+              if (info.level === 'secondary' && info.parentKey) {
+                const parent = hierarchicalData[info.parentKey];
+                if (parent) {
+                  label = `${parent.label} > ${info.label}`;
+                }
+              } else if (info.level === 'tertiary' && info.parentKey) {
+                const parent = hierarchicalData[info.parentKey];
+                const grandparent = parent?.parentKey ? hierarchicalData[parent.parentKey] : null;
+                if (grandparent && parent) {
+                  label = `${grandparent.label} > ${parent.label} > ${info.label}`;
+                } else if (parent) {
+                  label = `${parent.label} > ${info.label}`;
+                }
+              }
+              
+              return (
+                <span key={key} className={badgeClass}>
+                  {label}
+                </span>
+              );
+            })}
+        </SelectionSummary>
+      )}
     </div>
   );
-}
+});

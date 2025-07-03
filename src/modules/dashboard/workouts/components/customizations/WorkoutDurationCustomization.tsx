@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback, useMemo, memo } from "react";
 import { CustomizationComponentProps, DurationConfigurationData } from "../types";
 
 // Enhanced duration presets with smart suggestions for warm-up/cool-down
@@ -272,7 +272,8 @@ const determineConfiguration = (warmUpIncluded: boolean, coolDownIncluded: boole
   return 'duration-only';
 };
 
-export default function WorkoutDurationCustomization({
+// ✅ CRITICAL FIX: Memoize WorkoutDurationCustomization to prevent unnecessary re-renders
+const WorkoutDurationCustomization = memo(function WorkoutDurationCustomization({
   value,
   onChange,
   disabled = false,
@@ -296,7 +297,7 @@ export default function WorkoutDurationCustomization({
     existingData ? (existingData.warmUp.included || existingData.coolDown.included) : false
   );
 
-  // 🚀 Phase 4: Smart calculation and validation integration
+  // Smart calculation and validation integration
   const currentWorkingTime = selectedDuration ? calculateWorkingTime(
     selectedDuration,
     warmUpConfig.included ? warmUpConfig.duration : 0,
@@ -313,8 +314,8 @@ export default function WorkoutDurationCustomization({
 
   const optimalSuggestions = selectedDuration ? generateOptimalSuggestions(selectedDuration) : null;
 
-  // Helper function to build complete DurationConfigurationData
-  const buildDurationConfiguration = (
+  // ✅ CRITICAL FIX: Memoized data building function
+  const buildDurationConfiguration = useCallback((
     duration: number,
     warmUp: { included: boolean; duration: number },
     coolDown: { included: boolean; duration: number }
@@ -344,11 +345,11 @@ export default function WorkoutDurationCustomization({
       configuration,
       validation
     };
-  };
+  }, []);
 
-  // Update parent data whenever internal state changes
-  const updateParentData = (
-    duration: number | null = selectedDuration,
+  // ✅ CRITICAL FIX: Immediate controlled update function
+  const emitChange = useCallback((
+    duration: number | null,
     warmUp = warmUpConfig,
     coolDown = coolDownConfig
   ) => {
@@ -359,9 +360,9 @@ export default function WorkoutDurationCustomization({
     
     const configurationData = buildDurationConfiguration(duration, warmUp, coolDown);
     onChange(configurationData);
-  };
+  }, [onChange, buildDurationConfiguration, warmUpConfig, coolDownConfig]);
 
-  const handleDurationSelection = (duration: number) => {
+  const handleDurationSelection = useCallback((duration: number) => {
     setSelectedDuration(duration);
     
     // Show structure options for sessions >= 20 minutes
@@ -374,10 +375,11 @@ export default function WorkoutDurationCustomization({
       setCoolDownConfig({ included: false, duration: 0 });
     }
     
-    updateParentData(duration, warmUpConfig, coolDownConfig);
-  };
+    // ✅ CRITICAL FIX: Immediate controlled update
+    emitChange(duration, warmUpConfig, coolDownConfig);
+  }, [emitChange, warmUpConfig, coolDownConfig]);
 
-  const toggleWarmUp = (enabled: boolean) => {
+  const toggleWarmUp = useCallback((enabled: boolean) => {
     if (!selectedDuration) return;
     
     const preset = DURATION_PRESETS.find(p => p.value === selectedDuration);
@@ -386,10 +388,11 @@ export default function WorkoutDurationCustomization({
       : { included: false, duration: 0 };
     
     setWarmUpConfig(newWarmUpConfig);
-    updateParentData(selectedDuration, newWarmUpConfig, coolDownConfig);
-  };
+    // ✅ CRITICAL FIX: Immediate controlled update
+    emitChange(selectedDuration, newWarmUpConfig, coolDownConfig);
+  }, [selectedDuration, coolDownConfig, emitChange]);
 
-  const toggleCoolDown = (enabled: boolean) => {
+  const toggleCoolDown = useCallback((enabled: boolean) => {
     if (!selectedDuration) return;
     
     const preset = DURATION_PRESETS.find(p => p.value === selectedDuration);
@@ -398,27 +401,30 @@ export default function WorkoutDurationCustomization({
       : { included: false, duration: 0 };
     
     setCoolDownConfig(newCoolDownConfig);
-    updateParentData(selectedDuration, warmUpConfig, newCoolDownConfig);
-  };
+    // ✅ CRITICAL FIX: Immediate controlled update
+    emitChange(selectedDuration, warmUpConfig, newCoolDownConfig);
+  }, [selectedDuration, warmUpConfig, emitChange]);
 
-  const updateWarmUpDuration = (duration: number) => {
+  const updateWarmUpDuration = useCallback((duration: number) => {
     if (!selectedDuration) return;
     
     const newWarmUpConfig = { ...warmUpConfig, duration };
     setWarmUpConfig(newWarmUpConfig);
-    updateParentData(selectedDuration, newWarmUpConfig, coolDownConfig);
-  };
+    // ✅ CRITICAL FIX: Immediate controlled update
+    emitChange(selectedDuration, newWarmUpConfig, coolDownConfig);
+  }, [selectedDuration, warmUpConfig, coolDownConfig, emitChange]);
 
-  const updateCoolDownDuration = (duration: number) => {
+  const updateCoolDownDuration = useCallback((duration: number) => {
     if (!selectedDuration) return;
     
     const newCoolDownConfig = { ...coolDownConfig, duration };
     setCoolDownConfig(newCoolDownConfig);
-    updateParentData(selectedDuration, warmUpConfig, newCoolDownConfig);
-  };
+    // ✅ CRITICAL FIX: Immediate controlled update
+    emitChange(selectedDuration, warmUpConfig, newCoolDownConfig);
+  }, [selectedDuration, warmUpConfig, coolDownConfig, emitChange]);
 
-  // 🚀 Phase 4: Smart suggestion application
-  const applyOptimalSuggestions = () => {
+  // Smart suggestion application
+  const applyOptimalSuggestions = useCallback(() => {
     if (!selectedDuration || !optimalSuggestions) return;
     
     const newWarmUpConfig = { included: true, duration: optimalSuggestions.warmUp };
@@ -426,17 +432,20 @@ export default function WorkoutDurationCustomization({
     
     setWarmUpConfig(newWarmUpConfig);
     setCoolDownConfig(newCoolDownConfig);
-    updateParentData(selectedDuration, newWarmUpConfig, newCoolDownConfig);
-  };
+    // ✅ CRITICAL FIX: Immediate controlled update
+    emitChange(selectedDuration, newWarmUpConfig, newCoolDownConfig);
+  }, [selectedDuration, optimalSuggestions, emitChange]);
 
   // Group presets by category for better organization
-  const groupedPresets = DURATION_PRESETS.reduce((acc, preset) => {
-    if (!acc[preset.category]) {
-      acc[preset.category] = [];
-    }
-    acc[preset.category].push(preset);
-    return acc;
-  }, {} as Record<string, typeof DURATION_PRESETS>);
+  const groupedPresets = useMemo(() => {
+    return DURATION_PRESETS.reduce((acc, preset) => {
+      if (!acc[preset.category]) {
+        acc[preset.category] = [];
+      }
+      acc[preset.category].push(preset);
+      return acc;
+    }, {} as Record<string, typeof DURATION_PRESETS>);
+  }, []);
 
   return (
     <div className="space-y-4">
@@ -740,4 +749,6 @@ export default function WorkoutDurationCustomization({
       )}
     </div>
   );
-}
+});
+
+export default WorkoutDurationCustomization;

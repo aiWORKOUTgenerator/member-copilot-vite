@@ -1,5 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback, memo } from "react";
 import { CustomizationComponentProps, EquipmentSelectionData } from "../types";
+import { 
+  generateBadgeClass,
+  getCustomizationButtonClass
+} from "../utils/customizationHelpers";
+import { 
+  ErrorDisplay,
+  SelectionSummary 
+} from "../utils/customizationComponents";
 
 // Workout locations for Tier 1 selection
 const WORKOUT_LOCATIONS = [
@@ -298,7 +306,8 @@ const convertLegacyToNewFormat = (legacyValue: string[]): EquipmentSelectionData
   };
 };
 
-export default function AvailableEquipmentCustomization({
+// ✅ PERFORMANCE OPTIMIZATION: Memoize AvailableEquipmentCustomization to prevent unnecessary re-renders
+export default memo(function AvailableEquipmentCustomization({
   value,
   onChange,
   disabled = false,
@@ -323,23 +332,41 @@ export default function AvailableEquipmentCustomization({
   const [weightUnit, setWeightUnit] = useState<"lbs" | "kg">("lbs");
   const [rangeState, setRangeState] = useState<{ [equipmentType: string]: { start?: number; end?: number } }>({});
 
-  // Update parent when selections change
-  useEffect(() => {
-    const newData: EquipmentSelectionData = {
-      location: selectedLocation,
-      contexts: selectedContexts,
-      specificEquipment: selectedSubtypes,
-      weights: selectedWeights,
-      lastUpdated: new Date()
-    };
+  // ✅ CRITICAL FIX: Use ref for stable timestamp instead of new Date() every render
+  const lastUpdatedRef = useRef<Date>(new Date());
 
+  // ✅ CRITICAL FIX: Stable data creation function
+  const createEquipmentData = useCallback((
+    location: string | undefined,
+    contexts: string[],
+    specificEquipment: string[],
+    weights: { [equipmentType: string]: number[] }
+  ): EquipmentSelectionData => ({
+    location,
+    contexts,
+    specificEquipment,
+    weights,
+    lastUpdated: lastUpdatedRef.current // ← Stable reference
+  }), []);
+
+  // ✅ CRITICAL FIX: Controlled component pattern - immediate change emission
+  const emitChange = useCallback((
+    location: string | undefined,
+    contexts: string[],
+    specificEquipment: string[],
+    weights: { [equipmentType: string]: number[] }
+  ) => {
+    // Update timestamp only when data actually changes
+    lastUpdatedRef.current = new Date();
+    
     // Only update if there's meaningful data or clear it if empty
-    if (selectedLocation || selectedContexts.length > 0 || selectedSubtypes.length > 0 || Object.keys(selectedWeights).some(key => selectedWeights[key].length > 0)) {
+    if (location || contexts.length > 0 || specificEquipment.length > 0 || Object.keys(weights).some(key => weights[key].length > 0)) {
+      const newData = createEquipmentData(location, contexts, specificEquipment, weights);
       onChange(newData);
     } else {
       onChange(undefined);
     }
-  }, [selectedLocation, selectedContexts, selectedSubtypes, selectedWeights, onChange]);
+  }, [onChange, createEquipmentData]);
 
   // Reset contexts and subtypes when location changes
   useEffect(() => {
@@ -368,45 +395,50 @@ export default function AvailableEquipmentCustomization({
     setSelectedWeights({});
   }, [weightUnit]);
 
-  const handleLocationChange = (location: string) => {
+  const handleLocationChange = useCallback((location: string) => {
     setSelectedLocation(location);
-  };
+    // ✅ CRITICAL FIX: Immediate controlled update
+    emitChange(location, selectedContexts, selectedSubtypes, selectedWeights);
+  }, [selectedContexts, selectedSubtypes, selectedWeights, emitChange]);
 
-  const handleContextToggle = (context: string) => {
+  const handleContextToggle = useCallback((context: string) => {
     const isSelected = selectedContexts.includes(context);
-    if (isSelected) {
-      setSelectedContexts(selectedContexts.filter(c => c !== context));
-    } else {
-      setSelectedContexts([...selectedContexts, context]);
-    }
-  };
+    const newContexts = isSelected 
+      ? selectedContexts.filter(c => c !== context)
+      : [...selectedContexts, context];
+    
+    setSelectedContexts(newContexts);
+    // ✅ CRITICAL FIX: Immediate controlled update  
+    emitChange(selectedLocation, newContexts, selectedSubtypes, selectedWeights);
+  }, [selectedContexts, selectedLocation, selectedSubtypes, selectedWeights, emitChange]);
 
-  const handleSubtypeToggle = (subtype: string) => {
+  const handleSubtypeToggle = useCallback((subtype: string) => {
     const isSelected = selectedSubtypes.includes(subtype);
-    if (isSelected) {
-      setSelectedSubtypes(selectedSubtypes.filter(s => s !== subtype));
-    } else {
-      setSelectedSubtypes([...selectedSubtypes, subtype]);
-    }
-  };
+    const newSubtypes = isSelected
+      ? selectedSubtypes.filter(s => s !== subtype)
+      : [...selectedSubtypes, subtype];
+    
+    setSelectedSubtypes(newSubtypes);
+    // ✅ CRITICAL FIX: Immediate controlled update
+    emitChange(selectedLocation, selectedContexts, newSubtypes, selectedWeights);
+  }, [selectedSubtypes, selectedLocation, selectedContexts, selectedWeights, emitChange]);
 
-  const handleWeightToggle = (equipmentType: string, weight: number) => {
+  const handleWeightToggle = useCallback((equipmentType: string, weight: number) => {
     const currentWeights = selectedWeights[equipmentType] || [];
     
-    if (currentWeights.includes(weight)) {
-      setSelectedWeights({
-        ...selectedWeights,
-        [equipmentType]: currentWeights.filter(w => w !== weight)
-      });
-    } else {
-      setSelectedWeights({
-        ...selectedWeights,
-        [equipmentType]: [...currentWeights, weight]
-      });
-    }
-  };
+    const newWeights = {
+      ...selectedWeights,
+      [equipmentType]: currentWeights.includes(weight)
+        ? currentWeights.filter(w => w !== weight)
+        : [...currentWeights, weight]
+    };
 
-  const handleRangeClick = (equipmentType: string, weight: number) => {
+    setSelectedWeights(newWeights);
+    // ✅ CRITICAL FIX: Immediate controlled update
+    emitChange(selectedLocation, selectedContexts, selectedSubtypes, newWeights);
+  }, [selectedWeights, selectedLocation, selectedContexts, selectedSubtypes, emitChange]);
+
+  const handleRangeClick = useCallback((equipmentType: string, weight: number) => {
     const currentRange = rangeState[equipmentType] || {};
     const equipment = EQUIPMENT_WEIGHTS[equipmentType as keyof typeof EQUIPMENT_WEIGHTS];
     const availableWeights = equipment?.weights[weightUnit] || [];
@@ -455,7 +487,7 @@ export default function AvailableEquipmentCustomization({
         [equipmentType]: [weight]
       });
     }
-  };
+  }, [rangeState, weightUnit, selectedWeights]);
 
   const getWeightButtonStyle = (equipmentType: string, weight: number, isRangeMode: boolean) => {
     const selectedEquipmentWeights = selectedWeights[equipmentType] || [];
@@ -514,9 +546,7 @@ export default function AvailableEquipmentCustomization({
               <button
                 key={location.value}
                 type="button"
-                className={`btn btn-sm justify-start ${
-                  isSelected ? "btn-accent" : "btn-outline"
-                } ${disabled ? "btn-disabled" : ""}`}
+                className={getCustomizationButtonClass(isSelected, disabled)}
                 onClick={() => !disabled && handleLocationChange(location.value)}
                 disabled={disabled}
               >
@@ -540,9 +570,7 @@ export default function AvailableEquipmentCustomization({
                 <button
                   key={context}
                   type="button"
-                  className={`btn btn-sm justify-start ${
-                    isSelected ? "btn-accent" : "btn-outline"
-                  } ${disabled ? "btn-disabled" : ""}`}
+                  className={getCustomizationButtonClass(isSelected, disabled)}
                   onClick={() => !disabled && handleContextToggle(context)}
                   disabled={disabled}
                 >
@@ -567,9 +595,7 @@ export default function AvailableEquipmentCustomization({
                 <button
                   key={subtype.value}
                   type="button"
-                  className={`btn btn-xs justify-start h-auto min-h-[2rem] py-1 px-2 text-xs ${
-                    isSelected ? "btn-accent" : "btn-outline"
-                  } ${disabled ? "btn-disabled" : ""}`}
+                  className={`${getCustomizationButtonClass(isSelected, disabled)} btn-xs h-auto min-h-[2rem] py-1 px-2 text-xs`}
                   onClick={() => !disabled && handleSubtypeToggle(subtype.value)}
                   disabled={disabled}
                 >
@@ -711,70 +737,53 @@ export default function AvailableEquipmentCustomization({
         </div>
       )}
 
-      {error && <p className="validator-hint mt-2" role="alert">{error}</p>}
+      <ErrorDisplay error={error} />
 
       {/* Current Selection Summary */}
       {(selectedLocation || selectedContexts.length > 0 || selectedSubtypes.length > 0 || Object.keys(selectedWeights).some(key => selectedWeights[key].length > 0)) && (
-        <div className="mt-4 p-3 bg-base-200 rounded-lg">
-          <p className="text-xs text-base-content/60 mb-2">
-            Current Selection:
-          </p>
-          <div className="space-y-1">
-            {selectedLocation && (
-              <div className="flex flex-wrap gap-1">
-                <span className="badge badge-primary badge-sm">
-                  {WORKOUT_LOCATIONS.find(loc => loc.value === selectedLocation)?.label}
-                </span>
-              </div>
-            )}
-            {selectedContexts.length > 0 && (
-              <div className="flex flex-wrap gap-1">
-                {selectedContexts.map(context => (
-                  <span key={context} className="badge badge-outline badge-sm">
-                    {context}
-                  </span>
-                ))}
-              </div>
-            )}
-            {selectedSubtypes.length > 0 && (
-              <div className="flex flex-wrap gap-1">
-                {selectedSubtypes.slice(0, 5).map(subtype => {
-                  const subtypeObj = availableSubtypes.find(s => s.value === subtype);
-                  return (
-                    <span key={subtype} className="badge badge-ghost badge-xs">
-                      {subtypeObj?.label || subtype}
-                    </span>
-                  );
-                })}
-                {selectedSubtypes.length > 5 && (
-                  <span className="badge badge-ghost badge-xs">
-                    +{selectedSubtypes.length - 5} more
-                  </span>
-                )}
-              </div>
-            )}
-            {Object.keys(selectedWeights).some(key => selectedWeights[key].length > 0) && (
-              <div className="flex flex-wrap gap-1">
-                <p className="text-xs text-base-content/60 w-full mb-1">Available Weights:</p>
-                {Object.entries(selectedWeights).map(([equipmentType, weights]) => {
-                  if (!weights || weights.length === 0) return null;
-                  const equipment = EQUIPMENT_WEIGHTS[equipmentType as keyof typeof EQUIPMENT_WEIGHTS];
-                  return (
-                    <div key={equipmentType} className="w-full">
-                      <span className="badge badge-accent badge-xs mr-1">
-                        {equipment?.label}:
-                      </span>
-                                             <span className="text-xs text-base-content/70">
-                        {weights.sort((a, b) => a - b).join(', ')} {weightUnit}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        </div>
+        <SelectionSummary
+          title="Current Selection"
+          count={
+            (selectedLocation ? 1 : 0) + 
+            selectedContexts.length + 
+            selectedSubtypes.length + 
+            Object.values(selectedWeights).reduce((sum, weights) => sum + weights.length, 0)
+          }
+        >
+          {selectedLocation && (
+            <span className={generateBadgeClass({ level: 'primary', size: 'sm' })}>
+              {WORKOUT_LOCATIONS.find(loc => loc.value === selectedLocation)?.label}
+            </span>
+          )}
+          {selectedContexts.map(context => (
+            <span key={context} className={generateBadgeClass({ level: 'secondary', size: 'sm' })}>
+              {context}
+            </span>
+          ))}
+          {selectedSubtypes.slice(0, 5).map(subtype => {
+            const subtypeObj = availableSubtypes.find(s => s.value === subtype);
+            return (
+              <span key={subtype} className={generateBadgeClass({ level: 'tertiary', size: 'xs' })}>
+                {subtypeObj?.label || subtype}
+              </span>
+            );
+          })}
+          {selectedSubtypes.length > 5 && (
+            <span className={generateBadgeClass({ level: 'tertiary', size: 'xs' })}>
+              +{selectedSubtypes.length - 5} more
+            </span>
+          )}
+          {Object.entries(selectedWeights).map(([equipmentType, weights]) => {
+            if (!weights || weights.length === 0) return null;
+            const equipment = EQUIPMENT_WEIGHTS[equipmentType as keyof typeof EQUIPMENT_WEIGHTS];
+            return (
+              <span key={equipmentType} className={generateBadgeClass({ level: 'accent', size: 'xs' })}>
+                {equipment?.label}: {weights.sort((a, b) => a - b).join(', ')} {weightUnit}
+              </span>
+            );
+          })}
+        </SelectionSummary>
       )}
     </div>
   );
-}
+});

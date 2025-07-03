@@ -1,136 +1,142 @@
-import { useState, useCallback, useMemo, useEffect } from "react";
+import { useState, useCallback, useMemo, useEffect, memo } from "react";
 import { CustomizationComponentProps } from "../types";
+import { 
+  formatSelectionSummary,
+  getCustomizationButtonClass
+} from "../utils/customizationHelpers";
+import { 
+  ErrorDisplay,
+  SelectionSummary 
+} from "../utils/customizationComponents";
 
-// Exercise categories with commonly excluded/risky exercises
+// Exercise exclusion categories
 const EXERCISE_EXCLUSION_CATEGORIES = [
   {
-    name: "Full Body",
+    name: "High-Impact/Risky Exercises",
     exercises: [
-      "Burpees",
-      "Man Makers", 
-      "Jumping Jacks (for joint issues)",
-      "Thrusters (barbell)",
-      "Wall Balls (shoulder strain)",
-      "Box Jumps",
-      "Mountain Climbers (for wrist/back issues)",
-      "High-Rep Complexes (fatigue risk)"
+      "Burpees", "Box Jumps", "Jump Squats", "Plyometric Push-ups",
+      "Jumping Lunges", "Broad Jumps", "Depth Jumps"
     ]
   },
   {
-    name: "Lower Body",
+    name: "Lower Back Intensive",
     exercises: [
-      "Deep Jump Squats",
-      "Sissy Squats",
-      "Barbell Back Squats (for beginners)",
-      "Pistol Squats (advanced balance requirement)",
-      "Hack Squats (machine loading issues)",
-      "Walking Lunges (space/joint tolerance)",
-      "Good Mornings",
-      "Box Step-Ups with High Load"
+      "Deadlifts", "Good Mornings", "Bent-Over Rows", "Romanian Deadlifts",
+      "Back Extensions", "Superman", "Stiff Leg Deadlifts"
     ]
   },
   {
-    name: "Upper Body", 
+    name: "Knee-Intensive Exercises",
     exercises: [
-      "Behind-the-Neck Press",
-      "Kipping Pull-Ups",
-      "Heavy Upright Rows",
-      "Dips on Straight Bars",
-      "Push Press (for shoulder instability)",
-      "Arnold Press (range conflicts)",
-      "Barbell Bench Press (at home without spotter)",
-      "Heavy Overhead Press (limited mobility)"
+      "Deep Squats", "Lunges", "Step-ups", "Bulgarian Split Squats",
+      "Jump Squats", "Pistol Squats", "Wall Sits"
     ]
   },
   {
-    name: "Core & Stability",
+    name: "Shoulder-Intensive Exercises",
     exercises: [
-      "Sit-Ups (lumbar stress)",
-      "Superman Holds (spinal compression)",
-      "Windshield Wipers",
-      "Crunches (cervical strain)",
-      "Toe-to-Bar (skill floor too high)",
-      "V-Ups (tight hip flexors)",
-      "Weighted Russian Twists",
-      "Planks Over 1 Minute (fatigue > quality)"
+      "Overhead Press", "Handstand Push-ups", "Lateral Raises",
+      "Upright Rows", "Behind-the-Neck Press", "Dips"
     ]
   },
   {
-    name: "Mobility & Corrective / Recovery",
+    name: "Core-Intensive Exercises",
     exercises: [
-      "Standing Toe Touches (ballistic)",
-      "Seated Forward Fold (lower back load)",
-      "Unsupported Wall Sits >1 min",
-      "Hip Circles (awkward/confusing)",
-      "Excessive Foam Rolling (overuse or bruising)",
-      "Unsupported Deep Squat Hold",
-      "Overhead Shoulder CARs (poor cueing = risk)",
-      "Ballistic Arm Swings"
+      "Sit-ups", "Crunches", "Russian Twists", "V-ups",
+      "Bicycle Crunches", "Leg Raises", "Mountain Climbers"
+    ]
+  },
+  {
+    name: "Cardio-Intensive Exercises",
+    exercises: [
+      "Running", "Sprints", "High Knees", "Butt Kicks",
+      "Jumping Jacks", "Jump Rope", "Burpees"
     ]
   }
 ];
 
-export default function ExcludeExercisesCustomization({
+// Clean data structure for the component value
+interface ExcludeExercisesData {
+  customExercises: string;
+  libraryExercises: string[];
+}
+
+export default memo(function ExcludeExercisesCustomization({
   value,
   onChange,
   disabled = false,
   error,
-}: CustomizationComponentProps<string | undefined>) {
-  // Parse the value to separate custom text and selected exercises
-  const { customText, selectedExercises } = useMemo(() => {
-    if (!value) return { customText: "", selectedExercises: [] };
-    
-    // Check if value contains our separator
-    const parts = value.split(" | EXCLUDED: ");
-    if (parts.length === 2) {
-      const customText = parts[0];
-      const selectedExercises = parts[1] ? parts[1].split(", ") : [];
-      return { customText, selectedExercises };
+}: CustomizationComponentProps<ExcludeExercisesData | string | undefined>) {
+  
+  // Parse incoming value (handle both new format and legacy string format)
+  const parsedValue = useMemo((): ExcludeExercisesData => {
+    if (!value) {
+      return { customExercises: "", libraryExercises: [] };
     }
     
-    // If no separator, treat entire value as custom text
-    return { customText: value, selectedExercises: [] };
+    // New object format
+    if (typeof value === 'object' && 'customExercises' in value) {
+      return value as ExcludeExercisesData;
+    }
+    
+    // Legacy string format - treat as custom exercises
+    if (typeof value === 'string') {
+      return { customExercises: value, libraryExercises: [] };
+    }
+    
+    return { customExercises: "", libraryExercises: [] };
   }, [value]);
 
-  const [excludeExercises, setExcludeExercises] = useState(customText);
-  const [selectedExercisesList, setSelectedExercisesList] = useState<string[]>(selectedExercises);
-  const [expandedCategories, setExpandedCategories] = useState<string[]>(["Full Body"]);
+  // Separate state for each input method
+  const [customExercises, setCustomExercises] = useState(parsedValue.customExercises);
+  const [libraryExercises, setLibraryExercises] = useState<string[]>(parsedValue.libraryExercises);
+  const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
 
   // Update local state when prop value changes
   useEffect(() => {
-    setExcludeExercises(customText);
-    setSelectedExercisesList(selectedExercises);
-  }, [customText, selectedExercises]);
+    setCustomExercises(parsedValue.customExercises);
+    setLibraryExercises(parsedValue.libraryExercises);
+  }, [parsedValue]);
 
-  // Combine custom text and selected exercises into final value
-  const updateCombinedValue = useCallback((newCustomText: string, newSelectedExercises: string[]) => {
-    let combinedValue = "";
+  // ✅ CRITICAL FIX: Stable data creation function
+  const createExcludeData = useCallback((customText: string, libraryList: string[]): ExcludeExercisesData => ({
+    customExercises: customText.trim(),
+    libraryExercises: libraryList
+  }), []);
+
+  // ✅ CRITICAL FIX: Controlled component pattern - immediate change emission
+  const emitChange = useCallback((newCustom: string, newLibrary: string[]) => {
+    const hasCustom = newCustom.trim().length > 0;
+    const hasLibrary = newLibrary.length > 0;
     
-    if (newCustomText.trim() && newSelectedExercises.length > 0) {
-      combinedValue = `${newCustomText.trim()} | EXCLUDED: ${newSelectedExercises.join(", ")}`;
-    } else if (newCustomText.trim()) {
-      combinedValue = newCustomText.trim();
-    } else if (newSelectedExercises.length > 0) {
-      combinedValue = `EXCLUDED: ${newSelectedExercises.join(", ")}`;
+    if (!hasCustom && !hasLibrary) {
+      onChange(undefined);
+      return;
     }
     
-    onChange(combinedValue || undefined);
-  }, [onChange]);
+    const newValue = createExcludeData(newCustom, newLibrary);
+    onChange(newValue);
+  }, [onChange, createExcludeData]);
 
-  const handleCustomTextChange = useCallback((newText: string) => {
-    setExcludeExercises(newText);
-    updateCombinedValue(newText, selectedExercisesList);
-  }, [selectedExercisesList, updateCombinedValue]);
+  // Handle custom text changes
+  const handleCustomChange = useCallback((newText: string) => {
+    setCustomExercises(newText);
+    // ✅ CRITICAL FIX: Direct controlled update
+    emitChange(newText, libraryExercises);
+  }, [libraryExercises, emitChange]);
 
-  const handleExerciseToggle = useCallback((exercise: string) => {
-    const newSelected = selectedExercisesList.includes(exercise)
-      ? selectedExercisesList.filter(ex => ex !== exercise)
-      : [...selectedExercisesList, exercise];
+  // Handle library exercise selection
+  const handleLibraryToggle = useCallback((exercise: string) => {
+    const newLibrary = libraryExercises.includes(exercise)
+      ? libraryExercises.filter(ex => ex !== exercise)
+      : [...libraryExercises, exercise];
     
-    setSelectedExercisesList(newSelected);
-    updateCombinedValue(excludeExercises, newSelected);
-  }, [selectedExercisesList, excludeExercises, updateCombinedValue]);
+    setLibraryExercises(newLibrary);
+    // ✅ CRITICAL FIX: Direct controlled update
+    emitChange(customExercises, newLibrary);
+  }, [libraryExercises, customExercises, emitChange]);
 
+  // Category expansion handling
   const toggleCategory = useCallback((categoryName: string) => {
     setExpandedCategories(prev => 
       prev.includes(categoryName)
@@ -143,175 +149,175 @@ export default function ExcludeExercisesCustomization({
     return expandedCategories.includes(categoryName);
   }, [expandedCategories]);
 
+  // Clear functions
+  const clearCustom = useCallback(() => {
+    handleCustomChange("");
+  }, [handleCustomChange]);
+
+  const clearLibrary = useCallback(() => {
+    setLibraryExercises([]);
+    // ✅ CRITICAL FIX: Direct controlled update
+    emitChange(customExercises, []);
+  }, [customExercises, emitChange]);
+
   const clearAll = useCallback(() => {
-    setExcludeExercises("");
-    setSelectedExercisesList([]);
+    setCustomExercises("");
+    setLibraryExercises([]);
     onChange(undefined);
   }, [onChange]);
 
-  // Get preview of excluded exercises
-  const getExcludedPreview = useCallback(() => {
-    if (selectedExercisesList.length === 0) return null;
-    if (selectedExercisesList.length <= 3) {
-      return selectedExercisesList.join(", ");
-    }
-    const firstThree = selectedExercisesList.slice(0, 3).join(", ");
-    const remaining = selectedExercisesList.length - 3;
-    return `${firstThree} +${remaining} more`;
-  }, [selectedExercisesList]);
+  // Helper functions
+  const getLibraryPreview = useCallback(() => {
+    return formatSelectionSummary(libraryExercises, { maxItems: 3 });
+  }, [libraryExercises]);
 
-  const excludedPreview = getExcludedPreview();
-  const hasExclusions = selectedExercisesList.length > 0 || excludeExercises.trim();
+  const hasCustom = customExercises.trim().length > 0;
+  const hasLibrary = libraryExercises.length > 0;
+  const hasAnyExclusions = hasCustom || hasLibrary;
 
   return (
-    <div className="space-y-4">
-      {/* Custom Exercise Exclusion Input */}
+    <div className="space-y-6">
+      {/* Field 1: Custom Exercise Exclusion Input */}
       <div>
-        <label className="block text-sm font-medium text-base-content mb-2">
-          Specify exercises you want to avoid in your workout
-        </label>
+        <div className="flex items-center justify-between mb-2">
+          <label className="block text-sm font-medium text-base-content">
+            Custom Exclusions
+          </label>
+          {hasCustom && (
+            <button
+              type="button"
+              className="btn btn-xs btn-ghost text-base-content/60"
+              onClick={clearCustom}
+              disabled={disabled}
+            >
+              Clear
+            </button>
+          )}
+        </div>
         <textarea
           placeholder="e.g., burpees, jumping jacks, mountain climbers, sit-ups"
-          value={excludeExercises}
-          onChange={(e) => handleCustomTextChange(e.target.value)}
+          value={customExercises}
+          onChange={(e) => handleCustomChange(e.target.value)}
           disabled={disabled}
           rows={3}
           className={`textarea textarea-bordered w-full resize-none ${disabled ? "textarea-disabled" : ""}`}
         />
         <p className="text-xs text-base-content/60 mt-1">
-          Enter exercises as comma-separated list (e.g., "Burpees, Sit-ups, Heavy Squats")
+          Enter exercises to avoid as comma-separated list
         </p>
-      </div>
-
-      {/* Excluded Exercises Preview */}
-      {hasExclusions && (
-        <div className="p-4 bg-error/10 rounded-lg border border-error/20">
-          <h3 className="font-semibold text-error mb-2">
-            Your Exercise Exclusions
-          </h3>
-          {selectedExercisesList.length > 0 && (
-            <div className="mb-2">
-              <p className="text-error text-sm font-medium mb-1">
-                Excluded from categories ({selectedExercisesList.length}):
-              </p>
-              <p className="text-error text-sm">
-                {excludedPreview}
-              </p>
-            </div>
-          )}
-          {excludeExercises.trim() && (
-            <div>
-              <p className="text-error text-sm font-medium mb-1">
-                Custom exercises to exclude:
-              </p>
-              <p className="text-error text-sm">
-                {excludeExercises}
-              </p>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Exercise Categories */}
-      <div className="space-y-3">
-        <h4 className="text-sm font-medium text-base-content">
-          Browse Common Exercise Exclusions (Optional)
-        </h4>
         
-        {EXERCISE_EXCLUSION_CATEGORIES.map((category) => {
-          const excludedInCategory = category.exercises.filter(ex => 
-            selectedExercisesList.includes(ex)
-          ).length;
-          
-          return (
-            <div key={category.name} className="border border-base-300 rounded-lg overflow-hidden">
-              {/* Category Header */}
-              <button
-                type="button"
-                className={`
-                  w-full flex items-center justify-between p-4 text-left
-                  transition-all duration-200 hover:bg-base-200
-                  ${isExpanded(category.name) ? "bg-base-200" : "bg-base-100"}
-                  ${disabled ? "opacity-50 cursor-not-allowed" : ""}
-                `}
-                onClick={() => !disabled && toggleCategory(category.name)}
-                disabled={disabled}
-              >
-                <div className="flex items-center space-x-3">
-                  <span className="font-medium text-base-content">{category.name}</span>
-                  <span className="text-sm text-base-content/60">
-                    ({category.exercises.length} risky exercises)
-                  </span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  {excludedInCategory > 0 && (
-                    <span className="bg-error text-error-content px-2 py-1 rounded-full text-xs font-medium">
-                      {excludedInCategory} excluded
-                    </span>
-                  )}
-                  <span className={`
-                    transition-transform duration-200 text-base-content/40
-                    ${isExpanded(category.name) ? "rotate-180" : ""}
-                  `}>
-                    ▼
-                  </span>
-                </div>
-              </button>
-
-              {/* Exercise Grid */}
-              {isExpanded(category.name) && (
-                <div className="p-4 bg-base-100 border-t border-base-300">
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
-                    {category.exercises.map((exercise) => {
-                      const isExcluded = selectedExercisesList.includes(exercise);
-                      return (
-                        <button
-                          key={exercise}
-                          type="button"
-                          className={`
-                            flex items-center justify-center
-                            h-auto min-h-[2.5rem] py-3 px-3 rounded-lg
-                            text-xs font-medium transition-all duration-200
-                            border text-center
-                            ${isExcluded 
-                              ? "bg-error text-error-content border-error" 
-                              : "bg-base-100 border-base-300 text-base-content hover:border-base-400 hover:bg-base-200"
-                            }
-                            ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
-                          `}
-                          onClick={() => !disabled && handleExerciseToggle(exercise)}
-                          disabled={disabled}
-                        >
-                          <span>{exercise}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-            </div>
-          );
-        })}
+        {hasCustom && (
+          <SelectionSummary
+            title="Custom exclusions"
+            count={customExercises.split(',').filter(e => e.trim()).length}
+          >
+            <span className="text-sm">{customExercises}</span>
+          </SelectionSummary>
+        )}
       </div>
 
-      {/* Instructions */}
-      <div className="p-4 bg-warning/10 rounded-lg border border-warning/20">
-        <h3 className="font-semibold text-warning mb-2">How It Works</h3>
-        <div className="space-y-1 text-warning text-sm">
-          <p>1. Add custom exercises you want to avoid in the text area above</p>
-          <p>2. Browse risky or problematic exercises by category below</p>
-          <p>3. Click category headers to expand/collapse exercise lists</p>
-          <p>4. Select exercises you want to exclude from your workouts</p>
-          <p>5. Both custom and selected exclusions will be avoided in your workout</p>
+      {/* Field 2: Risky Exercise Library */}
+      <div>
+        <div className="flex items-center justify-between mb-2">
+          <label className="block text-sm font-medium text-base-content">
+            Common Exercise Exclusions
+          </label>
+          {hasLibrary && (
+            <button
+              type="button"
+              className="btn btn-xs btn-ghost text-base-content/60"
+              onClick={clearLibrary}
+              disabled={disabled}
+            >
+              Clear Selected
+            </button>
+          )}
+        </div>
+        
+        {hasLibrary && (
+          <SelectionSummary
+            title="Excluded from library"
+            count={libraryExercises.length}
+            className="mb-4"
+          >
+            <span className="text-sm">{getLibraryPreview()}</span>
+          </SelectionSummary>
+        )}
+
+        <div className="space-y-3">
+          {EXERCISE_EXCLUSION_CATEGORIES.map((category) => {
+            const excludedInCategory = category.exercises.filter(ex => 
+              libraryExercises.includes(ex)
+            ).length;
+            
+            return (
+              <div key={category.name} className="border border-base-300 rounded-lg overflow-hidden">
+                {/* Category Header */}
+                <button
+                  type="button"
+                  className={`
+                    w-full flex items-center justify-between p-4 text-left
+                    transition-all duration-200 hover:bg-base-200
+                    ${isExpanded(category.name) ? "bg-base-200" : "bg-base-100"}
+                    ${disabled ? "opacity-50 cursor-not-allowed" : ""}
+                  `}
+                  onClick={() => !disabled && toggleCategory(category.name)}
+                  disabled={disabled}
+                >
+                  <div className="flex items-center space-x-3">
+                    <span className="font-medium text-base-content">{category.name}</span>
+                    <span className="text-sm text-base-content/60">
+                      ({category.exercises.length} risky exercises)
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    {excludedInCategory > 0 && (
+                      <span className="bg-error text-error-content px-2 py-1 rounded-full text-xs font-medium">
+                        {excludedInCategory} excluded
+                      </span>
+                    )}
+                    <span className={`
+                      transition-transform duration-200 text-base-content/40
+                      ${isExpanded(category.name) ? "rotate-180" : ""}
+                    `}>
+                      ▼
+                    </span>
+                  </div>
+                </button>
+
+                {/* Exercise Grid */}
+                {isExpanded(category.name) && (
+                  <div className="p-4 bg-base-100 border-t border-base-300">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                      {category.exercises.map((exercise) => {
+                        const isExcluded = libraryExercises.includes(exercise);
+                        return (
+                          <button
+                            key={exercise}
+                            type="button"
+                            className={`${getCustomizationButtonClass(isExcluded, disabled)} flex items-center justify-center h-auto min-h-[2.5rem] py-3 px-3 rounded-lg text-xs font-medium text-center`}
+                            onClick={() => !disabled && handleLibraryToggle(exercise)}
+                            disabled={disabled}
+                          >
+                            <span>{exercise}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
 
-      {/* Quick Actions */}
-      {hasExclusions && (
-        <div className="flex flex-wrap gap-3">
+      {/* Global Actions */}
+      {hasAnyExclusions && (
+        <div className="flex flex-wrap gap-3 pt-2 border-t border-base-200">
           <button
             type="button"
-            className="btn btn-sm btn-success btn-outline"
+            className="btn btn-sm btn-error btn-outline"
             onClick={clearAll}
             disabled={disabled}
           >
@@ -320,7 +326,17 @@ export default function ExcludeExercisesCustomization({
         </div>
       )}
 
-      {error && <p className="validator-hint mt-2" role="alert">{error}</p>}
+      {/* Instructions */}
+      <div className="p-4 bg-warning/10 rounded-lg border border-warning/20">
+        <h3 className="font-semibold text-warning mb-2">How to Use</h3>
+        <div className="space-y-1 text-warning text-sm">
+          <p><strong>Custom Exclusions:</strong> Type exercises you want to avoid (comma-separated)</p>
+          <p><strong>Exercise Library:</strong> Browse and exclude common risky exercises by category</p>
+          <p>Both methods work independently - use either or both as needed</p>
+        </div>
+      </div>
+
+      <ErrorDisplay error={error} />
     </div>
   );
-}
+});

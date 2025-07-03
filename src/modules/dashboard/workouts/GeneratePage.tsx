@@ -1,35 +1,13 @@
 import { useGeneratedWorkouts } from "@/contexts/GeneratedWorkoutContext";
-import { useAnalytics } from "@/hooks/useAnalytics";
 import { ArrowBigLeft } from "lucide-react";
-import { useEffect, useState, useMemo } from "react";
+import { useState, useCallback } from "react";
 import { useNavigate } from "react-router";
 import WorkoutCustomization from "./components/WorkoutCustomization";
+import WorkoutSummary from "./components/WorkoutSummary";
 import { PerWorkoutOptions } from "./components/types";
-import { sanitizeAnalyticsData } from "./components/utils/validation";
+import { useWorkoutAnalytics } from "./hooks/useWorkoutAnalytics";
 
-// 15 workout prompt examples
-const WORKOUT_PROMPTS = [
-  "30 minute HIIT workout for fat loss",
-  "Strength training for beginners with dumbbells only",
-  "Recovery yoga routine after leg day",
-  "20-minute HIIT workout with no equipment",
-  "Strength training routine for building leg muscles",
-  "Full body workout with dumbbells only",
-  "Low impact cardio for beginners",
-  "Upper body workout focusing on arms and shoulders",
-  "Quick morning yoga routine for flexibility",
-  "Core strengthening workout for abs",
-  "Endurance training plan for marathon preparation",
-  "Bodyweight exercises for hotel room travel workouts",
-  "Kettlebell circuit for full body conditioning",
-  "Back pain relief stretching routine",
-  "Powerlifting workout for strength gains",
-  "Post-workout recovery stretching routine",
-  "15-minute desk-based workout for office breaks",
-  "Workout for improving running speed and endurance",
-  "Senior-friendly gentle exercise routine",
-  "Mobility workout for improving joint health",
-];
+
 
 export default function GenerateWorkoutPage() {
   const navigate = useNavigate();
@@ -42,37 +20,12 @@ export default function GenerateWorkoutPage() {
   const [errors, setErrors] = useState<
     Partial<Record<keyof PerWorkoutOptions, string>>
   >({});
-  const [displayPrompts, setDisplayPrompts] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<"custom" | "quick">("custom");
-  const analytics = useAnalytics();
+  const workoutAnalytics = useWorkoutAnalytics();
 
-  // ✅ FIX: Proper debounced analytics handler to prevent infinite loops
-  const debouncedAnalyticsHandler = useMemo(() => {
-    let timeoutId: ReturnType<typeof setTimeout>;
-    return (...args: unknown[]) => {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => {
-        analytics.track("Workout Preference Changed", {
-          preferenceType: args[0],
-          value: sanitizeAnalyticsData(args[1]),
-          tracked_at: new Date().toISOString(),
-        });
-      }, 1000);
-    };
-  }, [analytics]);
 
-  // Track workout generation page views
-  useEffect(() => {
-    analytics.track("Workout Generation Page Viewed", {
-      tracked_at: new Date().toISOString(),
-    });
-  }, [analytics]);
 
-  // Select 3 random prompts when the component mounts
-  useEffect(() => {
-    const shuffled = [...WORKOUT_PROMPTS].sort(() => 0.5 - Math.random());
-    setDisplayPrompts(shuffled.slice(0, 3));
-  }, []);
+
 
   // Convert per-workout options to string format for backend submission
   const convertOptionsToStrings = (
@@ -160,47 +113,43 @@ export default function GenerateWorkoutPage() {
     }
   };
 
-  const handlePerWorkoutOptionChange = (
+  const handlePerWorkoutOptionChange = useCallback((
     option: keyof PerWorkoutOptions,
     value: unknown
   ) => {
-    setPerWorkoutOptions({
-      ...perWorkoutOptions,
+    setPerWorkoutOptions(prev => ({
+      ...prev,
       [option]: value,
-    });
+    }));
 
     // Clear error for this field if it exists
-    if (errors[option]) {
-      setErrors({
-        ...errors,
-        [option]: undefined,
-      });
-    }
+    setErrors(prev => {
+      if (prev[option]) {
+        return {
+          ...prev,
+          [option]: undefined,
+        };
+      }
+      return prev;
+    });
 
     // ✅ Track preference changes with debouncing to prevent infinite loops
-    debouncedAnalyticsHandler(option, value);
-  };
+    workoutAnalytics.trackPreferenceChange(option, value);
+  }, [workoutAnalytics]);
 
-  // Function to use an example prompt
-  const setExamplePrompt = (example: string) => {
-    setPrompt(example);
-  };
+
 
   // Track successful workout generation
   const handleGenerationSuccess = (workoutId: string) => {
-    analytics.track("Workout Generated Successfully", {
-      workoutId,
-      tracked_at: new Date().toISOString(),
-    });
+    workoutAnalytics.trackGenerationSuccess(workoutId);
   };
 
   // Track generation failures
   const handleGenerationError = (error: string) => {
-    analytics.track("Workout Generation Failed", {
-      error,
-      tracked_at: new Date().toISOString(),
-    });
+    workoutAnalytics.trackGenerationError(error);
   };
+
+
 
   return (
     <div className="p-2 sm:p-4">
@@ -244,11 +193,10 @@ export default function GenerateWorkoutPage() {
             {activeTab === "custom" ? (
               <>
                 <p className="text-sm text-base-content/70 mb-6">
-                  Customize your workout with the options below, then optionally
-                  describe additional requirements
+                  Customize your workout with the options below, then review your selections
                 </p>
 
-                {/* Workout Customization - Now above the textarea */}
+                {/* Workout Customization */}
                 <WorkoutCustomization
                   options={perWorkoutOptions}
                   onChange={handlePerWorkoutOptionChange}
@@ -257,64 +205,20 @@ export default function GenerateWorkoutPage() {
                   mode="custom"
                 />
 
-                {/* Text area - Now below customization */}
-                <div className="mb-6">
-                  <label className="block mb-2 font-medium flex justify-between items-center">
-                    <span>
-                      Additional Requirements{" "}
-                      <span className="text-sm font-normal text-base-content/70">
-                        (optional)
-                      </span>
-                    </span>
-                    <button
-                      type="button"
-                      className="btn btn-sm btn-ghost"
-                      onClick={() => {
-                        const shuffled = [...WORKOUT_PROMPTS].sort(
-                          () => 0.5 - Math.random()
-                        );
-                        setDisplayPrompts(shuffled.slice(0, 3));
-                      }}
-                      aria-label="Refresh examples"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="lucide lucide-refresh-cw"
-                      >
-                        <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
-                        <path d="M21 3v5h-5" />
-                        <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
-                        <path d="M3 21v-5h5" />
-                      </svg>
-                    </button>
-                  </label>
+                {/* Inline Review Summary */}
+                <WorkoutSummary
+                  options={perWorkoutOptions}
+                  mode={activeTab}
+                />
 
-                  <div className="mockup-code mb-3 text-sm">
-                    {displayPrompts.map((example, index) => (
-                      <pre
-                        key={index}
-                        data-prefix=">"
-                        className={`text-${
-                          index === 0
-                            ? "success"
-                            : index === 1
-                            ? "info"
-                            : "warning"
-                        } cursor-pointer hover:bg-base-300`}
-                        onClick={() => setExamplePrompt(example)}
-                      >
-                        <code>{example}</code>
-                      </pre>
-                    ))}
-                  </div>
+                {/* Additional Requirements - Now after review */}
+                <div className="mb-6">
+                  <label className="block mb-2 font-medium">
+                    Additional Requirements{" "}
+                    <span className="text-sm font-normal text-base-content/70">
+                      (optional)
+                    </span>
+                  </label>
 
                   <textarea
                     className="textarea textarea-bordered validator w-full min-h-32"
@@ -339,6 +243,12 @@ export default function GenerateWorkoutPage() {
                   disabled={isGenerating}
                   mode="quick"
                 />
+
+                {/* Inline Review Summary for Quick Mode */}
+                <WorkoutSummary
+                  options={perWorkoutOptions}
+                  mode={activeTab}
+                />
               </>
             )}
 
@@ -353,8 +263,6 @@ export default function GenerateWorkoutPage() {
                     <span className="loading loading-spinner"></span>
                     Generating...
                   </>
-                ) : activeTab === "quick" ? (
-                  "Generate Quick Workout"
                 ) : (
                   "Generate Workout"
                 )}
