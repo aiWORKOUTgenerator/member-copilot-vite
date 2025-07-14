@@ -67,10 +67,19 @@ export class PromptServiceImpl implements PromptService {
     }>
   ): Promise<void> {
     try {
-      await this.apiService.post<
-        void,
-        { promptValues: Array<{ prompt_id: string; value: string | number }> }
-      >(`${this.baseEndpoint}/submit-prompts/`, { promptValues });
+      // Transform the payload to include the other_choice field that the API expects
+      const transformedPayload = {
+        promptValues: promptValues.map(item => ({
+          prompt_id: item.prompt_id,
+          value: item.value,
+          other_choice: false  // Default to false as per API requirements
+        }))
+      };
+
+      await this.apiService.post<void, typeof transformedPayload>(
+        `${this.baseEndpoint}/submit-prompts/`,
+        transformedPayload
+      );
     } catch (error) {
       console.error("Error in submitPromptValues:", error);
       throw new Error("Failed to submit prompt values");
