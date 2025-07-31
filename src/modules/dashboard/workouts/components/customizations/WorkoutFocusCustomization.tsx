@@ -11,8 +11,7 @@ import {
 } from "../utils/customizationComponents";
 import {
   isWorkoutFormatValue,
-  isWorkoutFocusConfigurationData,
-  safeConcat
+  isWorkoutFocusConfigurationData
 } from "../utils/validation";
 import {
   DEFAULT_FOCUS_METADATA,
@@ -669,35 +668,7 @@ export default memo(function WorkoutFocusCustomization({
     };
   }, []);
 
-  // Update parent data with type safety
-  const updateParentData = useCallback((
-    focus: string = selectedFocus,
-    format: string = selectedFormat
-  ) => {
-    if (!focus || focus === "") {
-      onChange(undefined);
-      return;
-    }
-    
-    const focusOption = ENHANCED_WORKOUT_FOCUS_OPTIONS.find(opt => opt.value === focus);
-    if (!focusOption) return;
-    
-    const formatOption = format && format !== "" ? 
-      WORKOUT_FORMATS[focus]?.find((f) => f.value === format) : 
-      undefined;
-    
-    const configuration = buildFocusConfiguration(
-      focus,
-      focusOption.label,
-      format && format !== "" ? format : undefined,
-      formatOption?.label
-    );
-    
-    // Validate configuration before passing to parent
-    if (isWorkoutFocusConfigurationData(configuration)) {
-      onChange(configuration);
-    }
-  }, [selectedFocus, selectedFormat, onChange, buildFocusConfiguration]);
+
 
   // Handle focus selection
   const handleFocusSelection = useCallback((focusValue: string) => {

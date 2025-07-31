@@ -188,7 +188,7 @@ export const formatWorkoutSelection = (
         // Validate configuration data
         if (!isWorkoutFocusConfigurationData(value)) return null;
         
-        const focusData = value;
+        const focusData = value as WorkoutFocusConfigurationData;
         if (!focusData.selected) return null;
         
         // For focus-only configuration, show simple label

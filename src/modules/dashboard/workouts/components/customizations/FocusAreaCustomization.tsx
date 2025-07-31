@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback, memo } from "react";
+import { useState, useCallback, memo } from "react";
 import { CustomizationComponentProps, HierarchicalSelectionData } from "../types";
 import { 
   generateHierarchicalBadgeClass,
