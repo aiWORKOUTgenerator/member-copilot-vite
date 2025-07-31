@@ -8,7 +8,7 @@ export default function WorkoutCustomization({
   onChange,
   errors,
   disabled = false,
-  mode = "custom",
+  mode = "quick",
 }: WorkoutCustomizationProps) {
   const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
 
