@@ -129,7 +129,7 @@ New year, new goals! Join our community challenge and let's crush our fitness go
 
 ## Prizes & Recognition:
 - **Top 3 Most Consistent**: Free month of premium features
-- **Most Improved**: Custom workout plan consultation
+- **Most Improved**: Detailed workout plan consultation
 - **Community Choice**: Voted by fellow members
 
 ## Tips for Success:

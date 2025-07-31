@@ -21,6 +21,7 @@ export * from "./molecules/InfoCard";
 export * from "./molecules/UserDropdown";
 export * from "./molecules/SignOutButton";
 export * from "./molecules/TrainerPersonaCard";
+export * from "./molecules/ErrorBoundary";
 export * from "./molecules";
 
 // Organisms

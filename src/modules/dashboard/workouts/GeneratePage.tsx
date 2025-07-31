@@ -42,7 +42,7 @@ export default function GenerateWorkoutPage() {
     Partial<Record<keyof PerWorkoutOptions, string>>
   >({});
   const [displayPrompts, setDisplayPrompts] = useState<string[]>([]);
-  const [activeTab, setActiveTab] = useState<"custom" | "quick">("custom");
+  const [activeTab, setActiveTab] = useState<"detailed" | "quick">("quick");
   const analytics = useAnalytics();
 
   // Track workout generation page views
@@ -88,7 +88,7 @@ export default function GenerateWorkoutPage() {
     // For quick workout, use default prompt if none provided
     const workoutPrompt = activeTab === "quick" && !prompt.trim() ? "" : prompt;
 
-    if (activeTab === "custom" && !workoutPrompt.trim()) return;
+    if (activeTab === "detailed" && !workoutPrompt.trim()) return;
 
     // Validate workout duration if provided
     const newErrors: Partial<Record<keyof PerWorkoutOptions, string>> = {};
@@ -213,28 +213,43 @@ export default function GenerateWorkoutPage() {
             <button
               type="button"
               className={`btn join-item ${
-                activeTab === "custom" ? "btn-primary" : "btn-outline"
-              }`}
-              onClick={() => setActiveTab("custom")}
-            >
-              Custom Workout
-            </button>
-            <button
-              type="button"
-              className={`btn join-item ${
                 activeTab === "quick" ? "btn-primary" : "btn-outline"
               }`}
               onClick={() => setActiveTab("quick")}
             >
-              Quick Workout
+              Quick Workout Setup
+            </button>
+            <button
+              type="button"
+              className={`btn join-item ${
+                activeTab === "detailed" ? "btn-primary" : "btn-outline"
+              }`}
+              onClick={() => setActiveTab("detailed")}
+            >
+              Detailed Workout Setup
             </button>
           </div>
 
           <form onSubmit={handleSubmit}>
-            {activeTab === "custom" ? (
+            {activeTab === "quick" ? (
               <>
                 <p className="text-sm text-base-content/70 mb-6">
-                  Customize your workout with the options below, then optionally
+                  Set up a quick workout based on your profile and preferences
+                </p>
+
+                {/* Quick Workout - Only duration */}
+                <WorkoutCustomization
+                  options={perWorkoutOptions}
+                  onChange={handlePerWorkoutOptionChange}
+                  errors={errors}
+                  disabled={isGenerating}
+                  mode="quick"
+                />
+              </>
+            ) : (
+              <>
+                <p className="text-sm text-base-content/70 mb-6">
+                  Set up your detailed workout with the options below, then optionally
                   describe additional requirements
                 </p>
 
@@ -244,7 +259,7 @@ export default function GenerateWorkoutPage() {
                   onChange={handlePerWorkoutOptionChange}
                   errors={errors}
                   disabled={isGenerating}
-                  mode="custom"
+                  mode="detailed"
                 />
 
                 {/* Text area - Now below customization */}
@@ -315,21 +330,6 @@ export default function GenerateWorkoutPage() {
                   ></textarea>
                 </div>
               </>
-            ) : (
-              <>
-                <p className="text-sm text-base-content/70 mb-6">
-                  Generate a quick workout based on your profile and preferences
-                </p>
-
-                {/* Quick Workout - Only duration */}
-                <WorkoutCustomization
-                  options={perWorkoutOptions}
-                  onChange={handlePerWorkoutOptionChange}
-                  errors={errors}
-                  disabled={isGenerating}
-                  mode="quick"
-                />
-              </>
             )}
 
             <div className="card-actions justify-end">
@@ -343,10 +343,10 @@ export default function GenerateWorkoutPage() {
                     <span className="loading loading-spinner"></span>
                     Generating...
                   </>
-                ) : activeTab === "quick" ? (
-                  "Generate Quick Workout"
-                ) : (
+                ) : activeTab === "detailed" ? (
                   "Generate Workout"
+                ) : (
+                  "Generate Quick Workout"
                 )}
               </button>
             </div>
