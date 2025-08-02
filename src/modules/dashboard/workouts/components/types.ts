@@ -9,6 +9,8 @@ export interface PerWorkoutOptions {
   customization_sleep?: number;
   customization_include?: string;
   customization_exclude?: string;
+  // New field for quick workout focus selection
+  customization_goal?: string; // "energizing_boost", "quick_sweat", etc.
 }
 
 export interface CustomizationComponentProps<T = unknown> {
@@ -34,4 +36,8 @@ export interface WorkoutCustomizationProps {
   errors: Partial<Record<keyof PerWorkoutOptions, string>>;
   disabled?: boolean;
   mode?: "detailed" | "quick";
+  // Validation props for quick mode
+  validateFocusAndEnergy?: (values: PerWorkoutOptions) => boolean;
+  validateDurationAndEquipment?: (values: PerWorkoutOptions) => boolean;
+  touchedFields?: Set<keyof PerWorkoutOptions>;
 }

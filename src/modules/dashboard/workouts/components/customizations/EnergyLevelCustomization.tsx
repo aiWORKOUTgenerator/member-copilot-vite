@@ -58,7 +58,7 @@ export default function EnergyLevelCustomization({
     <div>
       <div className="mb-4">
         <p className="text-sm text-base-content/80 mb-3">
-          Rate your current energy level (1 = Very Low, 5 = Very High)
+          Rate your current energy level (1 = Very Low, 6 = Very High)
         </p>
 
         <div className="rating rating-lg gap-2">

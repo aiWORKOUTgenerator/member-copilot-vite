@@ -1,10 +1,14 @@
 import { useGeneratedWorkouts } from "@/contexts/GeneratedWorkoutContext";
 import { ArrowBigLeft } from "lucide-react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router";
 import WorkoutCustomization from "./components/WorkoutCustomization";
 import { PerWorkoutOptions } from "./components/types";
 import { useAnalytics } from "@/hooks/useAnalytics";
+
+
+
+
 
 // 15 workout prompt examples
 const WORKOUT_PROMPTS = [
@@ -31,19 +35,21 @@ const WORKOUT_PROMPTS = [
 ];
 
 export default function GenerateWorkoutPage() {
-  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState<"quick" | "detailed">("quick");
+  const [activeQuickStep, setActiveQuickStep] = useState<"focus-energy" | "duration-equipment">("focus-energy");
   const [prompt, setPrompt] = useState("");
+  const [perWorkoutOptions, setPerWorkoutOptions] = useState<PerWorkoutOptions>({});
+  const [errors] = useState<Partial<Record<keyof PerWorkoutOptions, string>>>({});
+
+  const prevStepRef = useRef<"focus-energy" | "duration-equipment">(activeQuickStep);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [perWorkoutOptions, setPerWorkoutOptions] = useState<PerWorkoutOptions>(
-    {}
-  );
-  const { createWorkout } = useGeneratedWorkouts();
-  const [errors, setErrors] = useState<
-    Partial<Record<keyof PerWorkoutOptions, string>>
-  >({});
   const [displayPrompts, setDisplayPrompts] = useState<string[]>([]);
-  const [activeTab, setActiveTab] = useState<"detailed" | "quick">("quick");
+
+  const { createWorkout } = useGeneratedWorkouts();
+  const navigate = useNavigate();
   const analytics = useAnalytics();
+
+
 
   // Track workout generation page views
   useEffect(() => {
@@ -58,7 +64,7 @@ export default function GenerateWorkoutPage() {
     setDisplayPrompts(shuffled.slice(0, 3));
   }, []);
 
-  // Convert per-workout options to string format for backend submission
+  // Helper function to convert options to string format for API submission
   const convertOptionsToStrings = (
     options: PerWorkoutOptions
   ): Record<string, string> => {
@@ -79,65 +85,105 @@ export default function GenerateWorkoutPage() {
       }
     });
 
+    // Log the conversion for debugging (only in development)
+    if (import.meta.env.DEV) {
+      console.log("Converting workout options to strings:", {
+        original: options,
+        converted: stringOptions,
+        mode: activeTab,
+        hasGoal: !!options.customization_goal,
+        hasEnergy: !!options.customization_energy,
+        hasDuration: !!options.customization_duration,
+        hasEquipment: !!options.customization_equipment,
+      });
+    }
+
     return stringOptions;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // For quick workout, use default prompt if none provided
-    const workoutPrompt = activeTab === "quick" && !prompt.trim() ? "" : prompt;
+    // For quick workout, handle step navigation
+    if (activeTab === "quick") {
+      if (activeQuickStep === "focus-energy") {
+        // Simply advance to next step without validation
+        setActiveQuickStep("duration-equipment");
+        return;
+      } else {
+        // Proceed with workout generation without validation
 
-    if (activeTab === "detailed" && !workoutPrompt.trim()) return;
+        // Proceed with workout generation
+        setIsGenerating(true);
 
-    // Validate workout duration if provided
-    const newErrors: Partial<Record<keyof PerWorkoutOptions, string>> = {};
+        try {
+          // Convert per-workout options to string format
+          const stringOptions = convertOptionsToStrings(perWorkoutOptions);
 
-    if (perWorkoutOptions.customization_duration !== undefined) {
-      const duration = Number(perWorkoutOptions.customization_duration);
-      if (isNaN(duration) || duration < 5 || duration > 300) {
-        newErrors.customization_duration =
-          "Duration must be between 5 and 300 minutes";
+          // Submit string-formatted customization options
+          const combinedParams = stringOptions;
+
+          const response = await createWorkout(
+            import.meta.env.VITE_GENERATED_WORKOUT_CONFIGURATION_ID,
+            combinedParams,
+            "" // No prompt for quick workout
+          );
+
+          console.log("Generated workout:", response);
+          console.log("Submitted customization options:", stringOptions);
+
+          // Redirect to the generated workout page
+          navigate(`/dashboard/workouts/${response.id}`);
+
+          // Track successful workout generation
+          handleGenerationSuccess(response.id);
+        } catch (error) {
+          console.error("Failed to generate workout:", error);
+          setIsGenerating(false);
+
+          // Track generation failures
+          handleGenerationError(
+            error instanceof Error ? error.message : String(error)
+          );
+        }
       }
-    }
+    } else {
+      // Detailed mode - use existing logic
+      const workoutPrompt = prompt.trim();
+      if (!workoutPrompt) return;
 
-    // If there are validation errors, don't proceed
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
+      setIsGenerating(true);
 
-    setIsGenerating(true);
+      try {
+        // Convert per-workout options to string format
+        const stringOptions = convertOptionsToStrings(perWorkoutOptions);
 
-    try {
-      // Convert per-workout options to string format
-      const stringOptions = convertOptionsToStrings(perWorkoutOptions);
+        // Submit string-formatted customization options
+        const combinedParams = stringOptions;
 
-      // Submit string-formatted customization options
-      const combinedParams = stringOptions;
+        const response = await createWorkout(
+          import.meta.env.VITE_GENERATED_WORKOUT_CONFIGURATION_ID,
+          combinedParams,
+          workoutPrompt
+        );
 
-      const response = await createWorkout(
-        import.meta.env.VITE_GENERATED_WORKOUT_CONFIGURATION_ID,
-        combinedParams,
-        workoutPrompt
-      );
+        console.log("Generated workout:", response);
+        console.log("Submitted customization options:", stringOptions);
 
-      console.log("Generated workout:", response);
-      console.log("Submitted customization options:", stringOptions);
+        // Redirect to the generated workout page
+        navigate(`/dashboard/workouts/${response.id}`);
 
-      // Redirect to the generated workout page
-      navigate(`/dashboard/workouts/${response.id}`);
+        // Track successful workout generation
+        handleGenerationSuccess(response.id);
+      } catch (error) {
+        console.error("Failed to generate workout:", error);
+        setIsGenerating(false);
 
-      // Track successful workout generation
-      handleGenerationSuccess(response.id);
-    } catch (error) {
-      console.error("Failed to generate workout:", error);
-      setIsGenerating(false);
-
-      // Track generation failures
-      handleGenerationError(
-        error instanceof Error ? error.message : String(error)
-      );
+        // Track generation failures
+        handleGenerationError(
+          error instanceof Error ? error.message : String(error)
+        );
+      }
     }
   };
 
@@ -145,18 +191,12 @@ export default function GenerateWorkoutPage() {
     option: keyof PerWorkoutOptions,
     value: unknown
   ) => {
-    setPerWorkoutOptions({
+    // Update options
+    const newOptions = {
       ...perWorkoutOptions,
       [option]: value,
-    });
-
-    // Clear error for this field if it exists
-    if (errors[option]) {
-      setErrors({
-        ...errors,
-        [option]: undefined,
-      });
-    }
+    };
+    setPerWorkoutOptions(newOptions);
 
     // Track preference changes
     handlePreferenceChange(option, value);
@@ -171,6 +211,15 @@ export default function GenerateWorkoutPage() {
   const handleGenerationSuccess = (workoutId: string) => {
     analytics.track("Workout Generated Successfully", {
       workoutId,
+      mode: activeTab,
+      hasGoal: !!perWorkoutOptions.customization_goal,
+      hasEnergy: !!perWorkoutOptions.customization_energy,
+      hasDuration: !!perWorkoutOptions.customization_duration,
+      hasEquipment: !!perWorkoutOptions.customization_equipment,
+      goal: perWorkoutOptions.customization_goal,
+      energy: perWorkoutOptions.customization_energy,
+      duration: perWorkoutOptions.customization_duration,
+      equipment: perWorkoutOptions.customization_equipment,
       tracked_at: new Date().toISOString(),
     });
   };
@@ -179,6 +228,11 @@ export default function GenerateWorkoutPage() {
   const handleGenerationError = (error: string) => {
     analytics.track("Workout Generation Failed", {
       error,
+      mode: activeTab,
+      hasGoal: !!perWorkoutOptions.customization_goal,
+      hasEnergy: !!perWorkoutOptions.customization_energy,
+      hasDuration: !!perWorkoutOptions.customization_duration,
+      hasEquipment: !!perWorkoutOptions.customization_equipment,
       tracked_at: new Date().toISOString(),
     });
   };
@@ -188,8 +242,52 @@ export default function GenerateWorkoutPage() {
     analytics.track("Workout Preference Changed", {
       preferenceType,
       value,
+      mode: activeTab,
       tracked_at: new Date().toISOString(),
     });
+  };
+
+          // Track step changes
+        useEffect(() => {
+          // Only update when actually switching between steps
+          const prevStep = prevStepRef.current;
+          if (prevStep !== activeQuickStep) {
+            prevStepRef.current = activeQuickStep;
+          }
+        }, [activeQuickStep]);
+
+  // No longer using complex selection counting for quick workout
+
+  // Simple selection check for quick workout
+  const hasFocusEnergySelections = !!(perWorkoutOptions.customization_goal && perWorkoutOptions.customization_energy);
+  const hasDurationEquipmentSelections = !!(perWorkoutOptions.customization_duration && perWorkoutOptions.customization_equipment?.length);
+  
+  const errorSummary = {
+    hasCurrentStepErrors: false,
+    currentStepErrorCount: 0,
+    canProceed: activeQuickStep === "focus-energy" ? hasFocusEnergySelections : hasDurationEquipmentSelections
+  };
+
+  // Get button state based on active tab
+  const getButtonState = () => {
+    if (activeTab === "detailed") {
+      const hasErrors = Object.keys(errors).length > 0;
+      return {
+        className: "btn btn-primary",
+        disabled: hasErrors,
+        text: "Generate Workout"
+      };
+    }
+
+    // Quick mode - simple button state
+    const canProceed = errorSummary.canProceed;
+    const isFocusEnergyStep = activeQuickStep === "focus-energy";
+    
+    return {
+      className: canProceed ? "btn btn-primary" : "btn btn-disabled",
+      disabled: !canProceed,
+      text: isFocusEnergyStep ? "Next" : "Generate Quick Workout"
+    };
   };
 
   return (
@@ -241,9 +339,12 @@ export default function GenerateWorkoutPage() {
                 <WorkoutCustomization
                   options={perWorkoutOptions}
                   onChange={handlePerWorkoutOptionChange}
-                  errors={errors}
+                  errors={{}}
                   disabled={isGenerating}
                   mode="quick"
+                  activeQuickStep={activeQuickStep}
+                  onQuickStepChange={setActiveQuickStep}
+
                 />
               </>
             ) : (
@@ -333,22 +434,38 @@ export default function GenerateWorkoutPage() {
             )}
 
             <div className="card-actions justify-end">
+              {/* Simple progress indicator for quick mode */}
+              {activeTab === "quick" && (
+                <div className="flex items-center gap-3 text-sm text-base-content/60 mr-auto">
+                  <div className="flex items-center gap-2">
+                    <div className={`w-2 h-2 rounded-full transition-colors duration-200 ${
+                      errorSummary.canProceed ? 'bg-success' : 'bg-base-content/40'
+                    }`}></div>
+                    <span className="transition-opacity duration-200">
+                      {errorSummary.canProceed ? "Ready to proceed" : "Complete current step"}
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              {/* Enhanced submit button */}
               <button
                 type="submit"
-                className="btn btn-primary"
-                disabled={isGenerating || Object.keys(errors).length > 0}
+                className={`${getButtonState().className} transition-all duration-200`}
+                disabled={getButtonState().disabled}
+                title={getButtonState().disabled ? getButtonState().text : undefined}
               >
                 {isGenerating ? (
                   <>
                     <span className="loading loading-spinner"></span>
                     Generating...
                   </>
-                ) : activeTab === "detailed" ? (
-                  "Generate Workout"
                 ) : (
-                  "Generate Quick Workout"
+                  getButtonState().text
                 )}
               </button>
+              
+
             </div>
           </form>
         </div>

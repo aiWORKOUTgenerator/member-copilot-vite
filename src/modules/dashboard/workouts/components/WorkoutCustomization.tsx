@@ -1,7 +1,62 @@
-import { Target } from "lucide-react";
+import { Target, Battery, Clock, Dumbbell } from "lucide-react";
 import { WorkoutCustomizationProps } from "./types";
 import { CUSTOMIZATION_CONFIG } from "./customizations";
 import { useState } from "react";
+import {
+  StepIndicator,
+  DetailedSelector,
+} from "@/ui/shared/molecules";
+import { LevelDots } from "@/ui/shared/atoms";
+
+import { QUICK_WORKOUT_FOCUS_OPTIONS, ENERGY_LEVEL_OPTIONS, QUICK_WORKOUT_DURATION_OPTIONS, QUICK_WORKOUT_EQUIPMENT_OPTIONS } from "../constants";
+
+// Focus options with intensity indicators
+const FOCUS_OPTIONS_WITH_INTENSITY = QUICK_WORKOUT_FOCUS_OPTIONS.map((option) => {
+  // Assign intensity levels based on workout type
+  let intensityLevel: number;
+  switch (option.id) {
+    case "gentle_recovery":
+    case "stress_reduction":
+      intensityLevel = 2; // Low intensity
+      break;
+    case "improve_posture":
+    case "core_abs":
+      intensityLevel = 4; // Medium intensity
+      break;
+    case "energizing_boost":
+    case "quick_sweat":
+      intensityLevel = 6; // High intensity
+      break;
+    default:
+      intensityLevel = 3; // Default medium
+  }
+
+  return {
+    ...option,
+    tertiary: <LevelDots count={6} activeIndex={intensityLevel - 1} size="sm" />
+  };
+});
+
+// Energy options with LevelDots indicators
+const ENERGY_OPTIONS_WITH_DOTS = ENERGY_LEVEL_OPTIONS.map((option) => ({
+  ...option,
+  tertiary: <LevelDots count={6} activeIndex={parseInt(option.id) - 1} size="sm" />
+}));
+
+// Duration options with subtitle as tertiary content
+const DURATION_OPTIONS_WITH_SUBTITLE = QUICK_WORKOUT_DURATION_OPTIONS.map((option) => ({
+  id: option.id,
+  title: option.title,
+  description: option.description,
+  tertiary: option.subtitle
+}));
+
+// Equipment options (no tertiary content needed)
+const EQUIPMENT_OPTIONS = QUICK_WORKOUT_EQUIPMENT_OPTIONS.map((option) => ({
+  id: option.id,
+  title: option.title,
+  description: option.description
+}));
 
 export default function WorkoutCustomization({
   options,
@@ -9,8 +64,33 @@ export default function WorkoutCustomization({
   errors,
   disabled = false,
   mode = "quick",
-}: WorkoutCustomizationProps) {
+  activeQuickStep,
+  onQuickStepChange,
+
+}: WorkoutCustomizationProps & {
+  activeQuickStep?: "focus-energy" | "duration-equipment";
+  onQuickStepChange?: (step: "focus-energy" | "duration-equipment") => void;
+}) {
   const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
+  const [internalActiveQuickStep, setInternalActiveQuickStep] = useState<"focus-energy" | "duration-equipment">("focus-energy");
+
+  // Use external step state if provided, otherwise use internal state
+  const currentStep = activeQuickStep || internalActiveQuickStep;
+  const setCurrentStep = onQuickStepChange || setInternalActiveQuickStep;
+
+  // Simple step click handler without validation
+  const handleStepClick = (stepId: string) => {
+    if (stepId === "focus-energy" || stepId === "duration-equipment") {
+      const newStep = stepId as "focus-energy" | "duration-equipment";
+      const currentStepIndex = currentStep === "focus-energy" ? 0 : 1;
+      const newStepIndex = newStep === "focus-energy" ? 0 : 1;
+
+      // Only allow jumping backwards
+      if (newStepIndex < currentStepIndex) {
+        setCurrentStep(newStep);
+      }
+    }
+  };
 
   const handleChange = (
     key: keyof WorkoutCustomizationProps["options"],
@@ -18,6 +98,8 @@ export default function WorkoutCustomization({
   ) => {
     onChange(key, value);
   };
+
+
 
   // Helper function to format the current selection for display
   const formatCurrentSelection = (
@@ -133,43 +215,121 @@ export default function WorkoutCustomization({
     }
   };
 
-  // For quick mode, only show duration
+  // For quick mode, show step indicator with 2 segments
   if (mode === "quick") {
-    const durationConfig = CUSTOMIZATION_CONFIG.find(
-      (config) => config.key === "customization_duration"
-    );
-
-    if (!durationConfig) return null;
-
-    const IconComponent = durationConfig.icon;
-    const CustomizationComponent = durationConfig.component;
-    const value = options[durationConfig.key];
-    const error = errors[durationConfig.key];
-
     return (
       <div className="mb-6">
-        <div className="relative">
-          <div className={`border border-base-300 rounded-lg p-4`}>
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center">
-                <IconComponent className="w-5 h-5 mr-3" />
-                <span className="font-medium">{durationConfig.label}</span>
-              </div>
-            </div>
+        <h3 className="text-lg font-semibold mb-4 flex items-center flex-wrap gap-2">
+          <Target className="w-5 h-5" />
+          <span>Quick Workout Setup</span>
+          <span className="text-sm font-normal text-base-content/70">
+            (all required)
+          </span>
+        </h3>
 
-            <p className="text-sm text-base-content/70 mb-3">
-              Choose how long you want your workout to be
-            </p>
-            <CustomizationComponent
-              value={value}
-              onChange={(newValue) =>
-                handleChange(durationConfig.key, newValue)
-              }
+        {/* Step Indicator / Linear Stepper */}
+                        <StepIndicator
+          steps={[
+            {
+              id: "focus-energy",
+              label: "Focus & Energy",
+              disabled: false, // First step is always enabled
+              hasErrors: false // No validation errors
+            },
+            {
+              id: "duration-equipment",
+              label: "Duration & Equipment",
+              disabled: false, // Always enabled
+              hasErrors: false // No validation errors
+            },
+          ]}
+          currentStep={currentStep}
+          onStepClick={handleStepClick}
+          disabled={disabled}
+          showConnectors={true}
+          size="md"
+          spacing="spacious"
+        />
+
+        {/* Step content */}
+        {currentStep === "focus-energy" && (
+          <div className="space-y-6">
+            <DetailedSelector
+              icon={Target}
+              options={FOCUS_OPTIONS_WITH_INTENSITY}
+              selectedValue={options.customization_goal || undefined}
+              onChange={(focus) => handleChange("customization_goal", focus)}
+              question="What's your main goal for this workout?"
+              description="Choose the primary focus that best matches your current needs and goals"
               disabled={disabled}
-              error={error}
+              error={undefined}
+              gridCols={3}
+              colorScheme="primary"
+              required={false}
+            />
+            
+            <DetailedSelector
+              icon={Battery}
+              options={ENERGY_OPTIONS_WITH_DOTS}
+              selectedValue={options.customization_energy || undefined}
+              onChange={(energy) => handleChange("customization_energy", energy)}
+              disabled={disabled}
+              error={undefined}
+              question="How energetic are you feeling today?"
+              description="This helps us tailor the workout intensity to your current energy level."
+              gridCols={3}
+              colorScheme="primary"
+              required={false}
             />
           </div>
-        </div>
+        )}
+
+        {currentStep === "duration-equipment" && (
+          <div className="space-y-6">
+            <DetailedSelector
+              icon={Clock}
+              options={DURATION_OPTIONS_WITH_SUBTITLE}
+              selectedValue={options.customization_duration?.toString() || undefined}
+              onChange={(duration) => {
+                // RadioGroupOfCards passes the entire item object, so we need to extract the id
+                const durationItem = Array.isArray(duration) ? duration[0] : duration;
+                const durationId = (durationItem as any)?.id || durationItem;
+                const durationValue = typeof durationId === 'string' ? parseInt(durationId, 10) : Number(durationId);
+                if (isNaN(durationValue)) {
+                  console.error('Invalid duration value:', duration);
+                  return;
+                }
+                handleChange("customization_duration", durationValue);
+              }}
+              question="How long do you want your workout to be?"
+              description="Choose the duration that fits your schedule and energy level"
+              disabled={disabled}
+              error={undefined}
+              gridCols={3}
+              colorScheme="accent"
+              required={true}
+            />
+            
+            <DetailedSelector
+              icon={Dumbbell}
+              options={EQUIPMENT_OPTIONS}
+              selectedValue={options.customization_equipment?.[0] || undefined}
+              onChange={(equipment) => {
+                // RadioGroupOfCards passes the entire item object, so we need to extract the id
+                const equipmentItem = Array.isArray(equipment) ? equipment[0] : equipment;
+                const equipmentId = (equipmentItem as any)?.id || equipmentItem;
+                handleChange("customization_equipment", [equipmentId]);
+              }}
+              question="What equipment do you have available?"
+              description="Choose the equipment you have available for your workout"
+              disabled={disabled}
+              error={undefined}
+              gridCols={3}
+              colorScheme="primary"
+              required={true}
+            />
+          </div>
+        )}
       </div>
     );
   }
