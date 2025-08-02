@@ -4,6 +4,9 @@
  * This file exports all UI components that should be accessible to features
  */
 
+// Design Tokens
+export * from "./tokens";
+
 // Atoms
 export * from "./atoms/Button";
 export * from "./atoms/Input";
