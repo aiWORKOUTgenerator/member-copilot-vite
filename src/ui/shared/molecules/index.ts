@@ -2,7 +2,7 @@ export * from "./PromptHeader";
 export * from "./InputField";
 export * from "./ChoiceGroup";
 export { default as StarRating } from "./StarRating";
-export { default as FeedbackModal, useFeedbackModal } from "./FeedbackModal";
+export { default as FeedbackModal } from "../../../modules/dashboard/workouts/components/FeedbackModal";
 
 // Quick Workout Components
 export * from "./StepIndicator";

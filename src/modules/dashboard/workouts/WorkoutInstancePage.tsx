@@ -544,6 +544,24 @@ export default function WorkoutInstancePage() {
     setShowCompleteConfirm(false);
   };
 
+  const loadRecommendedExercises = useCallback(
+    async (currentExercise: Exercise) => {
+      setIsLoadingRecommendations(true);
+      try {
+        const recommendations = await getExerciseRecommendations(
+          currentExercise
+        );
+        setRecommendedExercises(recommendations);
+      } catch (error) {
+        console.error("Error loading recommendations:", error);
+        setRecommendedExercises([]);
+      } finally {
+        setIsLoadingRecommendations(false);
+      }
+    },
+    [getExerciseRecommendations]
+  );
+
   const handleExerciseSwap = useCallback(
     (
       exerciseId: string,
@@ -568,21 +586,8 @@ export default function WorkoutInstancePage() {
       // Load recommended exercises
       loadRecommendedExercises(currentExercise);
     },
-    [currentInstance]
+    [currentInstance, loadRecommendedExercises]
   );
-
-  const loadRecommendedExercises = async (currentExercise: Exercise) => {
-    setIsLoadingRecommendations(true);
-    try {
-      const recommendations = await getExerciseRecommendations(currentExercise);
-      setRecommendedExercises(recommendations);
-    } catch (error) {
-      console.error("Error loading recommendations:", error);
-      setRecommendedExercises([]);
-    } finally {
-      setIsLoadingRecommendations(false);
-    }
-  };
 
   const handleSwapWithRecommended = (
     recommendedExercise: RecommendedExercise
