@@ -3,7 +3,7 @@
 import { PortalConfiguration } from "@/domain/interfaces/services/SubscriptionService";
 import { useState } from "react";
 import { useBillingContext } from "@/hooks/useBillingContext";
-import { useSubscription } from "@/contexts/SubscriptionContext";
+import { useSubscription } from "@/hooks/useSubscription";
 
 export default function BillingHistoryPage() {
   const { createCustomerPortalSession } = useSubscription();

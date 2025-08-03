@@ -6,7 +6,7 @@ import {
 } from "@/contexts/GeneratedWorkoutContext";
 import { GeneratedWorkout } from "@/domain/entities/generatedWorkout";
 import { useUserAccess } from "@/hooks";
-import { MeteredFeature } from "@/hooks/useUserAccess";
+import { MeteredFeature } from "@/domain/entities/meteredFeatures";
 import LoadingState from "@/ui/shared/atoms/LoadingState";
 import AccessAwareComponent from "@/ui/shared/molecules/AccessAwareComponent";
 import EmptyStateBasic from "@/ui/shared/molecules/EmptyState";

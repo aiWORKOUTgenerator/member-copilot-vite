@@ -1,6 +1,6 @@
 "use client";
 
-import { useSubscription } from "@/contexts/SubscriptionContext";
+import { useSubscription } from "@/hooks/useSubscription";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { useBillingContext } from "@/hooks/useBillingContext";
 import PricingComponent from "@/ui/shared/organisms/PricingComponent";

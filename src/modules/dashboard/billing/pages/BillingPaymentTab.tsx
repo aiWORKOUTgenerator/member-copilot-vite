@@ -1,6 +1,6 @@
 "use client";
 
-import { useSubscription } from "@/contexts/SubscriptionContext";
+import { useSubscription } from "@/hooks/useSubscription";
 import { PortalConfiguration } from "@/domain/interfaces/services/SubscriptionService";
 import { useBillingContext } from "@/hooks/useBillingContext";
 import { useState } from "react";

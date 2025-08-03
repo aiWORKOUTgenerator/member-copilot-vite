@@ -1,5 +1,8 @@
-import { useUserAccessContext } from "@/contexts/UserAccessContext";
+import { useContext } from "react";
+import { UserAccessContext } from "@/contexts/user-access.types";
 import { MeteredFeature } from "@/domain/entities/meteredFeatures";
+
+export const useUserAccessContext = () => useContext(UserAccessContext);
 
 /**
  * Hook to access user's licenses, feature entitlements, and metered usage.

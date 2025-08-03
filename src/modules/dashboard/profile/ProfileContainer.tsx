@@ -3,7 +3,7 @@ import {
   useAttributeTypesLoading,
 } from "@/hooks/useAttributeTypes";
 import { useContactData } from "@/hooks/useContact";
-import { useTitle } from "@/contexts/TitleContext";
+import { useTitle } from "@/hooks/useTitle";
 import { AttributeCompletion, ContactUtils } from "@/domain";
 import {
   RadioGroupOfCards,

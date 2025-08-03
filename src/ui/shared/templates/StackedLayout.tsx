@@ -7,7 +7,7 @@ import {
 } from "@/hooks/useAttributeTypes";
 import { useContactData } from "@/hooks/useContact";
 import { usePromptsData, usePromptsLoaded } from "@/hooks/usePrompts";
-import { useTitle } from "@/contexts/TitleContext";
+import { useTitle } from "@/hooks/useTitle";
 import { ContactUtils } from "@/domain";
 import { useUserAccess } from "@/hooks";
 import { UserButton } from "@clerk/clerk-react";

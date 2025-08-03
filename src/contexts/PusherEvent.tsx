@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { usePusherService } from "./ServiceContext";
+import { usePusherService } from "@/hooks/useServices";
 
 interface PusherEventProps {
   /**

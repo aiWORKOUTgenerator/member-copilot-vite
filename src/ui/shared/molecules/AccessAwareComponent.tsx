@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useUserAccess } from "@/hooks/useUserAccess";
+import { useUserAccess } from "@/hooks";
 
 interface AccessAwareComponentProps {
   /**

@@ -1,5 +1,4 @@
 export { useAnalytics } from "./useAnalytics";
-export { useUserAccess } from "./useUserAccess";
 export * from "./useAnnouncements";
 export { useMeteredUsageService } from "./useMeteredUsageService";
 export { useLicenseService } from "./useLicenseService";
@@ -19,3 +18,8 @@ export * from "./usePhoneVerification";
 export * from "./usePhoneNumber";
 export { useWorkoutFeedbackService } from "./useWorkoutFeedbackService";
 export * from "./useTrainerPersonaService";
+export {
+  useUserAccess,
+  useUserAccessContext,
+  MeteredFeature,
+} from "./useUserAccess";
