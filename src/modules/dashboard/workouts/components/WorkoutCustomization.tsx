@@ -248,7 +248,7 @@ export default function WorkoutCustomization({
           disabled={disabled}
           showConnectors={true}
           size="md"
-          spacing="spacious"
+          spacing="relaxed"
         />
 
         {/* Step content */}

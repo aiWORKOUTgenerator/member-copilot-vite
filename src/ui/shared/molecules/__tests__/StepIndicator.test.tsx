@@ -139,29 +139,29 @@ describe("StepIndicator", () => {
     render(<StepIndicator steps={mockSteps} currentStep="step1" spacing="compact" />);
     
     const container = screen.getByTestId("step-indicator-container");
-    expect(container).toHaveClass("mb-6"); // compact container spacing
+    expect(container).toHaveClass("gap-2"); // compact container spacing
     
     const stepContainer = screen.getByTestId("step-indicator-steps");
-    expect(stepContainer).toHaveClass("space-x-4"); // compact step gap
+    expect(stepContainer).toHaveClass("gap-2"); // compact step gap
   });
 
   it("applies default spacing when not specified", () => {
     render(<StepIndicator steps={mockSteps} currentStep="step1" />);
     
     const container = screen.getByTestId("step-indicator-container");
-    expect(container).toHaveClass("mb-8"); // default container spacing
+    expect(container).toHaveClass("gap-4"); // default container spacing
     
     const stepContainer = screen.getByTestId("step-indicator-steps");
-    expect(stepContainer).toHaveClass("space-x-6"); // default step gap
+    expect(stepContainer).toHaveClass("gap-4"); // default step gap
   });
 
-  it("applies spacious spacing when specified", () => {
-    render(<StepIndicator steps={mockSteps} currentStep="step1" spacing="spacious" />);
+  it("applies relaxed spacing when specified", () => {
+    render(<StepIndicator steps={mockSteps} currentStep="step1" spacing="relaxed" />);
     
     const container = screen.getByTestId("step-indicator-container");
-    expect(container).toHaveClass("mb-12"); // spacious container spacing
+    expect(container).toHaveClass("gap-6"); // relaxed container spacing
     
     const stepContainer = screen.getByTestId("step-indicator-steps");
-    expect(stepContainer).toHaveClass("space-x-8"); // spacious step gap
+    expect(stepContainer).toHaveClass("gap-6"); // relaxed step gap
   });
 }); 

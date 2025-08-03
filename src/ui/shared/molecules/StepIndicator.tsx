@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { SPACING_TOKENS, type StepIndicatorSpacing } from "../tokens";
+// Tokens removed - using inline spacing values
 
 export interface Step {
   id: string;
@@ -18,7 +18,7 @@ export interface StepIndicatorProps {
   disabled?: boolean;
   showConnectors?: boolean;
   size?: "sm" | "md" | "lg";
-  spacing?: StepIndicatorSpacing;
+  spacing?: 'compact' | 'normal' | 'relaxed';
 }
 
 export const StepIndicator: React.FC<StepIndicatorProps> = ({
@@ -28,7 +28,7 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
   disabled = false,
   showConnectors = true,
   size = "md",
-  spacing = "default",
+  spacing = "normal",
 }) => {
   const getSizeClasses = () => {
     switch (size) {
@@ -76,12 +76,31 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
 
   const sizeClasses = getSizeClasses();
   
-  // Get spacing configuration from design tokens
-  const spacingConfig = {
-    container: SPACING_TOKENS.stepIndicator.container[spacing],
-    stepGap: SPACING_TOKENS.stepIndicator.stepGap[spacing],
-    labelSpacing: SPACING_TOKENS.stepIndicator.labelSpacing[spacing],
+  // Get spacing configuration
+  const getSpacingConfig = () => {
+    switch (spacing) {
+      case "compact":
+        return {
+          container: "gap-2",
+          stepGap: "gap-2",
+          labelSpacing: "mt-1",
+        };
+      case "relaxed":
+        return {
+          container: "gap-6",
+          stepGap: "gap-6",
+          labelSpacing: "mt-3",
+        };
+      default: // normal
+        return {
+          container: "gap-4",
+          stepGap: "gap-4",
+          labelSpacing: "mt-2",
+        };
+    }
   };
+
+  const spacingConfig = getSpacingConfig();
 
   return (
     <div className={`flex justify-center ${spacingConfig.container}`} data-testid="step-indicator-container">

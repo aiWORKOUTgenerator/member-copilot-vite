@@ -5,7 +5,7 @@
  */
 
 // Design Tokens
-export * from "./tokens";
+// Tokens removed - not using design token system
 
 // Atoms
 export * from "./atoms/Button";
