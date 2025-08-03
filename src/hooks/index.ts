@@ -1,5 +1,6 @@
 export { useAnalytics } from "./useAnalytics";
 export { useUserAccess } from "./useUserAccess";
+export * from "./useAnnouncements";
 export { useMeteredUsageService } from "./useMeteredUsageService";
 export { useLicenseService } from "./useLicenseService";
 export { useLicensePolicyService } from "./useLicensePolicyService";
