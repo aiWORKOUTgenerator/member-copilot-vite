@@ -6,42 +6,11 @@ import {
 } from "@/domain/entities/workoutFeedback";
 import { useWorkoutFeedbackService } from "@/hooks/useWorkoutFeedbackService";
 import { useAuth } from "@/hooks/auth";
+import { ReactNode, useCallback, useEffect, useState } from "react";
 import {
-  createContext,
-  ReactNode,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
-
-/**
- * WorkoutFeedbackState interface defines the shape of our workout feedback context value.
- */
-export interface WorkoutFeedbackState {
-  userFeedback: WorkoutFeedback[];
-  isLoading: boolean;
-  isSubmitting: boolean;
-  error: string | null;
-  refetch: () => Promise<void>;
-  submitFeedback: (
-    request: CreateWorkoutFeedbackRequest
-  ) => Promise<WorkoutFeedback>;
-  getFeedbackForWorkout: (workoutId: string) => Promise<WorkoutFeedback | null>;
-  updateFeedback: (
-    feedbackId: string,
-    request: CreateWorkoutFeedbackRequest
-  ) => Promise<WorkoutFeedback>;
-  clearError: () => void;
-}
-
-/**
- * Create the context with a default undefined value.
- * This forces consumers to use the useWorkoutFeedback hook which performs a null check.
- */
-const WorkoutFeedbackContext = createContext<WorkoutFeedbackState | undefined>(
-  undefined
-);
+  WorkoutFeedbackContext,
+  WorkoutFeedbackState,
+} from "./workout-feedback.types";
 
 interface WorkoutFeedbackProviderProps {
   children: ReactNode;
@@ -181,62 +150,4 @@ export function WorkoutFeedbackProvider({
       {children}
     </WorkoutFeedbackContext.Provider>
   );
-}
-
-/**
- * Custom hook to access the workout feedback data from the WorkoutFeedbackContext.
- * Throws an error if used outside of a WorkoutFeedbackProvider.
- */
-export function useWorkoutFeedback(): WorkoutFeedbackState {
-  const context = useContext(WorkoutFeedbackContext);
-
-  if (context === undefined) {
-    throw new Error(
-      "useWorkoutFeedback must be used within a WorkoutFeedbackProvider"
-    );
-  }
-
-  return context;
-}
-
-/**
- * Convenience hook to get just the user feedback array
- */
-export function useUserFeedbackData(): WorkoutFeedback[] {
-  const { userFeedback } = useWorkoutFeedback();
-  return userFeedback;
-}
-
-/**
- * Convenience hook to check if feedback is loading
- */
-export function useWorkoutFeedbackLoading(): boolean {
-  const { isLoading } = useWorkoutFeedback();
-  return isLoading;
-}
-
-/**
- * Convenience hook to check if feedback is being submitted
- */
-export function useWorkoutFeedbackSubmitting(): boolean {
-  const { isSubmitting } = useWorkoutFeedback();
-  return isSubmitting;
-}
-
-/**
- * Convenience hook to get any feedback error
- */
-export function useWorkoutFeedbackError(): string | null {
-  const { error } = useWorkoutFeedback();
-  return error;
-}
-
-/**
- * Hook to get feedback for a specific workout
- */
-export function useWorkoutFeedbackForWorkout(
-  workoutId: string
-): WorkoutFeedback | undefined {
-  const { userFeedback } = useWorkoutFeedback();
-  return userFeedback.find((feedback) => feedback.workoutId === workoutId);
 }

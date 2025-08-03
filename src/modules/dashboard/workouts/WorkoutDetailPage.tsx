@@ -4,7 +4,7 @@ import {
 } from "@/contexts/GeneratedWorkoutContext";
 import { PusherEvent } from "@/contexts/PusherEvent";
 import { useTrainerPersonaData } from "@/contexts/TrainerPersonaContext";
-import { useWorkoutFeedback } from "@/contexts/WorkoutFeedbackContext";
+import { useWorkoutFeedback } from "@/hooks/useWorkoutFeedback";
 import { Section, WorkoutStructure } from "@/domain/entities/generatedWorkout";
 import { useUserAccess } from "@/hooks";
 import FeedbackModal from "@/modules/dashboard/workouts/components/FeedbackModal";
