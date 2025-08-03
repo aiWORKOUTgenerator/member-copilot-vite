@@ -28,19 +28,19 @@ The current `getButtonState()` function in `GeneratePage.tsx` implements a three
 - **Step 0 (Focus & Energy)**: `['customization_goal', 'customization_energy']`
 - **Step 1 (Duration & Equipment)**: `['customization_duration', 'customization_equipment']`
 
-## Desired Hybrid Button State Behavior
+## Current Implementation: Simplified Button State Behavior
 
 ### Core Requirements
 
-#### 1. Selection-Based Progressive Feedback
+#### 1. Progressive Validation-Based Feedback
 - **No Selections**: Button shows disabled state with "Complete current step" text
-- **Partial Selections**: Button shows outline state with "Continue" text
+- **Partial Selections**: Button shows disabled state with error message for missing field
 - **All Selections**: Button shows active state with "Next" or "Generate Quick Workout" text
 
-#### 2. Validation Error Override
-- **Validation Errors Present**: Button shows disabled state regardless of selections
-- **Error Text**: "Fix validation errors" when validation errors exist
-- **Error Priority**: Validation errors take precedence over selection states
+#### 2. Simplified Validation Logic
+- **Progressive Errors**: Only show validation errors when user has made partial selections
+- **Step-Based**: Validation is tied to step completion rather than individual fields
+- **User-Friendly**: No premature error display
 
 #### 3. Step-Specific Requirements
 - **Focus & Energy Step**: Requires 2 selections (goal + energy)

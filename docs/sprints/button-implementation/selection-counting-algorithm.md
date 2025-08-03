@@ -10,6 +10,7 @@ The selection counting algorithm determines the completion status of each step i
 2. **Binary Selection Logic**: Each field is either selected (1) or not selected (0)
 3. **Required Field Validation**: Each step has a defined set of required fields
 4. **Progressive Feedback**: Partial completion is recognized and communicated
+5. **User Experience First**: Validation only shows when user has made partial selections
 
 ### Step Definitions
 
@@ -158,6 +159,41 @@ function getSelectionState(
 - Easy to add new steps
 - Configurable required field counts
 - Pluggable validation rules
+
+## Simplified Validation Integration
+
+### Progressive Validation Logic
+
+The current implementation uses a **simplified progressive validation approach**:
+
+```typescript
+// Simplified validation logic in WorkoutCustomization.tsx
+const generateValidationErrors = () => {
+  const validationErrors: Partial<Record<keyof PerWorkoutOptions, string>> = {};
+  
+  if (currentStep === "focus-energy") {
+    const hasFocus = !!options.customization_focus;
+    const hasEnergy = !!options.customization_energy;
+    
+    // Show error if one is selected but not both
+    if (hasFocus && !hasEnergy) {
+      validationErrors.customization_energy = VALIDATION_MESSAGES.ENERGY_REQUIRED;
+    }
+    if (!hasFocus && hasEnergy) {
+      validationErrors.customization_focus = VALIDATION_MESSAGES.FOCUS_REQUIRED;
+    }
+  }
+  
+  return validationErrors;
+};
+```
+
+### Key Differences from Complex Validation
+
+1. **No Premature Errors**: Errors only show when user has made partial selections
+2. **Step-Based**: Validates entire steps rather than individual fields
+3. **Simple Logic**: "Show error if one is selected but not both"
+4. **User-Friendly**: Reduces cognitive load and maintains flow
 
 ## Integration with Button State Logic
 

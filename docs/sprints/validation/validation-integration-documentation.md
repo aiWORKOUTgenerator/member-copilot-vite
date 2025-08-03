@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Validation Integration system provides comprehensive validation for the workout generation form, ensuring data integrity and user experience consistency. This system integrates seamlessly with the hybrid button state logic and provides clear error feedback to users.
+The Validation Integration system provides **simplified progressive validation** for the workout generation form, prioritizing user experience over complex validation rules. This system uses a step-based approach that only shows errors when users have made partial selections, ensuring a smooth and intuitive user experience.
 
 ## Architecture
 
@@ -15,11 +15,70 @@ The Validation Integration system provides comprehensive validation for the work
 
 ### Key Features
 
-- **Step-specific validation** - Validates fields based on current step
-- **Error persistence** - Maintains validation state across step transitions
+- **Progressive validation** - Only shows errors when user has made partial selections
+- **Step-based validation** - Validates entire steps rather than individual fields
+- **User-friendly approach** - No errors shown until user starts interacting
+- **Simple logic** - "Show error if one is selected but not both"
 - **Performance optimized** - Efficient validation with minimal re-renders
-- **User-friendly messages** - Clear, actionable error messages
-- **Edge case handling** - Robust validation for all data scenarios
+- **Clear error messages** - Centralized validation message constants
+
+## Progressive Validation Logic
+
+### Core Implementation
+
+The current system implements **progressive validation** that prioritizes user experience:
+
+```typescript
+// Simplified progressive validation logic
+const generateValidationErrors = () => {
+  const validationErrors: Partial<Record<keyof PerWorkoutOptions, string>> = {};
+  
+  if (currentStep === "focus-energy") {
+    const hasFocus = !!options.customization_focus;
+    const hasEnergy = !!options.customization_energy;
+    
+    // Show error if one is selected but not both
+    if (hasFocus && !hasEnergy) {
+      validationErrors.customization_energy = VALIDATION_MESSAGES.ENERGY_REQUIRED;
+    }
+    if (!hasFocus && hasEnergy) {
+      validationErrors.customization_focus = VALIDATION_MESSAGES.FOCUS_REQUIRED;
+    }
+  }
+  
+  return validationErrors;
+};
+```
+
+### Validation States
+
+1. **Empty State** (0 selections)
+   - No errors shown
+   - User hasn't started interacting
+   - Clean, uncluttered interface
+
+2. **Partial Selection** (1 of 2 selections)
+   - Show error for missing field
+   - Guide user to complete the step
+   - Clear indication of what's needed
+
+3. **Complete Step** (2 of 2 selections)
+   - No errors shown
+   - Allow progression to next step
+   - Positive feedback for completion
+
+4. **Step Navigation**
+   - Reset validation state when switching steps
+   - Fresh start for each step
+   - Maintains user flow
+
+### Benefits of Progressive Validation
+
+- ✅ **Reduces Cognitive Load**: Users aren't overwhelmed with errors
+- ✅ **Guides Progression**: Clear indication of what's needed next
+- ✅ **Maintains Flow**: Smooth user experience without interruption
+- ✅ **Simple Implementation**: Easy to understand and maintain
+- ✅ **User-Friendly**: No premature error display
 
 ## Validation Rules
 

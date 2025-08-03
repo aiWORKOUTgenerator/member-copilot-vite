@@ -5,28 +5,74 @@ This document outlines how validation errors will integrate with the hybrid butt
 
 ## Current Validation System Analysis
 
-### Existing Validation Functions
-```typescript
-// Current validation functions in GeneratePage.tsx
-export function validateFocusAndEnergy(values: PerWorkoutOptions): boolean {
-  return !!(values.customization_focus && values.customization_energy);
-}
+### Actual Implementation: Simplified Progressive Validation
 
-export function validateDurationAndEquipment(values: PerWorkoutOptions): boolean {
-  const hasEquipment = values.customization_equipment && typeof values.customization_equipment === 'string';
-  return !!(values.customization_duration && hasEquipment);
-}
+The current implementation uses a **simplified progressive validation approach** that prioritizes user experience:
+
+```typescript
+// Current validation logic in WorkoutCustomization.tsx
+const generateValidationErrors = () => {
+  const validationErrors: Partial<Record<keyof PerWorkoutOptions, string>> = {};
+  
+  if (currentStep === "focus-energy") {
+    const hasFocus = !!options.customization_focus;
+    const hasEnergy = !!options.customization_energy;
+    
+    // Show error if one is selected but not both
+    if (hasFocus && !hasEnergy) {
+      validationErrors.customization_energy = VALIDATION_MESSAGES.ENERGY_REQUIRED;
+    }
+    if (!hasFocus && hasEnergy) {
+      validationErrors.customization_focus = VALIDATION_MESSAGES.FOCUS_REQUIRED;
+    }
+  } else if (currentStep === "duration-equipment") {
+    const hasDuration = !!options.customization_duration;
+    const hasEquipment = !!options.customization_equipment;
+    
+    // Show error if one is selected but not both
+    if (hasDuration && !hasEquipment) {
+      validationErrors.customization_equipment = VALIDATION_MESSAGES.EQUIPMENT_REQUIRED;
+    }
+    if (!hasDuration && hasEquipment) {
+      validationErrors.customization_duration = VALIDATION_MESSAGES.DURATION_REQUIRED;
+    }
+  }
+  
+  return validationErrors;
+};
 ```
 
 ### Current Error Handling
 - **Error State**: `errors: Partial<Record<keyof PerWorkoutOptions, string>>`
-- **Touched Fields**: `touchedFields: Set<keyof PerWorkoutOptions>`
-- **Error Display**: Only shows errors for touched fields
-- **Error Clearing**: Errors are cleared when valid selections are made
+- **Progressive Display**: Only shows errors when user has made partial selections
+- **Step-Based**: Validates entire steps rather than individual fields
+- **User-Friendly**: No errors shown until user starts interacting with fields
 
 ## Validation Integration Strategy
 
-### 1. Precedence Rules
+### 1. Simplified Progressive Validation Approach
+
+The current implementation prioritizes **user experience** over complex validation rules:
+
+#### Core Principles
+- **Progressive Feedback**: Only show errors when user has made partial selections
+- **Step-Based Validation**: Validate entire steps rather than individual fields
+- **User-Friendly**: No errors shown until user starts interacting with fields
+- **Simple Logic**: "Show error if one is selected but not both"
+
+#### Validation States
+1. **Empty State**: No errors shown (user hasn't started)
+2. **Partial Selection**: Show error for missing field in current step
+3. **Complete Step**: No errors, allow progression
+4. **Step Navigation**: Reset validation state when switching steps
+
+#### Benefits
+- ✅ **Reduces Cognitive Load**: Users aren't overwhelmed with errors
+- ✅ **Guides Progression**: Clear indication of what's needed next
+- ✅ **Maintains Flow**: Smooth user experience without interruption
+- ✅ **Simple Implementation**: Easy to understand and maintain
+
+### 2. Precedence Rules
 
 #### Primary Rule: Validation Overrides Selection States
 ```typescript
