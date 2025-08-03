@@ -1,9 +1,9 @@
 "use client";
 
-import { useAttributeForm } from "@/contexts/AttributeFormContext";
-import { useAttributeType } from "@/contexts/AttributeTypeContext";
-import { useContact } from "@/contexts/ContactContext";
-import { usePrompts } from "@/contexts/PromptContext";
+import { useAttributeForm } from "@/hooks/useAttributeForm";
+import { useAttributeType } from "@/hooks/useAttributeTypes";
+import { useContact } from "@/hooks/useContact";
+import { usePrompts } from "@/hooks/usePrompts";
 import { usePromptService } from "@/hooks";
 import { PromptCard } from "@/ui";
 import { useEffect, useState } from "react";

@@ -3,31 +3,8 @@
 import { Attribute } from "@/domain/entities/attribute";
 import { useAttributeService } from "@/hooks";
 import { useAuth } from "@/hooks/auth";
-import {
-  createContext,
-  ReactNode,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
-
-/**
- * AttributeState interface defines the shape of our attribute context value.
- */
-export interface AttributeState {
-  attributes: Attribute[];
-  isLoading: boolean;
-  error: string | null;
-  refetch: () => Promise<void>;
-  isLoaded: boolean;
-}
-
-/**
- * Create the context with a default undefined value.
- * This forces consumers to use the useAttributes hook which performs a null check.
- */
-const AttributeContext = createContext<AttributeState | undefined>(undefined);
+import { ReactNode, useCallback, useEffect, useState } from "react";
+import { AttributeContext, AttributeState } from "./attribute.types";
 
 interface AttributeProviderProps {
   children: ReactNode;
@@ -88,58 +65,4 @@ export function AttributeProvider({ children }: AttributeProviderProps) {
       {children}
     </AttributeContext.Provider>
   );
-}
-
-/**
- * Custom hook to access the attribute data from the AttributeContext.
- * Throws an error if used outside of an AttributeProvider.
- */
-export function useAttributes(): AttributeState {
-  const context = useContext(AttributeContext);
-
-  if (context === undefined) {
-    throw new Error("useAttributes must be used within an AttributeProvider");
-  }
-
-  return context;
-}
-
-/**
- * Convenience hook to get just the attributes array
- */
-export function useAttributesData(): Attribute[] {
-  const { attributes } = useAttributes();
-  return attributes;
-}
-
-/**
- * Hook to get a specific attribute by ID
- */
-export function useAttribute(id: string): Attribute | undefined {
-  const { attributes } = useAttributes();
-  return attributes.find((attr) => attr.id === id);
-}
-
-/**
- * Convenience hook to check if the attributes are loading
- */
-export function useAttributesLoading(): boolean {
-  const { isLoading } = useAttributes();
-  return isLoading;
-}
-
-/**
- * Convenience hook to check if the attributes are loaded
- */
-export function useAttributesLoaded(): boolean {
-  const { isLoaded } = useAttributes();
-  return isLoaded;
-}
-
-/**
- * Convenience hook to get any attributes loading error
- */
-export function useAttributesError(): string | null {
-  const { error } = useAttributes();
-  return error;
 }

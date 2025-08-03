@@ -1,9 +1,8 @@
 import {
   useAttributeTypesData,
   useAttributeTypesLoading,
-} from "@/contexts/AttributeTypeContext";
-import { useContactData } from "@/contexts/ContactContext";
-import { usePromptsData } from "@/contexts/PromptContext";
+} from "@/hooks/useAttributeTypes";
+import { useContactData } from "@/hooks/useContact";
 import { useTitle } from "@/contexts/TitleContext";
 import { AttributeCompletion, ContactUtils } from "@/domain";
 import {
@@ -13,6 +12,7 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router";
 import { useAnalytics } from "@/hooks/useAnalytics";
+import { usePromptsData } from "@/hooks/usePrompts";
 
 export default function TrainingProfileLayout() {
   const { setTitle } = useTitle();

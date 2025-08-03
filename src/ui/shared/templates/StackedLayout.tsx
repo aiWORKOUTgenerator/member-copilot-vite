@@ -1,12 +1,12 @@
 "use client";
 
-import { useAttributesLoaded } from "@/contexts/AttributeContext";
+import { useAttributesLoaded } from "@/hooks/useAttributes";
 import {
   useAttributeTypesData,
   useAttributeTypesLoaded,
-} from "@/contexts/AttributeTypeContext";
-import { useContactData } from "@/contexts/ContactContext";
-import { usePromptsData, usePromptsLoaded } from "@/contexts/PromptContext";
+} from "@/hooks/useAttributeTypes";
+import { useContactData } from "@/hooks/useContact";
+import { usePromptsData, usePromptsLoaded } from "@/hooks/usePrompts";
 import { useTitle } from "@/contexts/TitleContext";
 import { ContactUtils } from "@/domain";
 import { useUserAccess } from "@/hooks";

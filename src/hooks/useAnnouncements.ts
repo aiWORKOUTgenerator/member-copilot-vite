@@ -3,7 +3,7 @@ import { Announcement } from "@/domain/entities/announcement";
 import {
   AnnouncementContext,
   AnnouncementState,
-} from "@/contexts/AnnouncementContext";
+} from "@/contexts/announcement.types";
 
 /**
  * Custom hook to access the announcement data from the AnnouncementContext.
