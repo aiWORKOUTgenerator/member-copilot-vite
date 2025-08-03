@@ -6,7 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AI Workout Generator</title>
     <link href="/src/style.css" rel="stylesheet">
-    <link rel="stylesheet" href="http://tenant.aitenanttest.test/theme.css">
+    <!-- In your React app's public/index.html -->
+    <script>
+    // Get the current domain
+    const currentDomain = window.location.hostname;
+
+    // Create and append the CSS link dynamically
+    const cssLink = document.createElement('link');
+    cssLink.rel = 'stylesheet';
+    cssLink.href = `http://primary.aitenanttest.test/theme.css?domain=${currentDomain}`;
+    document.head.appendChild(cssLink);
+    </script>
   </head>
   <body class="h-full">
     <div id="root" class="h-full"></div>
