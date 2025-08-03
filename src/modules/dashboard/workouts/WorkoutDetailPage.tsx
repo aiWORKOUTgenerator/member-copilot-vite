@@ -3,7 +3,7 @@ import {
   useGeneratedWorkouts,
 } from "@/contexts/GeneratedWorkoutContext";
 import { PusherEvent } from "@/contexts/PusherEvent";
-import { useTrainerPersonaData } from "@/contexts/TrainerPersonaContext";
+import { useTrainerPersonaData } from "@/hooks/useTrainerPersona";
 import { useWorkoutFeedback } from "@/hooks/useWorkoutFeedback";
 import { Section, WorkoutStructure } from "@/domain/entities/generatedWorkout";
 import { useUserAccess } from "@/hooks";

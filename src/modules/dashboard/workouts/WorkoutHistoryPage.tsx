@@ -1,6 +1,6 @@
 "use client";
 
-import { useTrainerPersonaData } from "@/contexts/TrainerPersonaContext";
+import { useTrainerPersonaData } from "@/hooks/useTrainerPersona";
 import { useWorkoutInstances } from "@/hooks/useWorkoutInstances";
 import { WorkoutInstance } from "@/domain/entities/workoutInstance";
 import { useUserAccess } from "@/hooks";

@@ -27,3 +27,4 @@ export * from "./useWorkoutInstances";
 export { usePusherBeamsInterests } from "./usePusherBeamsInterests";
 export { usePusherEvent } from "./usePusherEvent";
 export * from "./useWorkoutFeedback";
+export * from "./useTrainerPersona";

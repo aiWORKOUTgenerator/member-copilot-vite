@@ -4,7 +4,7 @@ import {
   useTrainerPersonaData,
   useTrainerPersonaError,
   useTrainerPersona,
-} from "@/contexts/TrainerPersonaContext";
+} from "@/hooks/useTrainerPersona";
 import { Bot, CheckCircle, Clock, Sparkles } from "lucide-react";
 
 const GeneratingTrainerPage = () => {
