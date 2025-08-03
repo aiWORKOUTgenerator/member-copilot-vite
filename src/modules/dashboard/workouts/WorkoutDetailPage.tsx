@@ -1,7 +1,7 @@
 import {
   useGeneratedWorkout,
   useGeneratedWorkouts,
-} from "@/contexts/GeneratedWorkoutContext";
+} from "@/hooks/useGeneratedWorkouts";
 import { PusherEvent } from "@/contexts/PusherEvent";
 import { useTrainerPersonaData } from "@/hooks/useTrainerPersona";
 import { useWorkoutFeedback } from "@/hooks/useWorkoutFeedback";

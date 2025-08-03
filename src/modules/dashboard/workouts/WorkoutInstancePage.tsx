@@ -1,6 +1,6 @@
 "use client";
 
-import { useCurrentWorkoutInstance } from "@/contexts/CurrentWorkoutInstanceContext";
+import { useCurrentWorkoutInstance } from "@/hooks/useCurrentWorkoutInstance";
 import { RecommendedExercise } from "@/domain/interfaces/services/WorkoutInstanceService";
 import { useWorkoutInstances } from "@/hooks/useWorkoutInstances";
 import { useTrainerPersonaData } from "@/hooks/useTrainerPersona";

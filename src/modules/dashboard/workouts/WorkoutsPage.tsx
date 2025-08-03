@@ -3,7 +3,7 @@
 import {
   useGeneratedWorkouts,
   useGeneratedWorkoutsLoading,
-} from "@/contexts/GeneratedWorkoutContext";
+} from "@/hooks/useGeneratedWorkouts";
 import { GeneratedWorkout } from "@/domain/entities/generatedWorkout";
 import { useUserAccess } from "@/hooks";
 import { MeteredFeature } from "@/domain/entities/meteredFeatures";

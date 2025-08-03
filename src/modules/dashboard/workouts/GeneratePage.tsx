@@ -1,14 +1,10 @@
-import { useGeneratedWorkouts } from "@/contexts/GeneratedWorkoutContext";
+import { useGeneratedWorkouts } from "@/hooks/useGeneratedWorkouts";
 import { ArrowBigLeft } from "lucide-react";
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router";
 import WorkoutCustomization from "./components/WorkoutCustomization";
 import { PerWorkoutOptions } from "./components/types";
 import { useAnalytics } from "@/hooks/useAnalytics";
-
-
-
-
 
 // 15 workout prompt examples
 const WORKOUT_PROMPTS = [
@@ -36,20 +32,26 @@ const WORKOUT_PROMPTS = [
 
 export default function GenerateWorkoutPage() {
   const [activeTab, setActiveTab] = useState<"quick" | "detailed">("quick");
-  const [activeQuickStep, setActiveQuickStep] = useState<"focus-energy" | "duration-equipment">("focus-energy");
+  const [activeQuickStep, setActiveQuickStep] = useState<
+    "focus-energy" | "duration-equipment"
+  >("focus-energy");
   const [prompt, setPrompt] = useState("");
-  const [perWorkoutOptions, setPerWorkoutOptions] = useState<PerWorkoutOptions>({});
-  const [errors] = useState<Partial<Record<keyof PerWorkoutOptions, string>>>({});
+  const [perWorkoutOptions, setPerWorkoutOptions] = useState<PerWorkoutOptions>(
+    {}
+  );
+  const [errors] = useState<Partial<Record<keyof PerWorkoutOptions, string>>>(
+    {}
+  );
 
-  const prevStepRef = useRef<"focus-energy" | "duration-equipment">(activeQuickStep);
+  const prevStepRef = useRef<"focus-energy" | "duration-equipment">(
+    activeQuickStep
+  );
   const [isGenerating, setIsGenerating] = useState(false);
   const [displayPrompts, setDisplayPrompts] = useState<string[]>([]);
 
   const { createWorkout } = useGeneratedWorkouts();
   const navigate = useNavigate();
   const analytics = useAnalytics();
-
-
 
   // Track workout generation page views
   useEffect(() => {
@@ -247,25 +249,34 @@ export default function GenerateWorkoutPage() {
     });
   };
 
-          // Track step changes
-        useEffect(() => {
-          // Only update when actually switching between steps
-          const prevStep = prevStepRef.current;
-          if (prevStep !== activeQuickStep) {
-            prevStepRef.current = activeQuickStep;
-          }
-        }, [activeQuickStep]);
+  // Track step changes
+  useEffect(() => {
+    // Only update when actually switching between steps
+    const prevStep = prevStepRef.current;
+    if (prevStep !== activeQuickStep) {
+      prevStepRef.current = activeQuickStep;
+    }
+  }, [activeQuickStep]);
 
   // No longer using complex selection counting for quick workout
 
   // Simple selection check for quick workout
-  const hasFocusEnergySelections = !!(perWorkoutOptions.customization_goal && perWorkoutOptions.customization_energy);
-  const hasDurationEquipmentSelections = !!(perWorkoutOptions.customization_duration && perWorkoutOptions.customization_equipment?.length);
-  
+  const hasFocusEnergySelections = !!(
+    perWorkoutOptions.customization_goal &&
+    perWorkoutOptions.customization_energy
+  );
+  const hasDurationEquipmentSelections = !!(
+    perWorkoutOptions.customization_duration &&
+    perWorkoutOptions.customization_equipment?.length
+  );
+
   const errorSummary = {
     hasCurrentStepErrors: false,
     currentStepErrorCount: 0,
-    canProceed: activeQuickStep === "focus-energy" ? hasFocusEnergySelections : hasDurationEquipmentSelections
+    canProceed:
+      activeQuickStep === "focus-energy"
+        ? hasFocusEnergySelections
+        : hasDurationEquipmentSelections,
   };
 
   // Get button state based on active tab
@@ -275,18 +286,18 @@ export default function GenerateWorkoutPage() {
       return {
         className: "btn btn-primary",
         disabled: hasErrors,
-        text: "Generate Workout"
+        text: "Generate Workout",
       };
     }
 
     // Quick mode - simple button state
     const canProceed = errorSummary.canProceed;
     const isFocusEnergyStep = activeQuickStep === "focus-energy";
-    
+
     return {
       className: canProceed ? "btn btn-primary" : "btn btn-disabled",
       disabled: !canProceed,
-      text: isFocusEnergyStep ? "Next" : "Generate Quick Workout"
+      text: isFocusEnergyStep ? "Next" : "Generate Quick Workout",
     };
   };
 
@@ -344,14 +355,13 @@ export default function GenerateWorkoutPage() {
                   mode="quick"
                   activeQuickStep={activeQuickStep}
                   onQuickStepChange={setActiveQuickStep}
-
                 />
               </>
             ) : (
               <>
                 <p className="text-sm text-base-content/70 mb-6">
-                  Set up your detailed workout with the options below, then optionally
-                  describe additional requirements
+                  Set up your detailed workout with the options below, then
+                  optionally describe additional requirements
                 </p>
 
                 {/* Workout Customization - Now above the textarea */}
@@ -438,11 +448,17 @@ export default function GenerateWorkoutPage() {
               {activeTab === "quick" && (
                 <div className="flex items-center gap-3 text-sm text-base-content/60 mr-auto">
                   <div className="flex items-center gap-2">
-                    <div className={`w-2 h-2 rounded-full transition-colors duration-200 ${
-                      errorSummary.canProceed ? 'bg-success' : 'bg-base-content/40'
-                    }`}></div>
+                    <div
+                      className={`w-2 h-2 rounded-full transition-colors duration-200 ${
+                        errorSummary.canProceed
+                          ? "bg-success"
+                          : "bg-base-content/40"
+                      }`}
+                    ></div>
                     <span className="transition-opacity duration-200">
-                      {errorSummary.canProceed ? "Ready to proceed" : "Complete current step"}
+                      {errorSummary.canProceed
+                        ? "Ready to proceed"
+                        : "Complete current step"}
                     </span>
                   </div>
                 </div>
@@ -451,9 +467,13 @@ export default function GenerateWorkoutPage() {
               {/* Enhanced submit button */}
               <button
                 type="submit"
-                className={`${getButtonState().className} transition-all duration-200`}
+                className={`${
+                  getButtonState().className
+                } transition-all duration-200`}
                 disabled={getButtonState().disabled}
-                title={getButtonState().disabled ? getButtonState().text : undefined}
+                title={
+                  getButtonState().disabled ? getButtonState().text : undefined
+                }
               >
                 {isGenerating ? (
                   <>
@@ -464,8 +484,6 @@ export default function GenerateWorkoutPage() {
                   getButtonState().text
                 )}
               </button>
-              
-
             </div>
           </form>
         </div>
