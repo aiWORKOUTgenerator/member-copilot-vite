@@ -2,7 +2,7 @@
 
 import { useCurrentWorkoutInstance } from "@/contexts/CurrentWorkoutInstanceContext";
 import { RecommendedExercise } from "@/domain/interfaces/services/WorkoutInstanceService";
-import { useWorkoutInstances } from "@/contexts/WorkoutInstancesContext";
+import { useWorkoutInstances } from "@/hooks/useWorkoutInstances";
 import { useTrainerPersonaData } from "@/contexts/TrainerPersonaContext";
 import { Exercise, Section } from "@/domain/entities/generatedWorkout";
 import { ExerciseInstance } from "@/domain/entities/workoutInstance";

@@ -29,7 +29,7 @@ import { TrainerPersonaDisplay } from "./components/TrainerPersonaDisplay";
 import VerySimpleFormatWorkoutViewer from "./components/VerySimpleFormatWorkoutViewer";
 import WebShareButton from "./components/WebShareButton";
 import WorkoutFeedbackForm from "./components/WorkoutFeedbackForm";
-import { useWorkoutInstances } from "@/contexts/WorkoutInstancesContext";
+import { useWorkoutInstances } from "@/hooks/useWorkoutInstances";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { useFeedbackModal } from "./components/FeedbackModal.hooks";
 

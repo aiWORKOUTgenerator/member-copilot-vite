@@ -4,10 +4,10 @@ import { Section, WorkoutStructure } from "@/domain/entities/generatedWorkout";
 import { useState } from "react";
 import {
   ExerciseCard,
-  formatTime,
   InvalidWorkoutCard,
   EmptySectionsCard,
 } from "./WorkoutComponents";
+import { formatTime } from "../utils/workouts.func";
 
 // Section component to display a group of exercises
 const SectionCard = ({
