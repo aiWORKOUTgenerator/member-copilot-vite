@@ -96,7 +96,7 @@ describe("SelectionCounter", () => {
       it("validates complete duration and equipment selections", () => {
         const options: PerWorkoutOptions = {
           customization_duration: 30,
-          customization_equipment: "bodyweight",
+          customization_equipment: ["bodyweight"],
         };
 
         const state = SelectionCounter.getDurationEquipmentSelections(options);
