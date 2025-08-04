@@ -12,10 +12,11 @@ The simplest approach is to use our predefined icons from the IconSet:
 import { ArrowRightIcon, MenuIcon, UserIcon } from "@/app/ui/shared";
 
 // In your component:
-<ArrowRightIcon size="md" className="text-primary" />
+<ArrowRightIcon size="md" className="text-primary" />;
 ```
 
 Available sizes:
+
 - `xs`: 16px
 - `sm`: 20px
 - `md`: 24px
@@ -103,10 +104,10 @@ import { SignOutButton } from "@/app/ui/shared";
 <SignOutButton />
 
 // Customized
-<SignOutButton 
-  variant="ghost" 
-  size="sm" 
-  className="text-red-500" 
+<SignOutButton
+  variant="ghost"
+  size="sm"
+  className="text-red-500"
   redirectPath="/login"
   showIcon={false}
 >
@@ -120,4 +121,4 @@ import { SignOutButton } from "@/app/ui/shared";
 2. **Sizing**: Use the predefined sizes (`xs`, `sm`, `md`, `lg`, `xl`) for consistent icon sizing
 3. **Colors**: Use Tailwind's text-color utilities (e.g., `text-primary`, `text-error`) to style icons
 4. **Accessibility**: Include proper aria labels on interactive elements that use icons
-5. **Authentication**: Use the centralized auth service instead of direct Clerk calls for consistency 
+5. **Authentication**: Use the centralized auth service instead of direct Clerk calls for consistency

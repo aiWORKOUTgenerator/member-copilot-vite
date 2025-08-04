@@ -42,8 +42,8 @@ export const Button: React.FC<ButtonProps> = ({
     variant !== "ghost" && variant !== "link"
       ? `btn-${variant}`
       : variant === "ghost"
-      ? "btn-ghost"
-      : "btn-link";
+        ? "btn-ghost"
+        : "btn-link";
 
   // Size classes
   const sizeClass = size !== "md" ? `btn-${size}` : "";

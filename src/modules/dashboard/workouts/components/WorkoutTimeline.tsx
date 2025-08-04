@@ -278,8 +278,8 @@ export function WorkoutTimeline({
               day.isToday
                 ? "text-primary"
                 : day.isCurrentMonth
-                ? ""
-                : "text-base-content/50"
+                  ? ""
+                  : "text-base-content/50"
             }`}
           >
             {dayNumber}

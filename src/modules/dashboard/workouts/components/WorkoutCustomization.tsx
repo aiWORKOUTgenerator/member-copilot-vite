@@ -349,14 +349,17 @@ export default function WorkoutCustomization({
   }
 
   // Group configurations by category
-  const groupedConfigs = CUSTOMIZATION_CONFIG.reduce((acc, config) => {
-    const category = config.category || "Other";
-    if (!acc[category]) {
-      acc[category] = [];
-    }
-    acc[category].push(config);
-    return acc;
-  }, {} as Record<string, typeof CUSTOMIZATION_CONFIG>);
+  const groupedConfigs = CUSTOMIZATION_CONFIG.reduce(
+    (acc, config) => {
+      const category = config.category || "Other";
+      if (!acc[category]) {
+        acc[category] = [];
+      }
+      acc[category].push(config);
+      return acc;
+    },
+    {} as Record<string, typeof CUSTOMIZATION_CONFIG>
+  );
 
   const toggleCategory = (category: string) => {
     setExpandedCategories((prev) =>

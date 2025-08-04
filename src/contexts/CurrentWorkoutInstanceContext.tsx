@@ -43,9 +43,8 @@ export function CurrentWorkoutInstanceProvider({
       setError(null);
 
       try {
-        const instance = await workoutInstanceService.getWorkoutInstance(
-          instanceId
-        );
+        const instance =
+          await workoutInstanceService.getWorkoutInstance(instanceId);
         setCurrentInstance(instance);
         setHasPendingChanges(false);
       } catch (err) {
