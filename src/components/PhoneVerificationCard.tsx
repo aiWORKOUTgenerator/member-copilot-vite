@@ -2,7 +2,7 @@ import {
   useContactData,
   useHasPhoneNumber,
   useIsPhoneVerified,
-} from "@/contexts/ContactContext";
+} from "@/hooks/useContact";
 import { ActionCard } from "@/ui/shared/molecules/ActionCard";
 import { CheckCircle, Phone, Shield } from "lucide-react";
 import { useState } from "react";

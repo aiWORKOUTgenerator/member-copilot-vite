@@ -4,35 +4,11 @@ import { WorkoutInstance } from "@/domain/entities/workoutInstance";
 import { CreateWorkoutInstanceRequest } from "@/domain/interfaces/services/WorkoutInstanceService";
 import { useWorkoutInstanceService } from "@/hooks/useWorkoutInstanceService";
 import { useAuth } from "@/hooks/auth";
+import { ReactNode, useCallback, useEffect, useState } from "react";
 import {
-  createContext,
-  ReactNode,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
-
-/**
- * WorkoutInstancesState interface for managing the list of workout instances
- */
-export interface WorkoutInstancesState {
-  instances: WorkoutInstance[];
-  isLoading: boolean;
-  error: string | null;
-  fetchInstances: () => Promise<void>;
-  createInstance: (
-    request: CreateWorkoutInstanceRequest
-  ) => Promise<WorkoutInstance>;
-  updateInstanceInList: (updatedInstance: WorkoutInstance) => void;
-  getInstancesByGeneratedWorkoutId: (
-    generatedWorkoutId: string
-  ) => WorkoutInstance[];
-}
-
-const WorkoutInstancesContext = createContext<
-  WorkoutInstancesState | undefined
->(undefined);
+  WorkoutInstancesContext,
+  WorkoutInstancesState,
+} from "./workout-instances.types";
 
 interface WorkoutInstancesProviderProps {
   children: ReactNode;
@@ -138,44 +114,4 @@ export function WorkoutInstancesProvider({
       {children}
     </WorkoutInstancesContext.Provider>
   );
-}
-
-/**
- * Hook to access the workout instances list
- */
-export function useWorkoutInstances(): WorkoutInstancesState {
-  const context = useContext(WorkoutInstancesContext);
-
-  if (context === undefined) {
-    throw new Error(
-      "useWorkoutInstances must be used within a WorkoutInstancesProvider"
-    );
-  }
-
-  return context;
-}
-
-/**
- * Convenience hooks
- */
-export function useWorkoutInstancesData(): WorkoutInstance[] {
-  const { instances } = useWorkoutInstances();
-  return instances;
-}
-
-export function useWorkoutInstancesLoading(): boolean {
-  const { isLoading } = useWorkoutInstances();
-  return isLoading;
-}
-
-export function useWorkoutInstancesError(): string | null {
-  const { error } = useWorkoutInstances();
-  return error;
-}
-
-export function useWorkoutInstancesByGeneratedWorkoutId(
-  generatedWorkoutId: string
-): WorkoutInstance[] {
-  const { getInstancesByGeneratedWorkoutId } = useWorkoutInstances();
-  return getInstancesByGeneratedWorkoutId(generatedWorkoutId);
 }

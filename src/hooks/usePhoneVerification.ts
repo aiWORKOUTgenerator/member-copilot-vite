@@ -1,4 +1,4 @@
-import { useContact } from "@/contexts/ContactContext";
+import { useContact } from "@/hooks/useContact";
 import {
   PhoneVerificationError,
   PhoneVerificationErrorType,

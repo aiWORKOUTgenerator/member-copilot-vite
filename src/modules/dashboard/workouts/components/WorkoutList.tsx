@@ -2,7 +2,7 @@
 
 import { GeneratedWorkout } from "@/domain/entities/generatedWorkout";
 import { MeteredFeature } from "@/domain/entities/meteredFeatures";
-import { useUserAccess } from "@/hooks/useUserAccess";
+import { useUserAccess } from "@/hooks";
 import { ArrowBigRight, Lock, Crown } from "lucide-react";
 import { useNavigate } from "react-router";
 

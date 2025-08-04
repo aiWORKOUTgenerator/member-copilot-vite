@@ -2,60 +2,70 @@ import { Target, Battery, Clock, Dumbbell } from "lucide-react";
 import { WorkoutCustomizationProps } from "./types";
 import { CUSTOMIZATION_CONFIG } from "./customizations";
 import { useState } from "react";
-import {
-  StepIndicator,
-  DetailedSelector,
-} from "@/ui/shared/molecules";
+import { StepIndicator, DetailedSelector } from "@/ui/shared/molecules";
 import { LevelDots } from "@/ui/shared/atoms";
 
-import { QUICK_WORKOUT_FOCUS_OPTIONS, ENERGY_LEVEL_OPTIONS, QUICK_WORKOUT_DURATION_OPTIONS, QUICK_WORKOUT_EQUIPMENT_OPTIONS } from "../constants";
+import {
+  QUICK_WORKOUT_FOCUS_OPTIONS,
+  ENERGY_LEVEL_OPTIONS,
+  QUICK_WORKOUT_DURATION_OPTIONS,
+  QUICK_WORKOUT_EQUIPMENT_OPTIONS,
+} from "../constants";
 
 // Focus options with intensity indicators
-const FOCUS_OPTIONS_WITH_INTENSITY = QUICK_WORKOUT_FOCUS_OPTIONS.map((option) => {
-  // Assign intensity levels based on workout type
-  let intensityLevel: number;
-  switch (option.id) {
-    case "gentle_recovery":
-    case "stress_reduction":
-      intensityLevel = 2; // Low intensity
-      break;
-    case "improve_posture":
-    case "core_abs":
-      intensityLevel = 4; // Medium intensity
-      break;
-    case "energizing_boost":
-    case "quick_sweat":
-      intensityLevel = 6; // High intensity
-      break;
-    default:
-      intensityLevel = 3; // Default medium
-  }
+const FOCUS_OPTIONS_WITH_INTENSITY = QUICK_WORKOUT_FOCUS_OPTIONS.map(
+  (option) => {
+    // Assign intensity levels based on workout type
+    let intensityLevel: number;
+    switch (option.id) {
+      case "gentle_recovery":
+      case "stress_reduction":
+        intensityLevel = 2; // Low intensity
+        break;
+      case "improve_posture":
+      case "core_abs":
+        intensityLevel = 4; // Medium intensity
+        break;
+      case "energizing_boost":
+      case "quick_sweat":
+        intensityLevel = 6; // High intensity
+        break;
+      default:
+        intensityLevel = 3; // Default medium
+    }
 
-  return {
-    ...option,
-    tertiary: <LevelDots count={6} activeIndex={intensityLevel - 1} size="sm" />
-  };
-});
+    return {
+      ...option,
+      tertiary: (
+        <LevelDots count={6} activeIndex={intensityLevel - 1} size="sm" />
+      ),
+    };
+  }
+);
 
 // Energy options with LevelDots indicators
 const ENERGY_OPTIONS_WITH_DOTS = ENERGY_LEVEL_OPTIONS.map((option) => ({
   ...option,
-  tertiary: <LevelDots count={6} activeIndex={parseInt(option.id) - 1} size="sm" />
+  tertiary: (
+    <LevelDots count={6} activeIndex={parseInt(option.id) - 1} size="sm" />
+  ),
 }));
 
 // Duration options with subtitle as tertiary content
-const DURATION_OPTIONS_WITH_SUBTITLE = QUICK_WORKOUT_DURATION_OPTIONS.map((option) => ({
-  id: option.id,
-  title: option.title,
-  description: option.description,
-  tertiary: option.subtitle
-}));
+const DURATION_OPTIONS_WITH_SUBTITLE = QUICK_WORKOUT_DURATION_OPTIONS.map(
+  (option) => ({
+    id: option.id,
+    title: option.title,
+    description: option.description,
+    tertiary: option.subtitle,
+  })
+);
 
 // Equipment options (no tertiary content needed)
 const EQUIPMENT_OPTIONS = QUICK_WORKOUT_EQUIPMENT_OPTIONS.map((option) => ({
   id: option.id,
   title: option.title,
-  description: option.description
+  description: option.description,
 }));
 
 export default function WorkoutCustomization({
@@ -66,13 +76,14 @@ export default function WorkoutCustomization({
   mode = "quick",
   activeQuickStep,
   onQuickStepChange,
-
 }: WorkoutCustomizationProps & {
   activeQuickStep?: "focus-energy" | "duration-equipment";
   onQuickStepChange?: (step: "focus-energy" | "duration-equipment") => void;
 }) {
   const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
-  const [internalActiveQuickStep, setInternalActiveQuickStep] = useState<"focus-energy" | "duration-equipment">("focus-energy");
+  const [internalActiveQuickStep, setInternalActiveQuickStep] = useState<
+    "focus-energy" | "duration-equipment"
+  >("focus-energy");
 
   // Use external step state if provided, otherwise use internal state
   const currentStep = activeQuickStep || internalActiveQuickStep;
@@ -98,8 +109,6 @@ export default function WorkoutCustomization({
   ) => {
     onChange(key, value);
   };
-
-
 
   // Helper function to format the current selection for display
   const formatCurrentSelection = (
@@ -228,19 +237,19 @@ export default function WorkoutCustomization({
         </h3>
 
         {/* Step Indicator / Linear Stepper */}
-                        <StepIndicator
+        <StepIndicator
           steps={[
             {
               id: "focus-energy",
               label: "Focus & Energy",
               disabled: false, // First step is always enabled
-              hasErrors: false // No validation errors
+              hasErrors: false, // No validation errors
             },
             {
               id: "duration-equipment",
               label: "Duration & Equipment",
               disabled: false, // Always enabled
-              hasErrors: false // No validation errors
+              hasErrors: false, // No validation errors
             },
           ]}
           currentStep={currentStep}
@@ -248,7 +257,6 @@ export default function WorkoutCustomization({
           disabled={disabled}
           showConnectors={true}
           size="md"
-          spacing="spacious"
         />
 
         {/* Step content */}
@@ -267,12 +275,14 @@ export default function WorkoutCustomization({
               colorScheme="primary"
               required={false}
             />
-            
+
             <DetailedSelector
               icon={Battery}
               options={ENERGY_OPTIONS_WITH_DOTS}
               selectedValue={options.customization_energy || undefined}
-              onChange={(energy) => handleChange("customization_energy", energy)}
+              onChange={(energy) =>
+                handleChange("customization_energy", energy)
+              }
               disabled={disabled}
               error={undefined}
               question="How energetic are you feeling today?"
@@ -289,14 +299,17 @@ export default function WorkoutCustomization({
             <DetailedSelector
               icon={Clock}
               options={DURATION_OPTIONS_WITH_SUBTITLE}
-              selectedValue={options.customization_duration?.toString() || undefined}
-              onChange={(duration) => {
-                // RadioGroupOfCards passes the entire item object, so we need to extract the id
-                const durationItem = Array.isArray(duration) ? duration[0] : duration;
-                const durationId = (durationItem as any)?.id || durationItem;
-                const durationValue = typeof durationId === 'string' ? parseInt(durationId, 10) : Number(durationId);
+              selectedValue={
+                options.customization_duration?.toString() || undefined
+              }
+              onChange={(duration: string | string[]) => {
+                // DetailedSelector returns the ID string for single selection
+                const durationId = Array.isArray(duration)
+                  ? duration[0]
+                  : duration;
+                const durationValue = parseInt(durationId, 10);
                 if (isNaN(durationValue)) {
-                  console.error('Invalid duration value:', duration);
+                  console.error("Invalid duration value:", duration);
                   return;
                 }
                 handleChange("customization_duration", durationValue);
@@ -309,15 +322,16 @@ export default function WorkoutCustomization({
               colorScheme="accent"
               required={true}
             />
-            
+
             <DetailedSelector
               icon={Dumbbell}
               options={EQUIPMENT_OPTIONS}
               selectedValue={options.customization_equipment?.[0] || undefined}
-              onChange={(equipment) => {
-                // RadioGroupOfCards passes the entire item object, so we need to extract the id
-                const equipmentItem = Array.isArray(equipment) ? equipment[0] : equipment;
-                const equipmentId = (equipmentItem as any)?.id || equipmentItem;
+              onChange={(equipment: string | string[]) => {
+                // DetailedSelector returns the ID string for single selection
+                const equipmentId = Array.isArray(equipment)
+                  ? equipment[0]
+                  : equipment;
                 handleChange("customization_equipment", [equipmentId]);
               }}
               question="What equipment do you have available?"

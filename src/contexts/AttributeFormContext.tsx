@@ -1,38 +1,13 @@
 "use client";
 
-import {
-  createContext,
-  useContext,
-  ReactNode,
-  useState,
-  useCallback,
-} from "react";
+import { ReactNode, useState, useCallback } from "react";
 import { Contact } from "@/domain/entities/contact";
 import { Prompt } from "@/domain";
-
-// Interface for attribute form values
-interface AttributeFormValues {
-  [key: string]: string | number | null | string[];
-}
-
-// Interface for the context state and functions
-interface AttributeFormContextType {
-  formValues: AttributeFormValues;
-  updateFormValue: (
-    key: string,
-    value: string | number | string[] | null
-  ) => void;
-  resetForm: () => void;
-  initFormValues: (contact?: Contact | null, prompts?: Prompt[]) => void;
-  isFormDirty: boolean;
-  isValid: boolean;
-  errors: Record<string, string>;
-}
-
-// Create the context with undefined default value
-const AttributeFormContext = createContext<
-  AttributeFormContextType | undefined
->(undefined);
+import {
+  AttributeFormContext,
+  AttributeFormContextType,
+  AttributeFormValues,
+} from "./attribute-form.types";
 
 // Props for the provider component
 interface AttributeFormProviderProps {
@@ -140,19 +115,4 @@ export function AttributeFormProvider({
       {children}
     </AttributeFormContext.Provider>
   );
-}
-
-/**
- * Hook to access the attribute form context
- */
-export function useAttributeForm() {
-  const context = useContext(AttributeFormContext);
-
-  if (context === undefined) {
-    throw new Error(
-      "useAttributeForm must be used within an AttributeFormProvider"
-    );
-  }
-
-  return context;
 }

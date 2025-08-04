@@ -1,15 +1,13 @@
 import {
   useGeneratedWorkout,
   useGeneratedWorkouts,
-} from "@/contexts/GeneratedWorkoutContext";
+} from "@/hooks/useGeneratedWorkouts";
 import { PusherEvent } from "@/contexts/PusherEvent";
-import { useTrainerPersonaData } from "@/contexts/TrainerPersonaContext";
-import { useWorkoutFeedback } from "@/contexts/WorkoutFeedbackContext";
+import { useTrainerPersonaData } from "@/hooks/useTrainerPersona";
+import { useWorkoutFeedback } from "@/hooks/useWorkoutFeedback";
 import { Section, WorkoutStructure } from "@/domain/entities/generatedWorkout";
 import { useUserAccess } from "@/hooks";
-import FeedbackModal, {
-  useFeedbackModal,
-} from "@/ui/shared/molecules/FeedbackModal";
+import FeedbackModal from "@/modules/dashboard/workouts/components/FeedbackModal";
 import TabBar, { TabOption } from "@/ui/shared/molecules/TabBar";
 import {
   ArrowBigLeft,
@@ -31,8 +29,9 @@ import { TrainerPersonaDisplay } from "./components/TrainerPersonaDisplay";
 import VerySimpleFormatWorkoutViewer from "./components/VerySimpleFormatWorkoutViewer";
 import WebShareButton from "./components/WebShareButton";
 import WorkoutFeedbackForm from "./components/WorkoutFeedbackForm";
-import { useWorkoutInstances } from "@/contexts/WorkoutInstancesContext";
+import { useWorkoutInstances } from "@/hooks/useWorkoutInstances";
 import { useAnalytics } from "@/hooks/useAnalytics";
+import { useFeedbackModal } from "./components/FeedbackModal.hooks";
 
 interface WorkoutChunkData {
   chunk: string;

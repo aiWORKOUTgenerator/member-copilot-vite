@@ -1,9 +1,9 @@
 "use client";
 
-import { useCurrentWorkoutInstance } from "@/contexts/CurrentWorkoutInstanceContext";
+import { useCurrentWorkoutInstance } from "@/hooks/useCurrentWorkoutInstance";
 import { RecommendedExercise } from "@/domain/interfaces/services/WorkoutInstanceService";
-import { useWorkoutInstances } from "@/contexts/WorkoutInstancesContext";
-import { useTrainerPersonaData } from "@/contexts/TrainerPersonaContext";
+import { useWorkoutInstances } from "@/hooks/useWorkoutInstances";
+import { useTrainerPersonaData } from "@/hooks/useTrainerPersona";
 import { Exercise, Section } from "@/domain/entities/generatedWorkout";
 import { ExerciseInstance } from "@/domain/entities/workoutInstance";
 import { useAnalytics } from "@/hooks/useAnalytics";
@@ -544,6 +544,24 @@ export default function WorkoutInstancePage() {
     setShowCompleteConfirm(false);
   };
 
+  const loadRecommendedExercises = useCallback(
+    async (currentExercise: Exercise) => {
+      setIsLoadingRecommendations(true);
+      try {
+        const recommendations = await getExerciseRecommendations(
+          currentExercise
+        );
+        setRecommendedExercises(recommendations);
+      } catch (error) {
+        console.error("Error loading recommendations:", error);
+        setRecommendedExercises([]);
+      } finally {
+        setIsLoadingRecommendations(false);
+      }
+    },
+    [getExerciseRecommendations]
+  );
+
   const handleExerciseSwap = useCallback(
     (
       exerciseId: string,
@@ -568,21 +586,8 @@ export default function WorkoutInstancePage() {
       // Load recommended exercises
       loadRecommendedExercises(currentExercise);
     },
-    [currentInstance]
+    [currentInstance, loadRecommendedExercises]
   );
-
-  const loadRecommendedExercises = async (currentExercise: Exercise) => {
-    setIsLoadingRecommendations(true);
-    try {
-      const recommendations = await getExerciseRecommendations(currentExercise);
-      setRecommendedExercises(recommendations);
-    } catch (error) {
-      console.error("Error loading recommendations:", error);
-      setRecommendedExercises([]);
-    } finally {
-      setIsLoadingRecommendations(false);
-    }
-  };
 
   const handleSwapWithRecommended = (
     recommendedExercise: RecommendedExercise

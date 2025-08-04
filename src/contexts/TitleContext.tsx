@@ -1,29 +1,7 @@
 "use client";
 
-import {
-  createContext,
-  Dispatch,
-  ReactNode,
-  SetStateAction,
-  useContext,
-  useState,
-} from "react";
-
-/**
- * TitleContextType interface defines the shape of our title context value.
- */
-export interface TitleContextType {
-  title: string;
-  setTitle: Dispatch<SetStateAction<string>>;
-}
-
-/**
- * Create the context with default values
- */
-export const TitleContext = createContext<TitleContextType>({
-  title: "Dashboard",
-  setTitle: () => {},
-});
+import { ReactNode, useState } from "react";
+import { TitleContext } from "./title.types";
 
 interface TitleProviderProps {
   children: ReactNode;
@@ -45,18 +23,4 @@ export function TitleProvider({
       {children}
     </TitleContext.Provider>
   );
-}
-
-/**
- * Custom hook to use and update the title
- * Throws an error if used outside of a TitleProvider
- */
-export function useTitle(): TitleContextType {
-  const context = useContext(TitleContext);
-
-  if (!context) {
-    throw new Error("useTitle must be used within a TitleProvider");
-  }
-
-  return context;
 }

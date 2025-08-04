@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Announcement } from "@/domain/entities/announcement";
-import { useAnnouncements } from "@/contexts/AnnouncementContext";
+import { useAnnouncements } from "@/hooks/useAnnouncements";
 import { AnnouncementCard } from "./AnnouncementCard";
 import { AnnouncementModal } from "./AnnouncementModal";
 

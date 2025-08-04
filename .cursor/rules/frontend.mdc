@@ -1,0 +1,326 @@
+---
+description: Frontend development rules for member-copilot-vite React TypeScript application
+globs: ["src/**/*.{ts,tsx}", "**/*.{ts,tsx}"]
+alwaysApply: true
+---
+
+# Frontend Development Standards
+
+This project is a React TypeScript frontend application using Clean Architecture principles with domain-driven design. Generate **only TypeScript frontend code**, never Node.js server code.
+
+## Core Technology Stack
+
+### Required Technologies
+- **TypeScript**: Use strict typing for all code, no `any` types
+- **React 19**: Use modern React patterns with hooks and functional components
+- **Tailwind CSS + DaisyUI**: Only styling system allowed, no CSS-in-JS or custom CSS
+- **Vite**: Build tool and dev server
+- **Clerk**: Authentication provider
+- **React Router v7**: For routing
+
+### Forbidden Technologies
+- No Node.js server code in frontend files
+- No JavaScript (use TypeScript exclusively)
+- No CSS Modules, Styled Components, or Emotion
+- No class components (functional components only)
+- No `any` types in TypeScript
+- No manual tokenization of JavaScript
+
+## Architecture Patterns
+
+### Clean Architecture Structure
+```
+src/
+├── domain/           # Core business logic (entities, interfaces)
+├── services/         # Implementation layer
+├── contexts/         # React Context for dependency injection
+├── modules/          # Feature-based modules
+├── ui/               # Reusable UI components
+└── hooks/            # Custom React hooks
+```
+
+### Domain Layer Rules
+- Define all service interfaces in `domain/interfaces/services/`
+- Create entities that extend `BaseEntity<T>` in `domain/entities/`
+- Use proper TypeScript interfaces for all data structures
+- Follow SOLID principles, especially Interface Segregation
+
+```typescript
+// Example service interface
+export interface UserService {
+  getUserById(id: string): Promise<User | null>;
+  updateUser(id: string, data: Partial<User>): Promise<User>;
+}
+```
+
+### Dependency Injection Pattern
+- Use React Context for service injection
+- Create typed hooks for each service: `useUserService()`, `useApiService()`
+- Provider components should handle loading states and error boundaries
+- Follow the context pattern with proper null checks
+
+```typescript
+// Context provider pattern
+export function UserProvider({ children }: { children: ReactNode }) {
+  const userService = useUserService();
+  const [users, setUsers] = useState<User[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  
+  // ... implementation
+  
+  return (
+    <UserContext.Provider value={{ users, isLoading, refetch }}>
+      {children}
+    </UserContext.Provider>
+  );
+}
+```
+
+## Component Organization
+
+### Atomic Design Structure
+- **Atoms**: `src/ui/shared/atoms/` - Basic UI elements (Button, Input, Icon)
+- **Molecules**: `src/ui/shared/molecules/` - Composed components (Card, FormField)
+- **Organisms**: `src/ui/shared/organisms/` - Complex compositions (FormContainer, PageHeader)
+- **Templates**: `src/ui/shared/templates/` - Layout components (PageLayout, StackedLayout)
+
+### Component Rules
+- Use functional components with TypeScript interfaces for props
+- Include proper JSDoc comments for all props
+- Export components as named exports, not default exports for reusable components
+- Use default exports only for page components
+
+```typescript
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  /** Visual style variant */
+  variant?: "primary" | "secondary" | "accent";
+  /** Size of the button */
+  size?: "xs" | "sm" | "md" | "lg";
+  /** Show loading spinner */
+  isLoading?: boolean;
+}
+
+export const Button: React.FC<ButtonProps> = ({
+  variant = "primary",
+  size = "md",
+  children,
+  className = "",
+  isLoading = false,
+  ...props
+}) => {
+  return (
+    <button
+      className={`btn btn-${variant} btn-${size} ${className}`}
+      disabled={isLoading}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+};
+```
+
+## Styling with Tailwind CSS + DaisyUI
+
+### Styling Rules
+- **Required**: Use only Tailwind CSS utility classes and DaisyUI components
+- **Forbidden**: No custom CSS files, no CSS-in-JS, no inline styles
+- Use DaisyUI semantic color system: `primary`, `secondary`, `accent`, `neutral`, `base-100`, etc.
+- Prefer DaisyUI component classes: `btn`, `card`, `input`, `modal`, etc.
+
+### Component Styling Pattern
+```typescript
+// Good: Using DaisyUI + Tailwind utilities
+<div className="card bg-base-100 shadow-lg">
+  <div className="card-body">
+    <h2 className="card-title text-2xl font-bold">Title</h2>
+    <p className="text-base-content/70 mb-4">Description</p>
+    <button className="btn btn-primary btn-sm">Action</button>
+  </div>
+</div>
+
+// Bad: Custom CSS or inline styles
+<div style={{ backgroundColor: '#fff' }}>
+```
+
+### Responsive Design
+- Use Tailwind responsive prefixes: `sm:`, `md:`, `lg:`, `xl:`
+- Mobile-first approach with DaisyUI components
+- Use `container mx-auto px-4` for content width constraints
+
+## Module Organization
+
+### Feature Module Structure
+```
+modules/feature/
+├── FeatureContainer.tsx    # Main container with providers
+├── pages/                  # Page components
+├── components/             # Feature-specific components
+└── utils/                  # Feature utilities
+```
+
+### Module Rules
+- Each feature module should be self-contained
+- Use container components to wrap features with required providers
+- Page components should use default exports
+- Feature components should use named exports
+
+### Container Pattern
+```typescript
+export default function DashboardContainer() {
+  return (
+    <TitleProvider>
+      <ContactProvider>
+        <UserAccessProvider>
+          <Routes>
+            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+          </Routes>
+        </UserAccessProvider>
+      </ContactProvider>
+    </TitleProvider>
+  );
+}
+```
+
+## State Management
+
+### Context Rules
+- Create typed context interfaces with clear state shape
+- Include loading states, error states, and refetch functions
+- Use `useCallback` for memoizing functions
+- Implement proper error boundaries
+
+```typescript
+export interface UserState {
+  users: User[];
+  isLoading: boolean;
+  error: string | null;
+  refetch: () => Promise<void>;
+  isLoaded: boolean;
+}
+```
+
+### Hook Patterns
+- Create custom hooks for each context: `useUsers()`, `useAuth()`
+- Include proper null checks and error throwing
+- Use specialized hooks over general ones: prefer `useUserService()` over `useServices().userService`
+
+## TypeScript Standards
+
+### Type Safety Rules
+- **Never use `any`** - use proper types or `unknown`
+- Define interfaces for all data structures
+- Use generic types for reusable components: `<T>`
+- Extend HTML element types for component props
+
+```typescript
+// Good: Proper typing
+interface ApiResponse<T> {
+  data: T;
+  status: number;
+  message: string;
+}
+
+// Bad: Using any
+function fetchData(): Promise<any> { ... }
+```
+
+### Interface Conventions
+- Use PascalCase for interfaces: `UserData`, `ApiResponse`
+- Suffix component props with `Props`: `ButtonProps`, `CardProps`
+- Use descriptive names for generic types: `<TData>`, `<TEntity>`
+
+## Authentication with Clerk
+
+### Auth Patterns
+- Use `useAuth()` hook from the auth service wrapper
+- Check `isSignedIn` before making authenticated requests
+- Handle loading states with `isLoaded`
+- Use `<AuthRequired>` component wrapper for protected routes
+
+```typescript
+export default function ProtectedPage() {
+  const { isSignedIn, isLoaded } = useAuth();
+  
+  if (!isLoaded) return <LoadingState />;
+  if (!isSignedIn) return <Navigate to="/sign-in" />;
+  
+  return <div>Protected content</div>;
+}
+```
+
+## Performance and Best Practices
+
+### React Performance
+- Use `memo()` for expensive components
+- Use `useCallback()` and `useMemo()` appropriately
+- Implement proper loading states for async operations
+- Use `Suspense` boundaries for code splitting
+
+### Code Quality
+- Follow ESLint rules (no warnings allowed in commits)
+- Use descriptive variable and function names
+- Add JSDoc comments for public APIs
+- Handle error states gracefully
+
+### File Naming
+- Use PascalCase for component files: `UserCard.tsx`
+- Use camelCase for utility files: `userHelpers.ts`
+- Use kebab-case for page routes: `user-profile`
+
+## Analytics Integration
+
+### Analytics Rules
+- Use `useAnalytics()` hook for event tracking
+- Track user interactions with meaningful event names
+- Include relevant properties for events
+- Track page views in useEffect
+
+```typescript
+const analytics = useAnalytics();
+
+const handleButtonClick = () => {
+  analytics.track("Button Clicked", {
+    buttonName: "Submit",
+    pageSection: "UserForm",
+    timestamp: new Date().toISOString()
+  });
+};
+```
+
+## Error Handling
+
+### Error Boundaries
+- Wrap feature modules with ErrorBoundary components
+- Display user-friendly error messages
+- Log errors to console in development
+- Implement fallback UI for error states
+
+### Loading States
+- Always show loading indicators for async operations
+- Use skeleton screens for better UX
+- Handle empty states with meaningful messages
+
+## Testing Guidelines
+
+### Component Testing
+- Use React Testing Library for component tests
+- Test user interactions, not implementation details
+- Mock external dependencies and API calls
+- Write tests in TypeScript
+
+```typescript
+import { render, screen, fireEvent } from '@testing-library/react';
+import { Button } from './Button';
+
+test('calls onClick when clicked', () => {
+  const handleClick = jest.fn();
+  render(<Button onClick={handleClick}>Click me</Button>);
+  
+  fireEvent.click(screen.getByRole('button'));
+  expect(handleClick).toHaveBeenCalledTimes(1);
+});
+```
+
+This rule ensures consistent, maintainable, and high-quality frontend code following the established patterns in the member-copilot-vite project.

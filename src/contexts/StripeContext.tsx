@@ -1,27 +1,14 @@
 "use client";
 
-import React, {
-  createContext,
-  useContext,
-  useState,
-  ReactNode,
-  useEffect,
-} from "react";
+import React, { useState, ReactNode, useEffect } from "react";
 import { loadStripe, Stripe } from "@stripe/stripe-js";
+import { StripeContext } from "./stripe.types";
 
 // Initialize Stripe outside of component render
 const stripePromise = loadStripe(
   import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY ||
     "pk_test_UFaFBvMgE623tTbU6oT367qN"
 );
-
-interface StripeContextType {
-  stripe: Stripe | null;
-  isLoading: boolean;
-  error: Error | null;
-}
-
-const StripeContext = createContext<StripeContextType | undefined>(undefined);
 
 export const StripeProvider: React.FC<{ children: ReactNode }> = ({
   children,
@@ -56,12 +43,4 @@ export const StripeProvider: React.FC<{ children: ReactNode }> = ({
   return (
     <StripeContext.Provider value={value}>{children}</StripeContext.Provider>
   );
-};
-
-export const useStripe = (): StripeContextType => {
-  const context = useContext(StripeContext);
-  if (context === undefined) {
-    throw new Error("useStripe must be used within a StripeProvider");
-  }
-  return context;
 };

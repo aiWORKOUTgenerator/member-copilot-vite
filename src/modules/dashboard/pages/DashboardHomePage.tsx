@@ -1,17 +1,16 @@
 "use client";
 
-import { useAttributesLoaded } from "@/contexts/AttributeContext";
+import { useAttributesLoaded } from "@/hooks/useAttributes";
 import {
   useAttributeTypesData,
   useAttributeTypesLoaded,
-} from "@/contexts/AttributeTypeContext";
-import { useContactData } from "@/contexts/ContactContext";
-import { usePromptsData, usePromptsLoaded } from "@/contexts/PromptContext";
-import { useTitle } from "@/contexts/TitleContext";
-import { AttributeCompletion, ContactUtils } from "@/domain";
+} from "@/hooks/useAttributeTypes";
+import { useContactData } from "@/hooks/useContact";
+import { usePromptsData, usePromptsLoaded } from "@/hooks/usePrompts";
+import { useTitle } from "@/hooks/useTitle";
+import { AttributeCompletion, ContactUtils, License } from "@/domain";
 import { useUserAccess } from "@/hooks";
 import { useAnalytics } from "@/hooks/useAnalytics";
-import { MeteredFeature } from "@/hooks/useUserAccess";
 import AccessAwareComponent from "@/ui/shared/molecules/AccessAwareComponent";
 import { ActionCard } from "@/ui/shared/molecules/ActionCard";
 import { PhoneVerificationCard } from "@/components/PhoneVerificationCard";
@@ -27,6 +26,7 @@ import {
 } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router";
+import { MeteredFeature } from "@/domain/entities/meteredFeatures";
 
 export default function DashboardHomePage() {
   const { setTitle } = useTitle();
@@ -60,7 +60,7 @@ export default function DashboardHomePage() {
     if (!basicPriceId || activeLicenses.length === 0) return false;
 
     return activeLicenses.some(
-      (license) => license.policy?.stripe_price_id === basicPriceId
+      (license: License) => license.policy?.stripe_price_id === basicPriceId
     );
   }, [activeLicenses]);
 

@@ -4,7 +4,7 @@ import {
   useTrainerPersonaData,
   useTrainerPersonaError,
   useTrainerPersona,
-} from "@/contexts/TrainerPersonaContext";
+} from "@/hooks/useTrainerPersona";
 import { Bot, CheckCircle, Clock, Sparkles } from "lucide-react";
 
 const GeneratingTrainerPage = () => {
@@ -17,8 +17,8 @@ const GeneratingTrainerPage = () => {
   const [timeElapsed, setTimeElapsed] = useState(0);
   const [hasTimedOut, setHasTimedOut] = useState(false);
 
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const timeIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<number | null>(null);
+  const timeIntervalRef = useRef<number | null>(null);
 
   const MAX_POLLING_ATTEMPTS = 60; // 5 minutes (60 attempts * 5s = 300s)
   const POLLING_INTERVAL = 5000; // 5 seconds

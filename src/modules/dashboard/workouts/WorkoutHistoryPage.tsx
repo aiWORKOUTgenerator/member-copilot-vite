@@ -1,7 +1,7 @@
 "use client";
 
-import { useTrainerPersonaData } from "@/contexts/TrainerPersonaContext";
-import { useWorkoutInstances } from "@/contexts/WorkoutInstancesContext";
+import { useTrainerPersonaData } from "@/hooks/useTrainerPersona";
+import { useWorkoutInstances } from "@/hooks/useWorkoutInstances";
 import { WorkoutInstance } from "@/domain/entities/workoutInstance";
 import { useUserAccess } from "@/hooks";
 import LoadingState from "@/ui/shared/atoms/LoadingState";
@@ -19,9 +19,7 @@ import {
 import { useMemo, useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { TrainerPersonaDisplay } from "./components/TrainerPersonaDisplay";
-import WorkoutInstanceModal, {
-  useWorkoutInstanceModal,
-} from "./components/WorkoutInstanceModal";
+import WorkoutInstanceModal from "./components/WorkoutInstanceModal";
 import { WorkoutTimeline } from "./components/WorkoutTimeline";
 import {
   calculateStats,
@@ -30,6 +28,7 @@ import {
   sortByDateDesc,
 } from "./utils/workoutHistoryUtils";
 import { useAnalytics } from "@/hooks/useAnalytics";
+import { useWorkoutInstanceModal } from "./components/WorkoutInstanceModal.hooks";
 
 /**
  * Simple workout history page showing instances from the last month

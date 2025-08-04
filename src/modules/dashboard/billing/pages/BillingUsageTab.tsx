@@ -1,6 +1,7 @@
 "use client";
 
-import { MeteredFeature, useUserAccess } from "@/hooks/useUserAccess";
+import { MeteredFeature } from "@/domain/entities/meteredFeatures";
+import { useUserAccess } from "@/hooks";
 import AccessAwareComponent from "@/ui/shared/molecules/AccessAwareComponent";
 import { useNavigate } from "react-router";
 

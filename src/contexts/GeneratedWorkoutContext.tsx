@@ -4,37 +4,11 @@ import { GeneratedWorkout } from "@/domain/entities/generatedWorkout";
 import { WorkoutParams } from "@/domain/entities/workoutParams";
 import { useGeneratedWorkoutService } from "@/hooks/useGeneratedWorkoutService";
 import { useAuth } from "@/hooks/auth";
+import { ReactNode, useCallback, useEffect, useState } from "react";
 import {
-  createContext,
-  ReactNode,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
-
-/**
- * GeneratedWorkoutState interface defines the shape of our generated workout context value.
- */
-export interface GeneratedWorkoutState {
-  workouts: GeneratedWorkout[];
-  isLoading: boolean;
-  error: string | null;
-  refetch: () => Promise<void>;
-  createWorkout: (
-    configId: string,
-    workoutParams: WorkoutParams,
-    prompt: string
-  ) => Promise<GeneratedWorkout>;
-}
-
-/**
- * Create the context with a default undefined value.
- * This forces consumers to use the useGeneratedWorkouts hook which performs a null check.
- */
-const GeneratedWorkoutContext = createContext<
-  GeneratedWorkoutState | undefined
->(undefined);
+  GeneratedWorkoutContext,
+  GeneratedWorkoutState,
+} from "./generated-workout.types";
 
 interface GeneratedWorkoutProviderProps {
   children: ReactNode;
@@ -122,52 +96,4 @@ export function GeneratedWorkoutProvider({
       {children}
     </GeneratedWorkoutContext.Provider>
   );
-}
-
-/**
- * Custom hook to access the generated workout data from the GeneratedWorkoutContext.
- * Throws an error if used outside of a GeneratedWorkoutProvider.
- */
-export function useGeneratedWorkouts(): GeneratedWorkoutState {
-  const context = useContext(GeneratedWorkoutContext);
-
-  if (context === undefined) {
-    throw new Error(
-      "useGeneratedWorkouts must be used within a GeneratedWorkoutProvider"
-    );
-  }
-
-  return context;
-}
-
-/**
- * Convenience hook to get just the workouts array
- */
-export function useGeneratedWorkoutsData(): GeneratedWorkout[] {
-  const { workouts } = useGeneratedWorkouts();
-  return workouts;
-}
-
-/**
- * Convenience hook to check if the workouts are loading
- */
-export function useGeneratedWorkoutsLoading(): boolean {
-  const { isLoading } = useGeneratedWorkouts();
-  return isLoading;
-}
-
-/**
- * Convenience hook to get any workouts loading error
- */
-export function useGeneratedWorkoutsError(): string | null {
-  const { error } = useGeneratedWorkouts();
-  return error;
-}
-
-/**
- * Hook to get a specific workout by ID
- */
-export function useGeneratedWorkout(id: string): GeneratedWorkout | undefined {
-  const { workouts } = useGeneratedWorkouts();
-  return workouts.find((workout) => workout.id === id);
 }

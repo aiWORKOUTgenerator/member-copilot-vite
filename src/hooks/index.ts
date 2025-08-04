@@ -1,5 +1,5 @@
 export { useAnalytics } from "./useAnalytics";
-export { useUserAccess } from "./useUserAccess";
+export * from "./useAnnouncements";
 export { useMeteredUsageService } from "./useMeteredUsageService";
 export { useLicenseService } from "./useLicenseService";
 export { useLicensePolicyService } from "./useLicensePolicyService";
@@ -18,3 +18,15 @@ export * from "./usePhoneVerification";
 export * from "./usePhoneNumber";
 export { useWorkoutFeedbackService } from "./useWorkoutFeedbackService";
 export * from "./useTrainerPersonaService";
+export {
+  useUserAccess,
+  useUserAccessContext,
+  MeteredFeature,
+} from "./useUserAccess";
+export * from "./useWorkoutInstances";
+export { usePusherBeamsInterests } from "./usePusherBeamsInterests";
+export { usePusherEvent } from "./usePusherEvent";
+export * from "./useWorkoutFeedback";
+export * from "./useTrainerPersona";
+export * from "./useGeneratedWorkouts";
+export * from "./useCurrentWorkoutInstance";

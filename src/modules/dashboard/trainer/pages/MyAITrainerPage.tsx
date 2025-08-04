@@ -4,7 +4,7 @@ import {
   useTrainerPersonaError,
   useTrainerPersonaHasNoPersona,
   useTrainerPersonaLoading,
-} from "@/contexts/TrainerPersonaContext";
+} from "@/hooks/useTrainerPersona";
 import { useUserAccess } from "@/hooks";
 import EmptyStateBasic from "@/ui/shared/molecules/EmptyState";
 import {

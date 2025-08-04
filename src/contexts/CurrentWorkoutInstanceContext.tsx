@@ -11,44 +11,12 @@ import {
 } from "@/domain/interfaces/services/WorkoutInstanceService";
 import { useWorkoutInstanceService } from "@/hooks/useWorkoutInstanceService";
 import { useAuth } from "@/hooks/auth";
-import {
-  createContext,
-  ReactNode,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { ReactNode, useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router";
-
-/**
- * CurrentWorkoutInstanceState interface for managing a single workout instance
- */
-export interface CurrentWorkoutInstanceState {
-  currentInstance: WorkoutInstance | null;
-  isLoading: boolean;
-  error: string | null;
-  loadInstance: (instanceId: string) => Promise<void>;
-  clearInstance: () => void;
-  updateInstance: (
-    instanceId: string,
-    request: UpdateWorkoutInstanceRequest
-  ) => Promise<WorkoutInstance>;
-  deleteInstance: (instanceId: string) => Promise<void>;
-  updateInstanceOptimistically: (updates: Partial<WorkoutInstance>) => void;
-  updateInstanceJsonFormatOptimistically: (
-    jsonFormat: WorkoutInstanceStructure
-  ) => void;
-  syncToServer: () => Promise<void>;
-  hasPendingChanges: boolean;
-  getExerciseRecommendations: (
-    currentExercise: Exercise
-  ) => Promise<RecommendedExercise[]>;
-}
-
-const CurrentWorkoutInstanceContext = createContext<
-  CurrentWorkoutInstanceState | undefined
->(undefined);
+import {
+  CurrentWorkoutInstanceContext,
+  CurrentWorkoutInstanceState,
+} from "./current-workout-instance.types";
 
 interface CurrentWorkoutInstanceProviderProps {
   children: ReactNode;
@@ -267,37 +235,4 @@ export function CurrentWorkoutInstanceProvider({
       {children}
     </CurrentWorkoutInstanceContext.Provider>
   );
-}
-
-/**
- * Hook to access the current workout instance
- */
-export function useCurrentWorkoutInstance(): CurrentWorkoutInstanceState {
-  const context = useContext(CurrentWorkoutInstanceContext);
-
-  if (context === undefined) {
-    throw new Error(
-      "useCurrentWorkoutInstance must be used within a CurrentWorkoutInstanceProvider"
-    );
-  }
-
-  return context;
-}
-
-/**
- * Convenience hooks
- */
-export function useCurrentWorkoutInstanceData(): WorkoutInstance | null {
-  const { currentInstance } = useCurrentWorkoutInstance();
-  return currentInstance;
-}
-
-export function useCurrentWorkoutInstanceLoading(): boolean {
-  const { isLoading } = useCurrentWorkoutInstance();
-  return isLoading;
-}
-
-export function useCurrentWorkoutInstanceError(): string | null {
-  const { error } = useCurrentWorkoutInstance();
-  return error;
 }

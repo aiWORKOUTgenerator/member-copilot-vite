@@ -4,42 +4,8 @@ import { StripeSubscription } from "@/domain/entities/StripeSubscription";
 import { PortalConfiguration } from "@/domain/interfaces/services/SubscriptionService";
 import { useAuth } from "@/hooks/auth";
 import { useSubscriptionService } from "@/hooks/useSubscriptionService";
-import {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useState,
-  useCallback,
-} from "react";
-
-export interface SubscriptionTier {
-  id: string;
-  stripePriceId: string;
-  name: string;
-  description: string;
-  features: string[];
-  price: string;
-  isPopular?: boolean;
-}
-
-interface SubscriptionContextType {
-  tiers: SubscriptionTier[];
-  selectedTier: SubscriptionTier | null;
-  isLoadingTiers: boolean;
-  isLoadingSubscription: boolean;
-  currentUserSubscription: StripeSubscription | null;
-  createCheckoutSession: (stripePriceId: string) => Promise<{ url: string }>;
-  createCustomerPortalSession: (
-    portalConfiguration: PortalConfiguration,
-    returnPath?: string
-  ) => Promise<{ url: string }>;
-  refreshSubscriptionData: () => Promise<void>;
-}
-
-const SubscriptionContext = createContext<SubscriptionContextType | undefined>(
-  undefined
-);
+import { ReactNode, useEffect, useState, useCallback } from "react";
+import { SubscriptionContext, SubscriptionTier } from "./subscription.types";
 
 export const SubscriptionProvider = ({ children }: { children: ReactNode }) => {
   const [tiers, setTiers] = useState<SubscriptionTier[]>([]);
@@ -129,14 +95,4 @@ export const SubscriptionProvider = ({ children }: { children: ReactNode }) => {
       {children}
     </SubscriptionContext.Provider>
   );
-};
-
-export const useSubscription = () => {
-  const context = useContext(SubscriptionContext);
-  if (context === undefined) {
-    throw new Error(
-      "useSubscription must be used within a SubscriptionProvider"
-    );
-  }
-  return context;
 };

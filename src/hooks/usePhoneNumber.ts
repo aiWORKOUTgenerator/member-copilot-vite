@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useContact } from "@/contexts/ContactContext";
+import { useContact } from "@/hooks/useContact";
 import { PhoneNumberUtils } from "@/domain/entities/phoneVerification";
 
 /**

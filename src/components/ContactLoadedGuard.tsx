@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { useContact } from "@/contexts/ContactContext";
+import { useContact } from "@/hooks/useContact";
 import { useAuth } from "@/hooks/auth";
 
 interface ContactLoadedGuardProps {
