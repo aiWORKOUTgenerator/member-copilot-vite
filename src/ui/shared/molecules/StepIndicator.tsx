@@ -60,8 +60,8 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
           size === "sm"
             ? "gap-[var(--spacing-step-gap-sm)]"
             : size === "lg"
-            ? "gap-[var(--spacing-step-gap-lg)]"
-            : "gap-[var(--spacing-step-gap-md)]"
+              ? "gap-[var(--spacing-step-gap-lg)]"
+              : "gap-[var(--spacing-step-gap-md)]"
         }`}
         data-testid="step-indicator-steps"
       >
@@ -79,8 +79,8 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
                     size === "sm"
                       ? "w-[var(--size-step-sm)] h-[var(--size-step-sm)] text-[var(--text-step-sm)]"
                       : size === "lg"
-                      ? "w-[var(--size-step-lg)] h-[var(--size-step-lg)] text-[var(--text-step-lg)]"
-                      : "w-[var(--size-step-md)] h-[var(--size-step-md)] text-[var(--text-step-md)]"
+                        ? "w-[var(--size-step-lg)] h-[var(--size-step-lg)] text-[var(--text-step-lg)]"
+                        : "w-[var(--size-step-md)] h-[var(--size-step-md)] text-[var(--text-step-md)]"
                   } ${getVariantClasses(
                     isActive,
                     isCompleted,
@@ -108,8 +108,8 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
                       size === "sm"
                         ? "w-[var(--width-connector-sm)]"
                         : size === "lg"
-                        ? "w-[var(--width-connector-lg)]"
-                        : "w-[var(--width-connector-md)]"
+                          ? "w-[var(--width-connector-lg)]"
+                          : "w-[var(--width-connector-md)]"
                     } h-0.5 bg-base-300 transform -translate-y-1/2`}
                     aria-hidden="true"
                   />
@@ -121,8 +121,8 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
                   size === "sm"
                     ? "mt-[var(--spacing-label-sm)]"
                     : size === "lg"
-                    ? "mt-[var(--spacing-label-lg)]"
-                    : "mt-[var(--spacing-label-md)]"
+                      ? "mt-[var(--spacing-label-lg)]"
+                      : "mt-[var(--spacing-label-md)]"
                 } text-center`}
               >
                 <div
@@ -130,8 +130,8 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
                     size === "sm"
                       ? "text-xs"
                       : size === "lg"
-                      ? "text-base"
-                      : "text-sm"
+                        ? "text-base"
+                        : "text-sm"
                   } font-medium text-base-content`}
                 >
                   {step.label}
@@ -143,8 +143,8 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
                         size === "sm"
                           ? "text-xs"
                           : size === "lg"
-                          ? "text-sm"
-                          : "text-xs"
+                            ? "text-sm"
+                            : "text-xs"
                       } text-base-content/70`}
                     >
                       {step.description}

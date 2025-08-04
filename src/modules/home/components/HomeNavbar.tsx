@@ -23,11 +23,7 @@ export function HomeNavbar({
   return (
     <nav className="navbar bg-base-100 bg-opacity-70 backdrop-blur-sm sticky top-0 z-10">
       <div className="navbar-start">
-        <Link
-          to="/"
-          className="btn btn-ghost text-xl"
-          onClick={onLogoClick}
-        >
+        <Link to="/" className="btn btn-ghost text-xl" onClick={onLogoClick}>
           {HOMEPAGE_CONTENT.navbar.logo}
         </Link>
       </div>
@@ -51,7 +47,9 @@ export function HomeNavbar({
                 {HOMEPAGE_CONTENT.navbar.signIn}
               </Link>
               <Link to="/conversion" onClick={onCreateAccountClick}>
-                <Button variant="primary">{HOMEPAGE_CONTENT.navbar.createAccount}</Button>
+                <Button variant="primary">
+                  {HOMEPAGE_CONTENT.navbar.createAccount}
+                </Button>
               </Link>
             </>
           )
@@ -61,4 +59,4 @@ export function HomeNavbar({
       </div>
     </nav>
   );
-} 
+}

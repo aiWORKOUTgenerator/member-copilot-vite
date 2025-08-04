@@ -121,9 +121,8 @@ export function usePhoneVerification(): UsePhoneVerificationReturn {
           country_code: countryCode,
         };
 
-        const response = await phoneVerificationService.sendVerificationCode(
-          request
-        );
+        const response =
+          await phoneVerificationService.sendVerificationCode(request);
 
         if (response.success) {
           // Create session from response
@@ -373,9 +372,8 @@ export function usePhoneVerificationSend() {
           country_code: countryCode,
         };
 
-        const response = await phoneVerificationService.sendVerificationCode(
-          request
-        );
+        const response =
+          await phoneVerificationService.sendVerificationCode(request);
         return response;
       } catch (err) {
         const error =

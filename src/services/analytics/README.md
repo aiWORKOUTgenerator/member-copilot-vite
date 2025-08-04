@@ -20,19 +20,19 @@ RUDDERSTACK_DATA_PLANE_URL=your_data_plane_url_here
 You can use the analytics service in your components by importing the `useAnalytics` hook:
 
 ```tsx
-import { useAnalytics } from '@/hooks';
+import { useAnalytics } from "@/hooks";
 
 function MyComponent() {
   const analytics = useAnalytics();
-  
+
   const handleButtonClick = () => {
     // Track event
-    analytics.track('Button Clicked', {
-      buttonName: 'Submit',
-      pageSection: 'Form'
+    analytics.track("Button Clicked", {
+      buttonName: "Submit",
+      pageSection: "Form",
     });
   };
-  
+
   return <button onClick={handleButtonClick}>Submit</button>;
 }
 ```
@@ -62,4 +62,4 @@ To add a new analytics provider:
 - `AnalyticsFactory`: Factory for creating provider instances
 - `initAnalytics`: Helper to initialize the analytics service
 - `AnalyticsProvider`: React component that initializes analytics on the client
-- `useAnalytics`: Hook for using analytics in components 
+- `useAnalytics`: Hook for using analytics in components
