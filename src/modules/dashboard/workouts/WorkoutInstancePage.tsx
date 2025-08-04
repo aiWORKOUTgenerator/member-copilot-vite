@@ -548,9 +548,8 @@ export default function WorkoutInstancePage() {
     async (currentExercise: Exercise) => {
       setIsLoadingRecommendations(true);
       try {
-        const recommendations = await getExerciseRecommendations(
-          currentExercise
-        );
+        const recommendations =
+          await getExerciseRecommendations(currentExercise);
         setRecommendedExercises(recommendations);
       } catch (error) {
         console.error("Error loading recommendations:", error);
@@ -1534,8 +1533,8 @@ function RecommendedExercisesTab({
                     exercise.difficulty === "Beginner"
                       ? "badge-success"
                       : exercise.difficulty === "Intermediate"
-                      ? "badge-warning"
-                      : "badge-error"
+                        ? "badge-warning"
+                        : "badge-error"
                   }`}
                 >
                   {exercise.difficulty}
@@ -1831,8 +1830,8 @@ function VerticalProgressIndicator({
                   isCompleted
                     ? "bg-success border-success"
                     : isActive
-                    ? "bg-primary border-primary"
-                    : "bg-base-100 border-base-300"
+                      ? "bg-primary border-primary"
+                      : "bg-base-100 border-base-300"
                 }`}
               />
 
@@ -2202,15 +2201,15 @@ function ExerciseCard({
               disabled
                 ? "btn-disabled opacity-60 cursor-not-allowed"
                 : isCompleted
-                ? "btn-success shadow-lg"
-                : "btn-outline btn-primary hover:scale-105"
+                  ? "btn-success shadow-lg"
+                  : "btn-outline btn-primary hover:scale-105"
             }`}
             aria-label={
               disabled
                 ? "Exercise completion locked (workout completed)"
                 : isCompleted
-                ? "Mark as incomplete"
-                : "Mark as complete"
+                  ? "Mark as incomplete"
+                  : "Mark as complete"
             }
           >
             {isCompleted ? (

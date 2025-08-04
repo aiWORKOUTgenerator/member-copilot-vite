@@ -17,8 +17,10 @@ const GeneratingTrainerPage = () => {
   const [timeElapsed, setTimeElapsed] = useState(0);
   const [hasTimedOut, setHasTimedOut] = useState(false);
 
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const timeIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  // Use modern TypeScript pattern for cross-environment compatibility
+  // ReturnType<typeof setInterval> works in both Node.js (Timeout) and browser (number) environments
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const timeIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const MAX_POLLING_ATTEMPTS = 60; // 5 minutes (60 attempts * 5s = 300s)
   const POLLING_INTERVAL = 5000; // 5 seconds

@@ -91,8 +91,8 @@ export function usePhoneVerificationStatus() {
       status: isVerified
         ? "verified"
         : hasPhoneNumber
-        ? "pending"
-        : "not_provided",
+          ? "pending"
+          : "not_provided",
     };
   }, [contact?.phone_number, isVerified, verificationDate]);
 }

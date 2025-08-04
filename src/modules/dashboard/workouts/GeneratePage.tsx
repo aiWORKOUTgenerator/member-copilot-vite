@@ -422,8 +422,8 @@ export default function GenerateWorkoutPage() {
                           index === 0
                             ? "success"
                             : index === 1
-                            ? "info"
-                            : "warning"
+                              ? "info"
+                              : "warning"
                         } cursor-pointer hover:bg-base-300`}
                         onClick={() => setExamplePrompt(example)}
                       >
