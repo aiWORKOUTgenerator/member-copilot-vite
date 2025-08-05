@@ -1,6 +1,6 @@
-import { useContext } from "react";
-import { Prompt } from "@/domain/entities";
-import { PromptContext, PromptState } from "@/contexts/prompt.types";
+import { useContext } from 'react';
+import { Prompt } from '@/domain/entities';
+import { PromptContext, PromptState } from '@/contexts/prompt.types';
 
 /**
  * Custom hook to access the prompt data from the PromptContext.
@@ -10,7 +10,7 @@ export function usePrompts(): PromptState {
   const context = useContext(PromptContext);
 
   if (context === undefined) {
-    throw new Error("usePrompts must be used within a PromptProvider");
+    throw new Error('usePrompts must be used within a PromptProvider');
   }
 
   return context;

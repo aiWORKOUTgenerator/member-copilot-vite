@@ -6,7 +6,7 @@ export class Announcement {
   title: string;
   shortDescription: string;
   longDescription: string;
-  priority: "high" | "medium" | "low";
+  priority: 'high' | 'medium' | 'low';
   createdAt: Date;
   isActive: boolean;
 
@@ -15,7 +15,7 @@ export class Announcement {
     title: string;
     short_description: string;
     long_description: string;
-    priority: "high" | "medium" | "low";
+    priority: 'high' | 'medium' | 'low';
     created_at: string;
     is_active: boolean;
   }) {

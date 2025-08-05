@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { Prompt } from "@/domain/entities";
-import React, { useState } from "react";
-import { PromptCard } from "../organisms/PromptCard";
+import { Prompt } from '@/domain/entities';
+import React, { useState } from 'react';
+import { PromptCard } from '../organisms/PromptCard';
 
 interface PromptValues {
   [promptId: string]: string | string[] | number;
@@ -53,53 +53,53 @@ export const PromptList: React.FC<PromptListProps> = ({
       if (prompt.validationRules?.required === true) {
         if (
           value === undefined ||
-          value === "" ||
+          value === '' ||
           (Array.isArray(value) && value.length === 0)
         ) {
-          errors[prompt.id] = "This field is required";
+          errors[prompt.id] = 'This field is required';
         }
       }
 
       // Check min/max for numbers
-      if (typeof value === "number" && prompt.validationRules) {
+      if (typeof value === 'number' && prompt.validationRules) {
         const min = prompt.validationRules.min;
         const max = prompt.validationRules.max;
 
-        if (typeof min === "number" && value < min) {
+        if (typeof min === 'number' && value < min) {
           errors[prompt.id] = `Minimum value is ${min}`;
         }
-        if (typeof max === "number" && value > max) {
+        if (typeof max === 'number' && value > max) {
           errors[prompt.id] = `Maximum value is ${max}`;
         }
       }
 
       // Check min/max length for strings
-      if (typeof value === "string" && prompt.validationRules) {
+      if (typeof value === 'string' && prompt.validationRules) {
         const minLength = prompt.validationRules.minLength;
         const maxLength = prompt.validationRules.maxLength;
 
-        if (typeof minLength === "number" && value.length < minLength) {
+        if (typeof minLength === 'number' && value.length < minLength) {
           errors[prompt.id] = `Minimum length is ${minLength} characters`;
         }
-        if (typeof maxLength === "number" && value.length > maxLength) {
+        if (typeof maxLength === 'number' && value.length > maxLength) {
           errors[prompt.id] = `Maximum length is ${maxLength} characters`;
         }
       }
 
       // Check regex pattern
       if (
-        typeof value === "string" &&
+        typeof value === 'string' &&
         prompt.validationRules?.pattern instanceof RegExp
       ) {
         if (!prompt.validationRules.pattern.test(value)) {
-          errors[prompt.id] = "Invalid format";
+          errors[prompt.id] = 'Invalid format';
         }
       }
 
       // Check min selections for multi-choice
       if (Array.isArray(value) && prompt.validationRules?.minSelections) {
         const minSelections = prompt.validationRules.minSelections;
-        if (typeof minSelections === "number" && value.length < minSelections) {
+        if (typeof minSelections === 'number' && value.length < minSelections) {
           errors[prompt.id] =
             `Please select at least ${minSelections} option(s)`;
         }
@@ -124,7 +124,7 @@ export const PromptList: React.FC<PromptListProps> = ({
         <PromptCard
           key={prompt.id}
           prompt={prompt}
-          value={values[prompt.id] || ""}
+          value={values[prompt.id] || ''}
           onChange={(value) => handlePromptChange(prompt.id, value)}
           validationMessage={validationErrors[prompt.id]}
           isValid={!validationErrors[prompt.id]}

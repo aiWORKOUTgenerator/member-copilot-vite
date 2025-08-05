@@ -1,5 +1,5 @@
-import { GeneratedWorkout } from "@/domain/entities/generatedWorkout";
-import { WorkoutParams } from "@/domain/entities/workoutParams";
+import { GeneratedWorkout } from '@/domain/entities/generatedWorkout';
+import { WorkoutParams } from '@/domain/entities/workoutParams';
 
 export interface GeneratedWorkoutService {
   getGeneratedWorkouts(): Promise<GeneratedWorkout[]>;

@@ -1,17 +1,17 @@
-import { CustomizationComponentProps } from "../types";
+import { CustomizationComponentProps } from '../types';
 
 // Focus area options
 const FOCUS_AREA_OPTIONS = [
-  { label: "Upper Body", value: "upper_body" },
-  { label: "Lower Body", value: "lower_body" },
-  { label: "Core", value: "core" },
-  { label: "Back", value: "back" },
-  { label: "Shoulders", value: "shoulders" },
-  { label: "Chest", value: "chest" },
-  { label: "Arms", value: "arms" },
-  { label: "Mobility/Flexibility", value: "mobility_flexibility" },
-  { label: "Cardio", value: "cardio" },
-  { label: "Recovery/Stretching", value: "recovery_stretching" },
+  { label: 'Upper Body', value: 'upper_body' },
+  { label: 'Lower Body', value: 'lower_body' },
+  { label: 'Core', value: 'core' },
+  { label: 'Back', value: 'back' },
+  { label: 'Shoulders', value: 'shoulders' },
+  { label: 'Chest', value: 'chest' },
+  { label: 'Arms', value: 'arms' },
+  { label: 'Mobility/Flexibility', value: 'mobility_flexibility' },
+  { label: 'Cardio', value: 'cardio' },
+  { label: 'Recovery/Stretching', value: 'recovery_stretching' },
 ];
 
 export default function FocusAreaCustomization({
@@ -45,7 +45,7 @@ export default function FocusAreaCustomization({
             <label
               key={option.value}
               className={`flex items-center space-x-2 p-2 rounded cursor-pointer hover:bg-base-200 ${
-                disabled ? "cursor-not-allowed opacity-50" : ""
+                disabled ? 'cursor-not-allowed opacity-50' : ''
               }`}
             >
               <input
@@ -65,14 +65,14 @@ export default function FocusAreaCustomization({
 
       {selectedAreas.length > 0 && (
         <p className="text-xs text-base-content/60 mt-2">
-          Selected:{" "}
+          Selected:{' '}
           {selectedAreas
             .map(
               (area) =>
                 FOCUS_AREA_OPTIONS.find((option) => option.value === area)
                   ?.label
             )
-            .join(", ")}
+            .join(', ')}
         </p>
       )}
     </div>

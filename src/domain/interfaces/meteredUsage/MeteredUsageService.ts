@@ -1,4 +1,4 @@
-import { MeteredUsage } from "../../entities/MeteredUsage";
+import { MeteredUsage } from '../../entities/MeteredUsage';
 
 export interface MeteredUsageService {
   /**

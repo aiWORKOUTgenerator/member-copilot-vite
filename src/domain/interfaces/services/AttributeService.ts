@@ -1,4 +1,4 @@
-import { Attribute } from "@/domain/entities";
+import { Attribute } from '@/domain/entities';
 
 /**
  * Interface for AttributeService

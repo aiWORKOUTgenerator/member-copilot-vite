@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
 import {
   AlreadyLoggedIn,
   AuthMethodCard,
   FormContainer,
   PageLoading,
-} from "@/ui";
-import { useAuth } from "@clerk/clerk-react";
+} from '@/ui';
+import { useAuth } from '@clerk/clerk-react';
 
 export default function ConversionPage() {
   const { isLoaded, isSignedIn } = useAuth();

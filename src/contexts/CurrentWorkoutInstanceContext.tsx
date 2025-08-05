@@ -1,22 +1,22 @@
-"use client";
+'use client';
 
 import {
   WorkoutInstance,
   WorkoutInstanceStructure,
-} from "@/domain/entities/workoutInstance";
-import { Exercise } from "@/domain/entities/generatedWorkout";
+} from '@/domain/entities/workoutInstance';
+import { Exercise } from '@/domain/entities/generatedWorkout';
 import {
   UpdateWorkoutInstanceRequest,
   RecommendedExercise,
-} from "@/domain/interfaces/services/WorkoutInstanceService";
-import { useWorkoutInstanceService } from "@/hooks/useWorkoutInstanceService";
-import { useAuth } from "@/hooks/auth";
-import { ReactNode, useCallback, useEffect, useState } from "react";
-import { useParams } from "react-router";
+} from '@/domain/interfaces/services/WorkoutInstanceService';
+import { useWorkoutInstanceService } from '@/hooks/useWorkoutInstanceService';
+import { useAuth } from '@/hooks/auth';
+import { ReactNode, useCallback, useEffect, useState } from 'react';
+import { useParams } from 'react-router';
 import {
   CurrentWorkoutInstanceContext,
   CurrentWorkoutInstanceState,
-} from "./current-workout-instance.types";
+} from './current-workout-instance.types';
 
 interface CurrentWorkoutInstanceProviderProps {
   children: ReactNode;
@@ -49,7 +49,7 @@ export function CurrentWorkoutInstanceProvider({
         setHasPendingChanges(false);
       } catch (err) {
         setError(
-          err instanceof Error ? err.message : "Failed to load workout instance"
+          err instanceof Error ? err.message : 'Failed to load workout instance'
         );
       } finally {
         setIsLoading(false);
@@ -115,7 +115,7 @@ export function CurrentWorkoutInstanceProvider({
         const errorMessage =
           err instanceof Error
             ? err.message
-            : "Failed to update workout instance";
+            : 'Failed to update workout instance';
         setError(errorMessage);
         throw new Error(errorMessage);
       }
@@ -136,7 +136,7 @@ export function CurrentWorkoutInstanceProvider({
         const errorMessage =
           err instanceof Error
             ? err.message
-            : "Failed to delete workout instance";
+            : 'Failed to delete workout instance';
         setError(errorMessage);
         throw new Error(errorMessage);
       }
@@ -165,7 +165,7 @@ export function CurrentWorkoutInstanceProvider({
       setCurrentInstance(updatedInstance);
       setHasPendingChanges(false);
     } catch (err) {
-      console.error("Failed to sync instance to server:", err);
+      console.error('Failed to sync instance to server:', err);
       throw err;
     }
   }, [currentInstance, hasPendingChanges, workoutInstanceService]);
@@ -174,7 +174,7 @@ export function CurrentWorkoutInstanceProvider({
     async (currentExercise: Exercise): Promise<RecommendedExercise[]> => {
       if (!currentInstance) {
         console.error(
-          "No current instance available for exercise recommendations"
+          'No current instance available for exercise recommendations'
         );
         return [];
       }
@@ -187,7 +187,7 @@ export function CurrentWorkoutInstanceProvider({
           undefined // preferences - could be added as parameter later
         );
       } catch (error) {
-        console.error("Error loading recommendations:", error);
+        console.error('Error loading recommendations:', error);
         return [];
       }
     },
@@ -200,7 +200,7 @@ export function CurrentWorkoutInstanceProvider({
 
     const timeoutId = setTimeout(() => {
       syncToServer().catch((err) => {
-        console.warn("Auto-sync failed:", err);
+        console.warn('Auto-sync failed:', err);
       });
     }, 2000);
 

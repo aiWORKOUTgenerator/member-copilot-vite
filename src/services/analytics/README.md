@@ -20,16 +20,16 @@ RUDDERSTACK_DATA_PLANE_URL=your_data_plane_url_here
 You can use the analytics service in your components by importing the `useAnalytics` hook:
 
 ```tsx
-import { useAnalytics } from "@/hooks";
+import { useAnalytics } from '@/hooks';
 
 function MyComponent() {
   const analytics = useAnalytics();
 
   const handleButtonClick = () => {
     // Track event
-    analytics.track("Button Clicked", {
-      buttonName: "Submit",
-      pageSection: "Form",
+    analytics.track('Button Clicked', {
+      buttonName: 'Submit',
+      pageSection: 'Form',
     });
   };
 

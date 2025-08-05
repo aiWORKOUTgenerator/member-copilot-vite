@@ -32,7 +32,7 @@ This separation allows each service to focus on a single responsibility, followi
 ### Option 1: Use the general `useServices` hook
 
 ```tsx
-import { useServices } from "@/lib/context/ServiceContext";
+import { useServices } from '@/lib/context/ServiceContext';
 
 function MyComponent() {
   const { userService } = useServices();
@@ -44,7 +44,7 @@ function MyComponent() {
 ### Option 2: Use a specialized hook (recommended)
 
 ```tsx
-import { useUserService } from "@/lib/context/ServiceContext";
+import { useUserService } from '@/lib/context/ServiceContext';
 
 function MyComponent() {
   const userService = useUserService();
@@ -84,7 +84,7 @@ export class ProductServiceImpl implements ProductService {
   constructor(private apiService: ApiService) {}
 
   async getProducts(): Promise<Product[]> {
-    return this.apiService.get<Product[]>("/api/products");
+    return this.apiService.get<Product[]>('/api/products');
   }
   // ...other methods
 }
@@ -124,9 +124,9 @@ export function useProductService(): ProductService {
 You can easily override services in tests:
 
 ```tsx
-import { render } from "@testing-library/react";
-import { ServiceProvider } from "@/lib/context/ServiceContext";
-import UserManagement from "./UserManagement";
+import { render } from '@testing-library/react';
+import { ServiceProvider } from '@/lib/context/ServiceContext';
+import UserManagement from './UserManagement';
 
 // Create a mock service
 const mockUserService = {
@@ -135,7 +135,7 @@ const mockUserService = {
   // ...other methods
 };
 
-test("UserManagement component uses userService", () => {
+test('UserManagement component uses userService', () => {
   render(
     <ServiceProvider services={{ userService: mockUserService }}>
       <UserManagement />

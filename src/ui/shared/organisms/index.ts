@@ -1,1 +1,1 @@
-export * from "./PromptCard";
+export * from './PromptCard';

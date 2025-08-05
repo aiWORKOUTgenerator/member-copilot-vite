@@ -35,7 +35,7 @@ export interface WorkoutCustomizationProps {
   onChange: (key: keyof PerWorkoutOptions, value: unknown) => void;
   errors: Partial<Record<keyof PerWorkoutOptions, string>>;
   disabled?: boolean;
-  mode?: "detailed" | "quick";
+  mode?: 'detailed' | 'quick';
   // Validation props for quick mode
   validateFocusAndEnergy?: (values: PerWorkoutOptions) => boolean;
   validateDurationAndEquipment?: (values: PerWorkoutOptions) => boolean;

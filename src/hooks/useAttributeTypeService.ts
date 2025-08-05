@@ -1,7 +1,7 @@
-import { AttributeTypeService } from "@/domain/interfaces/services/AttributeTypeService";
-import { AttributeTypeServiceImpl } from "@/services/attributeType/AttributeTypeServiceImpl";
-import { useMemo } from "react";
-import { useApiService } from "./useApiService";
+import { AttributeTypeService } from '@/domain/interfaces/services/AttributeTypeService';
+import { AttributeTypeServiceImpl } from '@/services/attributeType/AttributeTypeServiceImpl';
+import { useMemo } from 'react';
+import { useApiService } from './useApiService';
 
 /**
  * Hook to access the AttributeTypeService functionality

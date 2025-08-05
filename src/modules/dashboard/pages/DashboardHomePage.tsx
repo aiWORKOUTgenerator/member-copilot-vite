@@ -1,20 +1,20 @@
-"use client";
+'use client';
 
-import { useAttributesLoaded } from "@/hooks/useAttributes";
+import { useAttributesLoaded } from '@/hooks/useAttributes';
 import {
   useAttributeTypesData,
   useAttributeTypesLoaded,
-} from "@/hooks/useAttributeTypes";
-import { useContactData } from "@/hooks/useContact";
-import { usePromptsData, usePromptsLoaded } from "@/hooks/usePrompts";
-import { useTitle } from "@/hooks/useTitle";
-import { AttributeCompletion, ContactUtils, License } from "@/domain";
-import { useUserAccess } from "@/hooks";
-import { useAnalytics } from "@/hooks/useAnalytics";
-import AccessAwareComponent from "@/ui/shared/molecules/AccessAwareComponent";
-import { ActionCard } from "@/ui/shared/molecules/ActionCard";
-import { PhoneVerificationCard } from "@/components/PhoneVerificationCard";
-import { AnnouncementsSection } from "@/components/announcements/AnnouncementsSection";
+} from '@/hooks/useAttributeTypes';
+import { useContactData } from '@/hooks/useContact';
+import { usePromptsData, usePromptsLoaded } from '@/hooks/usePrompts';
+import { useTitle } from '@/hooks/useTitle';
+import { AttributeCompletion, ContactUtils, License } from '@/domain';
+import { useUserAccess } from '@/hooks';
+import { useAnalytics } from '@/hooks/useAnalytics';
+import AccessAwareComponent from '@/ui/shared/molecules/AccessAwareComponent';
+import { ActionCard } from '@/ui/shared/molecules/ActionCard';
+import { PhoneVerificationCard } from '@/components/PhoneVerificationCard';
+import { AnnouncementsSection } from '@/components/announcements/AnnouncementsSection';
 import {
   Info,
   AlertTriangle,
@@ -23,10 +23,10 @@ import {
   Star,
   Zap,
   TrendingUp,
-} from "lucide-react";
-import { useState, useEffect, useMemo } from "react";
-import { useNavigate } from "react-router";
-import { MeteredFeature } from "@/domain/entities/meteredFeatures";
+} from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router';
+import { MeteredFeature } from '@/domain/entities/meteredFeatures';
 
 export default function DashboardHomePage() {
   const { setTitle } = useTitle();
@@ -100,7 +100,7 @@ export default function DashboardHomePage() {
   }, [attributeCompletions]);
 
   useEffect(() => {
-    setTitle("Dashboard");
+    setTitle('Dashboard');
   }, [setTitle]);
 
   // Track dashboard page views and user state
@@ -112,8 +112,8 @@ export default function DashboardHomePage() {
           0
         ) / attributeCompletions.length || 0;
 
-      analytics.track("Dashboard Home Viewed", {
-        userTier: isOnBasicTier ? "basic" : "premium",
+      analytics.track('Dashboard Home Viewed', {
+        userTier: isOnBasicTier ? 'basic' : 'premium',
         workoutUsage: workoutUsage.used,
         workoutLimit: workoutUsage.limit,
         workoutLimitReached: isWorkoutGenerationLimitReached,
@@ -136,9 +136,9 @@ export default function DashboardHomePage() {
 
   // Handle navigation to profile section
   const navigateToProfile = (attributeId: string | number) => {
-    analytics.track("Profile Completion Alert Clicked", {
+    analytics.track('Profile Completion Alert Clicked', {
       attributeId: attributeId.toString(),
-      location: "dashboard_home",
+      location: 'dashboard_home',
     });
     navigate(`/dashboard/profile/${attributeId}`);
   };
@@ -146,48 +146,48 @@ export default function DashboardHomePage() {
   // Navigate to workout generation or billing if limit reached
   const navigateToWorkoutGeneration = () => {
     if (isWorkoutGenerationLimitReached) {
-      analytics.track("Generate Workout Blocked", {
-        reason: "limit_reached",
-        redirectTo: "billing",
+      analytics.track('Generate Workout Blocked', {
+        reason: 'limit_reached',
+        redirectTo: 'billing',
         workoutUsage: workoutUsage.used,
         workoutLimit: workoutUsage.limit,
       });
-      navigate("/dashboard/billing");
+      navigate('/dashboard/billing');
     } else {
-      analytics.track("Generate Workout CTA Clicked", {
-        location: "dashboard_home",
+      analytics.track('Generate Workout CTA Clicked', {
+        location: 'dashboard_home',
         workoutUsage: workoutUsage.used,
         workoutLimit: workoutUsage.limit,
       });
-      navigate("/dashboard/workouts/generate");
+      navigate('/dashboard/workouts/generate');
     }
   };
 
   // Navigate to profile overview
   const navigateToProfileOverview = () => {
-    analytics.track("Update Profile CTA Clicked", {
-      location: "dashboard_home",
+    analytics.track('Update Profile CTA Clicked', {
+      location: 'dashboard_home',
       incompleteAttributeCount: incompleteAttributes.length,
     });
-    navigate("/dashboard/profile");
+    navigate('/dashboard/profile');
   };
 
   // Navigate to billing/upgrade page
   const navigateToUpgrade = () => {
-    analytics.track("Upgrade CTA Clicked", {
-      location: "dashboard_home",
-      currentTier: "basic",
+    analytics.track('Upgrade CTA Clicked', {
+      location: 'dashboard_home',
+      currentTier: 'basic',
       workoutUsage: workoutUsage.used,
       workoutLimit: workoutUsage.limit,
     });
-    navigate("/dashboard/billing");
+    navigate('/dashboard/billing');
   };
 
   // Track upgrade banner views
   useEffect(() => {
     if (isOnBasicTier) {
-      analytics.track("Upgrade Banner Viewed", {
-        location: "dashboard_home",
+      analytics.track('Upgrade Banner Viewed', {
+        location: 'dashboard_home',
         workoutUsage: workoutUsage.used,
         workoutLimit: workoutUsage.limit,
       });
@@ -280,13 +280,13 @@ export default function DashboardHomePage() {
             title="Generate New Workout"
             description={
               isWorkoutGenerationLimitReached
-                ? "You have reached your workout generation limit. Upgrade your plan to generate more workouts."
-                : "Create a personalized workout based on your profile and preferences."
+                ? 'You have reached your workout generation limit. Upgrade your plan to generate more workouts.'
+                : 'Create a personalized workout based on your profile and preferences.'
             }
             actionText={
               isWorkoutGenerationLimitReached
-                ? "Upgrade Plan"
-                : "Generate Workout"
+                ? 'Upgrade Plan'
+                : 'Generate Workout'
             }
             onClick={navigateToWorkoutGeneration}
             icon={
@@ -297,7 +297,7 @@ export default function DashboardHomePage() {
               )
             }
             badgeText={
-              isWorkoutGenerationLimitReached ? "Limit Reached" : undefined
+              isWorkoutGenerationLimitReached ? 'Limit Reached' : undefined
             }
             badgeColor="badge-warning"
           />
@@ -311,7 +311,7 @@ export default function DashboardHomePage() {
           icon={<UserCircle className="w-5 h-5" />}
           badgeText={
             incompleteAttributes.length > 0
-              ? incompleteAttributes.length.toString() + " Incomplete"
+              ? incompleteAttributes.length.toString() + ' Incomplete'
               : undefined
           }
           badgeColor="badge-accent"

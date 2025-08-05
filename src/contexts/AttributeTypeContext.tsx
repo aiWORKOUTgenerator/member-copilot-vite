@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { AttributeType } from "@/domain/entities/attributeType";
-import { useAttributeTypeService } from "@/hooks";
-import { useAuth } from "@/hooks/auth";
-import { ReactNode, useCallback, useEffect, useState } from "react";
+import { AttributeType } from '@/domain/entities/attributeType';
+import { useAttributeTypeService } from '@/hooks';
+import { useAuth } from '@/hooks/auth';
+import { ReactNode, useCallback, useEffect, useState } from 'react';
 import {
   AttributeTypeContext,
   AttributeTypeState,
-} from "./attribute-type.types";
+} from './attribute-type.types';
 
 interface AttributeTypeProviderProps {
   children: ReactNode;
@@ -39,9 +39,9 @@ export function AttributeTypeProvider({
       setIsLoaded(true);
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "Failed to fetch attribute types"
+        err instanceof Error ? err.message : 'Failed to fetch attribute types'
       );
-      console.error("Error fetching attribute types:", err);
+      console.error('Error fetching attribute types:', err);
     } finally {
       setIsLoading(false);
     }

@@ -1,9 +1,9 @@
-import { useContext } from "react";
-import { GeneratedWorkout } from "@/domain/entities/generatedWorkout";
+import { useContext } from 'react';
+import { GeneratedWorkout } from '@/domain/entities/generatedWorkout';
 import {
   GeneratedWorkoutContext,
   GeneratedWorkoutState,
-} from "@/contexts/generated-workout.types";
+} from '@/contexts/generated-workout.types';
 
 /**
  * Custom hook to access the generated workout data from the GeneratedWorkoutContext.
@@ -14,7 +14,7 @@ export function useGeneratedWorkouts(): GeneratedWorkoutState {
 
   if (context === undefined) {
     throw new Error(
-      "useGeneratedWorkouts must be used within a GeneratedWorkoutProvider"
+      'useGeneratedWorkouts must be used within a GeneratedWorkoutProvider'
     );
   }
 

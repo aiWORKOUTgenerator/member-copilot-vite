@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { WorkoutInstance } from "@/domain/entities/workoutInstance";
-import { CreateWorkoutInstanceRequest } from "@/domain/interfaces/services/WorkoutInstanceService";
-import { useWorkoutInstanceService } from "@/hooks/useWorkoutInstanceService";
-import { useAuth } from "@/hooks/auth";
-import { ReactNode, useCallback, useEffect, useState } from "react";
+import { WorkoutInstance } from '@/domain/entities/workoutInstance';
+import { CreateWorkoutInstanceRequest } from '@/domain/interfaces/services/WorkoutInstanceService';
+import { useWorkoutInstanceService } from '@/hooks/useWorkoutInstanceService';
+import { useAuth } from '@/hooks/auth';
+import { ReactNode, useCallback, useEffect, useState } from 'react';
 import {
   WorkoutInstancesContext,
   WorkoutInstancesState,
-} from "./workout-instances.types";
+} from './workout-instances.types';
 
 interface WorkoutInstancesProviderProps {
   children: ReactNode;
@@ -35,7 +35,7 @@ export function WorkoutInstancesProvider({
       setInstances(data);
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "Failed to fetch workout instances"
+        err instanceof Error ? err.message : 'Failed to fetch workout instances'
       );
     } finally {
       setIsLoading(false);
@@ -56,7 +56,7 @@ export function WorkoutInstancesProvider({
         const errorMessage =
           err instanceof Error
             ? err.message
-            : "Failed to create workout instance";
+            : 'Failed to create workout instance';
         setError(errorMessage);
         throw new Error(errorMessage);
       }

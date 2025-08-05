@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import { RadioChoice } from "../atoms/RadioChoice";
-import { CheckboxChoice } from "../atoms/CheckboxChoice";
-import { ValidationMessage } from "../atoms/ValidationMessage";
-import { TextInput } from "../atoms/TextInput";
-import { Choice } from "@/domain/entities";
+import React, { useState } from 'react';
+import { RadioChoice } from '../atoms/RadioChoice';
+import { CheckboxChoice } from '../atoms/CheckboxChoice';
+import { ValidationMessage } from '../atoms/ValidationMessage';
+import { TextInput } from '../atoms/TextInput';
+import { Choice } from '@/domain/entities';
 
 interface ChoiceGroupProps {
   id: string;
@@ -29,21 +29,21 @@ export const ChoiceGroup: React.FC<ChoiceGroupProps> = ({
   selectedValues,
   onChange,
   otherChoiceEnabled = false,
-  otherChoiceText = "Other",
+  otherChoiceText = 'Other',
   isValid = true,
   validationMessage,
   disabled = false,
 }) => {
-  const [otherValue, setOtherValue] = useState("");
-  const isOtherSelected = selectedValues.includes("other");
+  const [otherValue, setOtherValue] = useState('');
+  const isOtherSelected = selectedValues.includes('other');
 
   const handleSingleChange = (value: string) => {
     onChange([value]);
   };
 
   const handleMultipleChange = (value: string, isChecked: boolean) => {
-    if (value === "other" && !isChecked) {
-      setOtherValue("");
+    if (value === 'other' && !isChecked) {
+      setOtherValue('');
     }
 
     const newValues = isChecked

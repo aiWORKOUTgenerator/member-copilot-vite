@@ -1,6 +1,6 @@
-import { createContext } from "react";
-import { Contact } from "@/domain/entities/contact";
-import { Prompt } from "@/domain";
+import { createContext } from 'react';
+import { Contact } from '@/domain/entities/contact';
+import { Prompt } from '@/domain';
 
 // Interface for attribute form values
 export interface AttributeFormValues {

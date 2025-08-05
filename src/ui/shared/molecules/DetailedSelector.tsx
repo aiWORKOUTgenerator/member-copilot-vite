@@ -1,7 +1,7 @@
-import React from "react";
-import { RadioGroupOfCards, SelectableItem } from "./RadioGroupOfCards";
-import { ValidationMessage } from "../atoms/ValidationMessage";
-import type { ComponentType } from "react";
+import React from 'react';
+import { RadioGroupOfCards, SelectableItem } from './RadioGroupOfCards';
+import { ValidationMessage } from '../atoms/ValidationMessage';
+import type { ComponentType } from 'react';
 
 export interface DetailedSelectorProps<T> {
   /** Icon shown next to the question */
@@ -46,20 +46,20 @@ export function DetailedSelector<T>({
   disabled = false,
   error,
   gridCols = 3,
-  colorScheme = "primary",
+  colorScheme = 'primary',
   required = false,
 }: DetailedSelectorProps<T>) {
   // convert options → items for RadioGroupOfCards
   const items = options.map((opt) => ({
     id: opt.id,
     title: opt.title,
-    description: opt.description || "", // Ensure description is always a string
+    description: opt.description || '', // Ensure description is always a string
     tertiary: opt.tertiary,
   }));
 
   // Find the selected item(s) based on selectedValue
   const getSelectedItems = () => {
-    if (!selectedValue || selectedValue === "") return undefined;
+    if (!selectedValue || selectedValue === '') return undefined;
 
     if (multiple) {
       // For multiple selection, selectedValue should be an array of IDs
@@ -105,7 +105,7 @@ export function DetailedSelector<T>({
       </div>
 
       {/* Choice grid */}
-      <div className={disabled ? "opacity-50 pointer-events-none" : ""}>
+      <div className={disabled ? 'opacity-50 pointer-events-none' : ''}>
         <RadioGroupOfCards
           items={items}
           legend=""
@@ -113,13 +113,13 @@ export function DetailedSelector<T>({
           gridCols={gridCols}
           colorScheme={
             colorScheme as
-              | "primary"
-              | "secondary"
-              | "accent"
-              | "success"
-              | "warning"
-              | "info"
-              | "error"
+              | 'primary'
+              | 'secondary'
+              | 'accent'
+              | 'success'
+              | 'warning'
+              | 'info'
+              | 'error'
           }
           selected={getSelectedItems()}
           onChange={handleChange}

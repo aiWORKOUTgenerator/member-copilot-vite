@@ -1,6 +1,6 @@
-import Pusher from "pusher-js";
-import * as PusherTypes from "pusher-js";
-import { PusherService } from "@/domain/interfaces/services/PusherService";
+import Pusher from 'pusher-js';
+import * as PusherTypes from 'pusher-js';
+import { PusherService } from '@/domain/interfaces/services/PusherService';
 
 export class PusherServiceImpl implements PusherService {
   private pusherInstance: PusherTypes.default | null = null;
@@ -19,11 +19,11 @@ export class PusherServiceImpl implements PusherService {
     const cluster = import.meta.env.VITE_PUSHER_CLUSTER;
 
     if (!appKey) {
-      throw new Error("VITE_PUSHER_APP_KEY environment variable is not set");
+      throw new Error('VITE_PUSHER_APP_KEY environment variable is not set');
     }
 
     if (!cluster) {
-      throw new Error("VITE_PUSHER_CLUSTER environment variable is not set");
+      throw new Error('VITE_PUSHER_CLUSTER environment variable is not set');
     }
 
     const authEndpoint = import.meta.env.VITE_PUSHER_AUTH_ENDPOINT;
@@ -36,7 +36,7 @@ export class PusherServiceImpl implements PusherService {
     if (authEndpoint) {
       options.channelAuthorization = {
         endpoint: authEndpoint,
-        transport: "ajax",
+        transport: 'ajax',
       };
     }
 
@@ -49,7 +49,7 @@ export class PusherServiceImpl implements PusherService {
     }
 
     if (!this.pusherInstance) {
-      throw new Error("Pusher instance not initialized");
+      throw new Error('Pusher instance not initialized');
     }
 
     // Check if we're already subscribed to this channel
@@ -84,7 +84,7 @@ export class PusherServiceImpl implements PusherService {
     }
 
     if (!this.pusherInstance) {
-      throw new Error("Pusher instance not initialized");
+      throw new Error('Pusher instance not initialized');
     }
 
     return this.pusherInstance;
