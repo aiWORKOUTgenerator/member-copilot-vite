@@ -118,8 +118,8 @@ export default function TrainingProfileLayout() {
                       completion.percentComplete === 100
                         ? "progress-success"
                         : completion.hasProvidedValue
-                        ? "progress-primary"
-                        : "progress-secondary"
+                          ? "progress-primary"
+                          : "progress-secondary"
                     }`}
                     value={completion.percentComplete}
                     max="100"

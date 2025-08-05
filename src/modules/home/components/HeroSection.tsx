@@ -16,12 +16,8 @@ export function HeroSection({ onHeroCTAClick }: HeroSectionProps) {
     <div className="hero min-h-[70vh] bg-transparent">
       <div className="hero-content text-center">
         <div className="max-w-2xl">
-          <h1 className="text-5xl font-bold">
-            {HOMEPAGE_CONTENT.hero.title}
-          </h1>
-          <p className="py-6 text-lg">
-            {HOMEPAGE_CONTENT.hero.description}
-          </p>
+          <h1 className="text-5xl font-bold">{HOMEPAGE_CONTENT.hero.title}</h1>
+          <p className="py-6 text-lg">{HOMEPAGE_CONTENT.hero.description}</p>
 
           {isLoaded && !isSignedIn && (
             <div className="mt-4">
@@ -36,4 +32,4 @@ export function HeroSection({ onHeroCTAClick }: HeroSectionProps) {
       </div>
     </div>
   );
-} 
+}

@@ -57,8 +57,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               hasError
                 ? `${inputId}-error`
                 : helperText
-                ? `${inputId}-helper`
-                : undefined
+                  ? `${inputId}-helper`
+                  : undefined
             }
             {...props}
           />

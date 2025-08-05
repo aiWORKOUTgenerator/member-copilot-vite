@@ -56,9 +56,8 @@ export function WorkoutFeedbackProvider({
       setError(null);
 
       try {
-        const newFeedback = await workoutFeedbackService.submitFeedback(
-          request
-        );
+        const newFeedback =
+          await workoutFeedbackService.submitFeedback(request);
 
         // Update state with the new feedback
         setUserFeedback((prevFeedback) => [...prevFeedback, newFeedback]);

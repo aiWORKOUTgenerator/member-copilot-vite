@@ -45,9 +45,8 @@ export function WorkoutInstancesProvider({
   const createInstance = useCallback(
     async (request: CreateWorkoutInstanceRequest) => {
       try {
-        const newInstance = await workoutInstanceService.createWorkoutInstance(
-          request
-        );
+        const newInstance =
+          await workoutInstanceService.createWorkoutInstance(request);
 
         // Update state with the new instance
         setInstances((prevInstances) => [...prevInstances, newInstance]);

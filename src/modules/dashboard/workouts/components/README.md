@@ -5,6 +5,7 @@ This directory contains a modular, extensible system for workout customization o
 ## Architecture
 
 ### Directory Structure
+
 ```
 components/
 ├── WorkoutCustomization.tsx          # Main accordion component
@@ -34,6 +35,7 @@ components/
 All customization options use the `customization_` prefix for consistent identification:
 
 ### Customization Keys
+
 - `customization_duration` - Workout duration in minutes
 - `customization_areas` - Focus areas for workout targeting
 - `customization_focus` - Main workout goal/type
@@ -44,6 +46,7 @@ All customization options use the `customization_` prefix for consistent identif
 - `customization_soreness` - Current sore body parts
 
 ### Backend String Format
+
 When submitted to the backend, all values are converted to strings:
 
 ```typescript
@@ -61,6 +64,7 @@ When submitted to the backend, all values are converted to strings:
 ```
 
 ### Array to String Conversion
+
 - **Single values**: Converted directly to strings
 - **Arrays**: Joined with `", "` (comma + space)
 - **Numbers**: Converted to string representation
@@ -69,12 +73,14 @@ When submitted to the backend, all values are converted to strings:
 ## User Interface Design
 
 ### Accordion Pattern
+
 - **Collapsed State**: Shows option name with current selection in a badge
 - **Expanded State**: Reveals the customization controls (dropdown, checkboxes, ratings, etc.)
 - **Current Selection Display**: Smart formatting shows human-readable selections
 - **Mobile Optimized**: Accordion pattern works excellently on mobile devices
 
 ### Selection Display Examples
+
 - **Workout Duration**: "45 min", "1 hour", "1h 30m"
 - **Focus Areas**: "Upper Body" (single), "3 areas" (multiple)
 - **Workout Focus**: "Strength Training", "Fat Loss", "HIIT"
@@ -86,6 +92,7 @@ When submitted to the backend, all values are converted to strings:
 - **Coming Soon**: "Coming Soon" badge for placeholder options
 
 ### Rating Components Design
+
 - **Enhanced Visibility**: Bold, larger text with high-contrast colors
 - **Color Coding**: Each rating type uses different DaisyUI theme colors
   - Sleep Quality: Primary (blue)
@@ -99,6 +106,7 @@ When submitted to the backend, all values are converted to strings:
 To add a new customization option, follow these simple steps:
 
 ### 1. Update the Types
+
 Add your new option to the `PerWorkoutOptions` interface in `types.ts`:
 
 ```typescript
@@ -117,6 +125,7 @@ export interface PerWorkoutOptions {
 ```
 
 ### 2. Create the Component
+
 Create a new component in `customizations/` that implements `CustomizationComponentProps`:
 
 ```typescript
@@ -155,6 +164,7 @@ export default function NewOptionCustomization({
 ```
 
 ### 3. Update the Configuration
+
 Add your new customization to the `CUSTOMIZATION_CONFIG` array in `customizations/index.ts`:
 
 ```typescript
@@ -173,6 +183,7 @@ export const CUSTOMIZATION_CONFIG: CustomizationConfig[] = [
 ```
 
 ### 4. Export the Component
+
 Add the export to `customizations/index.ts`:
 
 ```typescript
@@ -180,6 +191,7 @@ export { default as NewOptionCustomization } from "./NewOptionCustomization";
 ```
 
 ### 5. Update Selection Display (Optional)
+
 If you want custom formatting for the selection display, update the `formatCurrentSelection` function in `WorkoutCustomization.tsx`:
 
 ```typescript
@@ -190,15 +202,20 @@ case "customization_new_option": {
 ```
 
 ### 6. Update Context Description (Optional)
+
 Add context description in `WorkoutCustomization.tsx`:
 
 ```typescript
-{config.key === "customization_new_option" && "Describe what this new option does"}
+{
+  config.key === "customization_new_option" &&
+    "Describe what this new option does";
+}
 ```
 
 That's it! Your new customization option will automatically:
+
 - Appear in the accordion UI
-- Be converted to string format for backend submission  
+- Be converted to string format for backend submission
 - Follow the `customization_` naming convention
 - Include proper validation and state management
 
@@ -233,7 +250,9 @@ Validation logic should be handled in the parent `GeneratePage` component. The c
 ## Professional Medical/Fitness Standards
 
 ### Sleep Quality Scale
+
 Based on the Pittsburgh Sleep Quality Index and clinical sleep assessments:
+
 - **1 - Very Poor**: Severely disrupted sleep, frequent awakenings, feeling exhausted
 - **2 - Poor**: Difficulty falling asleep, restless night, waking up tired
 - **3 - Fair**: Some sleep interruptions, moderately rested upon waking
@@ -241,7 +260,9 @@ Based on the Pittsburgh Sleep Quality Index and clinical sleep assessments:
 - **5 - Excellent**: Deep, restorative sleep, waking up fully energized and alert
 
 ### Energy Level Scale
+
 Based on Rate of Perceived Exertion (RPE) and clinical energy assessments:
+
 - **1 - Very Low**: Extremely fatigued, struggling to stay awake, need rest
 - **2 - Low**: Tired and sluggish, low motivation, minimal energy reserves
 - **3 - Moderate**: Average energy, can perform daily activities comfortably
@@ -249,7 +270,9 @@ Based on Rate of Perceived Exertion (RPE) and clinical energy assessments:
 - **5 - Very High**: Peak energy, feeling powerful and ready for intense workouts
 
 ### Stress Level Scale
+
 Based on sports psychology assessments and POMS (Profile of Mood States):
+
 - **1 - Very Low**: Feeling calm, relaxed, and mentally clear with optimal focus
 - **2 - Low**: Minimal stress, composed mindset, ready for performance
 - **3 - Moderate**: Some tension but manageable, maintaining competitive readiness
@@ -257,7 +280,9 @@ Based on sports psychology assessments and POMS (Profile of Mood States):
 - **5 - Very High**: Severe stress impacting performance, need stress management techniques
 
 ### Available Equipment Options
+
 Comprehensive list of home gym equipment options:
+
 - **Bodyweight**: None/Bodyweight Only
 - **Free Weights**: Dumbbells, Adjustable Dumbbells, Kettlebells, Barbell
 - **Resistance Training**: Resistance Bands, Resistance Loops/Mini Bands, TRX/Suspension Trainer, Gymnastic Rings
@@ -267,7 +292,9 @@ Comprehensive list of home gym equipment options:
 - **Machines**: Cable Machine
 
 ### Current Soreness Body Parts
+
 Common body parts using everyday terminology:
+
 - **Upper Body**: Neck, Shoulders, Upper Back, Lower Back, Chest, Arms
 - **Extremities**: Wrists, Elbows
 - **Core**: Abs/Core
@@ -286,4 +313,4 @@ Common body parts using everyday terminology:
 9. **Professional Standards** - Uses medically/scientifically validated rating scales
 10. **Enhanced Visibility** - Improved contrast and typography for better usability
 11. **Complete Coverage** - All 8 customization options fully implemented
-12. **Backend Ready** - Automatic string conversion with consistent naming 
+12. **Backend Ready** - Automatic string conversion with consistent naming

@@ -106,8 +106,8 @@ export default function PricingComponent({
                 {selectedTier?.id === tier.id
                   ? "Current Plan"
                   : isProcessing
-                  ? "Processing..."
-                  : tier.cta}
+                    ? "Processing..."
+                    : tier.cta}
               </button>
               <ul
                 role="list"

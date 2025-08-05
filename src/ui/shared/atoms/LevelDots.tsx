@@ -1,5 +1,3 @@
-
-
 export interface LevelDotsProps {
   /** Total number of dots in the scale (e.g. 5) */
   count: number;
@@ -38,4 +36,4 @@ export function LevelDots({
       ))}
     </div>
   );
-} 
+}

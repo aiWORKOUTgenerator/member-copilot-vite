@@ -1,31 +1,33 @@
 @import "tailwindcss";
 @plugin "daisyui" {
-    themes: light --default, silk;
+  themes:
+    light --default,
+    silk;
 }
 @plugin "@tailwindcss/typography";
 
 @theme {
   /* Step Indicator Size Variants */
-  --size-step-sm: 2rem;        /* 32px */
-  --size-step-md: 3rem;        /* 48px */
-  --size-step-lg: 4rem;        /* 64px */
-  
+  --size-step-sm: 2rem; /* 32px */
+  --size-step-md: 3rem; /* 48px */
+  --size-step-lg: 4rem; /* 64px */
+
   /* Step Indicator Text Sizes */
-  --text-step-sm: 0.75rem;     /* 12px */
-  --text-step-md: 0.875rem;    /* 14px */
-  --text-step-lg: 1.125rem;    /* 18px */
-  
+  --text-step-sm: 0.75rem; /* 12px */
+  --text-step-md: 0.875rem; /* 14px */
+  --text-step-lg: 1.125rem; /* 18px */
+
   /* Step Indicator Connector Widths */
-  --width-connector-sm: 1.5rem;  /* 24px */
-  --width-connector-md: 2rem;    /* 32px */  
-  --width-connector-lg: 3rem;    /* 48px */
-  
+  --width-connector-sm: 1.5rem; /* 24px */
+  --width-connector-md: 2rem; /* 32px */
+  --width-connector-lg: 3rem; /* 48px */
+
   /* Step Indicator Spacing */
-  --spacing-step-gap-sm: 1rem;      /* 16px */
-  --spacing-step-gap-md: 1.5rem;    /* 24px */
-  --spacing-step-gap-lg: 2rem;      /* 32px */
-  
-  --spacing-label-sm: 0.5rem;       /* 8px */
-  --spacing-label-md: 0.75rem;      /* 12px */
-  --spacing-label-lg: 1rem;         /* 16px */
+  --spacing-step-gap-sm: 1rem; /* 16px */
+  --spacing-step-gap-md: 1.5rem; /* 24px */
+  --spacing-step-gap-lg: 2rem; /* 32px */
+
+  --spacing-label-sm: 0.5rem; /* 8px */
+  --spacing-label-md: 0.75rem; /* 12px */
+  --spacing-label-lg: 1rem; /* 16px */
 }
