@@ -19,8 +19,6 @@
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest --watch",
     "test:fast": "vitest run src/__tests__/{hooks,components,services}/",
-    "test:slow": "vitest run src/__tests__/integration/",
-    "test:unit": "vitest run src/__tests__/{hooks,components,services}/",
     "test:integration": "vitest run src/__tests__/integration/",
     "test:ci": "npm run test:fast && npm run test:coverage"
   },
