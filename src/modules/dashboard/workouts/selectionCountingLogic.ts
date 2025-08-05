@@ -1,4 +1,5 @@
 import { PerWorkoutOptions } from "./components/types";
+import { VALIDATION_MESSAGES } from "./constants/validationMessages";
 
 // Core interfaces for selection counting
 export interface StepSelections {
@@ -50,9 +51,9 @@ export interface ProgressIndicator {
 export class SelectionCounter {
   // Focus & Energy step counting (Step 0)
   static getFocusEnergySelections(options: PerWorkoutOptions): StepSelections {
-    const hasGoal = !!options.customization_goal;
+    const hasFocus = !!options.customization_focus;
     const hasEnergy = !!options.customization_energy;
-    const total = (hasGoal ? 1 : 0) + (hasEnergy ? 1 : 0);
+    const total = (hasFocus ? 1 : 0) + (hasEnergy ? 1 : 0);
     const required = 2;
 
     return {
@@ -66,7 +67,7 @@ export class SelectionCounter {
       errorCount: 0, // Will be set by validation logic
       canProceed: total === required,
       details: {
-        customization_goal: hasGoal,
+        customization_focus: hasFocus,
         customization_energy: hasEnergy,
       },
     };
@@ -79,6 +80,7 @@ export class SelectionCounter {
     const hasDuration = !!options.customization_duration;
     const hasEquipment = !!(
       options.customization_equipment &&
+      Array.isArray(options.customization_equipment) &&
       options.customization_equipment.length > 0
     );
     const total = (hasDuration ? 1 : 0) + (hasEquipment ? 1 : 0);
@@ -133,7 +135,7 @@ export class SelectionCounter {
     errorMessage?: string;
   } {
     switch (fieldKey) {
-      case "customization_goal":
+      case "customization_focus":
         return {
           hasValue:
             !!value && typeof value === "string" && value.trim().length > 0,
@@ -157,7 +159,7 @@ export class SelectionCounter {
             value !== null &&
             !isNaN(energy) &&
             (energy < 1 || energy > 6)
-              ? "Energy level must be between 1 and 6"
+              ? VALIDATION_MESSAGES.ENERGY_RANGE
               : undefined,
         };
       }
@@ -167,13 +169,13 @@ export class SelectionCounter {
         const durationHasValue =
           value !== undefined && value !== null && !isNaN(duration);
         const durationIsValid =
-          durationHasValue && duration >= 5 && duration <= 300;
+          durationHasValue && duration >= 5 && duration <= 45;
         return {
           hasValue: durationHasValue,
           isValid: durationIsValid,
           errorMessage:
             durationHasValue && !durationIsValid
-              ? "Duration must be between 5 and 300 minutes"
+              ? VALIDATION_MESSAGES.DURATION_RANGE
               : undefined,
         };
       }
@@ -184,7 +186,9 @@ export class SelectionCounter {
           isValid:
             Array.isArray(value) &&
             value.length > 0 &&
-            value.every((item) => !!item && typeof item === "string"),
+            value.every((item) =>
+              ["bodyweight", "available_equipment", "full_gym"].includes(item)
+            ),
         };
 
       default:
@@ -229,9 +233,7 @@ export class ButtonStateLogic {
         state: "error",
         visualFeedback: {
           indicatorColor: "red",
-          message: `${Object.keys(errors).length} validation error${
-            Object.keys(errors).length > 1 ? "s" : ""
-          } found`,
+          message: `${Object.keys(errors).length} validation error${Object.keys(errors).length > 1 ? "s" : ""} found`,
           icon: "error",
         },
       };
@@ -297,9 +299,7 @@ export class ButtonStateLogic {
         isEmpty: false,
         isComplete: false,
         isPartial: false,
-        text: `${Object.keys(errors).length} validation error${
-          Object.keys(errors).length > 1 ? "s" : ""
-        } found`,
+        text: `${Object.keys(errors).length} validation error${Object.keys(errors).length > 1 ? "s" : ""} found`,
         percentage: 0,
         color: "red",
       };
@@ -363,11 +363,10 @@ export function useStepSelections(
 
   // Get field states for enhanced feedback - include all possible fields
   const allFields: (keyof PerWorkoutOptions)[] = [
-    "customization_goal",
+    "customization_focus",
     "customization_energy",
     "customization_duration",
     "customization_equipment",
-    "customization_focus",
     "customization_areas",
     "customization_soreness",
     "customization_stress",
