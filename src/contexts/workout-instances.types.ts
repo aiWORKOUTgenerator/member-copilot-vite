@@ -1,6 +1,6 @@
-import { WorkoutInstance } from "@/domain/entities/workoutInstance";
-import { CreateWorkoutInstanceRequest } from "@/domain/interfaces/services/WorkoutInstanceService";
-import { createContext } from "react";
+import { WorkoutInstance } from '@/domain/entities/workoutInstance';
+import { CreateWorkoutInstanceRequest } from '@/domain/interfaces/services/WorkoutInstanceService';
+import { createContext } from 'react';
 
 /**
  * WorkoutInstancesState interface for managing the list of workout instances

@@ -1,8 +1,8 @@
-import { useContext } from "react";
-import { ApiService } from "@/domain/interfaces/api/ApiService";
-import { MemberService } from "@/domain/interfaces/services/MemberService";
-import { PusherService } from "@/domain/interfaces/services/PusherService";
-import { ServiceContext, ServiceContainer } from "@/contexts/service.types";
+import { useContext } from 'react';
+import { ApiService } from '@/domain/interfaces/api/ApiService';
+import { MemberService } from '@/domain/interfaces/services/MemberService';
+import { PusherService } from '@/domain/interfaces/services/PusherService';
+import { ServiceContext, ServiceContainer } from '@/contexts/service.types';
 
 /**
  * Custom hook to access the services from the ServiceContext.
@@ -12,7 +12,7 @@ export function useServices(): ServiceContainer {
   const context = useContext(ServiceContext);
 
   if (context === undefined) {
-    throw new Error("useServices must be used within a ServiceProvider");
+    throw new Error('useServices must be used within a ServiceProvider');
   }
 
   return context;

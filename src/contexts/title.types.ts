@@ -1,4 +1,4 @@
-import { createContext, Dispatch, SetStateAction } from "react";
+import { createContext, Dispatch, SetStateAction } from 'react';
 
 /**
  * TitleContextType interface defines the shape of our title context value.
@@ -12,6 +12,6 @@ export interface TitleContextType {
  * Create the context with default values
  */
 export const TitleContext = createContext<TitleContextType>({
-  title: "Dashboard",
+  title: 'Dashboard',
   setTitle: () => {},
 });

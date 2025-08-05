@@ -3,7 +3,7 @@
  * Represents types that can be assigned to attributes
  */
 
-import { BaseEntity } from "./baseEntity";
+import { BaseEntity } from './baseEntity';
 
 export interface AttributeTypeProps {
   id: string;

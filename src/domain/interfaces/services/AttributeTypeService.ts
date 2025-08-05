@@ -1,4 +1,4 @@
-import { AttributeType } from "@/domain/entities/attributeType";
+import { AttributeType } from '@/domain/entities/attributeType';
 
 /**
  * AttributeTypeService defines the contract for operations on attribute types

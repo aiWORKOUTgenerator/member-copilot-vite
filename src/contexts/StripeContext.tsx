@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import React, { useState, ReactNode, useEffect } from "react";
-import { loadStripe, Stripe } from "@stripe/stripe-js";
-import { StripeContext } from "./stripe.types";
+import React, { useState, ReactNode, useEffect } from 'react';
+import { loadStripe, Stripe } from '@stripe/stripe-js';
+import { StripeContext } from './stripe.types';
 
 // Initialize Stripe outside of component render
 const stripePromise = loadStripe(
   import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY ||
-    "pk_test_UFaFBvMgE623tTbU6oT367qN"
+    'pk_test_UFaFBvMgE623tTbU6oT367qN'
 );
 
 export const StripeProvider: React.FC<{ children: ReactNode }> = ({
@@ -24,7 +24,7 @@ export const StripeProvider: React.FC<{ children: ReactNode }> = ({
         setStripe(stripeInstance);
       } catch (err) {
         setError(
-          err instanceof Error ? err : new Error("Failed to initialize Stripe")
+          err instanceof Error ? err : new Error('Failed to initialize Stripe')
         );
       } finally {
         setIsLoading(false);

@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { PromptType } from "@/domain/entities";
-import React from "react";
-import { NumberInput } from "../atoms/NumberInput";
-import { TextInput } from "../atoms/TextInput";
-import { ValidationMessage } from "../atoms/ValidationMessage";
+import { PromptType } from '@/domain/entities';
+import React from 'react';
+import { NumberInput } from '../atoms/NumberInput';
+import { TextInput } from '../atoms/TextInput';
+import { ValidationMessage } from '../atoms/ValidationMessage';
 
 interface InputFieldProps {
   id: string;
@@ -53,8 +53,8 @@ export const InputField: React.FC<InputFieldProps> = ({
             placeholder={placeholder}
             isValid={isValid}
             disabled={disabled}
-            min={typeof min === "number" ? min : undefined}
-            max={typeof max === "number" ? max : undefined}
+            min={typeof min === 'number' ? min : undefined}
+            max={typeof max === 'number' ? max : undefined}
           />
         );
 

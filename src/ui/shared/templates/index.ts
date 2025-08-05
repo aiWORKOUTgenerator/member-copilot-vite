@@ -1,1 +1,1 @@
-export * from "./PromptList";
+export * from './PromptList';

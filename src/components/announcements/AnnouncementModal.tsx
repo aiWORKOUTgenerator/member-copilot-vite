@@ -1,5 +1,5 @@
-import { Announcement } from "@/domain/entities/announcement";
-import { useEffect, useRef } from "react";
+import { Announcement } from '@/domain/entities/announcement';
+import { useEffect, useRef } from 'react';
 
 interface AnnouncementModalProps {
   announcement: Announcement | null;
@@ -35,24 +35,24 @@ export function AnnouncementModal({
       onClose();
     };
 
-    modal.addEventListener("close", handleClose);
-    return () => modal.removeEventListener("close", handleClose);
+    modal.addEventListener('close', handleClose);
+    return () => modal.removeEventListener('close', handleClose);
   }, [onClose]);
 
   // Handle keyboard events for accessibility
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && isOpen) {
+      if (event.key === 'Escape' && isOpen) {
         onClose();
       }
     };
 
     if (isOpen) {
-      document.addEventListener("keydown", handleKeyDown);
+      document.addEventListener('keydown', handleKeyDown);
     }
 
     return () => {
-      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener('keydown', handleKeyDown);
     };
   }, [isOpen, onClose]);
 
@@ -61,26 +61,26 @@ export function AnnouncementModal({
   }
 
   // Priority-based styling
-  const getPriorityStyles = (priority: "high" | "medium" | "low") => {
+  const getPriorityStyles = (priority: 'high' | 'medium' | 'low') => {
     switch (priority) {
-      case "high":
-        return "badge-error";
-      case "medium":
-        return "badge-warning";
-      case "low":
-        return "badge-info";
+      case 'high':
+        return 'badge-error';
+      case 'medium':
+        return 'badge-warning';
+      case 'low':
+        return 'badge-info';
       default:
-        return "badge-info";
+        return 'badge-info';
     }
   };
 
   const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
+    return new Intl.DateTimeFormat('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
     }).format(date);
   };
 
@@ -102,8 +102,8 @@ export function AnnouncementModal({
         // Numbered lists
         .replace(/^\d+\. (.+)$/gm, '<li class="ml-4 list-decimal">$1</li>')
         // Line breaks
-        .replace(/\n\n/g, "<br><br>")
-        .replace(/\n/g, "<br>")
+        .replace(/\n\n/g, '<br><br>')
+        .replace(/\n/g, '<br>')
     );
   };
 

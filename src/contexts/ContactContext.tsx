@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { ReactNode, useState, useEffect, useCallback } from "react";
-import { Contact } from "@/domain/entities/contact";
-import { useContactService } from "@/hooks";
-import { useAuth } from "@/hooks/auth";
-import { ContactContext, ContactState } from "./contact.types";
+import { ReactNode, useState, useEffect, useCallback } from 'react';
+import { Contact } from '@/domain/entities/contact';
+import { useContactService } from '@/hooks';
+import { useAuth } from '@/hooks/auth';
+import { ContactContext, ContactState } from './contact.types';
 
 interface ContactProviderProps {
   children: ReactNode;
@@ -31,8 +31,8 @@ export function ContactProvider({ children }: ContactProviderProps) {
       setContact(data);
       setIsLoaded(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to fetch contact");
-      console.error("Error fetching contact:", err);
+      setError(err instanceof Error ? err.message : 'Failed to fetch contact');
+      console.error('Error fetching contact:', err);
     } finally {
       setIsLoading(false);
     }

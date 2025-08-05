@@ -1,23 +1,23 @@
-import { CustomizationComponentProps } from "../types";
+import { CustomizationComponentProps } from '../types';
 
 // Body parts using common, everyday terminology
 const BODY_PARTS = [
-  { label: "Neck", value: "neck" },
-  { label: "Shoulders", value: "shoulders" },
-  { label: "Upper Back", value: "upper_back" },
-  { label: "Lower Back", value: "lower_back" },
-  { label: "Chest", value: "chest" },
-  { label: "Arms", value: "arms" },
-  { label: "Wrists", value: "wrists" },
-  { label: "Elbows", value: "elbows" },
-  { label: "Abs/Core", value: "abs_core" },
-  { label: "Hips", value: "hips" },
-  { label: "Glutes", value: "glutes" },
-  { label: "Thighs", value: "thighs" },
-  { label: "Hamstrings", value: "hamstrings" },
-  { label: "Knees", value: "knees" },
-  { label: "Calves", value: "calves" },
-  { label: "Ankles", value: "ankles" },
+  { label: 'Neck', value: 'neck' },
+  { label: 'Shoulders', value: 'shoulders' },
+  { label: 'Upper Back', value: 'upper_back' },
+  { label: 'Lower Back', value: 'lower_back' },
+  { label: 'Chest', value: 'chest' },
+  { label: 'Arms', value: 'arms' },
+  { label: 'Wrists', value: 'wrists' },
+  { label: 'Elbows', value: 'elbows' },
+  { label: 'Abs/Core', value: 'abs_core' },
+  { label: 'Hips', value: 'hips' },
+  { label: 'Glutes', value: 'glutes' },
+  { label: 'Thighs', value: 'thighs' },
+  { label: 'Hamstrings', value: 'hamstrings' },
+  { label: 'Knees', value: 'knees' },
+  { label: 'Calves', value: 'calves' },
+  { label: 'Ankles', value: 'ankles' },
 ];
 
 export default function SorenessCustomization({
@@ -53,7 +53,7 @@ export default function SorenessCustomization({
             <label
               key={bodyPart.value}
               className={`flex items-center space-x-2 p-2 rounded cursor-pointer hover:bg-base-200 ${
-                disabled ? "cursor-not-allowed opacity-50" : ""
+                disabled ? 'cursor-not-allowed opacity-50' : ''
               }`}
             >
               <input

@@ -1,22 +1,22 @@
-"use client";
+'use client';
 
 import {
   Exercise,
   Section,
   WorkoutStructure,
-} from "@/domain/entities/generatedWorkout";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+} from '@/domain/entities/generatedWorkout';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   EmptySectionsCard,
   ExerciseCard,
   InvalidWorkoutCard,
-} from "./WorkoutComponents";
-import { formatTime } from "../utils/workouts.func";
+} from './WorkoutComponents';
+import { formatTime } from '../utils/workouts.func';
 
 // Type for a flattened workout step
 type WorkoutStep = {
-  type: "exercise" | "rest" | "section-intro";
+  type: 'exercise' | 'rest' | 'section-intro';
   sectionIndex: number;
   subSectionPath?: number[]; // Path to subsection (e.g., [0, 1] means section 0, subsection 1)
   exerciseIndex?: number;
@@ -35,7 +35,7 @@ const StepByStepWorkoutViewer = ({
   const isValidWorkout = useMemo(
     () =>
       workout &&
-      typeof workout === "object" &&
+      typeof workout === 'object' &&
       workout.title &&
       workout.description,
     [workout]
@@ -71,15 +71,15 @@ const StepByStepWorkoutViewer = ({
       section: Section,
       sectionIndex: number,
       subSectionPath: number[] = [],
-      parentSectionName: string = ""
+      parentSectionName: string = ''
     ): WorkoutStep[] => {
-      if (!section || typeof section !== "object") {
+      if (!section || typeof section !== 'object') {
         return [];
       }
 
       const steps: WorkoutStep[] = [];
       const currentSectionName = parentSectionName
-        ? `${parentSectionName} > ${section.name || "Unnamed Section"}`
+        ? `${parentSectionName} > ${section.name || 'Unnamed Section'}`
         : section.name || `Section ${sectionIndex + 1}`;
 
       const rounds = section.rounds || 1;
@@ -87,7 +87,7 @@ const StepByStepWorkoutViewer = ({
 
       // Add section intro as a step
       steps.push({
-        type: "section-intro",
+        type: 'section-intro',
         sectionIndex,
         subSectionPath:
           subSectionPath.length > 0 ? [...subSectionPath] : undefined,
@@ -105,12 +105,12 @@ const StepByStepWorkoutViewer = ({
       for (let round = 1; round <= rounds; round++) {
         // Add each exercise and rest periods for this round
         exercises.forEach((exercise, exerciseIndex) => {
-          if (!exercise || typeof exercise !== "object") {
+          if (!exercise || typeof exercise !== 'object') {
             return; // Skip invalid exercises
           }
 
           steps.push({
-            type: "exercise",
+            type: 'exercise',
             sectionIndex,
             subSectionPath:
               subSectionPath.length > 0 ? [...subSectionPath] : undefined,
@@ -127,7 +127,7 @@ const StepByStepWorkoutViewer = ({
             section.rest_between_exercises
           ) {
             steps.push({
-              type: "rest",
+              type: 'rest',
               sectionIndex,
               subSectionPath:
                 subSectionPath.length > 0 ? [...subSectionPath] : undefined,
@@ -135,7 +135,7 @@ const StepByStepWorkoutViewer = ({
               totalRounds: rounds > 1 ? totalRounds : undefined,
               content: {
                 duration: section.rest_between_exercises,
-                message: "Rest between exercises",
+                message: 'Rest between exercises',
               },
               sectionName: currentSectionName,
             });
@@ -149,7 +149,7 @@ const StepByStepWorkoutViewer = ({
           section.rest_between_rounds > 0
         ) {
           steps.push({
-            type: "rest",
+            type: 'rest',
             sectionIndex,
             subSectionPath:
               subSectionPath.length > 0 ? [...subSectionPath] : undefined,
@@ -172,13 +172,13 @@ const StepByStepWorkoutViewer = ({
         // Add rest before subsection if there were exercises in the parent section
         if (exercises.length > 0 && section.rest_between_exercises) {
           steps.push({
-            type: "rest",
+            type: 'rest',
             sectionIndex,
             subSectionPath:
               subSectionPath.length > 0 ? [...subSectionPath] : undefined,
             content: {
               duration: section.rest_between_exercises,
-              message: "Rest before subsection",
+              message: 'Rest before subsection',
             },
             sectionName: currentSectionName,
           });
@@ -199,13 +199,13 @@ const StepByStepWorkoutViewer = ({
           section.rest_between_exercises
         ) {
           steps.push({
-            type: "rest",
+            type: 'rest',
             sectionIndex,
             subSectionPath:
               subSectionPath.length > 0 ? [...subSectionPath] : undefined,
             content: {
               duration: section.rest_between_exercises,
-              message: "Rest between subsections",
+              message: 'Rest between subsections',
             },
             sectionName: currentSectionName,
           });
@@ -234,11 +234,11 @@ const StepByStepWorkoutViewer = ({
       // Add rest period between main sections
       if (sectionIndex < sections.length - 1 && workout.rest_between_sections) {
         workoutSteps.push({
-          type: "rest",
+          type: 'rest',
           sectionIndex,
           content: {
             duration: workout.rest_between_sections,
-            message: "Rest before next section",
+            message: 'Rest before next section',
           },
           sectionName: section.name || `Section ${sectionIndex + 1}`,
         });
@@ -325,7 +325,7 @@ const StepByStepWorkoutViewer = ({
       {/* Current step content */}
       <div className="card bg-base-100 shadow-sm">
         <div className="card-body">
-          {currentStep.type === "section-intro" && (
+          {currentStep.type === 'section-intro' && (
             <div>
               <h2 className="card-title text-xl">
                 {currentStep.sectionName ||
@@ -333,7 +333,7 @@ const StepByStepWorkoutViewer = ({
                   `Section ${currentStep.sectionIndex + 1}`}
               </h2>
               <div className="badge badge-outline mt-1">
-                {(currentStep.content as Section).type || "Unknown"}
+                {(currentStep.content as Section).type || 'Unknown'}
               </div>
               {(currentStep.content as Section).rounds &&
                 (currentStep.content as Section).rounds! > 1 && (
@@ -348,11 +348,11 @@ const StepByStepWorkoutViewer = ({
             </div>
           )}
 
-          {currentStep.type === "exercise" && (
+          {currentStep.type === 'exercise' && (
             <div>
               <h3 className="text-lg font-bold mb-3">
                 {currentStep.sectionName ||
-                  `Section ${currentStep.sectionIndex + 1}`}{" "}
+                  `Section ${currentStep.sectionIndex + 1}`}{' '}
                 - Exercise {(currentStep.exerciseIndex || 0) + 1}
                 {currentStep.round && currentStep.totalRounds && (
                   <span className="text-sm font-normal opacity-70 ml-2">
@@ -369,7 +369,7 @@ const StepByStepWorkoutViewer = ({
             </div>
           )}
 
-          {currentStep.type === "rest" && (
+          {currentStep.type === 'rest' && (
             <div className="text-center py-6">
               <h3 className="text-xl font-bold mb-2">Rest Period</h3>
               <div className="text-4xl font-bold mb-2">

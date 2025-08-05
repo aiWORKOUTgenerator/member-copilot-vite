@@ -1,11 +1,11 @@
-import { LicensePolicy } from "@/domain/entities";
-import type { ApiService } from "@/domain/interfaces/api/ApiService";
+import { LicensePolicy } from '@/domain/entities';
+import type { ApiService } from '@/domain/interfaces/api/ApiService';
 
 /**
  * Service responsible for license policy management
  */
 export class LicensePolicyService {
-  private readonly baseEndpoint = "/members/license-policies";
+  private readonly baseEndpoint = '/members/license-policies';
 
   constructor(private apiService: ApiService) {}
 
@@ -16,13 +16,13 @@ export class LicensePolicyService {
    */
   async getLicensePolicies(includeNonPublic = false): Promise<LicensePolicy[]> {
     try {
-      const query = includeNonPublic ? "?includeNonPublic=true" : "";
+      const query = includeNonPublic ? '?includeNonPublic=true' : '';
       const response = await this.apiService.get<LicensePolicy[]>(
         `${this.baseEndpoint}/${query}`
       );
       return response || [];
     } catch (error) {
-      console.error("Error fetching license policies:", error);
+      console.error('Error fetching license policies:', error);
       return [];
     }
   }
