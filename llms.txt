@@ -1,0 +1,322 @@
+# Member Copilot Vite - AI Context
+
+## Project Overview
+React TypeScript frontend application using Clean Architecture principles with domain-driven design.
+Built with Vite, Tailwind CSS + DaisyUI, Clerk authentication, and React Router v7.
+Follows atomic design patterns and feature-based module organization.
+
+## Core Technology Stack
+
+### Required Technologies
+- TypeScript (strict typing, no 'any' types allowed)
+- React 19 (functional components with hooks only)
+- Vite (build tool and dev server)
+- Tailwind CSS + DaisyUI (only styling system allowed)
+- Clerk (authentication provider)
+- React Router v7 (routing)
+- Vitest (testing framework)
+
+### Forbidden Technologies
+- No Node.js server code in frontend files
+- No JavaScript (TypeScript exclusively)
+- No CSS Modules, Styled Components, or Emotion
+- No class components (functional components only)
+- No custom CSS files (Tailwind + DaisyUI only)
+- No manual tokenization of JavaScript
+
+## Architecture Patterns
+
+### Clean Architecture Structure
+```
+src/
+├── domain/           # Core business logic (entities, interfaces)
+├── services/         # Implementation layer
+├── contexts/         # React Context for dependency injection
+├── modules/          # Feature-based modules
+├── ui/               # Reusable UI components
+└── hooks/            # Custom React hooks
+```
+
+### Domain Layer Rules
+- Define all service interfaces in domain/interfaces/services/
+- Create entities that extend BaseEntity<T> in domain/entities/
+- Use proper TypeScript interfaces for all data structures
+- Follow SOLID principles, especially Interface Segregation
+
+### Key Business Entities
+- Contact: User contact information and profile
+- GeneratedWorkout: AI-generated workout plans
+- WorkoutInstance: Individual workout sessions
+- WorkoutFeedback: User feedback on workouts
+- TrainerPersona: AI trainer personality and style
+- Subscription: User subscription and billing information
+
+## Component Organization
+
+### Atomic Design Structure
+- Atoms: src/ui/shared/atoms/ (Button, Input, Icon, ValidationMessage)
+- Molecules: src/ui/shared/molecules/ (Card, FormField, StepIndicator, DetailedSelector)
+- Organisms: src/ui/shared/organisms/ (FormContainer, PageHeader, AuthRequired)
+- Templates: src/ui/shared/templates/ (PageLayout, StackedLayout)
+
+### Component Rules
+- Use functional components with TypeScript interfaces for props
+- Include JSDoc comments for all props
+- Export components as named exports (except page components use default exports)
+- Extend HTML element types for component props
+
+Example Component Pattern:
+```typescript
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  /** Visual style variant */
+  variant?: "primary" | "secondary" | "accent";
+  /** Size of the button */
+  size?: "xs" | "sm" | "md" | "lg";
+  /** Show loading spinner */
+  isLoading?: boolean;
+}
+
+export const Button: React.FC<ButtonProps> = ({
+  variant = "primary",
+  size = "md",
+  children,
+  className = "",
+  isLoading = false,
+  ...props
+}) => {
+  return (
+    <button
+      className={`btn btn-${variant} btn-${size} ${className}`}
+      disabled={isLoading}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+};
+```
+
+## Styling Standards
+
+### Required Styling Approach
+- Use only Tailwind CSS utility classes and DaisyUI components
+- Use DaisyUI semantic color system: primary, secondary, accent, neutral, base-100
+- Prefer DaisyUI component classes: btn, card, input, modal, etc.
+- Mobile-first responsive design with sm:, md:, lg:, xl: prefixes
+
+### Forbidden Styling
+- No custom CSS files
+- No CSS-in-JS solutions
+- No inline styles
+- No CSS Modules
+
+## Module Organization
+
+### Feature Module Structure
+```
+modules/feature/
+├── FeatureContainer.tsx    # Main container with providers
+├── pages/                  # Page components
+├── components/             # Feature-specific components
+└── utils/                  # Feature utilities
+```
+
+### Current Modules
+- conversion/: User onboarding and conversion flow
+- dashboard/: Main application dashboard (billing, profile, trainer, workouts)
+- home/: Landing page and marketing
+- sign-in/: Authentication and login
+
+### Container Pattern
+Each feature module should be wrapped with required providers:
+```typescript
+export default function DashboardContainer() {
+  return (
+    <TitleProvider>
+      <ContactProvider>
+        <UserAccessProvider>
+          <Routes>
+            <Route path="/dashboard" element={<DashboardPage />} />
+          </Routes>
+        </UserAccessProvider>
+      </ContactProvider>
+    </TitleProvider>
+  );
+}
+```
+
+## State Management
+
+### Context Pattern
+- Create typed context interfaces with clear state shape
+- Include loading states, error states, and refetch functions
+- Use useCallback for memoizing functions
+- Implement proper error boundaries
+
+Example Context Pattern:
+```typescript
+export interface UserState {
+  users: User[];
+  isLoading: boolean;
+  error: string | null;
+  refetch: () => Promise<void>;
+  isLoaded: boolean;
+}
+```
+
+### Hook Patterns
+- Create custom hooks for each context: useUsers(), useAuth()
+- Include proper null checks and error throwing
+- Use specialized hooks over general ones
+
+## Authentication with Clerk
+
+### Auth Configuration
+- Frontend uses Clerk application: eminent-adder-64
+- Use useAuth() hook from auth service wrapper
+- Check isSignedIn before making authenticated requests
+- Handle loading states with isLoaded
+- Use <AuthRequired> component wrapper for protected routes
+
+### API Service Pattern
+```typescript
+const apiService = useMemo(() => {
+  const tokenProvider = new ClerkTokenProvider(async () => {
+    try {
+      return (await session?.getToken()) || null;
+    } catch (error) {
+      console.error("Error getting token:", error);
+      return null;
+    }
+  });
+
+  return new ApiServiceImpl(
+    baseUrl,
+    {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    tokenProvider
+  );
+}, [baseUrl, session]);
+```
+
+## Validation System
+
+### Validation Architecture
+- Centralized validation messages in constants/validationMessages.ts
+- Selection counting logic for form validation
+- ValidationMessage component for error display
+- Multi-step form validation with StepIndicator
+
+### Validation Flow
+```
+User Input → Validation Rules → Error State → UI Feedback
+Form Fields → Field Validation → Error Messages → ValidationMessage Component
+```
+
+### Key Validation Components
+- ValidationMessages: Centralized validation message constants
+- SelectionCounter: Validation logic and state management
+- ValidationMessage: Reusable error display component
+- WorkoutCustomization: Form validation integration
+
+## Quality Assurance
+
+### Pre-PR Verification System
+- ESLint with TypeScript, React, and accessibility rules
+- Prettier for consistent code formatting
+- Husky hooks with lint-staged and commitlint
+- TypeScript strict configuration
+- Vitest test framework with coverage thresholds
+- Conventional commit message format
+
+### Testing Strategy
+- Unit tests for services and hooks
+- Integration tests for user flows
+- Component tests for UI elements
+- Mock factories for consistent test data
+- Coverage thresholds: 80%+ for critical components
+
+### Code Quality Rules
+- No ESLint warnings allowed in commits
+- All TypeScript must compile without errors
+- Use descriptive variable and function names
+- Add JSDoc comments for public APIs
+- Handle error states gracefully
+
+## Performance Best Practices
+
+### React Performance
+- Use memo() for expensive components
+- Use useCallback() and useMemo() appropriately
+- Implement proper loading states for async operations
+- Use Suspense boundaries for code splitting
+
+### File Naming Conventions
+- PascalCase for component files: UserCard.tsx
+- camelCase for utility files: userHelpers.ts
+- kebab-case for page routes: user-profile
+
+## Development Workflow
+
+### Branch Strategy
+- main: Production-ready code
+- feature/: Feature development branches
+- Keep branches focused and atomic
+- Use conventional commit messages
+
+### Environment Configuration
+- Use .env for environment variables
+- VITE_CLERK_PUBLISHABLE_KEY for Clerk configuration
+- VITE_API_URL for backend communication
+- VITE_GENERATED_WORKOUT_CONFIGURATION_ID for workout config
+
+## Error Handling
+
+### Error Boundaries
+- Wrap feature modules with ErrorBoundary components
+- Display user-friendly error messages
+- Log errors to console in development
+- Implement fallback UI for error states
+
+### Loading States
+- Always show loading indicators for async operations
+- Use skeleton screens for better UX
+- Handle empty states with meaningful messages
+
+## Important Patterns to Follow
+
+### Service Layer Pattern
+```typescript
+export interface UserService {
+  getUserById(id: string): Promise<User | null>;
+  updateUser(id: string, data: Partial<User>): Promise<User>;
+}
+```
+
+### Dependency Injection Pattern
+```typescript
+export function UserProvider({ children }: { children: ReactNode }) {
+  const userService = useUserService();
+  const [users, setUsers] = useState<User[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  
+  return (
+    <UserContext.Provider value={{ users, isLoading, refetch }}>
+      {children}
+    </UserContext.Provider>
+  );
+}
+```
+
+### TypeScript Interface Pattern
+```typescript
+interface ApiResponse<T> {
+  data: T;
+  status: number;
+  message: string;
+}
+```
+
+This context should help AI tools understand the project structure, patterns, and constraints when generating code or providing assistance.
