@@ -11,6 +11,7 @@ Phase 2 builds on the solid foundation established in Phase 1, focusing on compr
 ## Prerequisites
 
 ✅ **Phase 1 Complete**: All Phase 1 components must be working
+
 - ESLint with accessibility rules
 - Prettier formatting
 - TypeScript strict checking
@@ -177,7 +178,7 @@ vi.mock('@/contexts/TrainerPersonaContext');
 
 describe('useTrainerPersona', () => {
   const mockContext = vi.mocked(require('@/contexts/TrainerPersonaContext'));
-  
+
   beforeEach(() => {
     vi.clearAllMocks();
     // Default mock implementation
@@ -194,16 +195,16 @@ describe('useTrainerPersona', () => {
 
   // Data-driven test cases for common hook patterns
   const testCases = createHookTestCases('useTrainerPersona');
-  
+
   it.each([
     [testCases.loading.name, testCases.loading.mockReturn],
     [testCases.error.name, testCases.error.mockReturn],
     [testCases.success.name, testCases.success.mockReturn],
   ])('%s', (testName, mockReturn) => {
     mockContext.TrainerPersonaContext.Consumer.mockImplementation(({ children }) => children(mockReturn));
-    
+
     const { result } = renderHook(() => useTrainerPersona());
-    
+
     expect(result.current).toBeDefined();
     expect(result.current.isLoading).toBe(mockReturn.isLoading);
     expect(result.current.isLoaded).toBe(mockReturn.isLoaded);
@@ -214,7 +215,7 @@ describe('useTrainerPersona', () => {
 
   it('should handle successful trainer persona data', () => {
     const mockPersona = createMockTrainerPersona();
-    
+
     mockContext.TrainerPersonaContext.Consumer.mockImplementation(({ children }) => children({
       trainerPersona: mockPersona,
       isLoading: false,
@@ -226,14 +227,14 @@ describe('useTrainerPersona', () => {
     }));
 
     const { result } = renderHook(() => useTrainerPersona());
-    
+
     expect(result.current.trainerPersona).toEqual(mockPersona);
     expect(result.current.hasNoPersona).toBe(false);
   });
 
   it('should handle refetch functionality', async () => {
     const mockRefetch = vi.fn().mockResolvedValue(true);
-    
+
     mockContext.TrainerPersonaContext.Consumer.mockImplementation(({ children }) => children({
       trainerPersona: null,
       isLoading: false,
@@ -245,7 +246,7 @@ describe('useTrainerPersona', () => {
     }));
 
     const { result } = renderHook(() => useTrainerPersona());
-    
+
     await result.current.refetch();
     expect(mockRefetch).toHaveBeenCalledTimes(1);
   });
@@ -254,40 +255,42 @@ EOF
 ```
 
 # Create phone verification hook tests
-cat > src/__tests__/hooks/usePhoneVerification.test.ts << 'EOF'
+
+cat > src/**tests**/hooks/usePhoneVerification.test.ts << 'EOF'
 import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { usePhoneVerification } from '@/hooks/usePhoneVerification';
 
 // Mock the context
 vi.mock('@/contexts/VerificationContext', () => ({
-  VerificationContext: {
-    Consumer: ({ children }: { children: any }) => children({
-      isVerified: false,
-      isLoading: false,
-      error: null,
-      verifyPhone: vi.fn(),
-      sendVerificationCode: vi.fn(),
-    }),
-  },
+VerificationContext: {
+Consumer: ({ children }: { children: any }) => children({
+isVerified: false,
+isLoading: false,
+error: null,
+verifyPhone: vi.fn(),
+sendVerificationCode: vi.fn(),
+}),
+},
 }));
 
 describe('usePhoneVerification', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
+beforeEach(() => {
+vi.clearAllMocks();
+});
 
-  it('should return verification state', () => {
-    const { result } = renderHook(() => usePhoneVerification());
-    
+it('should return verification state', () => {
+const { result } = renderHook(() => usePhoneVerification());
+
     expect(result.current).toBeDefined();
     expect(result.current.isVerified).toBe(false);
     expect(result.current.isLoading).toBe(false);
-  });
 
-  it('should handle phone verification', async () => {
-    const mockVerifyPhone = vi.fn().mockResolvedValue(true);
-    
+});
+
+it('should handle phone verification', async () => {
+const mockVerifyPhone = vi.fn().mockResolvedValue(true);
+
     vi.mocked(require('@/contexts/VerificationContext').VerificationContext.Consumer)
       .mockImplementation(({ children }) => children({
         isVerified: false,
@@ -298,17 +301,18 @@ describe('usePhoneVerification', () => {
       }));
 
     const { result } = renderHook(() => usePhoneVerification());
-    
+
     await act(async () => {
       await result.current.verifyPhone('+1234567890', '123456');
     });
-    
-    expect(mockVerifyPhone).toHaveBeenCalledWith('+1234567890', '123456');
-  });
 
-  it('should handle verification errors', () => {
-    const error = new Error('Invalid code');
-    
+    expect(mockVerifyPhone).toHaveBeenCalledWith('+1234567890', '123456');
+
+});
+
+it('should handle verification errors', () => {
+const error = new Error('Invalid code');
+
     vi.mocked(require('@/contexts/VerificationContext').VerificationContext.Consumer)
       .mockImplementation(({ children }) => children({
         isVerified: false,
@@ -319,12 +323,14 @@ describe('usePhoneVerification', () => {
       }));
 
     const { result } = renderHook(() => usePhoneVerification());
-    
+
     expect(result.current.error).toBe(error);
-  });
+
+});
 });
 EOF
-```
+
+````
 
 ### Step 4: Implement Critical Component Tests (3 hours)
 
@@ -371,14 +377,14 @@ describe('GeneratingTrainerPage', () => {
         <GeneratingTrainerPage />
       </BrowserRouter>
     );
-    
+
     expect(screen.getByText(/Generating personality traits/i)).toBeInTheDocument();
     expect(screen.getByText(/This may take a few moments/i)).toBeInTheDocument();
   });
 
   it('should show error state', () => {
     const error = new Error('Failed to generate trainer');
-    
+
     mockUseTrainerPersona.mockReturnValue({
       trainerPersona: null,
       isLoading: false,
@@ -394,13 +400,13 @@ describe('GeneratingTrainerPage', () => {
         <GeneratingTrainerPage />
       </BrowserRouter>
     );
-    
+
     expect(screen.getByText(/error/i)).toBeInTheDocument();
   });
 
   it('should redirect when trainer persona is generated', () => {
     const mockPersona = createMockTrainerPersona();
-    
+
     mockUseTrainerPersona.mockReturnValue({
       trainerPersona: mockPersona,
       isLoading: false,
@@ -416,7 +422,7 @@ describe('GeneratingTrainerPage', () => {
         <GeneratingTrainerPage />
       </BrowserRouter>
     );
-    
+
     // Should redirect to trainer page
     expect(container.innerHTML).toContain('Redirecting');
   });
@@ -437,7 +443,7 @@ describe('GeneratingTrainerPage', () => {
         <GeneratingTrainerPage />
       </BrowserRouter>
     );
-    
+
     await waitFor(() => {
       expect(screen.getByText(/took longer than expected/i)).toBeInTheDocument();
     });
@@ -454,7 +460,7 @@ import { Button } from '@/ui/shared/atoms/Button';
 describe('Button', () => {
   it('should render with default props', () => {
     render(<Button>Click me</Button>);
-    
+
     const button = screen.getByRole('button', { name: /click me/i });
     expect(button).toBeInTheDocument();
     expect(button).toHaveClass('btn', 'btn-primary', 'btn-md');
@@ -466,7 +472,7 @@ describe('Button', () => {
         Large Secondary
       </Button>
     );
-    
+
     const button = screen.getByRole('button', { name: /large secondary/i });
     expect(button).toHaveClass('btn', 'btn-secondary', 'btn-lg');
   });
@@ -477,7 +483,7 @@ describe('Button', () => {
         Loading Button
       </Button>
     );
-    
+
     const button = screen.getByRole('button', { name: /loading button/i });
     expect(button).toBeDisabled();
     expect(button).toHaveClass('loading');
@@ -485,36 +491,36 @@ describe('Button', () => {
 
   it('should call onClick when clicked', () => {
     const handleClick = vi.fn();
-    
+
     render(
       <Button onClick={handleClick}>
         Click me
       </Button>
     );
-    
+
     const button = screen.getByRole('button', { name: /click me/i });
     fireEvent.click(button);
-    
+
     expect(handleClick).toHaveBeenCalledTimes(1);
   });
 
   it('should not call onClick when disabled', () => {
     const handleClick = vi.fn();
-    
+
     render(
       <Button onClick={handleClick} disabled>
         Disabled Button
       </Button>
     );
-    
+
     const button = screen.getByRole('button', { name: /disabled button/i });
     fireEvent.click(button);
-    
+
     expect(handleClick).not.toHaveBeenCalled();
   });
 });
 EOF
-```
+````
 
 ### Step 5: Implement Service Tests (2 hours)
 
@@ -576,7 +582,7 @@ describe('TrainerPersonaServiceImpl', () => {
     it('should generate trainer persona successfully', async () => {
       const mockPersona = createMockTrainerPersona();
       const attributes = { personality: 'Motivational', focus: 'Strength' };
-      
+
       mockApiService.post.mockResolvedValue({ data: mockPersona });
 
       const result = await service.generateTrainerPersona(attributes);
@@ -635,7 +641,7 @@ describe('Workout Generation Flow', () => {
         <GeneratePage />
       </BrowserRouter>
     );
-    
+
     expect(screen.getByText(/generate workout/i)).toBeInTheDocument();
     expect(screen.getByText(/workout duration/i)).toBeInTheDocument();
     expect(screen.getByText(/focus area/i)).toBeInTheDocument();
@@ -647,19 +653,19 @@ describe('Workout Generation Flow', () => {
         <GeneratePage />
       </BrowserRouter>
     );
-    
+
     // Test form validation
     const durationInput = screen.getByLabelText(/workout duration/i);
     fireEvent.change(durationInput, { target: { value: '0' } });
-    
+
     // Should show validation error for 0 duration
     await waitFor(() => {
       expect(screen.getByText(/duration must be greater than 0/i)).toBeInTheDocument();
     });
-    
+
     // Fix the input
     fireEvent.change(durationInput, { target: { value: '30' } });
-    
+
     // Validation error should disappear
     await waitFor(() => {
       expect(screen.queryByText(/duration must be greater than 0/i)).not.toBeInTheDocument();
@@ -672,11 +678,11 @@ describe('Workout Generation Flow', () => {
         <GeneratePage />
       </BrowserRouter>
     );
-    
+
     // Test edge case: no selections
     const generateButton = screen.getByRole('button', { name: /generate/i });
     fireEvent.click(generateButton);
-    
+
     // Should show error for insufficient selections
     await waitFor(() => {
       expect(screen.getByText(/please select at least one/i)).toBeInTheDocument();
@@ -698,14 +704,14 @@ describe('Workout Generation Flow', () => {
         <GeneratePage />
       </BrowserRouter>
     );
-    
+
     // Try to generate workout
     const durationInput = screen.getByLabelText(/workout duration/i);
     fireEvent.change(durationInput, { target: { value: '30' } });
-    
+
     const generateButton = screen.getByRole('button', { name: /generate/i });
     fireEvent.click(generateButton);
-    
+
     // Should show error message
     await waitFor(() => {
       expect(screen.getByText(/something went wrong/i)).toBeInTheDocument();
@@ -844,6 +850,7 @@ npm pkg set scripts.test:ci="npm run test:fast && npm run test:coverage"
 ## Verification Steps
 
 ### 1. Test the Implementation
+
 ```bash
 # Run all tests
 npm run test:run
@@ -857,6 +864,7 @@ npm run test:integration
 ```
 
 ### 2. Verify Coverage Thresholds
+
 ```bash
 # Should pass with 80%+ coverage
 npm run test:coverage
@@ -866,6 +874,7 @@ open coverage/index.html
 ```
 
 ### 3. Test Integration with Verify Scripts
+
 ```bash
 # Full verification should now include tests
 npm run verify
@@ -882,17 +891,19 @@ After implementation, you should see:
 ✅ **Coverage met**: 80%+ coverage across the codebase  
 ✅ **Critical paths covered**: Trainer persona, workout generation, phone verification  
 ✅ **Integration tests**: End-to-end user flows tested  
-✅ **Verify scripts updated**: Tests included in verification pipeline  
+✅ **Verify scripts updated**: Tests included in verification pipeline
 
 ## Success Metrics
 
 ### Coverage Goals (Staggered Approach)
+
 - **Sprint 1**: Overall 60%+, Critical 80%+, Hooks 70%+, UI 50%+
 - **Sprint 2**: Overall 70%+, Critical 85%+, Hooks 80%+, UI 60%+
 - **Sprint 3**: Overall 80%+, Critical 90%+, Hooks 85%+, UI 70%+
 - **Future**: Maintain 80%+ overall, 90%+ critical components
 
 ### Test Quality Goals
+
 - **Unit tests**: All critical hooks and services
 - **Integration tests**: Key user flows (workout generation, trainer creation)
 - **Component tests**: All major UI components
@@ -903,39 +914,43 @@ After implementation, you should see:
 ### Best Practices
 
 #### 1. Use Auto-Mocking for Common Patterns
+
 ```typescript
 // Instead of vi.mock() in every test file
 // Create __mocks__/hooks.ts for common hooks
-vi.mock('@/hooks/useAuth'); // Auto-mocked
+vi.mock("@/hooks/useAuth"); // Auto-mocked
 ```
 
 #### 2. Data-Driven Tests for Similar Patterns
+
 ```typescript
 // Use it.each for similar test cases
 it.each([
-  ['loading', { isLoading: true, isLoaded: false }],
-  ['error', { isLoading: false, error: new Error('Test') }],
-  ['success', { isLoading: false, data: mockData }],
-])('should handle %s state', (state, mockReturn) => {
+  ["loading", { isLoading: true, isLoaded: false }],
+  ["error", { isLoading: false, error: new Error("Test") }],
+  ["success", { isLoading: false, data: mockData }],
+])("should handle %s state", (state, mockReturn) => {
   // Test implementation
 });
 ```
 
 #### 3. Minimal Mocking in Integration Tests
+
 ```typescript
 // Only mock external dependencies
-vi.mock('@/services/api/ApiServiceImpl'); // External API
+vi.mock("@/services/api/ApiServiceImpl"); // External API
 // Let hooks run real logic against real components
 ```
 
 #### 4. Test Edge Cases Explicitly
+
 ```typescript
 // Test boundary conditions
-it('should handle zero duration', () => {
+it("should handle zero duration", () => {
   expect(validateDuration(0)).toBe(false);
 });
 
-it('should handle maximum equipment', () => {
+it("should handle maximum equipment", () => {
   expect(validateEquipment(maxEquipment)).toBe(true);
 });
 ```
@@ -943,12 +958,14 @@ it('should handle maximum equipment', () => {
 ### Workshop Setup
 
 #### 30-Minute Test-Drive Workshop
+
 1. **Pair Programming Session**: Write one hook test and one component test together
 2. **Pattern Demonstration**: Show auto-mocking and data-driven tests
 3. **Common Pitfalls**: Discuss over-mocking and flaky tests
 4. **Tools Setup**: Ensure everyone has Vitest UI and coverage reports working
 
 #### Workshop Agenda
+
 ```bash
 # 1. Setup (5 minutes)
 npm run test:ui  # Show visual test runner
@@ -969,6 +986,7 @@ npm run test:ui  # Show visual test runner
 ### Common Issues
 
 **Tests failing due to missing mocks**
+
 ```bash
 # Check if all dependencies are properly mocked
 # Add missing mocks to __mocks__/ directory
@@ -976,6 +994,7 @@ npm run test:ui  # Show visual test runner
 ```
 
 **Coverage thresholds not met**
+
 ```bash
 # Use staggered approach: start at 60%, increase by 10% each sprint
 # Focus on critical business logic first
@@ -983,6 +1002,7 @@ npm run test:ui  # Show visual test runner
 ```
 
 **Integration tests timing out**
+
 ```bash
 # Use retry logic: retry: process.env.CI ? 2 : 0
 # Check for async operations not properly awaited
@@ -990,6 +1010,7 @@ npm run test:ui  # Show visual test runner
 ```
 
 **Flaky tests**
+
 ```bash
 # Add retry logic for integration tests
 # Use waitFor instead of setTimeout
@@ -997,6 +1018,7 @@ npm run test:ui  # Show visual test runner
 ```
 
 ### Getting Help
+
 - Check the [Testing Guide](../testing/README.md)
 - Review [Vitest Documentation](https://vitest.dev/)
 - Contact the development team
@@ -1012,4 +1034,4 @@ npm run test:ui  # Show visual test runner
 
 **Implementation Time:** ~8 hours  
 **Impact:** Catches 90% of issues, provides confidence for refactoring  
-**Risk:** Medium - Requires understanding of existing codebase 
+**Risk:** Medium - Requires understanding of existing codebase

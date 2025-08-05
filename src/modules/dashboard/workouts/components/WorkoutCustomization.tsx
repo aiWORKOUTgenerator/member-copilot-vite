@@ -257,6 +257,7 @@ export default function WorkoutCustomization({
           disabled={disabled}
           showConnectors={true}
           size="md"
+          spacing="relaxed"
         />
 
         {/* Step content */}
@@ -302,12 +303,18 @@ export default function WorkoutCustomization({
               selectedValue={
                 options.customization_duration?.toString() || undefined
               }
-              onChange={(duration: string | string[]) => {
-                // DetailedSelector returns the ID string for single selection
-                const durationId = Array.isArray(duration)
+              onChange={(duration) => {
+                // RadioGroupOfCards passes the entire item object, so we need to extract the id
+                const durationItem = Array.isArray(duration)
                   ? duration[0]
                   : duration;
-                const durationValue = parseInt(durationId, 10);
+                const durationId =
+                  (durationItem as { id?: string | number })?.id ||
+                  durationItem;
+                const durationValue =
+                  typeof durationId === "string"
+                    ? parseInt(durationId, 10)
+                    : Number(durationId);
                 if (isNaN(durationValue)) {
                   console.error("Invalid duration value:", duration);
                   return;
@@ -327,11 +334,13 @@ export default function WorkoutCustomization({
               icon={Dumbbell}
               options={EQUIPMENT_OPTIONS}
               selectedValue={options.customization_equipment?.[0] || undefined}
-              onChange={(equipment: string | string[]) => {
-                // DetailedSelector returns the ID string for single selection
-                const equipmentId = Array.isArray(equipment)
+              onChange={(equipment) => {
+                // RadioGroupOfCards passes the entire item object, so we need to extract the id
+                const equipmentItem = Array.isArray(equipment)
                   ? equipment[0]
                   : equipment;
+                const equipmentId =
+                  (equipmentItem as { id?: string })?.id || equipmentItem;
                 handleChange("customization_equipment", [equipmentId]);
               }}
               question="What equipment do you have available?"

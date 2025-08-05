@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+// Tokens removed - using inline spacing values
 
 export interface Step {
   id: string;
@@ -17,6 +18,7 @@ export interface StepIndicatorProps {
   disabled?: boolean;
   showConnectors?: boolean;
   size?: "sm" | "md" | "lg";
+  spacing?: "compact" | "normal" | "relaxed";
 }
 
 export const StepIndicator: React.FC<StepIndicatorProps> = ({
@@ -26,7 +28,34 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
   disabled = false,
   showConnectors = true,
   size = "md",
+  spacing = "normal",
 }) => {
+  const getSizeClasses = () => {
+    switch (size) {
+      case "sm":
+        return {
+          circle: "w-8 h-8 text-xs",
+          label: "text-xs",
+          description: "text-xs",
+          connector: "w-6 h-0.5",
+        };
+      case "lg":
+        return {
+          circle: "w-16 h-16 text-lg",
+          label: "text-base",
+          description: "text-sm",
+          connector: "w-12 h-1",
+        };
+      default: // md
+        return {
+          circle: "w-12 h-12 text-sm",
+          label: "text-sm",
+          description: "text-xs",
+          connector: "w-8 h-0.5",
+        };
+    }
+  };
+
   const getVariantClasses = (
     isActive: boolean,
     isCompleted: boolean,
@@ -50,19 +79,41 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
     return `${baseClasses} bg-base-100 text-base-content/70 border-base-300`;
   };
 
+  const sizeClasses = getSizeClasses();
+
+  // Get spacing configuration
+  const getSpacingConfig = () => {
+    switch (spacing) {
+      case "compact":
+        return {
+          container: "gap-2",
+          stepGap: "gap-2",
+          labelSpacing: "mt-1",
+        };
+      case "relaxed":
+        return {
+          container: "gap-6",
+          stepGap: "gap-6",
+          labelSpacing: "mt-3",
+        };
+      default: // normal
+        return {
+          container: "gap-4",
+          stepGap: "gap-4",
+          labelSpacing: "mt-2",
+        };
+    }
+  };
+
+  const spacingConfig = getSpacingConfig();
+
   return (
     <div
-      className="flex justify-center p-4"
+      className={`flex justify-center ${spacingConfig.container}`}
       data-testid="step-indicator-container"
     >
       <div
-        className={`flex items-center ${
-          size === "sm"
-            ? "gap-[var(--spacing-step-gap-sm)]"
-            : size === "lg"
-              ? "gap-[var(--spacing-step-gap-lg)]"
-              : "gap-[var(--spacing-step-gap-md)]"
-        }`}
+        className={`flex items-center ${spacingConfig.stepGap}`}
         data-testid="step-indicator-steps"
       >
         {steps.map((step, index) => {
@@ -75,21 +126,15 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
             <div key={step.id} className="flex flex-col items-center">
               <div className="relative">
                 <div
-                  className={`${
-                    size === "sm"
-                      ? "w-[var(--size-step-sm)] h-[var(--size-step-sm)] text-[var(--text-step-sm)]"
-                      : size === "lg"
-                        ? "w-[var(--size-step-lg)] h-[var(--size-step-lg)] text-[var(--text-step-lg)]"
-                        : "w-[var(--size-step-md)] h-[var(--size-step-md)] text-[var(--text-step-md)]"
-                  } ${getVariantClasses(
-                    isActive,
-                    isCompleted,
-                    step.hasErrors || false
-                  )} ${isClickable ? "cursor-pointer hover:scale-105" : ""}`}
+                  className={`${sizeClasses.circle} ${getVariantClasses(isActive, isCompleted, step.hasErrors || false)} ${
+                    isClickable ? "cursor-pointer hover:scale-105" : ""
+                  }`}
                   onClick={() => isClickable && onStepClick(step.id)}
-                  role={isClickable ? "button" : undefined}
-                  tabIndex={isClickable ? 0 : undefined}
-                  aria-label={`Step ${index + 1}: ${step.label}`}
+                  role={isClickable ? "button" : "presentation"}
+                  tabIndex={isClickable ? 0 : -1}
+                  aria-label={
+                    isClickable ? `Step ${index + 1}: ${step.label}` : undefined
+                  }
                   aria-current={isActive ? "step" : undefined}
                   onKeyDown={(e) => {
                     if (isClickable && (e.key === "Enter" || e.key === " ")) {
@@ -104,48 +149,22 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
                 {/* Connector line to next step */}
                 {showConnectors && index < steps.length - 1 && (
                   <div
-                    className={`absolute top-1/2 left-full ${
-                      size === "sm"
-                        ? "w-[var(--width-connector-sm)]"
-                        : size === "lg"
-                          ? "w-[var(--width-connector-lg)]"
-                          : "w-[var(--width-connector-md)]"
-                    } h-0.5 bg-base-300 transform -translate-y-1/2`}
+                    className={`absolute top-1/2 left-full ${sizeClasses.connector} bg-base-300 transform -translate-y-1/2`}
                     aria-hidden="true"
                   />
                 )}
               </div>
 
-              <div
-                className={`${
-                  size === "sm"
-                    ? "mt-[var(--spacing-label-sm)]"
-                    : size === "lg"
-                      ? "mt-[var(--spacing-label-lg)]"
-                      : "mt-[var(--spacing-label-md)]"
-                } text-center`}
-              >
+              <div className={`${spacingConfig.labelSpacing} text-center`}>
                 <div
-                  className={`${
-                    size === "sm"
-                      ? "text-xs"
-                      : size === "lg"
-                        ? "text-base"
-                        : "text-sm"
-                  } font-medium text-base-content`}
+                  className={`${sizeClasses.label} font-medium text-base-content`}
                 >
                   {step.label}
                 </div>
                 {step.description &&
                   step.description !== `${index + 1} of ${steps.length}` && (
                     <div
-                      className={`${
-                        size === "sm"
-                          ? "text-xs"
-                          : size === "lg"
-                            ? "text-sm"
-                            : "text-xs"
-                      } text-base-content/70`}
+                      className={`${sizeClasses.description} text-base-content/70`}
                     >
                       {step.description}
                     </div>
