@@ -11,7 +11,7 @@ export interface DetailedSelectorProps<T> {
     id: string;
     title: string;
     description?: string;
-    tertiary?: React.ReactNode;  // e.g. <LevelDots …/>
+    tertiary?: React.ReactNode; // e.g. <LevelDots …/>
   }>;
   /** Current selection: a single T or array of T if multiple */
   selectedValue?: T | T[];
@@ -50,25 +50,25 @@ export function DetailedSelector<T>({
   required = false,
 }: DetailedSelectorProps<T>) {
   // convert options → items for RadioGroupOfCards
-  const items = options.map(opt => ({
+  const items = options.map((opt) => ({
     id: opt.id,
     title: opt.title,
-    description: opt.description || '', // Ensure description is always a string
+    description: opt.description || "", // Ensure description is always a string
     tertiary: opt.tertiary,
   }));
 
   // Find the selected item(s) based on selectedValue
   const getSelectedItems = () => {
-    if (!selectedValue || selectedValue === '') return undefined;
-    
+    if (!selectedValue || selectedValue === "") return undefined;
+
     if (multiple) {
       // For multiple selection, selectedValue should be an array of IDs
       const selectedIds = selectedValue as string[];
-      return items.filter(item => selectedIds.includes(item.id));
+      return items.filter((item) => selectedIds.includes(item.id));
     } else {
       // For single selection, selectedValue should be a single ID
       const selectedId = selectedValue as string;
-      return items.find(item => item.id === selectedId);
+      return items.find((item) => item.id === selectedId);
     }
   };
 
@@ -76,13 +76,15 @@ export function DetailedSelector<T>({
   const handleChange = (selected: SelectableItem | SelectableItem[]) => {
     if (multiple) {
       // For multiple selection, extract IDs from selected items
-      const selectedIds = Array.isArray(selected) 
-        ? selected.map(item => item.id)
+      const selectedIds = Array.isArray(selected)
+        ? selected.map((item) => item.id)
         : [selected.id];
       onChange(selectedIds as T[]);
     } else {
       // For single selection, extract ID from selected item
-      const selectedId = Array.isArray(selected) ? selected[0]?.id : selected.id;
+      const selectedId = Array.isArray(selected)
+        ? selected[0]?.id
+        : selected.id;
       onChange(selectedId as T);
     }
   };
@@ -91,8 +93,8 @@ export function DetailedSelector<T>({
     <div className="w-full">
       {/* Label + Icon */}
       <div className="mb-4">
-        <label className="block text-sm font-medium text-base-content mb-2 flex items-center gap-2">
-          <Icon className="w-4 h-4" />
+        <label className="block text-lg font-semibold text-base-content mb-3 flex items-center gap-2">
+          <Icon className="w-5 h-5" />
           <span>{question}</span>
           {/** Show required indicator if required or if there's an error */}
           {(required || error != null) && <span className="text-error">*</span>}
@@ -109,7 +111,16 @@ export function DetailedSelector<T>({
           legend=""
           multiple={multiple}
           gridCols={gridCols}
-          colorScheme={colorScheme as "primary" | "secondary" | "accent" | "success" | "warning" | "info" | "error"}
+          colorScheme={
+            colorScheme as
+              | "primary"
+              | "secondary"
+              | "accent"
+              | "success"
+              | "warning"
+              | "info"
+              | "error"
+          }
           selected={getSelectedItems()}
           onChange={handleChange}
         />
@@ -119,4 +130,4 @@ export function DetailedSelector<T>({
       <ValidationMessage message={error} isValid={!error} />
     </div>
   );
-} 
+}
