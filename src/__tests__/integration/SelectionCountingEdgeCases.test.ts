@@ -9,7 +9,7 @@ describe("Selection Counting Edge Cases", () => {
     );
     expect(result.isValid).toBe(false);
     expect(result.errorMessage).toBe(
-      "Duration must be between 5 and 300 minutes"
+      "Duration must be between 10 and 45 minutes"
     );
   });
 
@@ -39,7 +39,7 @@ describe("Selection Counting Edge Cases", () => {
   });
 
   it("should handle valid equipment selections", () => {
-    const equipment = ["dumbbells", "bench"];
+    const equipment = ["bodyweight"];
     const result = SelectionCounter.getFieldSelectionState(
       "customization_equipment",
       equipment

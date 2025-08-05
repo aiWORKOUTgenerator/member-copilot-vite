@@ -3,7 +3,7 @@
 import { AuthRequired, PageLoading } from "@/ui";
 import { useAuth } from "@clerk/clerk-react";
 import { useEffect } from "react";
-import { Route, Routes, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import DashboardHomePage from "./DashboardHomePage";
 
 export default function DashboardLayout() {
@@ -28,9 +28,5 @@ export default function DashboardLayout() {
   }
 
   // User is authenticated, show dashboard
-  return (
-    <Routes>
-      <Route path="/" element={<DashboardHomePage />} />
-    </Routes>
-  );
+  return <DashboardHomePage />;
 }

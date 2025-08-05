@@ -446,7 +446,7 @@ export default function GenerateWorkoutPage() {
             <div className="card-actions justify-end">
               {/* Simple progress indicator for quick mode */}
               {activeTab === "quick" && (
-                <div className="flex items-center gap-3 text-sm text-base-content/60 mr-auto">
+                <div className="flex items-center gap-3 text-sm mr-auto">
                   <div className="flex items-center gap-2">
                     <div
                       className={`w-2 h-2 rounded-full transition-colors duration-200 ${
@@ -455,7 +455,13 @@ export default function GenerateWorkoutPage() {
                           : "bg-base-content/40"
                       }`}
                     ></div>
-                    <span className="transition-opacity duration-200">
+                    <span
+                      className={`transition-opacity duration-200 ${
+                        errorSummary.canProceed
+                          ? "text-success"
+                          : "text-base-content/60"
+                      }`}
+                    >
                       {errorSummary.canProceed
                         ? "Ready to proceed"
                         : "Complete current step"}

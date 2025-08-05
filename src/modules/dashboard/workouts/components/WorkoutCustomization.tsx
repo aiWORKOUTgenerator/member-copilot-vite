@@ -1,9 +1,10 @@
 import { Target, Battery, Clock, Dumbbell } from "lucide-react";
 import { WorkoutCustomizationProps } from "./types";
 import { CUSTOMIZATION_CONFIG } from "./customizations";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { StepIndicator, DetailedSelector } from "@/ui/shared/molecules";
 import { LevelDots } from "@/ui/shared/atoms";
+import { ValidationMessage } from "@/ui/shared/atoms/ValidationMessage";
 
 import {
   QUICK_WORKOUT_FOCUS_OPTIONS,
@@ -88,6 +89,84 @@ export default function WorkoutCustomization({
   // Use external step state if provided, otherwise use internal state
   const currentStep = activeQuickStep || internalActiveQuickStep;
   const setCurrentStep = onQuickStepChange || setInternalActiveQuickStep;
+
+  // Auto-scroll to top when step changes
+  useEffect(() => {
+    // Scroll to top of the component when step changes
+    const element = document.querySelector(".workout-customization-container");
+    if (element && typeof element.scrollIntoView === "function") {
+      element.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  }, [currentStep]);
+
+  // Basic validation logic for individual fields
+  const getFieldValidationError = (
+    fieldKey: keyof WorkoutCustomizationProps["options"]
+  ) => {
+    if (fieldKey === "customization_goal") {
+      const hasFocus = !!options.customization_goal;
+      const hasEnergy = !!options.customization_energy;
+
+      // Show error on focus field if energy is selected but focus is not
+      if (hasEnergy && !hasFocus) {
+        return "Complete this section";
+      }
+    } else if (fieldKey === "customization_energy") {
+      const hasFocus = !!options.customization_goal;
+      const hasEnergy = !!options.customization_energy;
+
+      // Show error on energy field if focus is selected but energy is not
+      if (hasFocus && !hasEnergy) {
+        return "Complete this section";
+      }
+    } else if (fieldKey === "customization_duration") {
+      const hasDuration = !!options.customization_duration;
+      const hasEquipment = !!(
+        options.customization_equipment &&
+        Array.isArray(options.customization_equipment) &&
+        options.customization_equipment.length > 0
+      );
+
+      // Show error on duration field if equipment is selected but duration is not
+      if (hasEquipment && !hasDuration) {
+        return "Complete this section";
+      }
+    } else if (fieldKey === "customization_equipment") {
+      const hasDuration = !!options.customization_duration;
+      const hasEquipment = !!(
+        options.customization_equipment &&
+        Array.isArray(options.customization_equipment) &&
+        options.customization_equipment.length > 0
+      );
+
+      // Show error on equipment field if duration is selected but equipment is not
+      if (hasDuration && !hasEquipment) {
+        return "Complete this section";
+      }
+    }
+    return undefined;
+  };
+
+  // Check if step has any validation errors for step indicator
+  const getStepValidationError = (
+    step: "focus-energy" | "duration-equipment"
+  ) => {
+    if (step === "focus-energy") {
+      return (
+        getFieldValidationError("customization_goal") ||
+        getFieldValidationError("customization_energy")
+      );
+    } else if (step === "duration-equipment") {
+      return (
+        getFieldValidationError("customization_duration") ||
+        getFieldValidationError("customization_equipment")
+      );
+    }
+    return undefined;
+  };
 
   // Simple step click handler without validation
   const handleStepClick = (stepId: string) => {
@@ -227,7 +306,7 @@ export default function WorkoutCustomization({
   // For quick mode, show step indicator with 2 segments
   if (mode === "quick") {
     return (
-      <div className="mb-6">
+      <div className="mb-6 workout-customization-container">
         <h3 className="text-lg font-semibold mb-4 flex items-center flex-wrap gap-2">
           <Target className="w-5 h-5" />
           <span>Quick Workout Setup</span>
@@ -243,13 +322,13 @@ export default function WorkoutCustomization({
               id: "focus-energy",
               label: "Focus & Energy",
               disabled: false, // First step is always enabled
-              hasErrors: false, // No validation errors
+              hasErrors: !!getStepValidationError("focus-energy"),
             },
             {
               id: "duration-equipment",
               label: "Duration & Equipment",
               disabled: false, // Always enabled
-              hasErrors: false, // No validation errors
+              hasErrors: !!getStepValidationError("duration-equipment"),
             },
           ]}
           currentStep={currentStep}
@@ -261,7 +340,7 @@ export default function WorkoutCustomization({
 
         {/* Step content */}
         {currentStep === "focus-energy" && (
-          <div className="space-y-6">
+          <div className="space-y-8">
             <DetailedSelector
               icon={Target}
               options={FOCUS_OPTIONS_WITH_INTENSITY}
@@ -275,6 +354,14 @@ export default function WorkoutCustomization({
               colorScheme="primary"
               required={false}
             />
+
+            {/* Validation message for focus field */}
+            <div className="mb-4">
+              <ValidationMessage
+                message={getFieldValidationError("customization_goal")}
+                isValid={!getFieldValidationError("customization_goal")}
+              />
+            </div>
 
             <DetailedSelector
               icon={Battery}
@@ -291,11 +378,19 @@ export default function WorkoutCustomization({
               colorScheme="primary"
               required={false}
             />
+
+            {/* Validation message for energy field */}
+            <div className="mb-4">
+              <ValidationMessage
+                message={getFieldValidationError("customization_energy")}
+                isValid={!getFieldValidationError("customization_energy")}
+              />
+            </div>
           </div>
         )}
 
         {currentStep === "duration-equipment" && (
-          <div className="space-y-6">
+          <div className="space-y-8">
             <DetailedSelector
               icon={Clock}
               options={DURATION_OPTIONS_WITH_SUBTITLE}
@@ -323,6 +418,14 @@ export default function WorkoutCustomization({
               required={true}
             />
 
+            {/* Validation message for duration field */}
+            <div className="mb-4">
+              <ValidationMessage
+                message={getFieldValidationError("customization_duration")}
+                isValid={!getFieldValidationError("customization_duration")}
+              />
+            </div>
+
             <DetailedSelector
               icon={Dumbbell}
               options={EQUIPMENT_OPTIONS}
@@ -342,6 +445,14 @@ export default function WorkoutCustomization({
               colorScheme="primary"
               required={true}
             />
+
+            {/* Validation message for equipment field */}
+            <div className="mb-4">
+              <ValidationMessage
+                message={getFieldValidationError("customization_equipment")}
+                isValid={!getFieldValidationError("customization_equipment")}
+              />
+            </div>
           </div>
         )}
       </div>
@@ -380,12 +491,12 @@ export default function WorkoutCustomization({
       </h3>
 
       <div className="relative">
-        <div className={`space-y-4`}>
+        <div className={`space-y-6`}>
           {Object.entries(groupedConfigs).map(([category, configs]) => (
             <div key={category} className="border border-base-300 rounded-lg">
               <button
                 type="button"
-                className="w-full p-4 text-left font-medium hover:bg-base-100 transition-colors rounded-t-lg flex items-center justify-between"
+                className="w-full p-4 text-left font-semibold text-lg hover:bg-base-100 transition-colors rounded-t-lg flex items-center justify-between"
                 onClick={() => toggleCategory(category)}
               >
                 <span>{category}</span>
@@ -428,8 +539,8 @@ export default function WorkoutCustomization({
                         >
                           <div className="flex items-center justify-between mb-3">
                             <div className="flex items-center">
-                              <IconComponent className="w-4 h-4 mr-2" />
-                              <span className="font-medium text-sm">
+                              <IconComponent className="w-5 h-5 mr-2" />
+                              <span className="font-semibold text-base">
                                 {config.label}
                               </span>
                               {config.comingSoon && (

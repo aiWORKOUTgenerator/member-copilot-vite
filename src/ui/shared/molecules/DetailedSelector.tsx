@@ -93,8 +93,8 @@ export function DetailedSelector<T>({
     <div className="w-full">
       {/* Label + Icon */}
       <div className="mb-4">
-        <label className="block text-sm font-medium text-base-content mb-2 flex items-center gap-2">
-          <Icon className="w-4 h-4" />
+        <label className="block text-lg font-semibold text-base-content mb-3 flex items-center gap-2">
+          <Icon className="w-5 h-5" />
           <span>{question}</span>
           {/** Show required indicator if required or if there's an error */}
           {(required || error != null) && <span className="text-error">*</span>}

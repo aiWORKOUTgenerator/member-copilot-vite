@@ -27,14 +27,14 @@ export interface ButtonState {
   className: string;
   disabled: boolean;
   text: string;
-  state: 'disabled' | 'partial' | 'active' | 'error' | 'loading';
+  state: "disabled" | "partial" | "active" | "error" | "loading";
   visualFeedback?: VisualFeedback;
 }
 
 export interface VisualFeedback {
-  indicatorColor: 'gray' | 'blue' | 'green' | 'red' | 'orange';
+  indicatorColor: "gray" | "blue" | "green" | "red" | "orange";
   message: string;
-  icon?: 'error' | 'warning' | 'info' | 'success';
+  icon?: "error" | "warning" | "info" | "success";
   progress?: number; // 0-100 percentage
 }
 
@@ -55,7 +55,7 @@ export class SelectionCounter {
     const hasEnergy = !!options.customization_energy;
     const total = (hasFocus ? 1 : 0) + (hasEnergy ? 1 : 0);
     const required = 2;
-    
+
     return {
       total,
       required,
@@ -68,18 +68,24 @@ export class SelectionCounter {
       canProceed: total === required,
       details: {
         customization_focus: hasFocus,
-        customization_energy: hasEnergy
-      }
+        customization_energy: hasEnergy,
+      },
     };
   }
 
   // Duration & Equipment step counting (Step 1)
-  static getDurationEquipmentSelections(options: PerWorkoutOptions): StepSelections {
+  static getDurationEquipmentSelections(
+    options: PerWorkoutOptions
+  ): StepSelections {
     const hasDuration = !!options.customization_duration;
-    const hasEquipment = !!(options.customization_equipment && Array.isArray(options.customization_equipment) && options.customization_equipment.length > 0);
+    const hasEquipment = !!(
+      options.customization_equipment &&
+      Array.isArray(options.customization_equipment) &&
+      options.customization_equipment.length > 0
+    );
     const total = (hasDuration ? 1 : 0) + (hasEquipment ? 1 : 0);
     const required = 2;
-    
+
     return {
       total,
       required,
@@ -92,8 +98,8 @@ export class SelectionCounter {
       canProceed: total === required,
       details: {
         customization_duration: hasDuration,
-        customization_equipment: hasEquipment
-      }
+        customization_equipment: hasEquipment,
+      },
     };
   }
 
@@ -102,7 +108,7 @@ export class SelectionCounter {
     activeStep: "focus-energy" | "duration-equipment",
     options: PerWorkoutOptions
   ): StepSelections {
-    return activeStep === "focus-energy" 
+    return activeStep === "focus-energy"
       ? this.getFocusEnergySelections(options)
       : this.getDurationEquipmentSelections(options);
   }
@@ -115,59 +121,80 @@ export class SelectionCounter {
     return {
       focusEnergy: this.getFocusEnergySelections(options),
       durationEquipment: this.getDurationEquipmentSelections(options),
-      currentStep: this.getCurrentStepSelections(activeStep, options)
+      currentStep: this.getCurrentStepSelections(activeStep, options),
     };
   }
 
   // Get individual field selection state
-  static getFieldSelectionState(fieldKey: keyof PerWorkoutOptions, value: unknown): {
+  static getFieldSelectionState(
+    fieldKey: keyof PerWorkoutOptions,
+    value: unknown
+  ): {
     hasValue: boolean;
     isValid: boolean;
     errorMessage?: string;
   } {
     switch (fieldKey) {
-      case 'customization_focus':
+      case "customization_focus":
         return {
-          hasValue: !!value && typeof value === 'string' && value.trim().length > 0,
-          isValid: !!value && typeof value === 'string' && value.trim().length > 0
+          hasValue:
+            !!value && typeof value === "string" && value.trim().length > 0,
+          isValid:
+            !!value && typeof value === "string" && value.trim().length > 0,
         };
-      
-      case 'customization_energy': {
+
+      case "customization_energy": {
         const energy = Number(value);
-        const energyHasValue = value !== undefined && value !== null && !isNaN(energy) && energy >= 1;
+        const energyHasValue =
+          value !== undefined &&
+          value !== null &&
+          !isNaN(energy) &&
+          energy >= 1;
         const energyIsValid = energyHasValue && energy <= 6;
         return {
           hasValue: energyHasValue,
           isValid: energyIsValid,
-          errorMessage: (value !== undefined && value !== null && !isNaN(energy) && (energy < 1 || energy > 6))
-            ? VALIDATION_MESSAGES.ENERGY_RANGE
-            : undefined
+          errorMessage:
+            value !== undefined &&
+            value !== null &&
+            !isNaN(energy) &&
+            (energy < 1 || energy > 6)
+              ? VALIDATION_MESSAGES.ENERGY_RANGE
+              : undefined,
         };
       }
-      
-      case 'customization_duration': {
+
+      case "customization_duration": {
         const duration = Number(value);
-        const durationHasValue = value !== undefined && value !== null && !isNaN(duration);
-        const durationIsValid = durationHasValue && duration >= 5 && duration <= 45;
+        const durationHasValue =
+          value !== undefined && value !== null && !isNaN(duration);
+        const durationIsValid =
+          durationHasValue && duration >= 5 && duration <= 45;
         return {
           hasValue: durationHasValue,
           isValid: durationIsValid,
-          errorMessage: durationHasValue && !durationIsValid
-            ? VALIDATION_MESSAGES.DURATION_RANGE
-            : undefined
+          errorMessage:
+            durationHasValue && !durationIsValid
+              ? VALIDATION_MESSAGES.DURATION_RANGE
+              : undefined,
         };
       }
-      
-      case 'customization_equipment':
+
+      case "customization_equipment":
         return {
           hasValue: Array.isArray(value) && value.length > 0,
-          isValid: Array.isArray(value) && value.length > 0 && value.every(item => ['bodyweight', 'available_equipment', 'full_gym'].includes(item))
+          isValid:
+            Array.isArray(value) &&
+            value.length > 0 &&
+            value.every((item) =>
+              ["bodyweight", "available_equipment", "full_gym"].includes(item)
+            ),
         };
-      
+
       default:
         return {
           hasValue: !!value,
-          isValid: !!value
+          isValid: !!value,
         };
     }
   }
@@ -187,68 +214,71 @@ export class ButtonStateLogic {
         className: "btn btn-primary loading",
         disabled: true,
         text: "Generating...",
-        state: 'loading'
+        state: "loading",
       };
     }
 
-    const currentStepSelections = SelectionCounter.getCurrentStepSelections(activeStep, options);
+    const currentStepSelections = SelectionCounter.getCurrentStepSelections(
+      activeStep,
+      options
+    );
     const hasValidationErrors = Object.keys(errors).length > 0;
-    
+
     // Validation errors take absolute precedence
     if (hasValidationErrors) {
       return {
         className: "btn btn-disabled",
         disabled: true,
         text: "Fix validation errors",
-        state: 'error',
+        state: "error",
         visualFeedback: {
-          indicatorColor: 'red',
-          message: `${Object.keys(errors).length} validation error${Object.keys(errors).length > 1 ? 's' : ''} found`,
-          icon: 'error'
-        }
+          indicatorColor: "red",
+          message: `${Object.keys(errors).length} validation error${Object.keys(errors).length > 1 ? "s" : ""} found`,
+          icon: "error",
+        },
       };
     }
-    
+
     // Selection-based states
     if (currentStepSelections.isEmpty) {
       return {
         className: "btn btn-disabled",
         disabled: true,
         text: "Complete current step",
-        state: 'disabled',
+        state: "disabled",
         visualFeedback: {
-          indicatorColor: 'gray',
+          indicatorColor: "gray",
           message: "Complete current step to continue",
-          progress: 0
-        }
+          progress: 0,
+        },
       };
     }
-    
+
     if (currentStepSelections.isPartial) {
       return {
         className: "btn btn-outline btn-primary",
         disabled: false,
         text: "Continue",
-        state: 'partial',
+        state: "partial",
         visualFeedback: {
-          indicatorColor: 'blue',
+          indicatorColor: "blue",
           message: `${currentStepSelections.total} of ${currentStepSelections.required} selections made`,
-          progress: currentStepSelections.percentage
-        }
+          progress: currentStepSelections.percentage,
+        },
       };
     }
-    
+
     // All selections complete
     return {
       className: "btn btn-primary",
       disabled: false,
       text: activeStep === "focus-energy" ? "Next" : "Generate Quick Workout",
-      state: 'active',
+      state: "active",
       visualFeedback: {
-        indicatorColor: 'green',
+        indicatorColor: "green",
         message: "Ready to proceed",
-        progress: 100
-      }
+        progress: 100,
+      },
     };
   }
 
@@ -258,7 +288,10 @@ export class ButtonStateLogic {
     options: PerWorkoutOptions,
     errors: Partial<Record<keyof PerWorkoutOptions, string>>
   ): ProgressIndicator {
-    const currentStepSelections = SelectionCounter.getCurrentStepSelections(activeStep, options);
+    const currentStepSelections = SelectionCounter.getCurrentStepSelections(
+      activeStep,
+      options
+    );
     const hasErrors = Object.keys(errors).length > 0;
 
     if (hasErrors) {
@@ -266,9 +299,9 @@ export class ButtonStateLogic {
         isEmpty: false,
         isComplete: false,
         isPartial: false,
-        text: `${Object.keys(errors).length} validation error${Object.keys(errors).length > 1 ? 's' : ''} found`,
+        text: `${Object.keys(errors).length} validation error${Object.keys(errors).length > 1 ? "s" : ""} found`,
         percentage: 0,
-        color: 'red'
+        color: "red",
       };
     }
 
@@ -279,7 +312,7 @@ export class ButtonStateLogic {
         isPartial: false,
         text: "Complete current step to continue",
         percentage: 0,
-        color: 'gray'
+        color: "gray",
       };
     }
 
@@ -290,7 +323,7 @@ export class ButtonStateLogic {
         isPartial: true,
         text: `${currentStepSelections.total} of ${currentStepSelections.required} selections made`,
         percentage: currentStepSelections.percentage,
-        color: 'blue'
+        color: "blue",
       };
     }
 
@@ -300,7 +333,7 @@ export class ButtonStateLogic {
       isPartial: false,
       text: "Ready to proceed",
       percentage: 100,
-      color: 'green'
+      color: "green",
     };
   }
 }
@@ -312,28 +345,40 @@ export function useStepSelections(
   errors: Partial<Record<keyof PerWorkoutOptions, string>>,
   isGenerating: boolean = false
 ) {
-  const selectionState = SelectionCounter.getSelectionState(activeStep, options);
-  const buttonState = ButtonStateLogic.getHybridButtonState(activeStep, options, errors, isGenerating);
-  const progressIndicator = ButtonStateLogic.getProgressIndicator(activeStep, options, errors);
+  const selectionState = SelectionCounter.getSelectionState(
+    activeStep,
+    options
+  );
+  const buttonState = ButtonStateLogic.getHybridButtonState(
+    activeStep,
+    options,
+    errors,
+    isGenerating
+  );
+  const progressIndicator = ButtonStateLogic.getProgressIndicator(
+    activeStep,
+    options,
+    errors
+  );
 
   // Get field states for enhanced feedback - include all possible fields
   const allFields: (keyof PerWorkoutOptions)[] = [
-    'customization_focus',
-    'customization_energy', 
-    'customization_duration',
-    'customization_equipment',
-    'customization_areas',
-    'customization_soreness',
-    'customization_stress',
-    'customization_sleep',
-    'customization_include',
-    'customization_exclude'
+    "customization_focus",
+    "customization_energy",
+    "customization_duration",
+    "customization_equipment",
+    "customization_areas",
+    "customization_soreness",
+    "customization_stress",
+    "customization_sleep",
+    "customization_include",
+    "customization_exclude",
   ];
-  
+
   const fieldStates = Object.fromEntries(
-    allFields.map(fieldKey => [
+    allFields.map((fieldKey) => [
       fieldKey,
-      SelectionCounter.getFieldSelectionState(fieldKey, options[fieldKey])
+      SelectionCounter.getFieldSelectionState(fieldKey, options[fieldKey]),
     ])
   );
 
@@ -345,10 +390,13 @@ export function useStepSelections(
     // Helper methods
     getCurrentStepSelections: () => selectionState.currentStep,
     getStepProgress: (stepId: string) => {
-      if (stepId === "focus-energy") return selectionState.focusEnergy.percentage;
-      if (stepId === "duration-equipment") return selectionState.durationEquipment.percentage;
+      if (stepId === "focus-energy")
+        return selectionState.focusEnergy.percentage;
+      if (stepId === "duration-equipment")
+        return selectionState.durationEquipment.percentage;
       return 0;
     },
-    canProceed: () => selectionState.currentStep.canProceed && Object.keys(errors).length === 0
+    canProceed: () =>
+      selectionState.currentStep.canProceed && Object.keys(errors).length === 0,
   };
-} 
+}

@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom";
 
 // Mock IntersectionObserver if needed
-Object.defineProperty(window, 'IntersectionObserver', {
+Object.defineProperty(window, "IntersectionObserver", {
   writable: true,
   configurable: true,
   value: class IntersectionObserver {
@@ -9,11 +9,11 @@ Object.defineProperty(window, 'IntersectionObserver', {
     disconnect() {}
     observe() {}
     unobserve() {}
-  }
+  },
 });
 
 // Mock ResizeObserver if needed
-Object.defineProperty(window, 'ResizeObserver', {
+Object.defineProperty(window, "ResizeObserver", {
   writable: true,
   configurable: true,
   value: class ResizeObserver {
@@ -21,5 +21,5 @@ Object.defineProperty(window, 'ResizeObserver', {
     disconnect() {}
     observe() {}
     unobserve() {}
-  }
-}); 
+  },
+});

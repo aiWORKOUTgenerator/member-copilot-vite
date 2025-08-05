@@ -7,59 +7,91 @@ describe("SelectionCounter", () => {
   describe("getFieldSelectionState", () => {
     describe("Energy Level Validation", () => {
       it("validates energy level within range", () => {
-        const validState = SelectionCounter.getFieldSelectionState("customization_energy", 4);
+        const validState = SelectionCounter.getFieldSelectionState(
+          "customization_energy",
+          4
+        );
         expect(validState.isValid).toBe(true);
         expect(validState.hasValue).toBe(true);
         expect(validState.errorMessage).toBeUndefined();
       });
 
       it("detects energy level below minimum", () => {
-        const invalidState = SelectionCounter.getFieldSelectionState("customization_energy", 0);
+        const invalidState = SelectionCounter.getFieldSelectionState(
+          "customization_energy",
+          0
+        );
         expect(invalidState.isValid).toBe(false);
         expect(invalidState.hasValue).toBe(false);
-        expect(invalidState.errorMessage).toBe(VALIDATION_MESSAGES.ENERGY_RANGE);
+        expect(invalidState.errorMessage).toBe(
+          VALIDATION_MESSAGES.ENERGY_RANGE
+        );
       });
 
       it("detects energy level above maximum", () => {
-        const invalidState = SelectionCounter.getFieldSelectionState("customization_energy", 7);
+        const invalidState = SelectionCounter.getFieldSelectionState(
+          "customization_energy",
+          7
+        );
         expect(invalidState.isValid).toBe(false);
         expect(invalidState.hasValue).toBe(true);
-        expect(invalidState.errorMessage).toBe(VALIDATION_MESSAGES.ENERGY_RANGE);
+        expect(invalidState.errorMessage).toBe(
+          VALIDATION_MESSAGES.ENERGY_RANGE
+        );
       });
     });
 
     describe("Duration Validation", () => {
       it("validates duration within range", () => {
-        const validState = SelectionCounter.getFieldSelectionState("customization_duration", 30);
+        const validState = SelectionCounter.getFieldSelectionState(
+          "customization_duration",
+          30
+        );
         expect(validState.isValid).toBe(true);
         expect(validState.hasValue).toBe(true);
         expect(validState.errorMessage).toBeUndefined();
       });
 
       it("detects duration below minimum", () => {
-        const invalidState = SelectionCounter.getFieldSelectionState("customization_duration", 3);
+        const invalidState = SelectionCounter.getFieldSelectionState(
+          "customization_duration",
+          3
+        );
         expect(invalidState.isValid).toBe(false);
         expect(invalidState.hasValue).toBe(true);
-        expect(invalidState.errorMessage).toBe(VALIDATION_MESSAGES.DURATION_RANGE);
+        expect(invalidState.errorMessage).toBe(
+          VALIDATION_MESSAGES.DURATION_RANGE
+        );
       });
 
       it("detects duration above maximum", () => {
-        const invalidState = SelectionCounter.getFieldSelectionState("customization_duration", 50);
+        const invalidState = SelectionCounter.getFieldSelectionState(
+          "customization_duration",
+          50
+        );
         expect(invalidState.isValid).toBe(false);
         expect(invalidState.hasValue).toBe(true);
-        expect(invalidState.errorMessage).toBe(VALIDATION_MESSAGES.DURATION_RANGE);
+        expect(invalidState.errorMessage).toBe(
+          VALIDATION_MESSAGES.DURATION_RANGE
+        );
       });
     });
 
     describe("Equipment Validation", () => {
       it("validates valid equipment selection", () => {
-        const validState = SelectionCounter.getFieldSelectionState("customization_equipment", "bodyweight");
+        const validState = SelectionCounter.getFieldSelectionState(
+          "customization_equipment",
+          ["bodyweight"]
+        );
         expect(validState.isValid).toBe(true);
         expect(validState.hasValue).toBe(true);
       });
 
       it("detects invalid equipment selection", () => {
-        const invalidState = SelectionCounter.getFieldSelectionState("customization_equipment", "invalid_equipment");
+        const invalidState = SelectionCounter.getFieldSelectionState(
+          "customization_equipment",
+          ["invalid_equipment"]
+        );
         expect(invalidState.isValid).toBe(false);
         expect(invalidState.hasValue).toBe(true);
       });
