@@ -1,8 +1,8 @@
-import "@testing-library/jest-dom";
-import { vi, beforeAll, afterAll } from "vitest";
+import '@testing-library/jest-dom';
+import { vi, beforeAll, afterAll } from 'vitest';
 
 // Mock window.matchMedia
-Object.defineProperty(window, "matchMedia", {
+Object.defineProperty(window, 'matchMedia', {
   writable: true,
   value: vi.fn().mockImplementation((query) => ({
     matches: false,
@@ -40,8 +40,8 @@ const originalWarn = console.warn;
 beforeAll(() => {
   console.error = (...args: unknown[]) => {
     if (
-      typeof args[0] === "string" &&
-      args[0].includes("Warning: ReactDOM.render is no longer supported")
+      typeof args[0] === 'string' &&
+      args[0].includes('Warning: ReactDOM.render is no longer supported')
     ) {
       return;
     }
@@ -50,9 +50,9 @@ beforeAll(() => {
 
   console.warn = (...args: unknown[]) => {
     if (
-      typeof args[0] === "string" &&
-      (args[0].includes("Warning: componentWillReceiveProps") ||
-        args[0].includes("Warning: componentWillUpdate"))
+      typeof args[0] === 'string' &&
+      (args[0].includes('Warning: componentWillReceiveProps') ||
+        args[0].includes('Warning: componentWillUpdate'))
     ) {
       return;
     }

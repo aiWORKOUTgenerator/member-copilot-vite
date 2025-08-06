@@ -1,10 +1,10 @@
-import { vi } from "vitest";
+import { vi } from 'vitest';
 
 // Auto-mock all hooks
 export const useAuth = vi.fn(() => ({
   isSignedIn: true,
   isLoaded: true,
-  user: { id: "user-123", email: "test@example.com" },
+  user: { id: 'user-123', email: 'test@example.com' },
 }));
 
 export const useAnalytics = vi.fn(() => ({

@@ -24,7 +24,7 @@ export default tseslint.config({
   languageOptions: {
     // other options...
     parserOptions: {
-      project: ["./tsconfig.node.json", "./tsconfig.app.json"],
+      project: ['./tsconfig.node.json', './tsconfig.app.json'],
       tsconfigRootDir: import.meta.dirname,
     },
   },
@@ -41,13 +41,13 @@ import reactDom from 'eslint-plugin-react-dom';
 export default tseslint.config({
   plugins: {
     // Add the react-x and react-dom plugins
-    "react-x": reactX,
-    "react-dom": reactDom,
+    'react-x': reactX,
+    'react-dom': reactDom,
   },
   rules: {
     // other rules...
     // Enable its recommended typescript rules
-    ...reactX.configs["recommended-typescript"].rules,
+    ...reactX.configs['recommended-typescript'].rules,
     ...reactDom.configs.recommended.rules,
   },
 });

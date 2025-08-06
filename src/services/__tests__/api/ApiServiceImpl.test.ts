@@ -13,7 +13,11 @@ describe('ApiServiceImpl', () => {
     mockTokenProvider = {
       getToken: vi.fn().mockResolvedValue('mock-token'),
     };
-    apiService = new ApiServiceImpl('http://localhost:3000', undefined, mockTokenProvider);
+    apiService = new ApiServiceImpl(
+      'http://localhost:3000',
+      undefined,
+      mockTokenProvider
+    );
   });
 
   describe('get', () => {
@@ -42,13 +46,16 @@ describe('ApiServiceImpl', () => {
 
       const result = await apiService.get('/test-endpoint');
 
-      expect(fetch).toHaveBeenCalledWith('http://localhost:3000/test-endpoint', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer mock-token',
-        },
-      });
+      expect(fetch).toHaveBeenCalledWith(
+        'http://localhost:3000/test-endpoint',
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer mock-token',
+          },
+        }
+      );
       expect(result).toEqual(mockResponse);
     });
 
@@ -75,7 +82,9 @@ describe('ApiServiceImpl', () => {
 
       vi.mocked(fetch).mockResolvedValueOnce(mockFetchResponse);
 
-      await expect(apiService.get('/not-found')).rejects.toThrow('API error: 404 Not Found');
+      await expect(apiService.get('/not-found')).rejects.toThrow(
+        'API error: 404 Not Found'
+      );
     });
   });
 
@@ -106,14 +115,17 @@ describe('ApiServiceImpl', () => {
 
       const result = await apiService.post('/test-endpoint', mockData);
 
-      expect(fetch).toHaveBeenCalledWith('http://localhost:3000/test-endpoint', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer mock-token',
-        },
-        body: JSON.stringify(mockData),
-      });
+      expect(fetch).toHaveBeenCalledWith(
+        'http://localhost:3000/test-endpoint',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer mock-token',
+          },
+          body: JSON.stringify(mockData),
+        }
+      );
       expect(result).toEqual(mockResponse);
     });
   });
@@ -145,14 +157,17 @@ describe('ApiServiceImpl', () => {
 
       const result = await apiService.put('/test-endpoint', mockData);
 
-      expect(fetch).toHaveBeenCalledWith('http://localhost:3000/test-endpoint', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer mock-token',
-        },
-        body: JSON.stringify(mockData),
-      });
+      expect(fetch).toHaveBeenCalledWith(
+        'http://localhost:3000/test-endpoint',
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer mock-token',
+          },
+          body: JSON.stringify(mockData),
+        }
+      );
       expect(result).toEqual(mockResponse);
     });
   });
@@ -183,13 +198,16 @@ describe('ApiServiceImpl', () => {
 
       const result = await apiService.delete('/test-endpoint');
 
-      expect(fetch).toHaveBeenCalledWith('http://localhost:3000/test-endpoint', {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer mock-token',
-        },
-      });
+      expect(fetch).toHaveBeenCalledWith(
+        'http://localhost:3000/test-endpoint',
+        {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer mock-token',
+          },
+        }
+      );
       expect(result).toEqual(mockResponse);
     });
   });

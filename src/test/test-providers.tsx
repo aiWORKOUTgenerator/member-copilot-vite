@@ -1,8 +1,8 @@
-import React from "react";
-import { BrowserRouter } from "react-router";
-import { ClerkProvider } from "@clerk/clerk-react";
-import { CombinedProviders } from "../contexts/CombinedProviders";
-import { ContactProvider } from "../contexts/ContactContext";
+import React from 'react';
+import { BrowserRouter } from 'react-router';
+import { ClerkProvider } from '@clerk/clerk-react';
+import { CombinedProviders } from '../contexts/CombinedProviders';
+import { ContactProvider } from '../contexts/ContactContext';
 
 // Custom provider component that includes all necessary providers
 export const AllTheProviders = ({
