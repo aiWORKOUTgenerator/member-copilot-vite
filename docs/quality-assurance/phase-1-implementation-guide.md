@@ -137,19 +137,17 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { useTrainerPersona } from '@/hooks/useTrainerPersona';
 
-// Mock the context
-vi.mock('@/contexts/trainer-persona.types', () => ({
-  TrainerPersonaContext: {
-    Consumer: ({ children }: { children: any }) => children({
-      trainerPersona: null,
-      isLoading: false,
-      error: null,
-      isLoaded: true,
-      hasNoPersona: false,
-      refetch: vi.fn(),
-      generateTrainerPersona: vi.fn(),
-    }),
-  },
+// Mock the hook
+vi.mock('@/hooks/useTrainerPersona', () => ({
+  useTrainerPersona: () => ({
+    trainerPersona: null,
+    isLoading: false,
+    error: null,
+    isLoaded: true,
+    hasNoPersona: false,
+    refetch: vi.fn(),
+    generateTrainerPersona: vi.fn(),
+  }),
 }));
 
 describe('useTrainerPersona', () => {
