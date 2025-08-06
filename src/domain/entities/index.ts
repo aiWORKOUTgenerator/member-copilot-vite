@@ -7,9 +7,9 @@
  * Examples: User, Product, Order
  */
 
-export * from "./contact";
-export * from "./attribute";
-export * from "./prompt";
-export * from "./license";
-export * from "./trainerPersona";
-export * from "./workoutFeedback";
+export * from './contact';
+export * from './attribute';
+export * from './prompt';
+export * from './license';
+export * from './trainerPersona';
+export * from './workoutFeedback';

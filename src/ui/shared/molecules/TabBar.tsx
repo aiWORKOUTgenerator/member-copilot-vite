@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import React from "react";
+import React from 'react';
 
 export type TabOption = {
   id: string;
@@ -20,7 +20,7 @@ export default function TabBar({
   selectedTab,
   onTabChange,
   tabs,
-  className = "",
+  className = '',
 }: TabBarProps) {
   return (
     <div role="tablist" className={`tabs tabs-box mb-4 ${className}`}>
@@ -28,8 +28,8 @@ export default function TabBar({
         <a
           key={tab.id}
           role="tab"
-          className={`tab ${selectedTab === tab.id ? "tab-active" : ""} ${
-            tab.disabled ? "tab-disabled" : ""
+          className={`tab ${selectedTab === tab.id ? 'tab-active' : ''} ${
+            tab.disabled ? 'tab-disabled' : ''
           }`}
           onClick={() => !tab.disabled && onTabChange(tab.id)}
         >

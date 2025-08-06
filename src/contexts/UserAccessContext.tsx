@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { License, LicensePolicy } from "@/domain";
-import { MeteredFeature } from "@/domain/entities/meteredFeatures";
-import { MeteredUsage } from "@/domain/entities/MeteredUsage";
-import { useAuth } from "@/hooks/auth";
-import { useLicenseService } from "@/hooks/useLicenseService";
-import { useMeteredUsageService } from "@/hooks/useMeteredUsageService";
-import React, { useState, useEffect, ReactNode, useCallback } from "react";
-import { UserAccessContext, UserAccessContextType } from "./user-access.types";
+import { License, LicensePolicy } from '@/domain';
+import { MeteredFeature } from '@/domain/entities/meteredFeatures';
+import { MeteredUsage } from '@/domain/entities/MeteredUsage';
+import { useAuth } from '@/hooks/auth';
+import { useLicenseService } from '@/hooks/useLicenseService';
+import { useMeteredUsageService } from '@/hooks/useMeteredUsageService';
+import React, { useState, useEffect, ReactNode, useCallback } from 'react';
+import { UserAccessContext, UserAccessContextType } from './user-access.types';
 
 interface UserAccessProviderProps {
   children: ReactNode;
@@ -49,7 +49,7 @@ export const UserAccessProvider: React.FC<UserAccessProviderProps> = ({
       setMeteredUsage(usage);
       setIsLoaded(true);
     } catch (error) {
-      console.error("Error loading user access data:", error);
+      console.error('Error loading user access data:', error);
       setActiveLicenses([]);
       setLicensePolicies([]);
       setMeteredUsage([]);

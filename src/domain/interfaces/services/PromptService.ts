@@ -1,4 +1,4 @@
-import { Prompt } from "@/domain/entities";
+import { Prompt } from '@/domain/entities';
 
 /**
  * Interface for PromptService

@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { FolderPlus } from "lucide-react";
-import React from "react";
+import { FolderPlus } from 'lucide-react';
+import React from 'react';
 
 interface EmptyStateBasicProps {
   icon?: React.ReactNode;
@@ -23,7 +23,7 @@ export default function EmptyStateBasic({
   actionLabel,
   onAction,
   actionIcon,
-  className = "",
+  className = '',
 }: EmptyStateBasicProps) {
   const defaultIcon = (
     <FolderPlus

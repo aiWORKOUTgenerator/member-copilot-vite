@@ -1,15 +1,15 @@
-import { Prompt, PromptProps } from "@/domain";
-import { ApiService } from "@/domain/interfaces/api/ApiService";
-import { PromptService } from "@/domain/interfaces/services/PromptService";
+import { Prompt, PromptProps } from '@/domain';
+import { ApiService } from '@/domain/interfaces/api/ApiService';
+import { PromptService } from '@/domain/interfaces/services/PromptService';
 
 /**
  * PromptService implements domain logic for managing prompts
  * Follows Single Responsibility Principle by focusing only on prompt-related operations
  */
 export class PromptServiceImpl implements PromptService {
-  readonly serviceName = "PromptService";
+  readonly serviceName = 'PromptService';
   private readonly apiService: ApiService;
-  private readonly baseEndpoint = "/members";
+  private readonly baseEndpoint = '/members';
 
   /**
    * Creates a new instance of PromptServiceImpl
@@ -33,8 +33,8 @@ export class PromptServiceImpl implements PromptService {
       // Map the API response to domain entities
       return promptsData.map((data) => new Prompt(data));
     } catch (error) {
-      console.error("Error in getAllPrompts:", error);
-      throw new Error("Failed to fetch prompts");
+      console.error('Error in getAllPrompts:', error);
+      throw new Error('Failed to fetch prompts');
     }
   }
 
@@ -72,8 +72,8 @@ export class PromptServiceImpl implements PromptService {
         { promptValues: Array<{ prompt_id: string; value: string | number }> }
       >(`${this.baseEndpoint}/submit-prompts/`, { promptValues });
     } catch (error) {
-      console.error("Error in submitPromptValues:", error);
-      throw new Error("Failed to submit prompt values");
+      console.error('Error in submitPromptValues:', error);
+      throw new Error('Failed to submit prompt values');
     }
   }
 }

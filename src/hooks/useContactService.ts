@@ -1,5 +1,5 @@
-import { useMemo } from "react";
-import { useMemberService } from "./useMemberService";
+import { useMemo } from 'react';
+import { useMemberService } from './useMemberService';
 
 /**
  * Hook to get the contact-related functionality from the MemberService

@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { ApiServiceImpl } from "@/services/api/ApiServiceImpl";
-import { MockApiService } from "@/services/api/MockApiService";
-import { MemberServiceImpl } from "@/services/member/MemberServiceImpl";
-import { MockMemberService } from "@/services/member/MockMemberService";
-import { PusherServiceImpl } from "@/services/pusher/PusherServiceImpl";
-import { ReactNode } from "react";
-import { ServiceContext, ServiceContainer } from "./service.types";
+import { ApiServiceImpl } from '@/services/api/ApiServiceImpl';
+import { MockApiService } from '@/services/api/MockApiService';
+import { MemberServiceImpl } from '@/services/member/MemberServiceImpl';
+import { MockMemberService } from '@/services/member/MockMemberService';
+import { PusherServiceImpl } from '@/services/pusher/PusherServiceImpl';
+import { ReactNode } from 'react';
+import { ServiceContext, ServiceContainer } from './service.types';
 
 /**
  * Determine if we should use mocks based on environment or query params

@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { ReactNode } from "react";
-import { AttributeProvider } from "./AttributeContext";
-import { AttributeTypeProvider } from "./AttributeTypeContext";
-import { GeneratedWorkoutProvider } from "./GeneratedWorkoutContext";
-import { PromptProvider } from "./PromptContext";
-import { SubscriptionProvider } from "./SubscriptionContext";
-import { WorkoutFeedbackProvider } from "./WorkoutFeedbackContext";
-import { AnnouncementProvider } from "./AnnouncementContext";
+import { ReactNode } from 'react';
+import { AttributeProvider } from './AttributeContext';
+import { AttributeTypeProvider } from './AttributeTypeContext';
+import { GeneratedWorkoutProvider } from './GeneratedWorkoutContext';
+import { PromptProvider } from './PromptContext';
+import { SubscriptionProvider } from './SubscriptionContext';
+import { WorkoutFeedbackProvider } from './WorkoutFeedbackContext';
+import { AnnouncementProvider } from './AnnouncementContext';
 
 interface CombinedProvidersProps {
   children: ReactNode;

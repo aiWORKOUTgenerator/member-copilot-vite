@@ -1,4 +1,4 @@
-import { TokenProvider } from "@/domain/interfaces/api/TokenProvider";
+import { TokenProvider } from '@/domain/interfaces/api/TokenProvider';
 
 /**
  * Mock implementation of TokenProvider for testing purposes
@@ -10,7 +10,7 @@ export class MockTokenProvider implements TokenProvider {
    * Creates a new MockTokenProvider
    * @param mockToken The token to return or null to simulate no token
    */
-  constructor(mockToken: string | null = "mock-token") {
+  constructor(mockToken: string | null = 'mock-token') {
     this.mockToken = mockToken;
   }
 
