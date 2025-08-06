@@ -1,7 +1,7 @@
-import { useMemo } from "react";
-import { useApiService } from "./useApiService";
-import { MemberService } from "../domain/interfaces/services/MemberService";
-import { MemberServiceImpl } from "../services/member/MemberServiceImpl";
+import { useMemo } from 'react';
+import { useApiService } from './useApiService';
+import { MemberService } from '../domain/interfaces/services/MemberService';
+import { MemberServiceImpl } from '../services/member/MemberServiceImpl';
 
 /**
  * Hook to get a MemberService instance with authentication configured

@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { Prompt } from "@/domain/entities";
-import { useAuth } from "@/hooks/auth";
-import { usePromptService } from "@/hooks/usePromptService";
-import { ReactNode, useCallback, useEffect, useState } from "react";
-import { PromptContext, PromptState } from "./prompt.types";
+import { Prompt } from '@/domain/entities';
+import { useAuth } from '@/hooks/auth';
+import { usePromptService } from '@/hooks/usePromptService';
+import { ReactNode, useCallback, useEffect, useState } from 'react';
+import { PromptContext, PromptState } from './prompt.types';
 
 interface PromptProviderProps {
   children: ReactNode;
@@ -31,8 +31,8 @@ export function PromptProvider({ children }: PromptProviderProps) {
       setPrompts(data);
       setIsLoaded(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to fetch prompts");
-      console.error("Error fetching prompts:", err);
+      setError(err instanceof Error ? err.message : 'Failed to fetch prompts');
+      console.error('Error fetching prompts:', err);
     } finally {
       setIsLoading(false);
     }

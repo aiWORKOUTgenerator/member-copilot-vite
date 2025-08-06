@@ -1,5 +1,5 @@
-import { useUser } from "@clerk/clerk-react";
-import { VerificationService } from "@/domain/interfaces/services/VerificationService";
+import { useUser } from '@clerk/clerk-react';
+import { VerificationService } from '@/domain/interfaces/services/VerificationService';
 
 /**
  * Implementation of the VerificationService using Clerk's authentication
@@ -8,9 +8,9 @@ export class VerificationServiceImpl implements VerificationService {
   /**
    * The Clerk user object
    */
-  private user: ReturnType<typeof useUser>["user"];
+  private user: ReturnType<typeof useUser>['user'];
 
-  constructor(user: ReturnType<typeof useUser>["user"]) {
+  constructor(user: ReturnType<typeof useUser>['user']) {
     this.user = user;
   }
 
@@ -25,7 +25,7 @@ export class VerificationServiceImpl implements VerificationService {
     }
 
     // Check if the email has a verification status and that it's complete
-    return this.user.primaryEmailAddress.verification?.status === "verified";
+    return this.user.primaryEmailAddress.verification?.status === 'verified';
   }
 
   /**

@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import React from "react";
+import React from 'react';
 
-type IconSize = "xs" | "sm" | "md" | "lg" | "xl";
+type IconSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
 interface IconProps {
   size?: IconSize;
@@ -11,16 +11,16 @@ interface IconProps {
 
 // Size mappings for the icons based on DaisyUI standards
 const sizeMap: Record<IconSize, string> = {
-  xs: "w-4 h-4",
-  sm: "w-5 h-5",
-  md: "w-6 h-6",
-  lg: "w-8 h-8",
-  xl: "w-10 h-10",
+  xs: 'w-4 h-4',
+  sm: 'w-5 h-5',
+  md: 'w-6 h-6',
+  lg: 'w-8 h-8',
+  xl: 'w-10 h-10',
 };
 
 export const ErrorIcon: React.FC<IconProps> = ({
-  size = "md",
-  className = "",
+  size = 'md',
+  className = '',
 }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -38,8 +38,8 @@ export const ErrorIcon: React.FC<IconProps> = ({
 );
 
 export const SuccessIcon: React.FC<IconProps> = ({
-  size = "md",
-  className = "",
+  size = 'md',
+  className = '',
 }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -57,8 +57,8 @@ export const SuccessIcon: React.FC<IconProps> = ({
 );
 
 export const InfoIcon: React.FC<IconProps> = ({
-  size = "md",
-  className = "",
+  size = 'md',
+  className = '',
 }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -76,8 +76,8 @@ export const InfoIcon: React.FC<IconProps> = ({
 );
 
 export const WarningIcon: React.FC<IconProps> = ({
-  size = "md",
-  className = "",
+  size = 'md',
+  className = '',
 }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"

@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import React from "react";
+import React from 'react';
 
 interface FormLoadingProps {
   message?: string;
 }
 
 export const FormLoading: React.FC<FormLoadingProps> = ({
-  message = "Loading...",
+  message = 'Loading...',
 }) => {
   return (
     <div className="flex flex-col items-center justify-center py-8">

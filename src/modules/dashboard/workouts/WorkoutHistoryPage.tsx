@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { useTrainerPersonaData } from "@/hooks/useTrainerPersona";
-import { useWorkoutInstances } from "@/hooks/useWorkoutInstances";
-import { WorkoutInstance } from "@/domain/entities/workoutInstance";
-import { useUserAccess } from "@/hooks";
-import LoadingState from "@/ui/shared/atoms/LoadingState";
-import EmptyStateBasic from "@/ui/shared/molecules/EmptyState";
+import { useTrainerPersonaData } from '@/hooks/useTrainerPersona';
+import { useWorkoutInstances } from '@/hooks/useWorkoutInstances';
+import { WorkoutInstance } from '@/domain/entities/workoutInstance';
+import { useUserAccess } from '@/hooks';
+import LoadingState from '@/ui/shared/atoms/LoadingState';
+import EmptyStateBasic from '@/ui/shared/molecules/EmptyState';
 import {
   Activity,
   Calendar,
@@ -15,20 +15,20 @@ import {
   ArrowRight,
   CheckCircle,
   Shield,
-} from "lucide-react";
-import { useMemo, useState, useEffect } from "react";
-import { useNavigate } from "react-router";
-import { TrainerPersonaDisplay } from "./components/TrainerPersonaDisplay";
-import WorkoutInstanceModal from "./components/WorkoutInstanceModal";
-import { WorkoutTimeline } from "./components/WorkoutTimeline";
+} from 'lucide-react';
+import { useMemo, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router';
+import { TrainerPersonaDisplay } from './components/TrainerPersonaDisplay';
+import WorkoutInstanceModal from './components/WorkoutInstanceModal';
+import { WorkoutTimeline } from './components/WorkoutTimeline';
 import {
   calculateStats,
   filterLastDays,
   formatDate,
   sortByDateDesc,
-} from "./utils/workoutHistoryUtils";
-import { useAnalytics } from "@/hooks/useAnalytics";
-import { useWorkoutInstanceModal } from "./components/WorkoutInstanceModal.hooks";
+} from './utils/workoutHistoryUtils';
+import { useAnalytics } from '@/hooks/useAnalytics';
+import { useWorkoutInstanceModal } from './components/WorkoutInstanceModal.hooks';
 
 /**
  * Simple workout history page showing instances from the last month
@@ -36,7 +36,7 @@ import { useWorkoutInstanceModal } from "./components/WorkoutInstanceModal.hooks
 export default function WorkoutHistoryPage() {
   const { instances, isLoading, error } = useWorkoutInstances();
   const navigate = useNavigate();
-  const [viewMode, setViewMode] = useState<"timeline" | "list">("timeline");
+  const [viewMode, setViewMode] = useState<'timeline' | 'list'>('timeline');
   const trainerPersona = useTrainerPersonaData();
   const workoutModal = useWorkoutInstanceModal();
   const {
@@ -47,7 +47,7 @@ export default function WorkoutHistoryPage() {
   const analytics = useAnalytics();
 
   // Check if user has access to workout history feature
-  const hasWorkoutHistoryAccess = canAccessFeature("workout_instance_history");
+  const hasWorkoutHistoryAccess = canAccessFeature('workout_instance_history');
 
   // Filter to last month's workouts
   const recentWorkouts = useMemo(() => {
@@ -59,14 +59,14 @@ export default function WorkoutHistoryPage() {
 
   // Track workout history page views
   useEffect(() => {
-    analytics.track("Workout History Viewed", {
+    analytics.track('Workout History Viewed', {
       totalWorkouts: instances?.length || 0,
       tracked_at: new Date().toISOString(),
     });
   }, [instances, analytics]);
 
   const handleWorkoutClick = (workout: WorkoutInstance) => {
-    analytics.track("Historical Workout Clicked", {
+    analytics.track('Historical Workout Clicked', {
       workoutInstanceId: workout.id,
       completed: workout.completed,
       tracked_at: new Date().toISOString(),
@@ -75,17 +75,17 @@ export default function WorkoutHistoryPage() {
   };
 
   const handleViewDetails = (workout: WorkoutInstance) => {
-    analytics.track("Workout Instance Details Viewed", {
+    analytics.track('Workout Instance Details Viewed', {
       workoutInstanceId: workout.id,
-      source: "history_modal",
+      source: 'history_modal',
       tracked_at: new Date().toISOString(),
     });
     workoutModal.closeModal();
     navigate(`/dashboard/workouts/instances/${workout.id}`);
   };
 
-  const handleViewModeChange = (newMode: "timeline" | "list") => {
-    analytics.track("History View Mode Changed", {
+  const handleViewModeChange = (newMode: 'timeline' | 'list') => {
+    analytics.track('History View Mode Changed', {
       viewMode: newMode,
       previousMode: viewMode,
       tracked_at: new Date().toISOString(),
@@ -137,7 +137,7 @@ export default function WorkoutHistoryPage() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
                 <button
                   className="btn btn-warning btn-lg text-lg font-bold shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 min-w-[200px]"
-                  onClick={() => navigate("/dashboard/billing")}
+                  onClick={() => navigate('/dashboard/billing')}
                 >
                   <Crown className="size-5" />
                   Upgrade Now
@@ -183,7 +183,7 @@ export default function WorkoutHistoryPage() {
           title="No recent workouts"
           description="You haven't logged any workouts in the last 30 days. Complete a workout to see your history here."
           actionLabel="View All Workouts"
-          onAction={() => (window.location.href = "/dashboard/workouts")}
+          onAction={() => (window.location.href = '/dashboard/workouts')}
           actionIcon={<Activity className="w-4 h-4 mr-2" />}
         />
       </div>
@@ -204,9 +204,9 @@ export default function WorkoutHistoryPage() {
         {/* View Toggle */}
         <div className="flex gap-1 bg-base-200 p-1 rounded-lg">
           <button
-            onClick={() => handleViewModeChange("timeline")}
+            onClick={() => handleViewModeChange('timeline')}
             className={`btn btn-sm ${
-              viewMode === "timeline" ? "btn-primary" : "btn-ghost"
+              viewMode === 'timeline' ? 'btn-primary' : 'btn-ghost'
             }`}
             title="Timeline view"
           >
@@ -214,9 +214,9 @@ export default function WorkoutHistoryPage() {
             Timeline
           </button>
           <button
-            onClick={() => handleViewModeChange("list")}
+            onClick={() => handleViewModeChange('list')}
             className={`btn btn-sm ${
-              viewMode === "list" ? "btn-primary" : "btn-ghost"
+              viewMode === 'list' ? 'btn-primary' : 'btn-ghost'
             }`}
             title="List view"
           >
@@ -254,7 +254,7 @@ export default function WorkoutHistoryPage() {
       </div>
 
       {/* Main Content */}
-      {viewMode === "timeline" ? (
+      {viewMode === 'timeline' ? (
         <WorkoutTimeline
           workouts={recentWorkouts}
           onWorkoutClick={handleWorkoutClick}
@@ -278,13 +278,13 @@ export default function WorkoutHistoryPage() {
                     </p>
                     {workout.duration && (
                       <p className="text-sm">
-                        <span className="font-semibold">Duration:</span>{" "}
+                        <span className="font-semibold">Duration:</span>{' '}
                         {workout.duration} minutes
                       </p>
                     )}
                     {workout.notes && (
                       <p className="text-sm mt-2">
-                        <span className="font-semibold">Notes:</span>{" "}
+                        <span className="font-semibold">Notes:</span>{' '}
                         {workout.notes}
                       </p>
                     )}

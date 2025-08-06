@@ -1,7 +1,7 @@
-import { Route, Routes } from "react-router";
-import SignInPage from "./pages/SignInPage";
-import MagicLinkPage from "./pages/MagicLinkPage";
-import EmailOtpPage from "./pages/EmailOtpPage";
+import { Route, Routes } from 'react-router';
+import SignInPage from './pages/SignInPage';
+import MagicLinkPage from './pages/MagicLinkPage';
+import EmailOtpPage from './pages/EmailOtpPage';
 
 export default function SignInContainer() {
   return (

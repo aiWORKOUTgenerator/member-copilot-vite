@@ -1,17 +1,17 @@
 export enum WorkoutType {
-  STRENGTH = "Strength",
-  CARDIO = "Cardio",
-  HIIT = "HIIT",
-  FLEXIBILITY = "Flexibility",
-  RECOVERY = "Recovery",
+  STRENGTH = 'Strength',
+  CARDIO = 'Cardio',
+  HIIT = 'HIIT',
+  FLEXIBILITY = 'Flexibility',
+  RECOVERY = 'Recovery',
 }
 
 export enum WorkoutStructure {
-  TRADITIONAL = "Traditional (Reps x Sets)",
-  CIRCUIT = "Circuit",
-  SUPERSET = "Superset",
-  AMRAP = "AMRAP",
-  EMOM = "EMOM",
+  TRADITIONAL = 'Traditional (Reps x Sets)',
+  CIRCUIT = 'Circuit',
+  SUPERSET = 'Superset',
+  AMRAP = 'AMRAP',
+  EMOM = 'EMOM',
 }
 
 export interface WorkoutParams {

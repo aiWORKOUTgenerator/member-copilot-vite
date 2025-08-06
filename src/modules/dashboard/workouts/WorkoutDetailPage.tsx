@@ -1,14 +1,14 @@
 import {
   useGeneratedWorkout,
   useGeneratedWorkouts,
-} from "@/hooks/useGeneratedWorkouts";
-import { PusherEvent } from "@/contexts/PusherEvent";
-import { useTrainerPersonaData } from "@/hooks/useTrainerPersona";
-import { useWorkoutFeedback } from "@/hooks/useWorkoutFeedback";
-import { Section, WorkoutStructure } from "@/domain/entities/generatedWorkout";
-import { useUserAccess } from "@/hooks";
-import FeedbackModal from "@/modules/dashboard/workouts/components/FeedbackModal";
-import TabBar, { TabOption } from "@/ui/shared/molecules/TabBar";
+} from '@/hooks/useGeneratedWorkouts';
+import { PusherEvent } from '@/contexts/PusherEvent';
+import { useTrainerPersonaData } from '@/hooks/useTrainerPersona';
+import { useWorkoutFeedback } from '@/hooks/useWorkoutFeedback';
+import { Section, WorkoutStructure } from '@/domain/entities/generatedWorkout';
+import { useUserAccess } from '@/hooks';
+import FeedbackModal from '@/modules/dashboard/workouts/components/FeedbackModal';
+import TabBar, { TabOption } from '@/ui/shared/molecules/TabBar';
 import {
   ArrowBigLeft,
   CheckCircle,
@@ -17,21 +17,21 @@ import {
   ShareIcon,
   Crown,
   Lock,
-} from "lucide-react";
-import { useEffect, useState } from "react";
-import ReactMarkdown from "react-markdown";
-import { useNavigate, useParams } from "react-router";
-import FeedbackSuccessState from "./components/FeedbackSuccessState";
-import SimpleFormatWorkoutViewer from "./components/SimpleFormatWorkoutViewer";
-import StepByStepWorkoutViewer from "./components/StepByStepWorkoutViewer";
-import StructuredWorkoutViewer from "./components/StructuredWorkoutViewer";
-import { TrainerPersonaDisplay } from "./components/TrainerPersonaDisplay";
-import VerySimpleFormatWorkoutViewer from "./components/VerySimpleFormatWorkoutViewer";
-import WebShareButton from "./components/WebShareButton";
-import WorkoutFeedbackForm from "./components/WorkoutFeedbackForm";
-import { useWorkoutInstances } from "@/hooks/useWorkoutInstances";
-import { useAnalytics } from "@/hooks/useAnalytics";
-import { useFeedbackModal } from "./components/FeedbackModal.hooks";
+} from 'lucide-react';
+import { useEffect, useState } from 'react';
+import ReactMarkdown from 'react-markdown';
+import { useNavigate, useParams } from 'react-router';
+import FeedbackSuccessState from './components/FeedbackSuccessState';
+import SimpleFormatWorkoutViewer from './components/SimpleFormatWorkoutViewer';
+import StepByStepWorkoutViewer from './components/StepByStepWorkoutViewer';
+import StructuredWorkoutViewer from './components/StructuredWorkoutViewer';
+import { TrainerPersonaDisplay } from './components/TrainerPersonaDisplay';
+import VerySimpleFormatWorkoutViewer from './components/VerySimpleFormatWorkoutViewer';
+import WebShareButton from './components/WebShareButton';
+import WorkoutFeedbackForm from './components/WorkoutFeedbackForm';
+import { useWorkoutInstances } from '@/hooks/useWorkoutInstances';
+import { useAnalytics } from '@/hooks/useAnalytics';
+import { useFeedbackModal } from './components/FeedbackModal.hooks';
 
 interface WorkoutChunkData {
   chunk: string;
@@ -55,7 +55,7 @@ export default function WorkoutDetailPage() {
   const analytics = useAnalytics();
 
   // Check if user has access to start workouts
-  const canStartWorkouts = canAccessFeature("generate_workout_instances");
+  const canStartWorkouts = canAccessFeature('generate_workout_instances');
 
   // Check if feedback already exists for this workout
   const existingFeedback = generatedWorkout
@@ -64,14 +64,14 @@ export default function WorkoutDetailPage() {
       )
     : null;
   const [workoutFormat, setWorkoutFormat] = useState<
-    "plain" | "structured" | "step-by-step" | "simple" | "very-simple"
-  >("plain");
+    'plain' | 'structured' | 'step-by-step' | 'simple' | 'very-simple'
+  >('plain');
   const [workoutChunks, setWorkoutChunks] = useState<string[]>([]);
   const [isTextGenerating, setIsTextGenerating] = useState(false);
   const [isJsonFormatting, setIsJsonFormatting] = useState(false);
 
   // Combine all chunks into a single string
-  const workoutFromChunks = workoutChunks.join("");
+  const workoutFromChunks = workoutChunks.join('');
 
   // Display text from either the generatedWorkout or accumulated chunks
   const displayText = generatedWorkout?.textFormat || workoutFromChunks;
@@ -82,8 +82,8 @@ export default function WorkoutDetailPage() {
   // Check if jsonFormat has a title attribute
   const hasValidJsonFormat =
     generatedWorkout?.jsonFormat &&
-    typeof generatedWorkout.jsonFormat === "object" &&
-    "title" in generatedWorkout.jsonFormat;
+    typeof generatedWorkout.jsonFormat === 'object' &&
+    'title' in generatedWorkout.jsonFormat;
 
   // Extract valid jsonFormat as WorkoutStructure for component props
   const validJsonFormat = hasValidJsonFormat
@@ -93,7 +93,7 @@ export default function WorkoutDetailPage() {
   // Track workout detail views
   useEffect(() => {
     if (generatedWorkout) {
-      analytics.track("Workout Detail Viewed", {
+      analytics.track('Workout Detail Viewed', {
         workoutId: generatedWorkout.id,
         tracked_at: new Date().toISOString(),
       });
@@ -122,13 +122,13 @@ export default function WorkoutDetailPage() {
       navigate(`/dashboard/workouts/instances/${newInstance.id}`);
 
       // Track workout start
-      analytics.track("Workout Started", {
+      analytics.track('Workout Started', {
         workoutId: generatedWorkout.id,
-        location: "workout_detail",
+        location: 'workout_detail',
         tracked_at: new Date().toISOString(),
       });
     } catch (error) {
-      console.error("Failed to create workout instance:", error);
+      console.error('Failed to create workout instance:', error);
       // You could add error handling here (toast notification, etc.)
     } finally {
       setIsCreatingInstance(false);
@@ -183,30 +183,30 @@ export default function WorkoutDetailPage() {
   // Define tabs for the TabBar component
   const tabs: TabOption[] = [
     {
-      id: "plain",
-      label: "Plain Text",
+      id: 'plain',
+      label: 'Plain Text',
     },
     {
-      id: "structured",
-      label: "Structured",
+      id: 'structured',
+      label: 'Structured',
       disabled: !hasValidJsonFormat,
       loading: isJsonFormatting,
     },
     {
-      id: "step-by-step",
-      label: "Step by Step",
+      id: 'step-by-step',
+      label: 'Step by Step',
       disabled: !hasValidJsonFormat,
       loading: isJsonFormatting,
     },
     {
-      id: "simple",
-      label: "Simple",
+      id: 'simple',
+      label: 'Simple',
       disabled: !generatedWorkout?.simpleFormat,
       loading: isTextGenerating,
     },
     {
-      id: "very-simple",
-      label: "Quick View",
+      id: 'very-simple',
+      label: 'Quick View',
       disabled: !generatedWorkout?.verySimpleFormat,
       loading: isTextGenerating,
     },
@@ -233,10 +233,10 @@ export default function WorkoutDetailPage() {
             >
               <Play className="w-4 h-4 mr-2" />
               <span className="hidden sm:inline">
-                {isCreatingInstance ? "Starting..." : "Start Workout"}
+                {isCreatingInstance ? 'Starting...' : 'Start Workout'}
               </span>
               <span className="sm:hidden">
-                {isCreatingInstance ? "Starting..." : "Start"}
+                {isCreatingInstance ? 'Starting...' : 'Start'}
               </span>
             </button>
           ) : (
@@ -245,7 +245,7 @@ export default function WorkoutDetailPage() {
               data-tip="Upgrade to start workouts"
             >
               <button
-                onClick={() => navigate("/dashboard/billing")}
+                onClick={() => navigate('/dashboard/billing')}
                 className="btn btn-outline btn-warning flex-1 sm:flex-initial relative"
                 disabled={!generatedWorkout}
               >
@@ -265,10 +265,10 @@ export default function WorkoutDetailPage() {
               feedbackModal.openModal();
             }}
             className={`btn ${
-              existingFeedback ? "btn-success" : "btn-outline"
+              existingFeedback ? 'btn-success' : 'btn-outline'
             } flex-1 sm:flex-initial`}
             disabled={!generatedWorkout}
-            title={existingFeedback ? "Workout Rated" : "Rate This Workout"}
+            title={existingFeedback ? 'Workout Rated' : 'Rate This Workout'}
           >
             {existingFeedback ? (
               <CheckCircle className="w-4 h-4 mr-2" />
@@ -276,17 +276,17 @@ export default function WorkoutDetailPage() {
               <MessageSquare className="w-4 h-4 mr-2" />
             )}
             <span className="hidden sm:inline">
-              {existingFeedback ? "Workout Rated" : "Rate This Workout"}
+              {existingFeedback ? 'Workout Rated' : 'Rate This Workout'}
             </span>
             <span className="sm:hidden">
-              {existingFeedback ? "Rated" : "Rate"}
+              {existingFeedback ? 'Rated' : 'Rate'}
             </span>
           </button>
           <div className="flex-1 sm:flex-initial">
             <WebShareButton
               disabled={!verySimpleFormat && !simpleFormat}
               title="Workout Plan"
-              text={verySimpleFormat || simpleFormat || ""}
+              text={verySimpleFormat || simpleFormat || ''}
             >
               <ShareIcon className="w-4 h-4 mr-2" />
               <span className="hidden sm:inline">Share Workout</span>
@@ -311,17 +311,17 @@ export default function WorkoutDetailPage() {
         onTabChange={(tabId) =>
           setWorkoutFormat(
             tabId as
-              | "plain"
-              | "structured"
-              | "step-by-step"
-              | "simple"
-              | "very-simple"
+              | 'plain'
+              | 'structured'
+              | 'step-by-step'
+              | 'simple'
+              | 'very-simple'
           )
         }
         tabs={tabs}
       />
 
-      {workoutFormat === "plain" ? (
+      {workoutFormat === 'plain' ? (
         displayText ? (
           <div className="p-4 prose-lg dark:prose-invert">
             <ReactMarkdown>{displayText}</ReactMarkdown>
@@ -332,24 +332,24 @@ export default function WorkoutDetailPage() {
             <p>Waiting for workout data...</p>
           </div>
         )
-      ) : workoutFormat === "structured" && validJsonFormat ? (
+      ) : workoutFormat === 'structured' && validJsonFormat ? (
         <div className="p-4">
           <StructuredWorkoutViewer workout={validJsonFormat} />
         </div>
-      ) : workoutFormat === "simple" && generatedWorkout?.simpleFormat ? (
+      ) : workoutFormat === 'simple' && generatedWorkout?.simpleFormat ? (
         <div className="p-4">
           <SimpleFormatWorkoutViewer
             simpleFormat={generatedWorkout.simpleFormat}
           />
         </div>
-      ) : workoutFormat === "very-simple" &&
+      ) : workoutFormat === 'very-simple' &&
         generatedWorkout?.verySimpleFormat ? (
         <div className="p-4">
           <VerySimpleFormatWorkoutViewer
             verySimpleFormat={generatedWorkout.verySimpleFormat}
           />
         </div>
-      ) : workoutFormat === "step-by-step" && validJsonFormat ? (
+      ) : workoutFormat === 'step-by-step' && validJsonFormat ? (
         <div className="p-4">
           <StepByStepWorkoutViewer workout={validJsonFormat} />
         </div>
@@ -367,10 +367,10 @@ export default function WorkoutDetailPage() {
           // Type check and safely access chunk data
           if (
             data &&
-            typeof data === "object" &&
+            typeof data === 'object' &&
             data !== null &&
-            "chunk" in data &&
-            typeof (data as WorkoutChunkData).chunk === "string"
+            'chunk' in data &&
+            typeof (data as WorkoutChunkData).chunk === 'string'
           ) {
             setWorkoutChunks((prev) => [
               ...prev,
@@ -416,13 +416,13 @@ export default function WorkoutDetailPage() {
         }}
         title={
           existingFeedback
-            ? "Your Workout Feedback"
-            : "Share Your Workout Experience"
+            ? 'Your Workout Feedback'
+            : 'Share Your Workout Experience'
         }
         subtitle={
           existingFeedback
             ? "You've already provided feedback for this workout"
-            : generatedWorkout?.jsonFormat?.title || "How was your workout?"
+            : generatedWorkout?.jsonFormat?.title || 'How was your workout?'
         }
         confirmClose={!existingFeedback}
         hasUnsavedChanges={!existingFeedback && feedbackModal.hasUnsavedChanges}
@@ -439,22 +439,22 @@ export default function WorkoutDetailPage() {
                     Feedback Already Submitted
                   </h3>
                   <p className="text-base-content/70">
-                    You provided feedback for this workout on{" "}
+                    You provided feedback for this workout on{' '}
                     {new Date(existingFeedback.createdAt).toLocaleDateString()}
                   </p>
                 </div>
                 <div className="bg-base-200 rounded-lg p-4 space-y-2 text-left">
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 text-sm">
                     <div>
-                      <span className="font-medium">Overall:</span>{" "}
+                      <span className="font-medium">Overall:</span>{' '}
                       {existingFeedback.overallRating}/5 ⭐
                     </div>
                     <div>
-                      <span className="font-medium">Difficulty:</span>{" "}
+                      <span className="font-medium">Difficulty:</span>{' '}
                       {existingFeedback.difficultyRating}/5 ⭐
                     </div>
                     <div>
-                      <span className="font-medium">Enjoyment:</span>{" "}
+                      <span className="font-medium">Enjoyment:</span>{' '}
                       {existingFeedback.enjoymentRating}/5 ⭐
                     </div>
                   </div>

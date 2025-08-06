@@ -1,9 +1,9 @@
 import {
   WorkoutFeedback,
   CreateWorkoutFeedbackRequest,
-} from "@/domain/entities/workoutFeedback";
-import { ApiService } from "@/domain/interfaces/api/ApiService";
-import { WorkoutFeedbackService } from "@/domain/interfaces/services/WorkoutFeedbackService";
+} from '@/domain/entities/workoutFeedback';
+import { ApiService } from '@/domain/interfaces/api/ApiService';
+import { WorkoutFeedbackService } from '@/domain/interfaces/services/WorkoutFeedbackService';
 
 interface WorkoutFeedbackProps {
   id: string;
@@ -20,9 +20,9 @@ interface WorkoutFeedbackProps {
 }
 
 export class WorkoutFeedbackServiceImpl implements WorkoutFeedbackService {
-  readonly serviceName = "WorkoutFeedbackService";
+  readonly serviceName = 'WorkoutFeedbackService';
   private readonly apiService: ApiService;
-  private readonly baseEndpoint = "/members";
+  private readonly baseEndpoint = '/members';
 
   /**
    * Creates a new instance of WorkoutFeedbackServiceImpl
@@ -54,8 +54,8 @@ export class WorkoutFeedbackServiceImpl implements WorkoutFeedbackService {
 
       return new WorkoutFeedback(createdFeedback);
     } catch (error) {
-      console.error("Error in submitFeedback:", error);
-      throw new Error("Failed to submit workout feedback");
+      console.error('Error in submitFeedback:', error);
+      throw new Error('Failed to submit workout feedback');
     }
   }
 
@@ -70,12 +70,12 @@ export class WorkoutFeedbackServiceImpl implements WorkoutFeedbackService {
 
       return feedbackData ? new WorkoutFeedback(feedbackData) : null;
     } catch (error) {
-      console.error("Error in getFeedbackForWorkout:", error);
+      console.error('Error in getFeedbackForWorkout:', error);
       // If it's a 404, return null instead of throwing
-      if (error instanceof Error && error.message.includes("404")) {
+      if (error instanceof Error && error.message.includes('404')) {
         return null;
       }
-      throw new Error("Failed to fetch workout feedback");
+      throw new Error('Failed to fetch workout feedback');
     }
   }
 
@@ -87,8 +87,8 @@ export class WorkoutFeedbackServiceImpl implements WorkoutFeedbackService {
 
       return feedbackData.map((data) => new WorkoutFeedback(data));
     } catch (error) {
-      console.error("Error in getUserFeedback:", error);
-      throw new Error("Failed to fetch user feedback");
+      console.error('Error in getUserFeedback:', error);
+      throw new Error('Failed to fetch user feedback');
     }
   }
 
@@ -115,8 +115,8 @@ export class WorkoutFeedbackServiceImpl implements WorkoutFeedbackService {
 
       return new WorkoutFeedback(updatedFeedback);
     } catch (error) {
-      console.error("Error in updateFeedback:", error);
-      throw new Error("Failed to update workout feedback");
+      console.error('Error in updateFeedback:', error);
+      throw new Error('Failed to update workout feedback');
     }
   }
 }

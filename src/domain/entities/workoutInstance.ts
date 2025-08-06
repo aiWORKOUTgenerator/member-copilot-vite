@@ -36,7 +36,7 @@ export class WorkoutInstance {
 }
 
 // Import and re-export types from generatedWorkout for consistency
-import { ExerciseType } from "./generatedWorkout";
+import { ExerciseType } from './generatedWorkout';
 export { ExerciseType };
 
 // Enhanced interfaces for workout instances with actual performance data

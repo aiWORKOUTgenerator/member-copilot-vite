@@ -1,11 +1,11 @@
 import {
   WorkoutFeedback,
   CreateWorkoutFeedbackRequest,
-} from "@/domain/entities/workoutFeedback";
-import { WorkoutFeedbackService } from "@/domain/interfaces/services/WorkoutFeedbackService";
+} from '@/domain/entities/workoutFeedback';
+import { WorkoutFeedbackService } from '@/domain/interfaces/services/WorkoutFeedbackService';
 
 export class MockWorkoutFeedbackService implements WorkoutFeedbackService {
-  readonly serviceName = "MockWorkoutFeedbackService";
+  readonly serviceName = 'MockWorkoutFeedbackService';
   private feedbackStore: Map<string, WorkoutFeedback> = new Map();
   private workoutFeedbackMap: Map<string, string> = new Map(); // workoutId -> feedbackId
 
@@ -16,14 +16,14 @@ export class MockWorkoutFeedbackService implements WorkoutFeedbackService {
 
   private initializeMockData(): void {
     const mockFeedback = new WorkoutFeedback({
-      id: "mock-feedback-1",
-      workout_id: "mock-workout-1",
+      id: 'mock-feedback-1',
+      workout_id: 'mock-workout-1',
       overall_rating: 4,
       difficulty_rating: 3,
       enjoyment_rating: 5,
-      what_liked: "Great variety of exercises",
-      what_disliked: "Could use more rest time",
-      improvements: "Add more stretching exercises",
+      what_liked: 'Great variety of exercises',
+      what_disliked: 'Could use more rest time',
+      improvements: 'Add more stretching exercises',
       would_recommend: true,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
@@ -92,7 +92,7 @@ export class MockWorkoutFeedbackService implements WorkoutFeedbackService {
 
     const existingFeedback = this.feedbackStore.get(feedbackId);
     if (!existingFeedback) {
-      throw new Error("Feedback not found");
+      throw new Error('Feedback not found');
     }
 
     const updatedFeedback = new WorkoutFeedback({

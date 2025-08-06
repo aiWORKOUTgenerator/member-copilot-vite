@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   Button,
@@ -7,19 +7,19 @@ import {
   InfoIcon,
   Input,
   SuccessIcon,
-} from "@/ui";
-import { useSignIn, useSignUp } from "@clerk/clerk-react";
-import { isClerkAPIResponseError } from "@clerk/clerk-react/errors";
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router";
-import { useAnalytics } from "@/hooks/useAnalytics";
+} from '@/ui';
+import { useSignIn, useSignUp } from '@clerk/clerk-react';
+import { isClerkAPIResponseError } from '@clerk/clerk-react/errors';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router';
+import { useAnalytics } from '@/hooks/useAnalytics';
 
 export default function SignUpPage() {
-  const [emailAddress, setEmailAddress] = useState("");
+  const [emailAddress, setEmailAddress] = useState('');
   const [verified, setVerified] = useState(false);
   const [verifying, setVerifying] = useState(false);
-  const [error, setError] = useState("");
-  const [validation, setValidation] = useState<string>("");
+  const [error, setError] = useState('');
+  const [validation, setValidation] = useState<string>('');
   const { signUp, isLoaded: isSignUpLoaded } = useSignUp();
   const { signIn, isLoaded: isSignInLoaded } = useSignIn();
   const [searchParams] = useSearchParams();
@@ -29,14 +29,14 @@ export default function SignUpPage() {
 
   // Track sign-up page views
   useEffect(() => {
-    analytics.track("Sign Up Page Viewed", {
+    analytics.track('Sign Up Page Viewed', {
       tracked_at: new Date().toISOString(),
     });
   }, [analytics]);
 
   // Track form field interactions
   const handleFieldFocus = (fieldName: string) => {
-    analytics.track("Sign Up Field Focused", {
+    analytics.track('Sign Up Field Focused', {
       fieldName,
       tracked_at: new Date().toISOString(),
     });
@@ -44,16 +44,16 @@ export default function SignUpPage() {
 
   // Track authentication method selection
   const handleEmailSignUp = () => {
-    analytics.track("Sign Up Method Selected", {
-      method: "email",
-      location: "signup_page",
+    analytics.track('Sign Up Method Selected', {
+      method: 'email',
+      location: 'signup_page',
     });
   };
 
   // Track form submission attempts
   const handleFormSubmit = () => {
-    analytics.track("Sign Up Form Submitted", {
-      method: "email",
+    analytics.track('Sign Up Form Submitted', {
+      method: 'email',
       tracked_at: new Date().toISOString(),
     });
   };
@@ -67,15 +67,15 @@ export default function SignUpPage() {
   // Update validation message when email changes
   useEffect(() => {
     if (emailAddress && !validateEmail(emailAddress)) {
-      setValidation("Please enter a valid email address");
+      setValidation('Please enter a valid email address');
     } else {
-      setValidation("");
+      setValidation('');
     }
   }, [emailAddress]);
 
   // Check for email query parameter and pre-fill form
   useEffect(() => {
-    const emailParam = searchParams?.get("email");
+    const emailParam = searchParams?.get('email');
 
     if (
       emailParam &&
@@ -105,13 +105,13 @@ export default function SignUpPage() {
 
     // Don't submit if email is invalid
     if (!validateEmail(emailAddress)) {
-      setValidation("Please enter a valid email address");
+      setValidation('Please enter a valid email address');
       return;
     }
 
     // Reset states in case user resubmits form mid sign-up
     setVerified(false);
-    setError("");
+    setError('');
     setVerifying(true);
 
     try {
@@ -144,13 +144,13 @@ export default function SignUpPage() {
       if (err instanceof Error && isClerkAPIResponseError(err)) {
         // Check if the error is due to user already existing
         const identifierExists = err.errors.some(
-          (error) => error.code === "form_identifier_exists"
+          (error) => error.code === 'form_identifier_exists'
         );
 
         if (identifierExists && signIn) {
           // If user exists, redirect to the email verification sign-in page with email prefilled
           // This will create a fresh authentication session through the standard sign-in flow
-          console.log("User already exists, redirecting to sign-in...");
+          console.log('User already exists, redirecting to sign-in...');
 
           // Use a short timeout to ensure any pending state updates are complete before navigation
           setTimeout(() => {
@@ -165,11 +165,11 @@ export default function SignUpPage() {
           // For other errors, display the message
           setError(
             err.errors[0]?.longMessage ||
-              "An error occurred with authentication."
+              'An error occurred with authentication.'
           );
         }
       } else {
-        setError("An error occurred. Please try again.");
+        setError('An error occurred. Please try again.');
       }
       setVerifying(false);
     }
@@ -178,7 +178,7 @@ export default function SignUpPage() {
   function reset(e: React.FormEvent) {
     e.preventDefault();
     setVerifying(false);
-    setEmailAddress("");
+    setEmailAddress('');
   }
 
   if (error) {
@@ -195,7 +195,7 @@ export default function SignUpPage() {
           <Button
             variant="primary"
             fullWidth
-            onClick={() => setError("")}
+            onClick={() => setError('')}
             aria-label="Try again"
           >
             Try again
@@ -273,7 +273,7 @@ export default function SignUpPage() {
           aria-label="Email address"
           aria-required="true"
           helperText="We'll send you a magic link to sign in"
-          onFocus={() => handleFieldFocus("email")}
+          onFocus={() => handleFieldFocus('email')}
         />
         <Button
           type="submit"

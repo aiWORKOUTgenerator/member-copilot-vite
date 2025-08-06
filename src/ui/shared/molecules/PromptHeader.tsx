@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import React from "react";
-import { PromptLabel } from "../atoms/PromptLabel";
-import { HintText } from "../atoms/HintText";
-import { PopupLink } from "../atoms/PopupLink";
+import React from 'react';
+import { PromptLabel } from '../atoms/PromptLabel';
+import { HintText } from '../atoms/HintText';
+import { PopupLink } from '../atoms/PopupLink';
 
 interface PromptHeaderProps {
   text: string;

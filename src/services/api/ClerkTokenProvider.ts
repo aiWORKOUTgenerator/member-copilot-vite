@@ -1,4 +1,4 @@
-import { TokenProvider } from "@/domain/interfaces/api/TokenProvider";
+import { TokenProvider } from '@/domain/interfaces/api/TokenProvider';
 
 /**
  * Token provider that uses Clerk for authentication tokens
@@ -24,7 +24,7 @@ export class ClerkTokenProvider implements TokenProvider {
     try {
       return await this.getTokenFn();
     } catch (error) {
-      console.error("Error getting authentication token:", error);
+      console.error('Error getting authentication token:', error);
       return null;
     }
   }

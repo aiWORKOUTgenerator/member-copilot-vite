@@ -1,14 +1,14 @@
-import { License, LicenseStatus } from "@/domain/entities";
-import type { ApiService } from "@/domain/interfaces/api/ApiService";
-import type { LicenseService as ILicenseService } from "@/domain/interfaces/license/LicenseService"; // Aliasing for clarity
-import { LicensePolicyService } from "./LicensePolicyService";
+import { License, LicenseStatus } from '@/domain/entities';
+import type { ApiService } from '@/domain/interfaces/api/ApiService';
+import type { LicenseService as ILicenseService } from '@/domain/interfaces/license/LicenseService'; // Aliasing for clarity
+import { LicensePolicyService } from './LicensePolicyService';
 
 /**
  * Service implementation for license management and usage tracking.
  * Assumes user context is handled by the backend.
  */
 export class LicenseServiceImpl implements ILicenseService {
-  private readonly baseEndpoint = "/members/licenses/";
+  private readonly baseEndpoint = '/members/licenses/';
 
   constructor(
     private apiService: ApiService,
@@ -30,7 +30,7 @@ export class LicenseServiceImpl implements ILicenseService {
 
       return licenses;
     } catch (error) {
-      console.error("Error fetching active licenses:", error);
+      console.error('Error fetching active licenses:', error);
       return []; // Return empty array on error
     }
   }
@@ -51,7 +51,7 @@ export class LicenseServiceImpl implements ILicenseService {
       );
       return response || [];
     } catch (error) {
-      console.error("Error fetching contact licenses for", contactId, error);
+      console.error('Error fetching contact licenses for', contactId, error);
       return [];
     }
   }

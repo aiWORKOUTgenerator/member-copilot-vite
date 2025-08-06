@@ -1,5 +1,5 @@
-import { Contact } from "@/domain/entities/contact";
-import { createContext } from "react";
+import { Contact } from '@/domain/entities/contact';
+import { createContext } from 'react';
 
 /**
  * ContactState interface defines the shape of our contact context value.

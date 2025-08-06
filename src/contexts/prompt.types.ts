@@ -1,5 +1,5 @@
-import { Prompt } from "@/domain/entities";
-import { createContext } from "react";
+import { Prompt } from '@/domain/entities';
+import { createContext } from 'react';
 
 /**
  * PromptState interface defines the shape of our prompt context value.

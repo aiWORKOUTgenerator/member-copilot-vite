@@ -7,15 +7,15 @@
  */
 
 // Re-export all domain entities, value objects, aggregates, etc.
-export * from "./entities/index";
-export * from "./value-objects/index";
-export * from "./interfaces/index";
+export * from './entities/index';
+export * from './value-objects/index';
+export * from './interfaces/index';
 
 // Re-export entities
-export * from "./entities";
-export * from "./entities/phoneVerification";
+export * from './entities';
+export * from './entities/phoneVerification';
 
 // Re-export interfaces
-export * from "./interfaces/api/ApiService";
-export * from "./interfaces/services/AttributeService";
-export * from "./interfaces/services/PromptService";
+export * from './interfaces/api/ApiService';
+export * from './interfaces/services/AttributeService';
+export * from './interfaces/services/PromptService';

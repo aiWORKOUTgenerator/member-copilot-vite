@@ -1,4 +1,4 @@
-import { WorkoutInstance } from "@/domain/entities/workoutInstance";
+import { WorkoutInstance } from '@/domain/entities/workoutInstance';
 
 /**
  * Filter workout instances to show only the last specified number of days
@@ -39,7 +39,7 @@ export function calculateStats(instances: WorkoutInstance[]) {
   const lastTwoWeeks = filterLastDays(instances, 14);
   const uniqueDates = new Set(
     lastTwoWeeks.map(
-      (instance) => new Date(instance.performedAt).toISOString().split("T")[0]
+      (instance) => new Date(instance.performedAt).toISOString().split('T')[0]
     )
   );
   const activeDays = uniqueDates.size;
@@ -56,11 +56,11 @@ export function calculateStats(instances: WorkoutInstance[]) {
  * Format date for display
  */
 export function formatDate(dateString: string): string {
-  return new Date(dateString).toLocaleDateString("en-US", {
-    weekday: "short",
-    month: "short",
-    day: "numeric",
-    year: "numeric",
+  return new Date(dateString).toLocaleDateString('en-US', {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
   });
 }
 
@@ -68,8 +68,8 @@ export function formatDate(dateString: string): string {
  * Format date for short display (just date)
  */
 export function formatDateShort(dateString: string): string {
-  return new Date(dateString).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
+  return new Date(dateString).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
   });
 }

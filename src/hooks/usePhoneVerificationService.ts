@@ -1,7 +1,7 @@
-import { useMemo } from "react";
-import { useApiService } from "./useApiService";
-import { PhoneVerificationServiceImpl } from "@/services/phoneVerification/PhoneVerificationServiceImpl";
-import { PhoneVerificationService } from "@/domain/interfaces/services/PhoneVerificationService";
+import { useMemo } from 'react';
+import { useApiService } from './useApiService';
+import { PhoneVerificationServiceImpl } from '@/services/phoneVerification/PhoneVerificationServiceImpl';
+import { PhoneVerificationService } from '@/domain/interfaces/services/PhoneVerificationService';
 
 /**
  * Hook to get a phone verification service instance

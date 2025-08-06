@@ -1,8 +1,8 @@
-import { LicenseServiceImpl } from "@/services/license/LicenseService";
-import { useMemo } from "react";
-import { LicenseService } from "../domain/interfaces/license/LicenseService";
-import { useLicensePolicyService } from "./useLicensePolicyService";
-import { useApiService } from "./useApiService";
+import { LicenseServiceImpl } from '@/services/license/LicenseService';
+import { useMemo } from 'react';
+import { LicenseService } from '../domain/interfaces/license/LicenseService';
+import { useLicensePolicyService } from './useLicensePolicyService';
+import { useApiService } from './useApiService';
 
 /**
  * Hook to access the license service functionality

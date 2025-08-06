@@ -9,13 +9,14 @@ The application uses a reusable icon system that provides a consistent way to ha
 The simplest approach is to use our predefined icons from the IconSet:
 
 ```tsx
-import { ArrowRightIcon, MenuIcon, UserIcon } from "@/app/ui/shared";
+import { ArrowRightIcon, MenuIcon, UserIcon } from '@/app/ui/shared';
 
 // In your component:
-<ArrowRightIcon size="md" className="text-primary" />
+<ArrowRightIcon size="md" className="text-primary" />;
 ```
 
 Available sizes:
+
 - `xs`: 16px
 - `sm`: 20px
 - `md`: 24px
@@ -68,7 +69,7 @@ Then add it to the exports in `src/ui/shared/index.ts`.
 The application uses a centralized authentication service that wraps Clerk's functionality. Use this service to manage authentication across the application:
 
 ```tsx
-import { useAuth } from "@/services/auth";
+import { useAuth } from '@/services/auth';
 
 function MyComponent() {
   const { user, isLoaded, isSignedIn, isSigningOut, signOut } = useAuth();
@@ -80,7 +81,7 @@ function MyComponent() {
 
   // Sign out with redirect
   const handleLogout = () => {
-    signOut("/login"); // Redirects to /login after sign out
+    signOut('/login'); // Redirects to /login after sign out
   };
 
   return (
@@ -103,10 +104,10 @@ import { SignOutButton } from "@/app/ui/shared";
 <SignOutButton />
 
 // Customized
-<SignOutButton 
-  variant="ghost" 
-  size="sm" 
-  className="text-red-500" 
+<SignOutButton
+  variant="ghost"
+  size="sm"
+  className="text-red-500"
   redirectPath="/login"
   showIcon={false}
 >
@@ -120,4 +121,4 @@ import { SignOutButton } from "@/app/ui/shared";
 2. **Sizing**: Use the predefined sizes (`xs`, `sm`, `md`, `lg`, `xl`) for consistent icon sizing
 3. **Colors**: Use Tailwind's text-color utilities (e.g., `text-primary`, `text-error`) to style icons
 4. **Accessibility**: Include proper aria labels on interactive elements that use icons
-5. **Authentication**: Use the centralized auth service instead of direct Clerk calls for consistency 
+5. **Authentication**: Use the centralized auth service instead of direct Clerk calls for consistency

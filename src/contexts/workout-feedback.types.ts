@@ -1,8 +1,8 @@
-import { createContext } from "react";
+import { createContext } from 'react';
 import {
   WorkoutFeedback,
   CreateWorkoutFeedbackRequest,
-} from "@/domain/entities/workoutFeedback";
+} from '@/domain/entities/workoutFeedback';
 
 /**
  * WorkoutFeedbackState interface defines the shape of our workout feedback context value.

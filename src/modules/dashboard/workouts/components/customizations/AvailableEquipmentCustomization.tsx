@@ -1,29 +1,29 @@
-import { CustomizationComponentProps } from "../types";
+import { CustomizationComponentProps } from '../types';
 
 // Available equipment options for home workouts
 const EQUIPMENT_OPTIONS = [
-  { label: "None / Bodyweight Only", value: "bodyweight_only" },
-  { label: "Dumbbells", value: "dumbbells" },
-  { label: "Adjustable Dumbbells", value: "adjustable_dumbbells" },
-  { label: "Kettlebells", value: "kettlebells" },
-  { label: "Barbell", value: "barbell" },
-  { label: "Bench", value: "bench" },
-  { label: "Pull-up Bar", value: "pull_up_bar" },
-  { label: "Resistance Bands", value: "resistance_bands" },
-  { label: "Resistance Loops/Mini Bands", value: "resistance_loops" },
-  { label: "TRX/Suspension Trainer", value: "trx_suspension" },
-  { label: "Gymnastic Rings", value: "gymnastic_rings" },
-  { label: "Yoga Mat", value: "yoga_mat" },
-  { label: "Medicine Ball", value: "medicine_ball" },
-  { label: "Stability Ball", value: "stability_ball" },
-  { label: "Jump Rope", value: "jump_rope" },
-  { label: "Ab Wheel", value: "ab_wheel" },
-  { label: "Foam Roller", value: "foam_roller" },
-  { label: "Battle Ropes", value: "battle_ropes" },
-  { label: "Cable Machine", value: "cable_machine" },
-  { label: "Exercise/Stationary Bike", value: "exercise_bike" },
-  { label: "Treadmill", value: "treadmill" },
-  { label: "Rowing Machine", value: "rowing_machine" },
+  { label: 'None / Bodyweight Only', value: 'bodyweight_only' },
+  { label: 'Dumbbells', value: 'dumbbells' },
+  { label: 'Adjustable Dumbbells', value: 'adjustable_dumbbells' },
+  { label: 'Kettlebells', value: 'kettlebells' },
+  { label: 'Barbell', value: 'barbell' },
+  { label: 'Bench', value: 'bench' },
+  { label: 'Pull-up Bar', value: 'pull_up_bar' },
+  { label: 'Resistance Bands', value: 'resistance_bands' },
+  { label: 'Resistance Loops/Mini Bands', value: 'resistance_loops' },
+  { label: 'TRX/Suspension Trainer', value: 'trx_suspension' },
+  { label: 'Gymnastic Rings', value: 'gymnastic_rings' },
+  { label: 'Yoga Mat', value: 'yoga_mat' },
+  { label: 'Medicine Ball', value: 'medicine_ball' },
+  { label: 'Stability Ball', value: 'stability_ball' },
+  { label: 'Jump Rope', value: 'jump_rope' },
+  { label: 'Ab Wheel', value: 'ab_wheel' },
+  { label: 'Foam Roller', value: 'foam_roller' },
+  { label: 'Battle Ropes', value: 'battle_ropes' },
+  { label: 'Cable Machine', value: 'cable_machine' },
+  { label: 'Exercise/Stationary Bike', value: 'exercise_bike' },
+  { label: 'Treadmill', value: 'treadmill' },
+  { label: 'Rowing Machine', value: 'rowing_machine' },
 ];
 
 export default function AvailableEquipmentCustomization({
@@ -59,7 +59,7 @@ export default function AvailableEquipmentCustomization({
             <label
               key={option.value}
               className={`flex items-center space-x-2 p-2 rounded cursor-pointer hover:bg-base-200 ${
-                disabled ? "cursor-not-allowed opacity-50" : ""
+                disabled ? 'cursor-not-allowed opacity-50' : ''
               }`}
             >
               <input

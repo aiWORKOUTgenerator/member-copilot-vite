@@ -1,17 +1,17 @@
-import { CustomizationComponentProps } from "../types";
+import { CustomizationComponentProps } from '../types';
 
 // Workout focus options
 const WORKOUT_FOCUS_OPTIONS = [
-  { label: "Strength Training", value: "strength_training" },
-  { label: "Muscle Building", value: "muscle_building" },
-  { label: "Fat Loss", value: "fat_loss" },
-  { label: "Cardio Endurance", value: "cardio_endurance" },
-  { label: "HIIT", value: "hiit" },
-  { label: "Flexibility & Mobility", value: "flexibility_mobility" },
-  { label: "Recovery & Stretching", value: "recovery_stretching" },
-  { label: "Powerlifting", value: "powerlifting" },
-  { label: "Bodyweight Training", value: "bodyweight_training" },
-  { label: "Functional Fitness", value: "functional_fitness" },
+  { label: 'Strength Training', value: 'strength_training' },
+  { label: 'Muscle Building', value: 'muscle_building' },
+  { label: 'Fat Loss', value: 'fat_loss' },
+  { label: 'Cardio Endurance', value: 'cardio_endurance' },
+  { label: 'HIIT', value: 'hiit' },
+  { label: 'Flexibility & Mobility', value: 'flexibility_mobility' },
+  { label: 'Recovery & Stretching', value: 'recovery_stretching' },
+  { label: 'Powerlifting', value: 'powerlifting' },
+  { label: 'Bodyweight Training', value: 'bodyweight_training' },
+  { label: 'Functional Fitness', value: 'functional_fitness' },
 ];
 
 export default function WorkoutFocusCustomization({
@@ -43,7 +43,7 @@ export default function WorkoutFocusCustomization({
               key={option.value}
               type="button"
               className={`btn btn-sm justify-start ${
-                isSelected ? "btn-primary" : "btn-outline"
+                isSelected ? 'btn-primary' : 'btn-outline'
               }`}
               onClick={() => handleFocusChange(option.value)}
               disabled={disabled}
@@ -58,7 +58,7 @@ export default function WorkoutFocusCustomization({
 
       {selectedFocus && (
         <p className="text-xs text-base-content/60 mt-2">
-          Selected:{" "}
+          Selected:{' '}
           {
             WORKOUT_FOCUS_OPTIONS.find(
               (option) => option.value === selectedFocus

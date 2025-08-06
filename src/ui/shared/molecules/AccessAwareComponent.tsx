@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import React from "react";
-import { useUserAccess } from "@/hooks";
+import React from 'react';
+import { useUserAccess } from '@/hooks';
 
 interface AccessAwareComponentProps {
   /**
@@ -42,7 +42,7 @@ interface AccessAwareComponentProps {
 const AccessAwareComponent: React.FC<AccessAwareComponentProps> = ({
   children,
   showSkeleton = true,
-  skeletonClassName = "",
+  skeletonClassName = '',
   fallback = null,
 }) => {
   const { isLoading } = useUserAccess();

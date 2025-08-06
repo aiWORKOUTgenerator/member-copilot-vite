@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import React from "react";
-import { FormContainer } from "../organisms/FormContainer";
+import React from 'react';
+import { FormContainer } from '../organisms/FormContainer';
 
 interface PageLoadingProps {
   message?: string;
 }
 
 export const PageLoading: React.FC<PageLoadingProps> = ({
-  message = "Loading...",
+  message = 'Loading...',
 }) => {
   return (
     <FormContainer>

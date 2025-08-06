@@ -1,6 +1,6 @@
-import { LicensePolicyService } from "@/services/license/LicensePolicyService";
-import { useMemo } from "react";
-import { useApiService } from "./useApiService";
+import { LicensePolicyService } from '@/services/license/LicensePolicyService';
+import { useMemo } from 'react';
+import { useApiService } from './useApiService';
 
 export function useLicensePolicyService(): LicensePolicyService {
   // Get the authenticated API service

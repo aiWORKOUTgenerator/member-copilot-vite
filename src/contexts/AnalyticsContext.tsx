@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useEffect } from "react";
-import { getAnalytics } from "@/services/analytics";
-import { useAuth } from "@/hooks/auth";
-import { useLocation, useSearchParams } from "react-router";
+import { useEffect } from 'react';
+import { getAnalytics } from '@/services/analytics';
+import { useAuth } from '@/hooks/auth';
+import { useLocation, useSearchParams } from 'react-router';
 
 interface AnalyticsProviderProps {
   children: React.ReactNode;
@@ -26,9 +26,9 @@ export function AnalyticsProvider({ children }: AnalyticsProviderProps) {
     try {
       // Initialize analytics on client-side only
       getAnalytics().initialize();
-      console.log("Analytics service initialized successfully");
+      console.log('Analytics service initialized successfully');
     } catch (error) {
-      console.error("Failed to initialize analytics service:", error);
+      console.error('Failed to initialize analytics service:', error);
     }
   }, []);
 
@@ -38,8 +38,8 @@ export function AnalyticsProvider({ children }: AnalyticsProviderProps) {
       const analytics = getAnalytics();
 
       // Construct full URL with search params if available
-      const search = searchParams ? searchParams.toString() : "";
-      const url = `${location.pathname}${search ? `?${search}` : ""}`;
+      const search = searchParams ? searchParams.toString() : '';
+      const url = `${location.pathname}${search ? `?${search}` : ''}`;
 
       // Track page view with path and URL
       analytics.page({
@@ -51,7 +51,7 @@ export function AnalyticsProvider({ children }: AnalyticsProviderProps) {
 
       console.log(`Page view tracked: ${url}`);
     } catch (error) {
-      console.error("Failed to track page view:", error);
+      console.error('Failed to track page view:', error);
     }
   }, [location.pathname, searchParams]);
 
@@ -73,11 +73,11 @@ export function AnalyticsProvider({ children }: AnalyticsProviderProps) {
       };
 
       analytics.identify(userId, userTraits);
-      console.log("User identified in analytics");
+      console.log('User identified in analytics');
     } else if (isLoaded && !isSignedIn) {
       // User is signed out - reset analytics
       analytics.reset();
-      console.log("Analytics reset after user sign out");
+      console.log('Analytics reset after user sign out');
     }
   }, [isLoaded, isSignedIn, user]);
 

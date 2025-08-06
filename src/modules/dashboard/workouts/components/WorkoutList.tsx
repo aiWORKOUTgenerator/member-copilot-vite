@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { GeneratedWorkout } from "@/domain/entities/generatedWorkout";
-import { MeteredFeature } from "@/domain/entities/meteredFeatures";
-import { useUserAccess } from "@/hooks";
-import { ArrowBigRight, Lock, Crown } from "lucide-react";
-import { useNavigate } from "react-router";
+import { GeneratedWorkout } from '@/domain/entities/generatedWorkout';
+import { MeteredFeature } from '@/domain/entities/meteredFeatures';
+import { useUserAccess } from '@/hooks';
+import { ArrowBigRight, Lock, Crown } from 'lucide-react';
+import { useNavigate } from 'react-router';
 
 interface WorkoutListProps {
   workouts: GeneratedWorkout[];
@@ -13,12 +13,12 @@ interface WorkoutListProps {
 }
 
 const getFirstWords = (text: string, wordCount = 10) =>
-  text.split(/\s+/).slice(0, wordCount).join(" ") +
-  (text.split(/\s+/).length > wordCount ? "…" : "");
+  text.split(/\s+/).slice(0, wordCount).join(' ') +
+  (text.split(/\s+/).length > wordCount ? '…' : '');
 
 export default function WorkoutList({
   workouts,
-  title = "",
+  title = '',
   onWorkoutClick,
 }: WorkoutListProps) {
   const navigate = useNavigate();
@@ -33,7 +33,7 @@ export default function WorkoutList({
   const restrictedWorkouts = workouts.slice(storedWorkoutsLimit);
 
   const handleUpgrade = () => {
-    navigate("/dashboard/billing");
+    navigate('/dashboard/billing');
   };
 
   const renderWorkoutItem = (
@@ -42,9 +42,9 @@ export default function WorkoutList({
   ) => {
     // Format the date to a nice human-readable string
     const createdDate = new Date(workout.createdAt);
-    const formattedDate = new Intl.DateTimeFormat("en-US", {
-      month: "short",
-      day: "numeric",
+    const formattedDate = new Intl.DateTimeFormat('en-US', {
+      month: 'short',
+      day: 'numeric',
       hour12: true,
     }).format(createdDate);
 
@@ -60,7 +60,7 @@ export default function WorkoutList({
       <li
         key={workout.id}
         className={`list-row p-2 transition-colors rounded-lg my-1 border border-base-300 relative cursor-pointer ${
-          isRestricted ? "opacity-60 hover:opacity-80" : "hover:bg-base-200"
+          isRestricted ? 'opacity-60 hover:opacity-80' : 'hover:bg-base-200'
         }`}
         onClick={handleClick}
       >
@@ -121,7 +121,7 @@ export default function WorkoutList({
               <div>
                 <h3 className="font-semibold text-base-content">
                   {restrictedWorkouts.length} Workout
-                  {restrictedWorkouts.length > 1 ? "s" : ""} Locked
+                  {restrictedWorkouts.length > 1 ? 's' : ''} Locked
                 </h3>
                 <p className="text-sm text-base-content/70">
                   Upgrade to Pro to access all your previous workouts

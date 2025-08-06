@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { ReactNode, useMemo } from "react";
-import { useVerificationService } from "@/hooks/useVerificationService";
-import { VerificationContext, VerificationState } from "./verification.types";
+import { ReactNode, useMemo } from 'react';
+import { useVerificationService } from '@/hooks/useVerificationService';
+import { VerificationContext, VerificationState } from './verification.types';
 
 interface VerificationProviderProps {
   children: ReactNode;

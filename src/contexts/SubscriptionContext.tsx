@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { StripeSubscription } from "@/domain/entities/StripeSubscription";
-import { PortalConfiguration } from "@/domain/interfaces/services/SubscriptionService";
-import { useAuth } from "@/hooks/auth";
-import { useSubscriptionService } from "@/hooks/useSubscriptionService";
-import { ReactNode, useEffect, useState, useCallback } from "react";
-import { SubscriptionContext, SubscriptionTier } from "./subscription.types";
+import { StripeSubscription } from '@/domain/entities/StripeSubscription';
+import { PortalConfiguration } from '@/domain/interfaces/services/SubscriptionService';
+import { useAuth } from '@/hooks/auth';
+import { useSubscriptionService } from '@/hooks/useSubscriptionService';
+import { ReactNode, useEffect, useState, useCallback } from 'react';
+import { SubscriptionContext, SubscriptionTier } from './subscription.types';
 
 export const SubscriptionProvider = ({ children }: { children: ReactNode }) => {
   const [tiers, setTiers] = useState<SubscriptionTier[]>([]);
@@ -51,7 +51,7 @@ export const SubscriptionProvider = ({ children }: { children: ReactNode }) => {
         }
       }
     } catch (error) {
-      console.error("Failed to fetch subscription data:", error);
+      console.error('Failed to fetch subscription data:', error);
       setTiers([]);
       setSelectedTier(null);
       setCurrentUserSubscription(null);

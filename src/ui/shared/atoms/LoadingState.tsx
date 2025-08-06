@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
 interface LoadingStateProps {
   className?: string;
-  size?: "xs" | "sm" | "md" | "lg" | "xl";
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 }
 
 /**
  * A loading state component that displays animated dots
  */
 export default function LoadingState({
-  className = "",
-  size = "xl",
+  className = '',
+  size = 'xl',
 }: LoadingStateProps) {
   return (
     <div className={`flex justify-center items-center ${className}`}>

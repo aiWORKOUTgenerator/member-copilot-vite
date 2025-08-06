@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import React, { ReactNode } from "react";
+import React, { ReactNode } from 'react';
 
 export interface PageHeaderProps {
   title: string;
@@ -13,7 +13,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
   title,
   subtitle,
   actions,
-  className = "",
+  className = '',
 }) => {
   return (
     <div

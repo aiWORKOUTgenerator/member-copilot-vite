@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { WorkoutInstance } from "@/domain/entities/workoutInstance";
-import { ChevronLeft, ChevronRight, Calendar, List } from "lucide-react";
-import { useMemo, useState } from "react";
+import { WorkoutInstance } from '@/domain/entities/workoutInstance';
+import { ChevronLeft, ChevronRight, Calendar, List } from 'lucide-react';
+import { useMemo, useState } from 'react';
 
 interface WorkoutTimelineProps {
   workouts: WorkoutInstance[];
@@ -48,11 +48,11 @@ function generateCalendarDays(
 
   // Generate 6 weeks worth of days (42 days total)
   for (let i = 0; i < 42; i++) {
-    const dateString = currentDate.toISOString().split("T")[0]; // YYYY-MM-DD
+    const dateString = currentDate.toISOString().split('T')[0]; // YYYY-MM-DD
     const dayWorkouts = workouts.filter((workout) => {
       const workoutDate = new Date(workout.performedAt)
         .toISOString()
-        .split("T")[0];
+        .split('T')[0];
       return workoutDate === dateString;
     });
 
@@ -82,11 +82,11 @@ function generateWeekDays(
   const today = new Date();
 
   for (let i = 0; i < 7; i++) {
-    const dateString = currentDate.toISOString().split("T")[0];
+    const dateString = currentDate.toISOString().split('T')[0];
     const dayWorkouts = workouts.filter((workout) => {
       const workoutDate = new Date(workout.performedAt)
         .toISOString()
-        .split("T")[0];
+        .split('T')[0];
       return workoutDate === dateString;
     });
 
@@ -164,14 +164,14 @@ export function WorkoutTimeline({
   onWorkoutClick,
 }: WorkoutTimelineProps) {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [viewMode, setViewMode] = useState<"month" | "week">("month");
+  const [viewMode, setViewMode] = useState<'month' | 'week'>('month');
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
 
-  const monthName = currentDate.toLocaleDateString("en-US", {
-    month: "long",
-    year: "numeric",
+  const monthName = currentDate.toLocaleDateString('en-US', {
+    month: 'long',
+    year: 'numeric',
   });
 
   const weekRange = useMemo(() => {
@@ -182,46 +182,46 @@ export function WorkoutTimeline({
     return {
       start: startOfWeek,
       end: endOfWeek,
-      text: `${startOfWeek.toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-      })} - ${endOfWeek.toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
+      text: `${startOfWeek.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+      })} - ${endOfWeek.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
       })}`,
     };
   }, [currentDate]);
 
   const calendarDays = useMemo(() => {
-    if (viewMode === "week") {
+    if (viewMode === 'week') {
       return generateWeekDays(weekRange.start, workouts);
     }
     return generateCalendarDays(year, month, workouts);
   }, [year, month, workouts, viewMode, weekRange.start]);
 
   const weeklySummaries = useMemo(() => {
-    if (viewMode === "month") {
+    if (viewMode === 'month') {
       return calculateWeeklySummaries(calendarDays);
     }
     return [];
   }, [calendarDays, viewMode]);
 
-  const navigate = (direction: "prev" | "next") => {
+  const navigate = (direction: 'prev' | 'next') => {
     setCurrentDate((prev) => {
       const newDate = new Date(prev);
 
       // Check if we're on mobile (screen width check via window.innerWidth)
       // or if we're in week view mode
-      const isMobile = typeof window !== "undefined" && window.innerWidth < 640; // sm breakpoint
+      const isMobile = typeof window !== 'undefined' && window.innerWidth < 640; // sm breakpoint
 
-      if (viewMode === "week" || isMobile) {
+      if (viewMode === 'week' || isMobile) {
         // Navigate by week on mobile or when in week view
-        const days = direction === "prev" ? -7 : 7;
+        const days = direction === 'prev' ? -7 : 7;
         newDate.setDate(newDate.getDate() + days);
       } else {
         // Navigate by month on desktop month view
-        if (direction === "prev") {
+        if (direction === 'prev') {
           newDate.setMonth(newDate.getMonth() - 1);
         } else {
           newDate.setMonth(newDate.getMonth() + 1);
@@ -242,24 +242,24 @@ export function WorkoutTimeline({
 
     // Determine styling based on workout status
     let dayClasses = `relative border border-base-200 rounded-lg cursor-pointer transition-all hover:bg-base-200/50 ${
-      isCompact ? "min-h-12 p-1" : "min-h-20 p-2"
+      isCompact ? 'min-h-12 p-1' : 'min-h-20 p-2'
     }`;
 
-    if (!day.isCurrentMonth && viewMode === "month") {
-      dayClasses += " opacity-40";
+    if (!day.isCurrentMonth && viewMode === 'month') {
+      dayClasses += ' opacity-40';
     }
 
     if (day.isToday) {
-      dayClasses += " ring-2 ring-primary";
+      dayClasses += ' ring-2 ring-primary';
     }
 
     if (hasWorkouts) {
       if (completedWorkouts.length === day.workouts.length) {
-        dayClasses += " bg-success/10 border-success/30";
+        dayClasses += ' bg-success/10 border-success/30';
       } else if (completedWorkouts.length > 0) {
-        dayClasses += " bg-warning/10 border-warning/30";
+        dayClasses += ' bg-warning/10 border-warning/30';
       } else {
-        dayClasses += " bg-error/10 border-error/30";
+        dayClasses += ' bg-error/10 border-error/30';
       }
     }
 
@@ -276,10 +276,10 @@ export function WorkoutTimeline({
           <span
             className={`text-sm font-medium ${
               day.isToday
-                ? "text-primary"
+                ? 'text-primary'
                 : day.isCurrentMonth
-                ? ""
-                : "text-base-content/50"
+                  ? ''
+                  : 'text-base-content/50'
             }`}
           >
             {dayNumber}
@@ -299,9 +299,9 @@ export function WorkoutTimeline({
                   <div
                     key={workout.id}
                     className={`w-2 h-2 rounded-full ${
-                      workout.completed ? "bg-success" : "bg-error"
+                      workout.completed ? 'bg-success' : 'bg-error'
                     }`}
-                    title={workout.jsonFormat?.title || "Workout"}
+                    title={workout.jsonFormat?.title || 'Workout'}
                   />
                 ))}
                 {day.workouts.length > 4 && (
@@ -318,7 +318,7 @@ export function WorkoutTimeline({
                     <div className="flex items-start gap-1">
                       <span
                         className={`inline-block w-2 h-2 rounded-full mt-0.5 flex-shrink-0 ${
-                          workout.completed ? "bg-success" : "bg-error"
+                          workout.completed ? 'bg-success' : 'bg-error'
                         }`}
                       />
                       <span className="truncate leading-tight">
@@ -373,11 +373,11 @@ export function WorkoutTimeline({
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <button
-            onClick={() => navigate("prev")}
+            onClick={() => navigate('prev')}
             className="btn btn-ghost btn-sm"
             aria-label={`Previous ${
-              typeof window !== "undefined" && window.innerWidth < 640
-                ? "week"
+              typeof window !== 'undefined' && window.innerWidth < 640
+                ? 'week'
                 : viewMode
             }`}
           >
@@ -385,16 +385,16 @@ export function WorkoutTimeline({
           </button>
           <h2 className="text-lg font-semibold min-w-32 text-center">
             <span className="hidden sm:inline">
-              {viewMode === "week" ? weekRange.text : monthName}
+              {viewMode === 'week' ? weekRange.text : monthName}
             </span>
             <span className="sm:hidden">{weekRange.text}</span>
           </h2>
           <button
-            onClick={() => navigate("next")}
+            onClick={() => navigate('next')}
             className="btn btn-ghost btn-sm"
             aria-label={`Next ${
-              typeof window !== "undefined" && window.innerWidth < 640
-                ? "week"
+              typeof window !== 'undefined' && window.innerWidth < 640
+                ? 'week'
                 : viewMode
             }`}
           >
@@ -406,18 +406,18 @@ export function WorkoutTimeline({
           {/* View Toggle - Hidden on mobile, auto-switches based on screen size */}
           <div className="hidden sm:flex gap-1 bg-base-200 p-1 rounded-lg">
             <button
-              onClick={() => setViewMode("month")}
+              onClick={() => setViewMode('month')}
               className={`btn btn-xs ${
-                viewMode === "month" ? "btn-primary" : "btn-ghost"
+                viewMode === 'month' ? 'btn-primary' : 'btn-ghost'
               }`}
               title="Month view"
             >
               <Calendar className="w-3 h-3" />
             </button>
             <button
-              onClick={() => setViewMode("week")}
+              onClick={() => setViewMode('week')}
               className={`btn btn-xs ${
-                viewMode === "week" ? "btn-primary" : "btn-ghost"
+                viewMode === 'week' ? 'btn-primary' : 'btn-ghost'
               }`}
               title="Week view"
             >
@@ -434,10 +434,10 @@ export function WorkoutTimeline({
       {/* Days of week header */}
       <div
         className={`grid gap-1 mb-2 ${
-          viewMode === "month" ? "hidden sm:grid sm:grid-cols-8" : "grid-cols-7"
+          viewMode === 'month' ? 'hidden sm:grid sm:grid-cols-8' : 'grid-cols-7'
         }`}
       >
-        {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
+        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
           <div
             key={day}
             className="text-center text-sm font-medium text-base-content/70 py-2"
@@ -446,7 +446,7 @@ export function WorkoutTimeline({
             <span className="sm:hidden">{day.charAt(0)}</span>
           </div>
         ))}
-        {viewMode === "month" && (
+        {viewMode === 'month' && (
           <div className="hidden sm:block text-center text-sm font-medium text-base-content/70 py-2">
             Week Stats
           </div>
@@ -463,7 +463,7 @@ export function WorkoutTimeline({
         </div>
 
         {/* Desktop: Show selected view with weekly summaries for month view */}
-        {viewMode === "month" ? (
+        {viewMode === 'month' ? (
           <div className="hidden sm:col-span-7 sm:grid sm:grid-cols-8 sm:gap-1">
             {calendarDays.map((day, index) => {
               const weekIndex = Math.floor(index / 7);

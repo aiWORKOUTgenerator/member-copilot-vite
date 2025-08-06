@@ -1,6 +1,6 @@
-import { createContext } from "react";
-import { GeneratedWorkout } from "@/domain/entities/generatedWorkout";
-import { WorkoutParams } from "@/domain/entities/workoutParams";
+import { createContext } from 'react';
+import { GeneratedWorkout } from '@/domain/entities/generatedWorkout';
+import { WorkoutParams } from '@/domain/entities/workoutParams';
 
 /**
  * GeneratedWorkoutState interface defines the shape of our generated workout context value.

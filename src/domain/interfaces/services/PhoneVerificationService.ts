@@ -6,7 +6,7 @@ import {
   ResendCodeRequest,
   ResendCodeResponse,
   PhoneVerificationSession,
-} from "@/domain/entities/phoneVerification";
+} from '@/domain/entities/phoneVerification';
 
 /**
  * PhoneVerificationService interface defines operations for phone number verification.

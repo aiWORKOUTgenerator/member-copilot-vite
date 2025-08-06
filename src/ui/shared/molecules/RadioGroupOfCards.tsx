@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
 export interface SelectableItem {
   id: string | number;
@@ -18,13 +18,13 @@ interface RadioGroupOfCardsProps<T extends SelectableItem> {
   multiple?: boolean;
   gridCols?: number;
   colorScheme?:
-    | "primary"
-    | "secondary"
-    | "accent"
-    | "success"
-    | "warning"
-    | "info"
-    | "error";
+    | 'primary'
+    | 'secondary'
+    | 'accent'
+    | 'success'
+    | 'warning'
+    | 'info'
+    | 'error';
 }
 
 export function RadioGroupOfCards<T extends SelectableItem>({
@@ -32,10 +32,10 @@ export function RadioGroupOfCards<T extends SelectableItem>({
   onChange,
   defaultSelected,
   selected: controlledSelected,
-  legend = "Select an option",
+  legend = 'Select an option',
   multiple = false,
   gridCols = 3,
-  colorScheme = "primary",
+  colorScheme = 'primary',
 }: RadioGroupOfCardsProps<T>) {
   // Initialize internal state based on whether it's controlled or uncontrolled
   const [internalSelected, setInternalSelected] = useState<T | T[] | undefined>(
@@ -105,7 +105,7 @@ export function RadioGroupOfCards<T extends SelectableItem>({
               className={`card cursor-pointer transition-all hover:shadow ${
                 isSelected
                   ? `bg-${colorScheme}-50 border-${colorScheme} border-2`
-                  : "bg-base-100 border-base-300 border"
+                  : 'bg-base-100 border-base-300 border'
               }`}
               onClick={() => handleChange(item)}
             >

@@ -1,11 +1,11 @@
-import { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router";
+import { useEffect, useState, useRef } from 'react';
+import { useNavigate } from 'react-router';
 import {
   useTrainerPersonaData,
   useTrainerPersonaError,
   useTrainerPersona,
-} from "@/hooks/useTrainerPersona";
-import { Bot, CheckCircle, Clock, Sparkles } from "lucide-react";
+} from '@/hooks/useTrainerPersona';
+import { Bot, CheckCircle, Clock, Sparkles } from 'lucide-react';
 
 const GeneratingTrainerPage = () => {
   const navigate = useNavigate();
@@ -17,8 +17,8 @@ const GeneratingTrainerPage = () => {
   const [timeElapsed, setTimeElapsed] = useState(0);
   const [hasTimedOut, setHasTimedOut] = useState(false);
 
-  const intervalRef = useRef<number | null>(null);
-  const timeIntervalRef = useRef<number | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const timeIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const MAX_POLLING_ATTEMPTS = 60; // 5 minutes (60 attempts * 5s = 300s)
   const POLLING_INTERVAL = 5000; // 5 seconds
@@ -85,7 +85,7 @@ const GeneratingTrainerPage = () => {
 
       // Small delay to show success state before redirect
       setTimeout(() => {
-        navigate("/dashboard/trainer", { replace: true });
+        navigate('/dashboard/trainer', { replace: true });
       }, 2000);
     }
   }, [trainerPersona, error, navigate]);
@@ -93,7 +93,7 @@ const GeneratingTrainerPage = () => {
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, "0")}`;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
   if (hasTimedOut) {
@@ -130,7 +130,7 @@ const GeneratingTrainerPage = () => {
 
               <button
                 className="btn btn-ghost"
-                onClick={() => navigate("/dashboard/trainer")}
+                onClick={() => navigate('/dashboard/trainer')}
               >
                 Go Back
               </button>
@@ -209,7 +209,7 @@ const GeneratingTrainerPage = () => {
           <div className="mt-6">
             <button
               className="btn btn-ghost btn-sm"
-              onClick={() => navigate("/dashboard/trainer")}
+              onClick={() => navigate('/dashboard/trainer')}
             >
               Cancel
             </button>

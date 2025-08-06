@@ -1,9 +1,9 @@
-import { useContext } from "react";
-import { TrainerPersona } from "@/domain/entities/trainerPersona";
+import { useContext } from 'react';
+import { TrainerPersona } from '@/domain/entities/trainerPersona';
 import {
   TrainerPersonaContext,
   TrainerPersonaState,
-} from "@/contexts/trainer-persona.types";
+} from '@/contexts/trainer-persona.types';
 
 /**
  * Custom hook to access the trainer persona data from the TrainerPersonaContext.
@@ -14,7 +14,7 @@ export function useTrainerPersona(): TrainerPersonaState {
 
   if (context === undefined) {
     throw new Error(
-      "useTrainerPersona must be used within a TrainerPersonaProvider"
+      'useTrainerPersona must be used within a TrainerPersonaProvider'
     );
   }
 

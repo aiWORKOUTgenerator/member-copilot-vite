@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { Announcement } from "@/domain/entities/announcement";
-import { useAuth } from "@/hooks/auth";
-import { useAnnouncementsService } from "@/hooks/useAnnouncementsService";
-import { ReactNode, useCallback, useEffect, useState } from "react";
-import { AnnouncementContext, AnnouncementState } from "./announcement.types";
+import { Announcement } from '@/domain/entities/announcement';
+import { useAuth } from '@/hooks/auth';
+import { useAnnouncementsService } from '@/hooks/useAnnouncementsService';
+import { ReactNode, useCallback, useEffect, useState } from 'react';
+import { AnnouncementContext, AnnouncementState } from './announcement.types';
 
 interface AnnouncementProviderProps {
   children: ReactNode;
@@ -30,7 +30,7 @@ export function AnnouncementProvider({ children }: AnnouncementProviderProps) {
       setAnnouncements(data);
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "Failed to fetch announcements"
+        err instanceof Error ? err.message : 'Failed to fetch announcements'
       );
     } finally {
       setIsLoading(false);

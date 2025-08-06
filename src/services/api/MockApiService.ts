@@ -1,4 +1,4 @@
-import { ApiService } from "@/domain/interfaces/api/ApiService";
+import { ApiService } from '@/domain/interfaces/api/ApiService';
 
 /**
  * Mock implementation of the ApiService interface for testing and development.
@@ -6,9 +6,9 @@ import { ApiService } from "@/domain/interfaces/api/ApiService";
  */
 export class MockApiService implements ApiService {
   private mockData: Record<string, unknown[]> = {
-    "/api/users": [
-      { id: 1, name: "Alice Smith", email: "alice@example.com" },
-      { id: 2, name: "Bob Johnson", email: "bob@example.com" },
+    '/api/users': [
+      { id: 1, name: 'Alice Smith', email: 'alice@example.com' },
+      { id: 2, name: 'Bob Johnson', email: 'bob@example.com' },
     ],
   };
 
@@ -48,7 +48,7 @@ export class MockApiService implements ApiService {
     await this.delay(500);
 
     // For user creation
-    if (endpoint === "/api/users") {
+    if (endpoint === '/api/users') {
       const users = this.mockData[endpoint] as Record<string, unknown>[];
       const newId =
         users.length > 0

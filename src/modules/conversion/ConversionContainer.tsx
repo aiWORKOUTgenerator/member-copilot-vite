@@ -1,8 +1,8 @@
-import { Route, Routes } from "react-router";
-import ConversionPage from "./pages/ConversionPage";
-import SignUpPage from "./pages/SignUpPage";
-import VerifyPage from "./pages/VerifyPage";
-import EmailOtpPage from "./pages/EmailOtpPage";
+import { Route, Routes } from 'react-router';
+import ConversionPage from './pages/ConversionPage';
+import SignUpPage from './pages/SignUpPage';
+import VerifyPage from './pages/VerifyPage';
+import EmailOtpPage from './pages/EmailOtpPage';
 
 export default function ConversionContainer() {
   return (

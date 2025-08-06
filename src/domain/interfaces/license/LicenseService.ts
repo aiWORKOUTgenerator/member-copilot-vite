@@ -1,4 +1,4 @@
-import { License, LicensePolicy } from "../../entities";
+import { License, LicensePolicy } from '../../entities';
 
 /**
  * Service interface for license management and access control

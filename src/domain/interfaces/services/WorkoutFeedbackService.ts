@@ -1,7 +1,7 @@
 import {
   WorkoutFeedback,
   CreateWorkoutFeedbackRequest,
-} from "@/domain/entities/workoutFeedback";
+} from '@/domain/entities/workoutFeedback';
 
 export interface WorkoutFeedbackService {
   /**

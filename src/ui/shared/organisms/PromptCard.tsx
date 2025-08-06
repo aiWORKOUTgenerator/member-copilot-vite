@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect } from "react";
-import { Prompt, PromptType } from "@/domain/entities";
-import { PromptHeader } from "../molecules/PromptHeader";
-import { InputField } from "../molecules/InputField";
-import { ChoiceGroup } from "../molecules/ChoiceGroup";
+import React, { useState, useEffect } from 'react';
+import { Prompt, PromptType } from '@/domain/entities';
+import { PromptHeader } from '../molecules/PromptHeader';
+import { InputField } from '../molecules/InputField';
+import { ChoiceGroup } from '../molecules/ChoiceGroup';
 
 interface PromptCardProps {
   prompt: Prompt;
@@ -38,13 +38,13 @@ export const PromptCard: React.FC<PromptCardProps> = ({
 
   const handleChoiceChange = (newValues: string[]) => {
     setSelectedValues(newValues);
-    onChange(prompt.allowMultiple ? newValues : newValues[0] || "");
+    onChange(prompt.allowMultiple ? newValues : newValues[0] || '');
   };
 
   const handleInputChange = (newValue: string) => {
     if (prompt.type === PromptType.NUMBER) {
       // Handle empty string case for number inputs
-      onChange(newValue === "" ? "" : Number(newValue));
+      onChange(newValue === '' ? '' : Number(newValue));
     } else {
       onChange(newValue);
     }
@@ -55,12 +55,12 @@ export const PromptCard: React.FC<PromptCardProps> = ({
 
   // Extract min and max from validation rules, ensuring they are numbers or undefined
   const minValue =
-    typeof prompt.validationRules?.min === "number"
+    typeof prompt.validationRules?.min === 'number'
       ? (prompt.validationRules.min as number)
       : undefined;
 
   const maxValue =
-    typeof prompt.validationRules?.max === "number"
+    typeof prompt.validationRules?.max === 'number'
       ? (prompt.validationRules.max as number)
       : undefined;
 
@@ -93,7 +93,7 @@ export const PromptCard: React.FC<PromptCardProps> = ({
           <InputField
             id={`prompt-${prompt.id}`}
             type={prompt.type}
-            value={Array.isArray(value) ? "" : value}
+            value={Array.isArray(value) ? '' : value}
             onChange={handleInputChange}
             isValid={isValid}
             validationMessage={validationMessage}

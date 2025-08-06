@@ -1,32 +1,32 @@
-import { CustomizationComponentProps } from "../types";
+import { CustomizationComponentProps } from '../types';
 
 // Sleep quality ratings based on Pittsburgh Sleep Quality Index and clinical assessments
 const SLEEP_QUALITY_LEVELS = [
   {
     value: 1,
-    label: "Very Poor",
+    label: 'Very Poor',
     description:
-      "Severely disrupted sleep, frequent awakenings, feeling exhausted",
+      'Severely disrupted sleep, frequent awakenings, feeling exhausted',
   },
   {
     value: 2,
-    label: "Poor",
-    description: "Difficulty falling asleep, restless night, waking up tired",
+    label: 'Poor',
+    description: 'Difficulty falling asleep, restless night, waking up tired',
   },
   {
     value: 3,
-    label: "Fair",
-    description: "Some sleep interruptions, moderately rested upon waking",
+    label: 'Fair',
+    description: 'Some sleep interruptions, moderately rested upon waking',
   },
   {
     value: 4,
-    label: "Good",
-    description: "Mostly uninterrupted sleep, feeling refreshed in the morning",
+    label: 'Good',
+    description: 'Mostly uninterrupted sleep, feeling refreshed in the morning',
   },
   {
     value: 5,
-    label: "Excellent",
-    description: "Deep, restorative sleep, waking up fully energized and alert",
+    label: 'Excellent',
+    description: 'Deep, restorative sleep, waking up fully energized and alert',
   },
 ];
 
@@ -71,9 +71,9 @@ export default function SleepQualityCustomization({
                 type="button"
                 className={`btn btn-circle ${
                   isSelected
-                    ? "btn-primary text-primary-content"
-                    : "btn-outline btn-primary"
-                } ${disabled ? "btn-disabled" : ""} font-bold text-base`}
+                    ? 'btn-primary text-primary-content'
+                    : 'btn-outline btn-primary'
+                } ${disabled ? 'btn-disabled' : ''} font-bold text-base`}
                 onClick={() => handleRatingChange(level.value)}
                 disabled={disabled}
                 title={`${level.label}: ${level.description}`}

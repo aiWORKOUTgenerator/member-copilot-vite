@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { TrainerPersona } from "@/domain/entities/trainerPersona";
-import { useAuth } from "@/hooks/auth";
-import { useTrainerPersonaService } from "@/hooks/useTrainerPersonaService";
-import { ReactNode, useCallback, useEffect, useState } from "react";
+import { TrainerPersona } from '@/domain/entities/trainerPersona';
+import { useAuth } from '@/hooks/auth';
+import { useTrainerPersonaService } from '@/hooks/useTrainerPersonaService';
+import { ReactNode, useCallback, useEffect, useState } from 'react';
 import {
   TrainerPersonaContext,
   TrainerPersonaState,
-} from "./trainer-persona.types";
+} from './trainer-persona.types';
 
 interface TrainerPersonaProviderProps {
   children: ReactNode;
@@ -40,7 +40,7 @@ export function TrainerPersonaProvider({
       setTrainerPersona(data);
       setIsLoaded(true);
     } catch (error) {
-      console.error("Error fetching trainer persona:", error);
+      console.error('Error fetching trainer persona:', error);
       setHasNoPersona(true);
       setIsLoaded(true);
     } finally {
@@ -55,11 +55,11 @@ export function TrainerPersonaProvider({
     try {
       await fetchTrainerPersona();
     } catch (error) {
-      console.error("Error generating trainer persona:", error);
+      console.error('Error generating trainer persona:', error);
       setError(
         error instanceof Error
           ? error.message
-          : "Failed to generate trainer persona"
+          : 'Failed to generate trainer persona'
       );
       setIsLoading(false);
     }

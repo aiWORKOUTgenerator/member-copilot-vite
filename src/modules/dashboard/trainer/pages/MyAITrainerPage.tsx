@@ -4,9 +4,9 @@ import {
   useTrainerPersonaError,
   useTrainerPersonaHasNoPersona,
   useTrainerPersonaLoading,
-} from "@/hooks/useTrainerPersona";
-import { useUserAccess } from "@/hooks";
-import EmptyStateBasic from "@/ui/shared/molecules/EmptyState";
+} from '@/hooks/useTrainerPersona';
+import { useUserAccess } from '@/hooks';
+import EmptyStateBasic from '@/ui/shared/molecules/EmptyState';
 import {
   ArrowRight,
   Bot,
@@ -14,8 +14,8 @@ import {
   Crown,
   Shield,
   Sparkles,
-} from "lucide-react";
-import { useNavigate } from "react-router";
+} from 'lucide-react';
+import { useNavigate } from 'react-router';
 
 const MyAITrainerPage = () => {
   const trainerPersona = useTrainerPersonaData();
@@ -31,7 +31,7 @@ const MyAITrainerPage = () => {
   const navigate = useNavigate();
 
   // Check if user has access to trainer persona feature
-  const hasTrainerAccess = canAccessFeature("ai_assistant_advanced");
+  const hasTrainerAccess = canAccessFeature('ai_assistant_advanced');
 
   // Handle access control loading state
   if (isAccessLoading) {
@@ -69,7 +69,7 @@ const MyAITrainerPage = () => {
               <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
                 Meet Your Personal
                 <span className="text-warning block mt-2">
-                  {" "}
+                  {' '}
                   AI Fitness Coach
                 </span>
               </h1>
@@ -85,7 +85,7 @@ const MyAITrainerPage = () => {
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
                 <button
                   className="btn btn-warning btn-lg text-lg font-bold shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 min-w-[240px]"
-                  onClick={() => navigate("/dashboard/billing")}
+                  onClick={() => navigate('/dashboard/billing')}
                 >
                   <Crown className="size-6" />
                   Start Now - $10/mo (50% off)
@@ -146,9 +146,9 @@ const MyAITrainerPage = () => {
           onAction={async () => {
             try {
               await generateTrainerPersona();
-              navigate("/dashboard/trainer/generating");
+              navigate('/dashboard/trainer/generating');
             } catch (error) {
-              console.error("Error starting trainer generation:", error);
+              console.error('Error starting trainer generation:', error);
             }
           }}
           className="mt-12"
@@ -252,7 +252,7 @@ const MyAITrainerPage = () => {
                           <div className="card-body p-4">
                             <h4 className="card-title text-sm opacity-80">
                               {key
-                                .replace(/_/g, " ")
+                                .replace(/_/g, ' ')
                                 .replace(/\b\w/g, (l) => l.toUpperCase())}
                             </h4>
                             <p className="text-base-content/90">{value}</p>
@@ -269,7 +269,7 @@ const MyAITrainerPage = () => {
                     {trainerPersona.expertise_areas.map((area, index) => (
                       <span key={index} className="badge badge-secondary">
                         {area
-                          .replace(/_/g, " ")
+                          .replace(/_/g, ' ')
                           .replace(/\b\w/g, (l) => l.toUpperCase())}
                       </span>
                     ))}

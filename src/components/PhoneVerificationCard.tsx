@@ -2,12 +2,12 @@ import {
   useContactData,
   useHasPhoneNumber,
   useIsPhoneVerified,
-} from "@/hooks/useContact";
-import { ActionCard } from "@/ui/shared/molecules/ActionCard";
-import { CheckCircle, Phone, Shield } from "lucide-react";
-import { useState } from "react";
-import { formatPhoneNumber } from "react-phone-number-input";
-import { PhoneVerificationModal } from "./PhoneVerificationModal";
+} from '@/hooks/useContact';
+import { ActionCard } from '@/ui/shared/molecules/ActionCard';
+import { CheckCircle, Phone, Shield } from 'lucide-react';
+import { useState } from 'react';
+import { formatPhoneNumber } from 'react-phone-number-input';
+import { PhoneVerificationModal } from './PhoneVerificationModal';
 
 /**
  * Phone verification status card for dashboard
@@ -52,7 +52,7 @@ export function PhoneVerificationCard() {
   if (!isPhoneVerified) {
     const phoneDisplay = contact?.phone_number
       ? formatPhoneNumber(contact.phone_number)
-      : "";
+      : '';
 
     return (
       <>
@@ -81,7 +81,7 @@ export function PhoneVerificationCard() {
   // If phone number is verified - show success status
   const verifiedPhoneDisplay = contact?.phone_number
     ? formatPhoneNumber(contact.phone_number)
-    : "";
+    : '';
 
   return (
     <ActionCard

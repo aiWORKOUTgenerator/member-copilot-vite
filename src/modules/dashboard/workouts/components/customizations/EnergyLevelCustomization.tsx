@@ -1,32 +1,32 @@
-import { CustomizationComponentProps } from "../types";
+import { CustomizationComponentProps } from '../types';
 
 // Energy level ratings based on Rate of Perceived Exertion (RPE) and clinical energy assessments
 const ENERGY_LEVELS = [
   {
     value: 1,
-    label: "Very Low",
-    description: "Extremely fatigued, struggling to stay awake, need rest",
+    label: 'Very Low',
+    description: 'Extremely fatigued, struggling to stay awake, need rest',
   },
   {
     value: 2,
-    label: "Low",
-    description: "Tired and sluggish, low motivation, minimal energy reserves",
+    label: 'Low',
+    description: 'Tired and sluggish, low motivation, minimal energy reserves',
   },
   {
     value: 3,
-    label: "Moderate",
-    description: "Average energy, can perform daily activities comfortably",
+    label: 'Moderate',
+    description: 'Average energy, can perform daily activities comfortably',
   },
   {
     value: 4,
-    label: "High",
+    label: 'High',
     description:
-      "Feeling energetic and motivated, ready for challenging activities",
+      'Feeling energetic and motivated, ready for challenging activities',
   },
   {
     value: 5,
-    label: "Very High",
-    description: "Peak energy, feeling powerful and ready for intense workouts",
+    label: 'Very High',
+    description: 'Peak energy, feeling powerful and ready for intense workouts',
   },
 ];
 
@@ -71,9 +71,9 @@ export default function EnergyLevelCustomization({
                 type="button"
                 className={`btn btn-circle ${
                   isSelected
-                    ? "btn-secondary text-secondary-content"
-                    : "btn-outline btn-secondary"
-                } ${disabled ? "btn-disabled" : ""} font-bold text-base`}
+                    ? 'btn-secondary text-secondary-content'
+                    : 'btn-outline btn-secondary'
+                } ${disabled ? 'btn-disabled' : ''} font-bold text-base`}
                 onClick={() => handleRatingChange(level.value)}
                 disabled={disabled}
                 title={`${level.label}: ${level.description}`}

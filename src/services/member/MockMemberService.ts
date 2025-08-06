@@ -1,9 +1,9 @@
-import { Contact } from "@/domain";
+import { Contact } from '@/domain';
 import {
   MemberInfo,
   MemberService,
-} from "@/domain/interfaces/services/MemberService";
-import { GeneratedWorkout } from "@/domain/entities/generatedWorkout";
+} from '@/domain/interfaces/services/MemberService';
+import { GeneratedWorkout } from '@/domain/entities/generatedWorkout';
 
 /**
  * Mock implementation of the MemberService interface for testing and development.
@@ -22,8 +22,8 @@ export class MockMemberService implements MemberService {
     await this.delay(200); // Simulate network delay
 
     return {
-      id: "current-user-123",
-      email: "current@example.com",
+      id: 'current-user-123',
+      email: 'current@example.com',
     };
   }
 
@@ -35,30 +35,30 @@ export class MockMemberService implements MemberService {
     await this.delay(300); // Simulate network delay
 
     return {
-      email: "current@example.com",
-      first_name: "John",
-      last_name: "Doe",
-      phone_number: "1234567890",
+      email: 'current@example.com',
+      first_name: 'John',
+      last_name: 'Doe',
+      phone_number: '1234567890',
       phone_verified_at: null,
-      source: "website",
-      status: "new",
+      source: 'website',
+      status: 'new',
       attributes: {
-        age: "32",
-        goal: ["BUILDING MUSCLE"],
-        gender: ["MALE"],
+        age: '32',
+        goal: ['BUILDING MUSCLE'],
+        gender: ['MALE'],
         height: "5'11",
-        weight: "185",
+        weight: '185',
         injuries: [
-          "No, I do not have any injuries that will affect my ability to perform exercise",
+          'No, I do not have any injuries that will affect my ability to perform exercise',
         ],
-        liability: "yes",
+        liability: 'yes',
         current_activity: [
-          "MODERATELY ACTIVE: regular light to moderate physical activities",
+          'MODERATELY ACTIVE: regular light to moderate physical activities',
         ],
         offer_preference: ["YES, I'm interested in personal training programs"],
-        medical_clearance: ["YES"],
+        medical_clearance: ['YES'],
       },
-      registration_status: "registered",
+      registration_status: 'registered',
       workout_count: 5,
       last_workout_date: new Date().toISOString(),
     };

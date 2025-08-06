@@ -1,77 +1,77 @@
-"use client";
+'use client';
 
-import BillingContext, { BillingContextType } from "@/contexts/BillingContext";
-import { StripeProvider } from "@/contexts/StripeContext";
-import TabBar, { TabOption } from "@/ui/shared/molecules/TabBar";
-import { useState } from "react";
-import { Outlet, useLocation, useNavigate } from "react-router";
+import BillingContext, { BillingContextType } from '@/contexts/BillingContext';
+import { StripeProvider } from '@/contexts/StripeContext';
+import TabBar, { TabOption } from '@/ui/shared/molecules/TabBar';
+import { useState } from 'react';
+import { Outlet, useLocation, useNavigate } from 'react-router';
 
 export default function BillingLayout() {
   const pathname = useLocation();
   const navigate = useNavigate();
-  const [successMessage, setSuccessMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   // Map pathname to tab ID
   const getSelectedTabFromPathname = (path: string): string => {
     // Check exact path matches first
-    if (path === "/dashboard/billing") return "subscription";
-    if (path === "/dashboard/billing/payment") return "payment";
-    if (path === "/dashboard/billing/history") return "history";
-    if (path === "/dashboard/billing/usage") return "usage";
+    if (path === '/dashboard/billing') return 'subscription';
+    if (path === '/dashboard/billing/payment') return 'payment';
+    if (path === '/dashboard/billing/history') return 'history';
+    if (path === '/dashboard/billing/usage') return 'usage';
 
     // For more complex paths with additional segments
-    if (path.startsWith("/dashboard/billing/payment")) return "payment";
-    if (path.startsWith("/dashboard/billing/history")) return "history";
-    if (path.startsWith("/dashboard/billing/usage")) return "usage";
+    if (path.startsWith('/dashboard/billing/payment')) return 'payment';
+    if (path.startsWith('/dashboard/billing/history')) return 'history';
+    if (path.startsWith('/dashboard/billing/usage')) return 'usage';
 
     // Default to subscription tab
-    return "subscription";
+    return 'subscription';
   };
 
   // Define the navigation tabs
   const tabs: TabOption[] = [
     {
-      id: "subscription",
-      label: "Subscription",
+      id: 'subscription',
+      label: 'Subscription',
     },
     {
-      id: "payment",
-      label: "Payment Method",
+      id: 'payment',
+      label: 'Payment Method',
     },
     {
-      id: "history",
-      label: "History",
+      id: 'history',
+      label: 'History',
     },
     {
-      id: "usage",
-      label: "Usage",
+      id: 'usage',
+      label: 'Usage',
     },
   ];
 
   // Handle tab change by navigating to the corresponding route
   const handleTabChange = (tabId: string) => {
     switch (tabId) {
-      case "subscription":
-        navigate("/dashboard/billing");
+      case 'subscription':
+        navigate('/dashboard/billing');
         break;
-      case "payment":
-        navigate("/dashboard/billing/payment");
+      case 'payment':
+        navigate('/dashboard/billing/payment');
         break;
-      case "history":
-        navigate("/dashboard/billing/history");
+      case 'history':
+        navigate('/dashboard/billing/history');
         break;
-      case "usage":
-        navigate("/dashboard/billing/usage");
+      case 'usage':
+        navigate('/dashboard/billing/usage');
         break;
       default:
-        navigate("/dashboard/billing");
+        navigate('/dashboard/billing');
     }
   };
 
   // Handle error message dismissal
   const dismissError = () => {
-    setErrorMessage("");
+    setErrorMessage('');
   };
 
   // Create context value
@@ -84,7 +84,7 @@ export default function BillingLayout() {
   };
 
   // Handle case where pathname could be null
-  const currentPath = pathname.pathname || "/dashboard/billing";
+  const currentPath = pathname.pathname || '/dashboard/billing';
   const selectedTab = getSelectedTabFromPathname(currentPath);
 
   return (

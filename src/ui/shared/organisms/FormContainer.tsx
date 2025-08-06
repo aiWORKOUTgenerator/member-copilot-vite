@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import React, { ReactNode } from "react";
-import { Link } from "react-router";
-import { Card } from "../molecules/Card";
+import React, { ReactNode } from 'react';
+import { Link } from 'react-router';
+import { Card } from '../molecules/Card';
 
 interface FormContainerProps {
   title?: string;
@@ -36,7 +36,7 @@ export const FormContainer: React.FC<FormContainerProps> = ({
 
           {altAuthText && altAuthLink && altAuthLinkText && (
             <div className="mt-6 text-center text-sm">
-              {altAuthText}{" "}
+              {altAuthText}{' '}
               <Link
                 to={altAuthLink}
                 className="link link-primary font-semibold"

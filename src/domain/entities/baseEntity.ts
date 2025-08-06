@@ -1,4 +1,4 @@
-import { Entity } from "./entity";
+import { Entity } from './entity';
 
 // Example implementation that can be extended
 export abstract class BaseEntity<T> implements Entity<T> {

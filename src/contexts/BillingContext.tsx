@@ -1,5 +1,5 @@
-"use client";
-import { createContext } from "react";
+'use client';
+import { createContext } from 'react';
 
 // Create a context for sharing billing state with child pages
 export interface BillingContextType {

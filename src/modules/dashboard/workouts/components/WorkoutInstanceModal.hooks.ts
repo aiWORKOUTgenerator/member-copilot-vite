@@ -1,5 +1,5 @@
-import { WorkoutInstance } from "@/domain/entities/workoutInstance";
-import { useCallback, useState } from "react";
+import { WorkoutInstance } from '@/domain/entities/workoutInstance';
+import { useCallback, useState } from 'react';
 
 /**
  * Hook to manage workout instance modal state

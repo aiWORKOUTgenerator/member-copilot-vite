@@ -2,7 +2,7 @@
  * License system entities
  */
 
-import { MeteredFeature } from "./meteredFeatures";
+import { MeteredFeature } from './meteredFeatures';
 
 /**
  * License policy represents a template defining access and limits
@@ -20,18 +20,18 @@ export interface LicensePolicy {
  * License status enum
  */
 export enum LicenseStatus {
-  ACTIVE = "active",
-  EXPIRED = "expired",
-  SUSPENDED = "suspended",
+  ACTIVE = 'active',
+  EXPIRED = 'expired',
+  SUSPENDED = 'suspended',
 }
 
 /**
  * License source type enum
  */
 export enum LicenseSourceType {
-  STRIPE = "stripe",
-  MANUAL = "manual",
-  IMPORT = "import",
+  STRIPE = 'stripe',
+  MANUAL = 'manual',
+  IMPORT = 'import',
 }
 
 /**

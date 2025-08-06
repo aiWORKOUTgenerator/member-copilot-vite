@@ -1,4 +1,4 @@
-import { Contact } from "@/domain/entities";
+import { Contact } from '@/domain/entities';
 
 /**
  * Member information entity

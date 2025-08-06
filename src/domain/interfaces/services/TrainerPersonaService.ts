@@ -1,4 +1,4 @@
-import { TrainerPersona } from "@/domain/entities";
+import { TrainerPersona } from '@/domain/entities';
 
 /**
  * TrainerPersonaService interface defines operations for trainer persona management.

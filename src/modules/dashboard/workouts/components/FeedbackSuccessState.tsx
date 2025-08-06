@@ -1,5 +1,5 @@
-import { CheckCircle, PartyPopper } from "lucide-react";
-import { useEffect, useState } from "react";
+import { CheckCircle, PartyPopper } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 export interface FeedbackSuccessStateProps {
   /** Callback when user wants to close the success state */
@@ -51,7 +51,7 @@ export default function FeedbackSuccessState({
     <div className="text-center space-y-6 py-8">
       {/* Success Icon with Animation */}
       <div className="flex justify-center">
-        <div className={`relative ${showAnimation ? "animate-bounce" : ""}`}>
+        <div className={`relative ${showAnimation ? 'animate-bounce' : ''}`}>
           <CheckCircle className="w-16 h-16 text-success" />
           {showAnimation && (
             <div className="absolute -top-2 -right-2 animate-pulse">

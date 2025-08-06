@@ -1,5 +1,5 @@
-"use client";
-import { ReactNode } from "react";
+'use client';
+import { ReactNode } from 'react';
 
 interface ActionCardProps {
   title: string;
@@ -19,7 +19,7 @@ export function ActionCard({
   onClick,
   icon,
   badgeText,
-  badgeColor = "badge-secondary",
+  badgeColor = 'badge-secondary',
   actionCardIsDisabled = false,
 }: ActionCardProps) {
   return (

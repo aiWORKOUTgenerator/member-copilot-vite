@@ -1,7 +1,7 @@
-import { SubscriptionService } from "@/domain/interfaces/services/SubscriptionService";
-import { SubscriptionServiceImpl } from "@/services/subscription/SubscriptionServiceImpl";
-import { useMemo } from "react";
-import { useApiService } from "./useApiService";
+import { SubscriptionService } from '@/domain/interfaces/services/SubscriptionService';
+import { SubscriptionServiceImpl } from '@/services/subscription/SubscriptionServiceImpl';
+import { useMemo } from 'react';
+import { useApiService } from './useApiService';
 
 /**
  * Hook to access the SubscriptionService
@@ -11,7 +11,7 @@ export function useSubscriptionService(): SubscriptionService {
   const apiService = useApiService();
 
   const subscriptionService = useMemo(() => {
-    console.log("useSubscriptionService", apiService);
+    console.log('useSubscriptionService', apiService);
     return new SubscriptionServiceImpl(apiService);
   }, [apiService]);
 

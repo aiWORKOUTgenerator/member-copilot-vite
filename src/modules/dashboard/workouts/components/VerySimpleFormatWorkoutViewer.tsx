@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
 interface VerySimpleFormatWorkoutViewerProps {
   verySimpleFormat: string | null;
@@ -9,13 +9,13 @@ interface VerySimpleFormatWorkoutViewerProps {
 const VerySimpleFormatWorkoutViewer = ({
   verySimpleFormat,
 }: VerySimpleFormatWorkoutViewerProps) => {
-  const [content, setContent] = useState<string>("");
+  const [content, setContent] = useState<string>('');
 
   useEffect(() => {
     if (verySimpleFormat) {
       setContent(verySimpleFormat);
     } else {
-      setContent("No quick view format available for this workout.");
+      setContent('No quick view format available for this workout.');
     }
   }, [verySimpleFormat]);
 

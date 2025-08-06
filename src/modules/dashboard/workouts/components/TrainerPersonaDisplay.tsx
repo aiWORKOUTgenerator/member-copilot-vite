@@ -1,4 +1,4 @@
-import { TrainerPersona } from "@/domain/entities/trainerPersona";
+import { TrainerPersona } from '@/domain/entities/trainerPersona';
 
 interface TrainerPersonaDisplayProps {
   trainerPersona: TrainerPersona;

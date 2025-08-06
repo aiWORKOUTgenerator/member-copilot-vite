@@ -2,8 +2,8 @@ import {
   ApiObject,
   IdentifyTraits,
   RudderAnalytics,
-} from "@rudderstack/analytics-js";
-import { AnalyticsService } from "./AnalyticsService";
+} from '@rudderstack/analytics-js';
+import { AnalyticsService } from './AnalyticsService';
 
 /**
  * RudderStack implementation of the analytics service
@@ -31,7 +31,7 @@ export class RudderstackAnalyticsService implements AnalyticsService {
       this.analytics.load(this.writeKey, this.dataPlaneUrl, this.options);
       this.isInitialized = true;
     } catch (error) {
-      console.error("Failed to initialize RudderStack analytics:", error);
+      console.error('Failed to initialize RudderStack analytics:', error);
     }
   }
 
@@ -43,7 +43,7 @@ export class RudderstackAnalyticsService implements AnalyticsService {
     try {
       this.analytics?.page(properties as ApiObject);
     } catch (error) {
-      console.error("Failed to track page view:", error);
+      console.error('Failed to track page view:', error);
     }
   }
 
@@ -55,7 +55,7 @@ export class RudderstackAnalyticsService implements AnalyticsService {
     try {
       this.analytics?.track(event, properties as ApiObject);
     } catch (error) {
-      console.error("Failed to track event:", error);
+      console.error('Failed to track event:', error);
     }
   }
 
@@ -67,7 +67,7 @@ export class RudderstackAnalyticsService implements AnalyticsService {
     try {
       this.analytics?.identify(userId, traits as IdentifyTraits);
     } catch (error) {
-      console.error("Failed to identify user:", error);
+      console.error('Failed to identify user:', error);
     }
   }
 
@@ -79,7 +79,7 @@ export class RudderstackAnalyticsService implements AnalyticsService {
     try {
       this.analytics?.reset();
     } catch (error) {
-      console.error("Failed to reset user:", error);
+      console.error('Failed to reset user:', error);
     }
   }
 

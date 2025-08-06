@@ -1,4 +1,4 @@
-import * as PusherTypes from "pusher-js";
+import * as PusherTypes from 'pusher-js';
 
 export interface PusherService {
   /**

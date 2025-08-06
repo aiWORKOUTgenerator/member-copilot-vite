@@ -38,32 +38,32 @@ export interface AttributeCompletion {
 export function isContact(obj: unknown): obj is Contact {
   return !!(
     obj &&
-    typeof obj === "object" &&
+    typeof obj === 'object' &&
     obj !== null &&
-    "email" in obj &&
-    "first_name" in obj &&
-    "last_name" in obj &&
-    "phone_number" in obj &&
-    "phone_verified_at" in obj &&
-    "source" in obj &&
-    "status" in obj &&
-    "attributes" in obj &&
-    "registration_status" in obj &&
-    "workout_count" in obj &&
-    "last_workout_date" in obj &&
-    typeof (obj as Contact).email === "string" &&
-    typeof (obj as Contact).first_name === "string" &&
-    typeof (obj as Contact).last_name === "string" &&
-    typeof (obj as Contact).phone_number === "string" &&
+    'email' in obj &&
+    'first_name' in obj &&
+    'last_name' in obj &&
+    'phone_number' in obj &&
+    'phone_verified_at' in obj &&
+    'source' in obj &&
+    'status' in obj &&
+    'attributes' in obj &&
+    'registration_status' in obj &&
+    'workout_count' in obj &&
+    'last_workout_date' in obj &&
+    typeof (obj as Contact).email === 'string' &&
+    typeof (obj as Contact).first_name === 'string' &&
+    typeof (obj as Contact).last_name === 'string' &&
+    typeof (obj as Contact).phone_number === 'string' &&
     ((obj as Contact).phone_verified_at === null ||
-      typeof (obj as Contact).phone_verified_at === "string") &&
-    typeof (obj as Contact).source === "string" &&
-    typeof (obj as Contact).status === "string" &&
+      typeof (obj as Contact).phone_verified_at === 'string') &&
+    typeof (obj as Contact).source === 'string' &&
+    typeof (obj as Contact).status === 'string' &&
     (obj as Contact).attributes &&
-    typeof (obj as Contact).attributes === "object" &&
-    typeof (obj as Contact).registration_status === "string" &&
-    typeof (obj as Contact).workout_count === "number" &&
-    typeof (obj as Contact).last_workout_date === "string"
+    typeof (obj as Contact).attributes === 'object' &&
+    typeof (obj as Contact).registration_status === 'string' &&
+    typeof (obj as Contact).workout_count === 'number' &&
+    typeof (obj as Contact).last_workout_date === 'string'
   );
 }
 
@@ -101,7 +101,7 @@ export const ContactUtils = {
         (prompt) =>
           contact.attributes[prompt.variableName] !== undefined &&
           contact.attributes[prompt.variableName] !== null &&
-          contact.attributes[prompt.variableName] !== ""
+          contact.attributes[prompt.variableName] !== ''
       ).length;
 
       // Calculate stats

@@ -1,5 +1,5 @@
-import { useApiService } from "@/hooks/useApiService";
-import { PhoneVerificationService } from "@/domain/interfaces/services/PhoneVerificationService";
+import { useApiService } from '@/hooks/useApiService';
+import { PhoneVerificationService } from '@/domain/interfaces/services/PhoneVerificationService';
 import {
   SendVerificationCodeRequest,
   SendVerificationCodeResponse,
@@ -12,7 +12,7 @@ import {
   PhoneVerificationErrorType,
   PhoneNumberUtils,
   PHONE_VERIFICATION_CONSTANTS,
-} from "@/domain/entities/phoneVerification";
+} from '@/domain/entities/phoneVerification';
 
 /**
  * Actual API response format from Twilio backend for send verification
@@ -39,7 +39,7 @@ interface TwilioVerifyApiResponse {
  */
 export class PhoneVerificationServiceImpl implements PhoneVerificationService {
   private apiService: ReturnType<typeof useApiService>;
-  private readonly baseEndpoint = "/members/phone-verification";
+  private readonly baseEndpoint = '/members/phone-verification';
 
   constructor(apiService: ReturnType<typeof useApiService>) {
     this.apiService = apiService;
@@ -74,24 +74,24 @@ export class PhoneVerificationServiceImpl implements PhoneVerificationService {
       // Transform the API response to match our expected interface
       // API returns: { message, status, to, channel }
       // We need: { success, message, verification_id, expires_at, attempts_remaining, can_resend_at }
-      console.log("API Response:", apiResponse);
+      console.log('API Response:', apiResponse);
 
       const response: SendVerificationCodeResponse = {
-        success: apiResponse.status === "pending",
+        success: apiResponse.status === 'pending',
         message: apiResponse.message,
         verification_id: apiResponse.to || formattedPhone, // Use phone number as ID if not provided
         expires_at: new Date(Date.now() + 10 * 60 * 1000).toISOString(), // 10 minutes from now
         can_resend_at: new Date(Date.now() + 30 * 1000).toISOString(), // 30 seconds from now
       };
 
-      console.log("Transformed Response:", response);
+      console.log('Transformed Response:', response);
 
       return response;
     } catch (error) {
-      console.error("Failed to send verification code:", error);
+      console.error('Failed to send verification code:', error);
       throw new PhoneVerificationError(
         PhoneVerificationErrorType.UNKNOWN_ERROR,
-        "Failed to send verification code. Please try again."
+        'Failed to send verification code. Please try again.'
       );
     }
   }
@@ -126,24 +126,24 @@ export class PhoneVerificationServiceImpl implements PhoneVerificationService {
       // Transform the API response to match our expected interface
       // API returns: { message, status, verified_at, phone_number }
       // We need: { success, message, verified_at }
-      console.log("Verify API Response:", apiResponse);
+      console.log('Verify API Response:', apiResponse);
 
       const response: VerifyCodeResponse = {
         success:
-          apiResponse.status === "verified" ||
-          apiResponse.message.includes("successfully verified"),
+          apiResponse.status === 'verified' ||
+          apiResponse.message.includes('successfully verified'),
         message: apiResponse.message,
         verified_at: apiResponse.verified_at,
       };
 
-      console.log("Transformed Verify Response:", response);
+      console.log('Transformed Verify Response:', response);
 
       return response;
     } catch (error) {
-      console.error("Failed to verify code:", error);
+      console.error('Failed to verify code:', error);
       throw new PhoneVerificationError(
         PhoneVerificationErrorType.UNKNOWN_ERROR,
-        "Failed to verify code. Please try again."
+        'Failed to verify code. Please try again.'
       );
     }
   }
@@ -168,10 +168,10 @@ export class PhoneVerificationServiceImpl implements PhoneVerificationService {
 
       return response;
     } catch (error) {
-      console.error("Failed to resend verification code:", error);
+      console.error('Failed to resend verification code:', error);
       throw new PhoneVerificationError(
         PhoneVerificationErrorType.UNKNOWN_ERROR,
-        "Failed to resend verification code. Please try again."
+        'Failed to resend verification code. Please try again.'
       );
     }
   }
@@ -189,10 +189,10 @@ export class PhoneVerificationServiceImpl implements PhoneVerificationService {
 
       return response;
     } catch (error) {
-      console.error("Failed to get verification status:", error);
+      console.error('Failed to get verification status:', error);
       throw new PhoneVerificationError(
         PhoneVerificationErrorType.UNKNOWN_ERROR,
-        "Failed to get verification status. Please try again."
+        'Failed to get verification status. Please try again.'
       );
     }
   }
@@ -212,8 +212,8 @@ export class PhoneVerificationServiceImpl implements PhoneVerificationService {
       let formatted = PhoneNumberUtils.formatPhoneNumber(phoneNumber);
 
       // If no country code in the number and one is provided, add it
-      if (countryCode && !formatted.startsWith("+")) {
-        formatted = `+${countryCode}${formatted.replace(/^\+/, "")}`;
+      if (countryCode && !formatted.startsWith('+')) {
+        formatted = `+${countryCode}${formatted.replace(/^\+/, '')}`;
       }
 
       return formatted;

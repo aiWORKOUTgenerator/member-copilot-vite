@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { ReactNode } from "react";
+import { ReactNode } from 'react';
 
 interface NewBadgeProps {
   /**
@@ -11,7 +11,7 @@ interface NewBadgeProps {
   /**
    * Position of the badge relative to its container
    */
-  position?: "top-right" | "top-left" | "bottom-right" | "bottom-left";
+  position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
 
   /**
    * Custom badge content (defaults to "NEW")
@@ -22,12 +22,12 @@ interface NewBadgeProps {
    * Badge color variant
    */
   variant?:
-    | "primary"
-    | "secondary"
-    | "accent"
-    | "success"
-    | "warning"
-    | "error";
+    | 'primary'
+    | 'secondary'
+    | 'accent'
+    | 'success'
+    | 'warning'
+    | 'error';
 
   /**
    * Additional CSS classes
@@ -37,25 +37,25 @@ interface NewBadgeProps {
 
 export function NewBadge({
   visible = true,
-  position = "top-right",
-  children = "NEW",
-  variant = "accent",
-  className = "",
+  position = 'top-right',
+  children = 'NEW',
+  variant = 'accent',
+  className = '',
 }: NewBadgeProps) {
   if (!visible) return null;
 
   const getPositionClasses = (pos: string) => {
     switch (pos) {
-      case "top-right":
-        return "top-0 -right-1 translate-x-1/2 -translate-y-1/2";
-      case "top-left":
-        return "top-0 -left-1 -translate-x-1/2 -translate-y-1/2";
-      case "bottom-right":
-        return "bottom-0 -right-1 translate-x-1/2 translate-y-1/2";
-      case "bottom-left":
-        return "bottom-0 -left-1 -translate-x-1/2 translate-y-1/2";
+      case 'top-right':
+        return 'top-0 -right-1 translate-x-1/2 -translate-y-1/2';
+      case 'top-left':
+        return 'top-0 -left-1 -translate-x-1/2 -translate-y-1/2';
+      case 'bottom-right':
+        return 'bottom-0 -right-1 translate-x-1/2 translate-y-1/2';
+      case 'bottom-left':
+        return 'bottom-0 -left-1 -translate-x-1/2 translate-y-1/2';
       default:
-        return "top-0 -right-1 translate-x-1/2 -translate-y-1/2";
+        return 'top-0 -right-1 translate-x-1/2 -translate-y-1/2';
     }
   };
 

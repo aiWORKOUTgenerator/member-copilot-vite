@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import React, { ReactNode } from "react";
+import React, { ReactNode } from 'react';
 
 interface CardProps {
   title?: string;
@@ -14,7 +14,7 @@ export const Card: React.FC<CardProps> = ({
   title,
   subtitle,
   children,
-  className = "",
+  className = '',
   footer,
 }) => {
   return (

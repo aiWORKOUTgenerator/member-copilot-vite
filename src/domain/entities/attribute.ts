@@ -3,16 +3,16 @@
  * Represents various attributes that can be associated with contacts
  */
 
-import { BaseEntity } from "./baseEntity";
+import { BaseEntity } from './baseEntity';
 
 export type AttributeDataType =
-  | "float"
-  | "list_of_strings"
-  | "string"
-  | "integer"
-  | "boolean"
-  | "date"
-  | "list_of_integers";
+  | 'float'
+  | 'list_of_strings'
+  | 'string'
+  | 'integer'
+  | 'boolean'
+  | 'date'
+  | 'list_of_integers';
 
 export interface AttributeProps {
   id: string;

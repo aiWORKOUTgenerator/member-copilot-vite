@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { Button, ButtonVariant } from "../atoms";
-import { useAuth } from "@/hooks/auth";
-import React from "react";
-import { SignOutIcon } from "../atoms/IconSet";
+import { Button, ButtonVariant } from '../atoms';
+import { useAuth } from '@/hooks/auth';
+import React from 'react';
+import { SignOutIcon } from '../atoms/IconSet';
 
 interface SignOutButtonProps {
   variant?: ButtonVariant;
-  size?: "xs" | "sm" | "md" | "lg" | "xl";
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   className?: string;
   redirectPath?: string;
   showIcon?: boolean;
@@ -19,10 +19,10 @@ interface SignOutButtonProps {
  * and provides visual feedback during the process
  */
 export const SignOutButton: React.FC<SignOutButtonProps> = ({
-  variant = "danger",
-  size = "md",
-  className = "",
-  redirectPath = "/",
+  variant = 'danger',
+  size = 'md',
+  className = '',
+  redirectPath = '/',
   showIcon = true,
   children,
 }) => {
@@ -43,7 +43,7 @@ export const SignOutButton: React.FC<SignOutButtonProps> = ({
     >
       <div className="flex items-center">
         {showIcon && <SignOutIcon size={size} className="mr-2" />}
-        {children || "Sign out"}
+        {children || 'Sign out'}
         {isSigningOut && (
           <span className="loading loading-spinner loading-xs ml-2"></span>
         )}

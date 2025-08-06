@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useSubscription } from "@/hooks/useSubscription";
-import { PortalConfiguration } from "@/domain/interfaces/services/SubscriptionService";
-import { useBillingContext } from "@/hooks/useBillingContext";
-import { useState } from "react";
+import { useSubscription } from '@/hooks/useSubscription';
+import { PortalConfiguration } from '@/domain/interfaces/services/SubscriptionService';
+import { useBillingContext } from '@/hooks/useBillingContext';
+import { useState } from 'react';
 
 export default function PaymentMethodPage() {
   const { createCustomerPortalSession } = useSubscription();
@@ -18,7 +18,7 @@ export default function PaymentMethodPage() {
     if (isProcessingPortal) return;
 
     setIsProcessingPortal(true);
-    setErrorMessage(""); // Clear previous errors
+    setErrorMessage(''); // Clear previous errors
 
     try {
       console.log(`Requesting customer portal session: ${portalConfiguration}`);
@@ -31,16 +31,16 @@ export default function PaymentMethodPage() {
       if (url) {
         window.location.href = url;
       } else {
-        throw new Error("Portal URL not received from the server.");
+        throw new Error('Portal URL not received from the server.');
       }
       // No need to set processing to false here, as we are navigating away
     } catch (error) {
-      console.error("Failed to redirect to customer portal:", error);
+      console.error('Failed to redirect to customer portal:', error);
       if (error instanceof Error) {
         setErrorMessage(error.message);
       } else {
         setErrorMessage(
-          "Failed to open the billing portal. Please try again later."
+          'Failed to open the billing portal. Please try again later.'
         );
       }
       setIsProcessingPortal(false); // Set to false only on error
@@ -56,7 +56,7 @@ export default function PaymentMethodPage() {
       </p>
       <button
         className="btn btn-primary"
-        onClick={() => handleRedirectToPortal("manage_payment_methods")}
+        onClick={() => handleRedirectToPortal('manage_payment_methods')}
         disabled={isProcessingPortal}
       >
         {isProcessingPortal ? (

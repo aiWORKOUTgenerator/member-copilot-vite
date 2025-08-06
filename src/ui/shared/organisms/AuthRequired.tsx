@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import React from "react";
-import { Link } from "react-router";
-import { Button } from "../atoms";
+import React from 'react';
+import { Link } from 'react-router';
+import { Button } from '../atoms';
 interface AuthRequiredProps {
   title?: string;
   subtitle?: string;
@@ -11,10 +11,10 @@ interface AuthRequiredProps {
 }
 
 export const AuthRequired: React.FC<AuthRequiredProps> = ({
-  title = "Authentication Required",
-  subtitle = "You need to be signed in to access this page",
-  signInLink = "/sign-in",
-  homeLink = "/",
+  title = 'Authentication Required',
+  subtitle = 'You need to be signed in to access this page',
+  signInLink = '/sign-in',
+  homeLink = '/',
 }) => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-base-200">

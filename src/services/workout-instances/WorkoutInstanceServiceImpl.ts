@@ -1,14 +1,14 @@
 import {
   WorkoutInstance,
   WorkoutInstanceStructure,
-} from "@/domain/entities/workoutInstance";
-import { ApiService } from "@/domain/interfaces/api/ApiService";
+} from '@/domain/entities/workoutInstance';
+import { ApiService } from '@/domain/interfaces/api/ApiService';
 import {
   WorkoutInstanceService,
   CreateWorkoutInstanceRequest,
   UpdateWorkoutInstanceRequest,
   RecommendedExercise,
-} from "@/domain/interfaces/services/WorkoutInstanceService";
+} from '@/domain/interfaces/services/WorkoutInstanceService';
 
 interface WorkoutInstanceProps {
   id: string;
@@ -40,9 +40,9 @@ interface UpdateWorkoutInstancePayload extends Record<string, unknown> {
 }
 
 export class WorkoutInstanceServiceImpl implements WorkoutInstanceService {
-  readonly serviceName = "WorkoutInstanceService";
+  readonly serviceName = 'WorkoutInstanceService';
   private readonly apiService: ApiService;
-  private readonly baseEndpoint = "/members";
+  private readonly baseEndpoint = '/members';
 
   /**
    * Creates a new instance of WorkoutInstanceServiceImpl
@@ -66,8 +66,8 @@ export class WorkoutInstanceServiceImpl implements WorkoutInstanceService {
             new Date(a.performedAt).getTime()
         );
     } catch (error) {
-      console.error("Error in getWorkoutInstances:", error);
-      throw new Error("Failed to fetch workout instances");
+      console.error('Error in getWorkoutInstances:', error);
+      throw new Error('Failed to fetch workout instances');
     }
   }
 
@@ -89,9 +89,9 @@ export class WorkoutInstanceServiceImpl implements WorkoutInstanceService {
             new Date(a.performedAt).getTime()
         );
     } catch (error) {
-      console.error("Error in getWorkoutInstancesByGeneratedWorkoutId:", error);
+      console.error('Error in getWorkoutInstancesByGeneratedWorkoutId:', error);
       throw new Error(
-        "Failed to fetch workout instances for generated workout"
+        'Failed to fetch workout instances for generated workout'
       );
     }
   }
@@ -108,12 +108,12 @@ export class WorkoutInstanceServiceImpl implements WorkoutInstanceService {
       return new WorkoutInstance(workoutInstanceData);
     } catch (error) {
       // If it's a 404, return null as expected by the interface
-      if (error instanceof Error && error.message.includes("404")) {
+      if (error instanceof Error && error.message.includes('404')) {
         return null;
       }
 
-      console.error("Error in getWorkoutInstance:", error);
-      throw new Error("Failed to fetch workout instance");
+      console.error('Error in getWorkoutInstance:', error);
+      throw new Error('Failed to fetch workout instance');
     }
   }
 
@@ -137,8 +137,8 @@ export class WorkoutInstanceServiceImpl implements WorkoutInstanceService {
 
       return new WorkoutInstance(createdWorkoutInstance);
     } catch (error) {
-      console.error("Error in createWorkoutInstance:", error);
-      throw new Error("Failed to create workout instance");
+      console.error('Error in createWorkoutInstance:', error);
+      throw new Error('Failed to create workout instance');
     }
   }
 
@@ -167,8 +167,8 @@ export class WorkoutInstanceServiceImpl implements WorkoutInstanceService {
 
       return new WorkoutInstance(updatedWorkoutInstance);
     } catch (error) {
-      console.error("Error in updateWorkoutInstance:", error);
-      throw new Error("Failed to update workout instance");
+      console.error('Error in updateWorkoutInstance:', error);
+      throw new Error('Failed to update workout instance');
     }
   }
 
@@ -178,8 +178,8 @@ export class WorkoutInstanceServiceImpl implements WorkoutInstanceService {
         `${this.baseEndpoint}/workout-instances/${instanceId}/`
       );
     } catch (error) {
-      console.error("Error in deleteWorkoutInstance:", error);
-      throw new Error("Failed to delete workout instance");
+      console.error('Error in deleteWorkoutInstance:', error);
+      throw new Error('Failed to delete workout instance');
     }
   }
 
@@ -248,34 +248,34 @@ export class WorkoutInstanceServiceImpl implements WorkoutInstanceService {
         duration: alternative.duration,
         rest: alternative.rest,
         targetMuscles: alternative.targetMuscles || [],
-        difficulty: alternative.difficulty || "Beginner",
+        difficulty: alternative.difficulty || 'Beginner',
         equipment: alternative.equipment || [],
       }));
     } catch (error) {
-      console.error("Error in getExerciseRecommendations:", error);
+      console.error('Error in getExerciseRecommendations:', error);
 
       // Fallback to mock data for development
       return [
         {
-          id: "fallback-1",
-          name: "Push-ups",
+          id: 'fallback-1',
+          name: 'Push-ups',
           description:
-            "Classic bodyweight chest exercise that targets the same muscles",
+            'Classic bodyweight chest exercise that targets the same muscles',
           sets: 3,
           reps: 15,
-          targetMuscles: ["Chest", "Triceps", "Shoulders"],
-          difficulty: "Beginner",
+          targetMuscles: ['Chest', 'Triceps', 'Shoulders'],
+          difficulty: 'Beginner',
           rest: 60,
         },
         {
-          id: "fallback-2",
-          name: "Modified Version",
+          id: 'fallback-2',
+          name: 'Modified Version',
           description: `A modified version of ${exerciseName} with adjusted parameters`,
           sets: 2,
           reps: 8,
           weight: 5,
-          targetMuscles: ["Full Body"],
-          difficulty: "Beginner",
+          targetMuscles: ['Full Body'],
+          difficulty: 'Beginner',
           rest: 60,
         },
       ];

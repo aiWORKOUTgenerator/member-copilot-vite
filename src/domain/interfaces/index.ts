@@ -23,11 +23,11 @@ export interface LoggingService {
 }
 
 // Export all API interfaces
-export * from "./api/ApiService";
+export * from './api/ApiService';
 
 // Export all service interfaces
-export * from "./services/AttributeService";
-export * from "./services/PromptService";
-export * from "./services/WorkoutFeedbackService";
+export * from './services/AttributeService';
+export * from './services/PromptService';
+export * from './services/WorkoutFeedbackService';
 
-export * from "./license/LicenseService";
+export * from './license/LicenseService';

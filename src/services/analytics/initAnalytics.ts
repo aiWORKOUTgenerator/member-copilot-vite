@@ -1,5 +1,5 @@
-import { AnalyticsFactory } from "./AnalyticsFactory";
-import { AnalyticsService } from "./AnalyticsService";
+import { AnalyticsFactory } from './AnalyticsFactory';
+import { AnalyticsService } from './AnalyticsService';
 
 /**
  * Initialize the analytics service for the application
@@ -18,17 +18,17 @@ export function initAnalytics(): AnalyticsService {
 
   if (!writeKey || !dataPlaneUrl) {
     throw new Error(
-      "Rudderstack configuration is missing. Please set RUDDERSTACK_WRITE_KEY and RUDDERSTACK_DATA_PLANE_URL environment variables."
+      'Rudderstack configuration is missing. Please set RUDDERSTACK_WRITE_KEY and RUDDERSTACK_DATA_PLANE_URL environment variables.'
     );
   }
 
   // Create and initialize the analytics service
-  const analyticsService = AnalyticsFactory.createAnalytics("rudderstack", {
+  const analyticsService = AnalyticsFactory.createAnalytics('rudderstack', {
     writeKey,
     dataPlaneUrl,
     configOptions: {
       logLevel:
-        import.meta.env.VITE_NODE_ENV === "production" ? "error" : "debug",
+        import.meta.env.VITE_NODE_ENV === 'production' ? 'error' : 'debug',
     },
   });
 

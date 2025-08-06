@@ -1,5 +1,5 @@
-import { Announcement } from "@/domain/entities/announcement";
-import { createContext } from "react";
+import { Announcement } from '@/domain/entities/announcement';
+import { createContext } from 'react';
 
 /**
  * AnnouncementState interface defines the shape of our announcement context value.

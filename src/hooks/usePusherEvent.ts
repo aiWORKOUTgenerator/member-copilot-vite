@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { usePusherService } from "@/hooks/useServices";
+import { useEffect } from 'react';
+import { usePusherService } from '@/hooks/useServices';
 
 /**
  * A hook that subscribes to a Pusher channel and event.
