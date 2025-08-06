@@ -12,11 +12,6 @@ export default defineConfig({
     retry: process.env.CI ? 2 : 0,
     // Parallelize tests for faster execution
     pool: 'forks',
-    poolOptions: {
-      forks: {
-        singleFork: true,
-      },
-    },
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
