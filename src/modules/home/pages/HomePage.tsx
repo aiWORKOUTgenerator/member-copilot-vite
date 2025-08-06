@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { useAuth } from "@/hooks/auth";
-import { useAnalytics } from "@/hooks/useAnalytics";
-import { ErrorBoundary } from "@/ui";
-import { useEffect } from "react";
-import { HomeNavbar, HeroSection } from "../components";
-import { ANALYTICS_EVENTS } from "../constants";
+import { useAuth } from '@/hooks/auth';
+import { useAnalytics } from '@/hooks/useAnalytics';
+import { ErrorBoundary } from '@/ui';
+import { useEffect } from 'react';
+import { HomeNavbar, HeroSection } from '../components';
+import { ANALYTICS_EVENTS } from '../constants';
 
 export default function HomePage() {
   const { isSignedIn, isLoaded } = useAuth();
@@ -15,7 +15,7 @@ export default function HomePage() {
   useEffect(() => {
     if (isLoaded) {
       analytics.track(ANALYTICS_EVENTS.LANDING_PAGE_VIEWED, {
-        userStatus: isSignedIn ? "authenticated" : "anonymous",
+        userStatus: isSignedIn ? 'authenticated' : 'anonymous',
         tracked_at: new Date().toISOString(),
       });
     }
@@ -24,35 +24,35 @@ export default function HomePage() {
   // Track navigation clicks
   const handleSignInClick = () => {
     analytics.track(ANALYTICS_EVENTS.SIGN_IN_CTA_CLICKED, {
-      location: "navbar",
-      userStatus: "anonymous",
+      location: 'navbar',
+      userStatus: 'anonymous',
     });
   };
 
   const handleDashboardClick = () => {
     analytics.track(ANALYTICS_EVENTS.DASHBOARD_NAVIGATION_CLICKED, {
-      location: "navbar",
-      userStatus: "authenticated",
+      location: 'navbar',
+      userStatus: 'authenticated',
     });
   };
 
   const handleCreateAccountClick = () => {
     analytics.track(ANALYTICS_EVENTS.CREATE_ACCOUNT_CTA_CLICKED, {
-      location: "navbar",
-      userStatus: "anonymous",
+      location: 'navbar',
+      userStatus: 'anonymous',
     });
   };
 
   const handleHeroCTAClick = () => {
     analytics.track(ANALYTICS_EVENTS.HERO_CTA_CLICKED, {
-      location: "hero_section",
-      ctaText: "Generate Your First Workout",
-      userStatus: "anonymous",
+      location: 'hero_section',
+      ctaText: 'Generate Your First Workout',
+      userStatus: 'anonymous',
     });
   };
 
   const handleLogoClick = () => {
-    analytics.track(ANALYTICS_EVENTS.LOGO_CLICKED, { location: "navbar" });
+    analytics.track(ANALYTICS_EVENTS.LOGO_CLICKED, { location: 'navbar' });
   };
 
   return (

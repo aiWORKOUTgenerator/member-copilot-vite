@@ -1,7 +1,7 @@
-import { License, LicensePolicy } from "@/domain";
-import { MeteredFeature } from "@/domain/entities/meteredFeatures";
-import { MeteredUsage } from "@/domain/entities/MeteredUsage";
-import { createContext } from "react";
+import { License, LicensePolicy } from '@/domain';
+import { MeteredFeature } from '@/domain/entities/meteredFeatures';
+import { MeteredUsage } from '@/domain/entities/MeteredUsage';
+import { createContext } from 'react';
 
 export interface UserAccessContextType {
   activeLicenses: License[];

@@ -1,4 +1,4 @@
-import { useState, useCallback, KeyboardEvent } from "react";
+import { useState, useCallback, KeyboardEvent } from 'react';
 
 export interface StarRatingProps {
   /** Current rating value (1-5) */
@@ -8,7 +8,7 @@ export interface StarRatingProps {
   /** Whether the rating is disabled/read-only */
   disabled?: boolean;
   /** Size of the rating stars */
-  size?: "sm" | "md" | "lg";
+  size?: 'sm' | 'md' | 'lg';
   /** Additional CSS classes */
   className?: string;
   /** Label for accessibility */
@@ -21,9 +21,9 @@ export default function StarRating({
   value,
   onChange,
   disabled = false,
-  size = "md",
-  className = "",
-  label = "Rating",
+  size = 'md',
+  className = '',
+  label = 'Rating',
   showNumber = false,
 }: StarRatingProps) {
   const [hoverValue, setHoverValue] = useState<number>(0);
@@ -56,14 +56,14 @@ export default function StarRating({
     (event: KeyboardEvent, rating: number) => {
       if (disabled) return;
 
-      if (event.key === "Enter" || event.key === " ") {
+      if (event.key === 'Enter' || event.key === ' ') {
         event.preventDefault();
         handleStarClick(rating);
-      } else if (event.key === "ArrowRight" || event.key === "ArrowUp") {
+      } else if (event.key === 'ArrowRight' || event.key === 'ArrowUp') {
         event.preventDefault();
         const nextRating = Math.min(5, rating + 1);
         handleStarClick(nextRating);
-      } else if (event.key === "ArrowLeft" || event.key === "ArrowDown") {
+      } else if (event.key === 'ArrowLeft' || event.key === 'ArrowDown') {
         event.preventDefault();
         const prevRating = Math.max(1, rating - 1);
         handleStarClick(prevRating);
@@ -76,27 +76,27 @@ export default function StarRating({
 
   const getSizeClass = () => {
     switch (size) {
-      case "sm":
-        return "rating-sm";
-      case "lg":
-        return "rating-lg";
+      case 'sm':
+        return 'rating-sm';
+      case 'lg':
+        return 'rating-lg';
       default:
-        return "rating-md";
+        return 'rating-md';
     }
   };
 
   const getStarClass = (starNumber: number) => {
-    const baseClass = "mask mask-star-2 bg-orange-400";
+    const baseClass = 'mask mask-star-2 bg-orange-400';
     const isActive = starNumber <= displayValue;
     const isHovered = hoverValue > 0 && starNumber <= hoverValue;
 
     if (disabled) {
-      return `${baseClass} ${isActive ? "opacity-100" : "opacity-30"}`;
+      return `${baseClass} ${isActive ? 'opacity-100' : 'opacity-30'}`;
     }
 
-    return `${baseClass} ${isActive ? "opacity-100" : "opacity-30"} ${
-      !disabled ? "cursor-pointer hover:opacity-80 transition-opacity" : ""
-    } ${isHovered ? "scale-110 transition-transform" : ""}`;
+    return `${baseClass} ${isActive ? 'opacity-100' : 'opacity-30'} ${
+      !disabled ? 'cursor-pointer hover:opacity-80 transition-opacity' : ''
+    } ${isHovered ? 'scale-110 transition-transform' : ''}`;
   };
 
   return (
@@ -132,7 +132,7 @@ export default function StarRating({
             onMouseEnter={() => handleStarHover(starNumber)}
             onKeyDown={(e) => handleKeyDown(e, starNumber)}
             disabled={disabled}
-            aria-label={`${starNumber} star${starNumber !== 1 ? "s" : ""}`}
+            aria-label={`${starNumber} star${starNumber !== 1 ? 's' : ''}`}
             role="radio"
             aria-checked={value === starNumber}
             tabIndex={value === starNumber ? 0 : -1}

@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { MeteredFeature } from "@/domain/entities/meteredFeatures";
-import { useUserAccess } from "@/hooks";
-import AccessAwareComponent from "@/ui/shared/molecules/AccessAwareComponent";
-import { useNavigate } from "react-router";
+import { MeteredFeature } from '@/domain/entities/meteredFeatures';
+import { useUserAccess } from '@/hooks';
+import AccessAwareComponent from '@/ui/shared/molecules/AccessAwareComponent';
+import { useNavigate } from 'react-router';
 
 export default function UsagePage() {
   const navigate = useNavigate();
@@ -14,7 +14,7 @@ export default function UsagePage() {
   } = useUserAccess();
 
   const navigateToSubscription = () => {
-    navigate("/dashboard/billing");
+    navigate('/dashboard/billing');
   };
 
   return (
@@ -33,10 +33,10 @@ export default function UsagePage() {
                 MeteredFeature.WORKOUTS_GENERATED
               )}
               <span className="text-sm font-normal">
-                {" "}
-                /{" "}
+                {' '}
+                /{' '}
                 {getHighestLimitForMeter(MeteredFeature.WORKOUTS_GENERATED) ||
-                  "∞"}
+                  '∞'}
               </span>
             </div>
             <div className="stat-desc">

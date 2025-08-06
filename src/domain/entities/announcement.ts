@@ -27,4 +27,4 @@ export class Announcement {
     this.createdAt = new Date(props.created_at);
     this.isActive = props.is_active;
   }
-} 
+}

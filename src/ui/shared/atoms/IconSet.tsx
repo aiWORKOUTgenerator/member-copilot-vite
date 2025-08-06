@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import React from "react";
-import { Icon, IconProps, IconSize } from "./Icon";
+import React from 'react';
+import { Icon, IconProps, IconSize } from './Icon';
 import {
   ArrowRightIcon as HeroArrowRightIcon,
   ArrowDownIcon as HeroArrowDownIcon,
@@ -16,7 +16,7 @@ import {
   Squares2X2Icon as HeroDashboardIcon,
   DocumentIcon as HeroFileIcon,
   ArrowLeftOnRectangleIcon as HeroSignOutIcon,
-} from "@heroicons/react/24/outline";
+} from '@heroicons/react/24/outline';
 
 /**
  * Collection of reusable icon components using Heroicons
@@ -25,61 +25,61 @@ import {
  * <ArrowRightIcon size="md" className="text-primary" />
  */
 
-export const ArrowRightIcon: React.FC<Omit<IconProps, "icon">> = (props) => (
+export const ArrowRightIcon: React.FC<Omit<IconProps, 'icon'>> = (props) => (
   <Icon icon={HeroArrowRightIcon} {...props} />
 );
 
-export const ArrowDownIcon: React.FC<Omit<IconProps, "icon">> = (props) => (
+export const ArrowDownIcon: React.FC<Omit<IconProps, 'icon'>> = (props) => (
   <Icon icon={HeroArrowDownIcon} {...props} />
 );
 
-export const CheckIcon: React.FC<Omit<IconProps, "icon">> = (props) => (
+export const CheckIcon: React.FC<Omit<IconProps, 'icon'>> = (props) => (
   <Icon icon={HeroCheckIcon} {...props} />
 );
 
-export const CloseIcon: React.FC<Omit<IconProps, "icon">> = (props) => (
+export const CloseIcon: React.FC<Omit<IconProps, 'icon'>> = (props) => (
   <Icon icon={HeroCloseIcon} {...props} />
 );
 
-export const MenuIcon: React.FC<Omit<IconProps, "icon">> = (props) => (
+export const MenuIcon: React.FC<Omit<IconProps, 'icon'>> = (props) => (
   <Icon icon={HeroMenuIcon} {...props} />
 );
 
-export const UserIcon: React.FC<Omit<IconProps, "icon">> = (props) => (
+export const UserIcon: React.FC<Omit<IconProps, 'icon'>> = (props) => (
   <Icon icon={HeroUserIcon} {...props} />
 );
 
-export const InfoIcon: React.FC<Omit<IconProps, "icon">> = (props) => (
+export const InfoIcon: React.FC<Omit<IconProps, 'icon'>> = (props) => (
   <Icon icon={HeroInfoIcon} {...props} />
 );
 
-export const ErrorIcon: React.FC<Omit<IconProps, "icon">> = (props) => (
+export const ErrorIcon: React.FC<Omit<IconProps, 'icon'>> = (props) => (
   <Icon icon={HeroErrorIcon} {...props} />
 );
 
-export const SuccessIcon: React.FC<Omit<IconProps, "icon">> = (props) => (
+export const SuccessIcon: React.FC<Omit<IconProps, 'icon'>> = (props) => (
   <Icon
     icon={HeroSuccessIcon}
     {...props}
-    className={`text-success ${props.className || ""}`}
+    className={`text-success ${props.className || ''}`}
   />
 );
 
-export const HomeIcon: React.FC<Omit<IconProps, "icon">> = (props) => (
+export const HomeIcon: React.FC<Omit<IconProps, 'icon'>> = (props) => (
   <Icon icon={HeroHomeIcon} {...props} />
 );
 
-export const DashboardIcon: React.FC<Omit<IconProps, "icon">> = (props) => (
+export const DashboardIcon: React.FC<Omit<IconProps, 'icon'>> = (props) => (
   <Icon icon={HeroDashboardIcon} {...props} />
 );
 
-export const FileIcon: React.FC<Omit<IconProps, "icon">> = (props) => (
+export const FileIcon: React.FC<Omit<IconProps, 'icon'>> = (props) => (
   <Icon icon={HeroFileIcon} {...props} />
 );
 
 // Google icon is a special case, so we'll keep it as is for now
 // The heroicons library doesn't have a Google icon
-export const GoogleIcon: React.FC<Omit<IconProps, "icon">> = (props) => {
+export const GoogleIcon: React.FC<Omit<IconProps, 'icon'>> = (props) => {
   // Map size names to pixel values
   const sizeMap: Record<IconSize, number> = {
     xs: 16,
@@ -91,7 +91,7 @@ export const GoogleIcon: React.FC<Omit<IconProps, "icon">> = (props) => {
 
   // Determine width and height
   const dimensions =
-    typeof props.size === "string" && props.size in sizeMap
+    typeof props.size === 'string' && props.size in sizeMap
       ? sizeMap[props.size as IconSize]
       : props.size || 24;
 
@@ -99,14 +99,14 @@ export const GoogleIcon: React.FC<Omit<IconProps, "icon">> = (props) => {
     <span
       className={props.className}
       style={{
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
         width: dimensions,
         height: dimensions,
       }}
       role="img"
-      aria-label={props.ariaLabel || "Google"}
+      aria-label={props.ariaLabel || 'Google'}
     >
       <svg viewBox="0 0 24 24" width={dimensions} height={dimensions}>
         <path
@@ -130,6 +130,6 @@ export const GoogleIcon: React.FC<Omit<IconProps, "icon">> = (props) => {
   );
 };
 
-export const SignOutIcon: React.FC<Omit<IconProps, "icon">> = (props) => (
+export const SignOutIcon: React.FC<Omit<IconProps, 'icon'>> = (props) => (
   <Icon icon={HeroSignOutIcon} {...props} />
 );

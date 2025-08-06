@@ -1,7 +1,7 @@
-import { useMemo } from "react";
-import { useUser } from "@clerk/clerk-react";
-import { VerificationService } from "../domain/interfaces/services/VerificationService";
-import { VerificationServiceImpl } from "../services/verification/VerificationServiceImpl";
+import { useMemo } from 'react';
+import { useUser } from '@clerk/clerk-react';
+import { VerificationService } from '../domain/interfaces/services/VerificationService';
+import { VerificationServiceImpl } from '../services/verification/VerificationServiceImpl';
 
 /**
  * Hook to get a VerificationService instance

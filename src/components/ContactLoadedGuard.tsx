@@ -1,6 +1,6 @@
-import { ReactNode } from "react";
-import { useContact } from "@/hooks/useContact";
-import { useAuth } from "@/hooks/auth";
+import { ReactNode } from 'react';
+import { useContact } from '@/hooks/useContact';
+import { useAuth } from '@/hooks/auth';
 
 interface ContactLoadedGuardProps {
   children: ReactNode;

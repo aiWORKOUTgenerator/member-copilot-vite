@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { NewBadge } from "@/ui/shared/atoms/NewBadge";
-import { User, MessageSquare, Target, TrendingUp, Crown } from "lucide-react";
+import { NewBadge } from '@/ui/shared/atoms/NewBadge';
+import { User, MessageSquare, Target, TrendingUp, Crown } from 'lucide-react';
 
 interface TrainerPersonaCardProps {
   /**
@@ -35,26 +35,26 @@ interface TrainerPersonaCardProps {
   description?: string;
 }
 
-const DEFAULT_HEADLINE = "Meet Your AI Personal Trainer";
+const DEFAULT_HEADLINE = 'Meet Your AI Personal Trainer';
 const DEFAULT_DESCRIPTION =
-  "Get personalized coaching, real-time form feedback, and adaptive guidance that evolves with your fitness journey.";
+  'Get personalized coaching, real-time form feedback, and adaptive guidance that evolves with your fitness journey.';
 
 const FEATURE_HIGHLIGHTS = [
   {
     icon: <User className="w-4 h-4" />,
-    text: "Personalized coaching",
+    text: 'Personalized coaching',
   },
   {
     icon: <MessageSquare className="w-4 h-4" />,
-    text: "Real-time feedback",
+    text: 'Real-time feedback',
   },
   {
     icon: <Target className="w-4 h-4" />,
-    text: "Form correction",
+    text: 'Form correction',
   },
   {
     icon: <TrendingUp className="w-4 h-4" />,
-    text: "Adaptive guidance",
+    text: 'Adaptive guidance',
   },
 ];
 
@@ -113,7 +113,7 @@ export function TrainerPersonaCard({
             <div className="flex flex-col sm:flex-row gap-2">
               <button
                 className={`btn btn-xl ${
-                  hasAccess ? "btn-accent" : "btn-warning"
+                  hasAccess ? 'btn-accent' : 'btn-warning'
                 }`}
                 onClick={handlePrimaryAction}
               >

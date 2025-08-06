@@ -1,6 +1,6 @@
-import { useContext } from "react";
-import { Contact } from "@/domain/entities/contact";
-import { ContactContext, ContactState } from "@/contexts/contact.types";
+import { useContext } from 'react';
+import { Contact } from '@/domain/entities/contact';
+import { ContactContext, ContactState } from '@/contexts/contact.types';
 
 /**
  * Custom hook to access the contact data from the ContactContext.
@@ -10,7 +10,7 @@ export function useContact(): ContactState {
   const context = useContext(ContactContext);
 
   if (context === undefined) {
-    throw new Error("useContact must be used within a ContactProvider");
+    throw new Error('useContact must be used within a ContactProvider');
   }
 
   return context;

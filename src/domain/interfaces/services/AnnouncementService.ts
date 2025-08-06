@@ -1,4 +1,4 @@
-import { Announcement } from "@/domain/entities/announcement";
+import { Announcement } from '@/domain/entities/announcement';
 
 export interface AnnouncementService {
   getAnnouncements(): Promise<Announcement[]>;

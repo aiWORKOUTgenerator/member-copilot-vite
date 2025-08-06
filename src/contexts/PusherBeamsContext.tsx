@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import * as PusherPushNotifications from "@pusher/push-notifications-web";
-import { useEffect, useState } from "react";
-import { PusherBeamsService } from "../domain/interfaces/services/PusherBeamsService";
-import { PusherBeamsServiceImpl } from "../services/pusher/PusherBeamsServiceImpl";
-import { PusherBeamsContext } from "./pusher-beams.types";
+import * as PusherPushNotifications from '@pusher/push-notifications-web';
+import { useEffect, useState } from 'react';
+import { PusherBeamsService } from '../domain/interfaces/services/PusherBeamsService';
+import { PusherBeamsServiceImpl } from '../services/pusher/PusherBeamsServiceImpl';
+import { PusherBeamsContext } from './pusher-beams.types';
 interface PusherBeamsProviderProps {
   /**
    * Initial interests to subscribe to
@@ -45,7 +45,7 @@ export function PusherBeamsProvider({
     const initializeBeams = async () => {
       try {
         const beamsClient = new PusherPushNotifications.Client({
-          instanceId: import.meta.env.VITE_PUSHER_BEAMS_INSTANCE_ID || "",
+          instanceId: import.meta.env.VITE_PUSHER_BEAMS_INSTANCE_ID || '',
         });
 
         setClient(beamsClient);
@@ -60,9 +60,9 @@ export function PusherBeamsProvider({
           await service.addDeviceInterest(interest);
         }
 
-        console.log("Pusher Beams initialized and subscribed to interests");
+        console.log('Pusher Beams initialized and subscribed to interests');
       } catch (error) {
-        console.error("Failed to initialize Pusher Beams:", error);
+        console.error('Failed to initialize Pusher Beams:', error);
       }
     };
 

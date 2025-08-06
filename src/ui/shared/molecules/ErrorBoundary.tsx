@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import React, { Component, ReactNode } from "react";
-import { Button } from "../atoms";
+import React, { Component, ReactNode } from 'react';
+import { Button } from '../atoms';
 
 interface ErrorBoundaryState {
   hasError: boolean;
@@ -31,7 +31,7 @@ export class ErrorBoundary extends Component<
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     // Log the error to console in development
     if (import.meta.env.DEV) {
-      console.error("ErrorBoundary caught an error:", error, errorInfo);
+      console.error('ErrorBoundary caught an error:', error, errorInfo);
     }
 
     // Call the onError callback if provided
