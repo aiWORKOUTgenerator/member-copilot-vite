@@ -11,13 +11,20 @@ export const mockUser = {
 };
 
 export const mockContact = {
-  id: 'test-contact-id',
-  userId: 'test-user-id',
-  phoneNumber: '+1234567890',
-  isVerified: true,
-  verificationDate: new Date().toISOString(),
-  createdAt: new Date().toISOString(),
-  updatedAt: new Date().toISOString(),
+  email: 'test@example.com',
+  first_name: 'Test',
+  last_name: 'User',
+  phone_number: '+1234567890',
+  phone_verified_at: new Date().toISOString(),
+  source: 'web',
+  status: 'active',
+  attributes: {
+    energy_level: 'medium',
+    workout_focus: 'strength',
+  },
+  registration_status: 'completed',
+  workout_count: 5,
+  last_workout_date: new Date().toISOString(),
 };
 
 export const mockWorkout = {

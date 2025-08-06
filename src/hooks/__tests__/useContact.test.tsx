@@ -2,16 +2,11 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import { mockContact } from '../../test/mocks';
 import { clearMocks } from '../../test/mock-utils';
+import { ContactState } from '../../contexts/contact.types';
 
 describe('useContact', () => {
-  let mockContactContext: {
-    contact: typeof mockContact;
-    isLoading: boolean;
-    error: string | null;
-    refetch: ReturnType<typeof vi.fn>;
-    isLoaded: boolean;
-  };
-  let useContact: () => typeof mockContactContext;
+  let mockContactContext: ContactState;
+  let useContact: () => ContactState;
 
   beforeEach(async () => {
     clearMocks();
@@ -23,6 +18,10 @@ describe('useContact', () => {
       error: null,
       refetch: vi.fn(),
       isLoaded: true,
+      // Phone verification utilities
+      isPhoneVerified: true,
+      phoneVerificationDate: new Date('2024-01-01'),
+      hasPhoneNumber: true,
     };
 
     // Mock the useContact hook with controlled approach

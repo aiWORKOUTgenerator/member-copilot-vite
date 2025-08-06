@@ -82,11 +82,11 @@ describe('Button', () => {
 Use `renderHook` for testing custom hooks:
 
 ```typescript
-import { renderHook } from "@testing-library/react";
-import { useContact } from "../useContact";
+import { renderHook } from '@testing-library/react';
+import { useContact } from '../useContact';
 
-describe("useContact", () => {
-  it("returns contact data", () => {
+describe('useContact', () => {
+  it('returns contact data', () => {
     const { result } = renderHook(() => useContact());
 
     expect(result.current.contact).toBeDefined();
@@ -100,20 +100,20 @@ describe("useContact", () => {
 Mock external dependencies and test service methods:
 
 ```typescript
-import { ApiServiceImpl } from "../ApiServiceImpl";
+import { ApiServiceImpl } from '../ApiServiceImpl';
 
 // Mock fetch globally
 global.fetch = vi.fn();
 
-describe("ApiServiceImpl", () => {
-  it("makes successful GET request", async () => {
+describe('ApiServiceImpl', () => {
+  it('makes successful GET request', async () => {
     vi.mocked(fetch).mockResolvedValueOnce({
       ok: true,
-      json: vi.fn().mockResolvedValue({ data: "test" }),
+      json: vi.fn().mockResolvedValue({ data: 'test' }),
     } as Response);
 
-    const result = await apiService.get("/test");
-    expect(result).toEqual({ data: "test" });
+    const result = await apiService.get('/test');
+    expect(result).toEqual({ data: 'test' });
   });
 });
 ```
@@ -143,7 +143,7 @@ describe('MyComponent', () => {
   beforeEach(async () => {
     clearMocks();
     mockAuth = setupAuthMock();
-    
+
     // Import component after setting up mocks
     const { MyComponent } = await import('../MyComponent');
   });
@@ -167,7 +167,7 @@ describe('MyComponent', () => {
   beforeEach(async () => {
     clearMocks();
     mockAnalytics = setupAnalyticsMock();
-    
+
     // Import component after setting up mocks
     const { MyComponent } = await import('../MyComponent');
   });
@@ -191,7 +191,7 @@ describe('useCustomHook', () => {
 
   beforeEach(async () => {
     clearMocks();
-    
+
     // Create fresh mocks for each test
     const mockService = {
       getData: vi.fn().mockResolvedValue({ data: 'test' }),
@@ -209,7 +209,7 @@ describe('useCustomHook', () => {
 
   it('returns data from service', async () => {
     const { result } = renderHook(() => useCustomHook());
-    
+
     // ... test implementation
   });
 });
@@ -218,12 +218,15 @@ describe('useCustomHook', () => {
 ### Mock Utilities
 
 #### `setupAuthMock()`
+
 Creates a controlled mock for authentication hooks.
 
 #### `setupAnalyticsMock()`
+
 Creates a controlled mock for analytics hooks.
 
 #### `clearMocks()`
+
 Clears all mocks and resets modules for proper test isolation.
 
 ## 🧪 Test Utilities
@@ -241,10 +244,10 @@ The `render` function from `test-utils.tsx` includes:
 Use `@testing-library/user-event` for realistic user interactions:
 
 ```typescript
-import userEvent from "@testing-library/user-event";
+import userEvent from '@testing-library/user-event';
 
 const user = userEvent.setup();
-await user.type(input, "test@example.com");
+await user.type(input, 'test@example.com');
 await user.click(button);
 ```
 
