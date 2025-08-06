@@ -178,7 +178,6 @@ export default function MagicLinkSignInPage() {
           autoComplete="email"
           error={validation}
           fullWidth
-          autoFocus
           isLoading={verifying}
           aria-label="Email address"
           aria-required="true"
