@@ -110,7 +110,6 @@ export default function PricingComponent({
                     : tier.cta}
               </button>
               <ul
-                role="list"
                 className={classNames(
                   tier.featured
                     ? 'text-primary-content/80'
