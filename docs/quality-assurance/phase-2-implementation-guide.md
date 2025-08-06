@@ -258,7 +258,7 @@ EOF
 
 # Create phone verification hook tests
 
-cat > src/__tests__/hooks/usePhoneVerification.test.ts << 'EOF'
+cat > src/**tests**/hooks/usePhoneVerification.test.ts << 'EOF'
 import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { usePhoneVerification } from '@/hooks/usePhoneVerification';
@@ -888,8 +888,6 @@ npm run verify
 npm run verify:quick
 ```
 
-
-
 ## Expected Results
 
 After implementation, you should see:
@@ -1037,6 +1035,7 @@ npm run test:ui  # Show visual test runner
 The large heredoc blocks in this guide will be refactored for better maintainability:
 
 #### Phase 2.1: Template Files (Next Sprint)
+
 ```bash
 # Create template directory structure
 mkdir -p docs/templates/{tests,scripts,configs}
@@ -1048,6 +1047,7 @@ docs/templates/scripts/setup-test-infrastructure.sh
 ```
 
 #### Phase 2.2: Script Generators (Future)
+
 ```bash
 # Generate test files from templates
 npm run generate:test -- --type=hook --name=useTrainerPersona
@@ -1055,6 +1055,7 @@ npm run generate:test -- --type=component --name=GeneratingTrainerPage
 ```
 
 #### Benefits
+
 - ✅ **Easier Maintenance**: Edit templates instead of large heredocs
 - ✅ **Error Prevention**: Reduced risk of syntax errors
 - ✅ **Better Developer Experience**: Copy-paste friendly
