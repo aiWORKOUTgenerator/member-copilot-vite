@@ -26,102 +26,108 @@ import { WorkoutInstancesProvider } from '@/contexts/WorkoutInstancesContext';
 
 export default function DashboardContainer() {
   return (
-    <TitleProvider>
-      <ContactProvider>
-        <UserAccessProvider>
-          <CombinedProviders>
-            <TrainerPersonaProvider>
-              <WorkoutInstancesProvider>
-                <Routes>
-                  {/* Standalone workout instance route - no layout */}
-                  <Route
-                    path="/workouts/instances/:id"
-                    element={
-                      <CurrentWorkoutInstanceProvider>
-                        <WorkoutInstancePage />
-                      </CurrentWorkoutInstanceProvider>
-                    }
-                  />
+    <div className="w-full max-w-full overflow-x-hidden">
+      <TitleProvider>
+        <ContactProvider>
+          <UserAccessProvider>
+            <CombinedProviders>
+              <TrainerPersonaProvider>
+                <WorkoutInstancesProvider>
+                  <Routes>
+                    {/* Standalone workout instance route - no layout */}
+                    <Route
+                      path="/workouts/instances/:id"
+                      element={
+                        <div className="w-full max-w-full overflow-x-hidden">
+                          <CurrentWorkoutInstanceProvider>
+                            <WorkoutInstancePage />
+                          </CurrentWorkoutInstanceProvider>
+                        </div>
+                      }
+                    />
 
-                  {/* All other routes with ContactLoadedGuard and StackedLayout */}
-                  <Route
-                    path="*"
-                    element={
-                      <ContactLoadedGuard
-                        fallback={
-                          <div className="flex items-center h-40 justify-center">
-                            <span className="loading loading-ring loading-xl"></span>
+                    {/* All other routes with ContactLoadedGuard and StackedLayout */}
+                    <Route
+                      path="*"
+                      element={
+                        <ContactLoadedGuard
+                          fallback={
+                            <div className="flex items-center h-40 justify-center w-full">
+                              <span className="loading loading-ring loading-xl"></span>
+                            </div>
+                          }
+                        >
+                          <div className="w-full max-w-full overflow-x-hidden">
+                            <StackedLayout>
+                              <Routes>
+                                <Route path="/" element={<DashboardPage />} />
+                                <Route
+                                  path="/billing"
+                                  element={<BillingContainer />}
+                                >
+                                  <Route
+                                    path="/billing"
+                                    element={<BillingSubscriptionTab />}
+                                  />
+                                  <Route
+                                    path="/billing/payment"
+                                    element={<BillingPaymentTab />}
+                                  />
+                                  <Route
+                                    path="/billing/usage"
+                                    element={<BillingUsageTab />}
+                                  />
+                                  <Route
+                                    path="/billing/history"
+                                    element={<BillingHistoryTab />}
+                                  />
+                                </Route>
+                                <Route
+                                  path="/workouts"
+                                  element={<WorkoutsPage />}
+                                />
+                                <Route
+                                  path="/workouts/history"
+                                  element={<WorkoutHistoryPage />}
+                                />
+                                <Route
+                                  path="/workouts/generate"
+                                  element={<GeneratePage />}
+                                />
+                                <Route
+                                  path="/workouts/:id"
+                                  element={<WorkoutDetailPage />}
+                                />
+                                <Route
+                                  path="/profile"
+                                  element={<ProfileContainer />}
+                                >
+                                  <Route
+                                    path="/profile/:attributeTypeId"
+                                    element={<AttributeDetailPage />}
+                                  />
+                                </Route>
+                                <Route
+                                  path="/trainer"
+                                  element={<MyAITrainerPage />}
+                                />
+                                <Route
+                                  path="/trainer/generating"
+                                  element={<GeneratingTrainerPage />}
+                                />
+                              </Routes>
+                            </StackedLayout>
                           </div>
-                        }
-                      >
-                        <StackedLayout>
-                          <Routes>
-                            <Route path="/" element={<DashboardPage />} />
-                            <Route
-                              path="/billing"
-                              element={<BillingContainer />}
-                            >
-                              <Route
-                                path="/billing"
-                                element={<BillingSubscriptionTab />}
-                              />
-                              <Route
-                                path="/billing/payment"
-                                element={<BillingPaymentTab />}
-                              />
-                              <Route
-                                path="/billing/usage"
-                                element={<BillingUsageTab />}
-                              />
-                              <Route
-                                path="/billing/history"
-                                element={<BillingHistoryTab />}
-                              />
-                            </Route>
-                            <Route
-                              path="/workouts"
-                              element={<WorkoutsPage />}
-                            />
-                            <Route
-                              path="/workouts/history"
-                              element={<WorkoutHistoryPage />}
-                            />
-                            <Route
-                              path="/workouts/generate"
-                              element={<GeneratePage />}
-                            />
-                            <Route
-                              path="/workouts/:id"
-                              element={<WorkoutDetailPage />}
-                            />
-                            <Route
-                              path="/profile"
-                              element={<ProfileContainer />}
-                            >
-                              <Route
-                                path="/profile/:attributeTypeId"
-                                element={<AttributeDetailPage />}
-                              />
-                            </Route>
-                            <Route
-                              path="/trainer"
-                              element={<MyAITrainerPage />}
-                            />
-                            <Route
-                              path="/trainer/generating"
-                              element={<GeneratingTrainerPage />}
-                            />
-                          </Routes>
-                        </StackedLayout>
-                      </ContactLoadedGuard>
-                    }
-                  />
-                </Routes>
-              </WorkoutInstancesProvider>
-            </TrainerPersonaProvider>
-          </CombinedProviders>
-        </UserAccessProvider>
-      </ContactProvider>
-    </TitleProvider>
+                        </ContactLoadedGuard>
+                      }
+                    />
+                  </Routes>
+                </WorkoutInstancesProvider>
+              </TrainerPersonaProvider>
+            </CombinedProviders>
+          </UserAccessProvider>
+        </ContactProvider>
+      </TitleProvider>
+    </div>
   );
 }

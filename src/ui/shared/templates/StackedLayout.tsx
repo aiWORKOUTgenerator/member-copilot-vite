@@ -139,9 +139,9 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
   };
 
   return (
-    <div className="min-h-full bg-base-300">
-      <div className="bg-primary pb-12 sm:pb-32">
-        <div className="navbar border-b border-secondary-focus/25 bg-primary">
+    <div className="min-h-full bg-base-300 w-full max-w-full overflow-x-hidden">
+      <div className="bg-primary pb-12 sm:pb-32 w-full">
+        <div className="navbar border-b border-secondary-focus/25 bg-primary w-full">
           <div className="navbar-start">
             <div className="flex items-center">
               <div className="hidden lg:ml-10 lg:block">
@@ -205,7 +205,7 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
               </label>
               <ul
                 tabIndex={0}
-                className="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-52 mt-4"
+                className="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-64 mt-4 max-w-[calc(100vw-2rem)]"
               >
                 {navigation.map((item) => {
                   const isCurrentPage =
@@ -265,22 +265,28 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
           </div>
         </div>
 
-        <header className="py-2 sm:py-10">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <h1 className="text-xl sm:text-3xl font-bold tracking-tight text-white">
+        <header className="py-2 sm:py-10 w-full">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full">
+            <h1 className="text-xl sm:text-3xl font-bold tracking-tight text-white break-words">
               {displayTitle}
             </h1>
           </div>
         </header>
       </div>
 
-      <main className="-mt-12 sm:-mt-32">
-        <div className="mx-auto max-w-7xl">
-          <div className="sm:p-4">
+      <main className="-mt-12 sm:-mt-32 w-full">
+        <div className="mx-auto max-w-7xl w-full px-2 sm:px-0">
+          <div className="sm:p-4 w-full">
             {containerStyle === 'none' ? (
-              children
+              <div className="w-full max-w-full overflow-x-hidden">
+                {children}
+              </div>
             ) : (
-              <div className={getContainerClass()}>{children}</div>
+              <div
+                className={`${getContainerClass()} w-full max-w-full overflow-x-hidden`}
+              >
+                {children}
+              </div>
             )}
           </div>
         </div>
