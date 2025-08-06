@@ -256,7 +256,7 @@ EOF
 
 # Create phone verification hook tests
 
-cat > src/**tests**/hooks/usePhoneVerification.test.ts << 'EOF'
+cat > src/__tests__/hooks/usePhoneVerification.test.ts << 'EOF'
 import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { usePhoneVerification } from '@/hooks/usePhoneVerification';
