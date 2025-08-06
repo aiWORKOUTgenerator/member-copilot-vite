@@ -45,14 +45,14 @@ export default function PricingComponent({
               key={tier.id}
               className={classNames(
                 tier.featured ? "bg-primary ring-primary" : "ring-base-300",
-                "rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 ring-1"
+                "rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 ring-1",
               )}
             >
               <h3
                 id={tier.id}
                 className={classNames(
                   tier.featured ? "text-primary-content" : "text-base-content",
-                  "text-base sm:text-lg font-semibold"
+                  "text-base sm:text-lg font-semibold",
                 )}
               >
                 {tier.name}
@@ -62,7 +62,7 @@ export default function PricingComponent({
                   tier.featured
                     ? "text-primary-content/80"
                     : "text-base-content/70",
-                  "mt-2 sm:mt-4 text-xs sm:text-sm"
+                  "mt-2 sm:mt-4 text-xs sm:text-sm",
                 )}
               >
                 {tier.description}
@@ -73,7 +73,7 @@ export default function PricingComponent({
                     tier.featured
                       ? "text-primary-content"
                       : "text-base-content",
-                    "text-2xl sm:text-3xl lg:text-4xl font-semibold tracking-tight"
+                    "text-2xl sm:text-3xl lg:text-4xl font-semibold tracking-tight",
                   )}
                 >
                   {tier.price}
@@ -83,7 +83,7 @@ export default function PricingComponent({
                     tier.featured
                       ? "text-primary-content/80"
                       : "text-base-content/70",
-                    "text-xs sm:text-sm font-semibold"
+                    "text-xs sm:text-sm font-semibold",
                   )}
                 >
                   /month
@@ -100,14 +100,14 @@ export default function PricingComponent({
                   "mt-4 sm:mt-6 w-full text-sm sm:text-base",
                   selectedTier?.id === tier.id || isProcessing
                     ? "btn-disabled"
-                    : ""
+                    : "",
                 )}
               >
                 {selectedTier?.id === tier.id
                   ? "Current Plan"
                   : isProcessing
-                  ? "Processing..."
-                  : tier.cta}
+                    ? "Processing..."
+                    : tier.cta}
               </button>
               <ul
                 role="list"
@@ -115,7 +115,7 @@ export default function PricingComponent({
                   tier.featured
                     ? "text-primary-content/80"
                     : "text-base-content/70",
-                  "mt-6 sm:mt-8 space-y-2 sm:space-y-3 text-xs sm:text-sm"
+                  "mt-6 sm:mt-8 space-y-2 sm:space-y-3 text-xs sm:text-sm",
                 )}
               >
                 {tier.features.map((feature) => (
@@ -123,7 +123,7 @@ export default function PricingComponent({
                     <svg
                       className={classNames(
                         tier.featured ? "text-primary-content" : "text-primary",
-                        "h-4 w-4 sm:h-5 sm:w-6 flex-none"
+                        "h-4 w-4 sm:h-5 sm:w-6 flex-none",
                       )}
                       viewBox="0 0 20 20"
                       fill="currentColor"

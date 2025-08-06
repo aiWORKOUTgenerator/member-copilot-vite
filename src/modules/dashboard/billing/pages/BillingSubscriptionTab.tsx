@@ -25,7 +25,7 @@ export default function SubscriptionPage() {
 
     // Find the selected tier for analytics
     const selectedPlan = tiers.find(
-      (tier) => tier.stripePriceId === stripePriceId
+      (tier) => tier.stripePriceId === stripePriceId,
     );
 
     // Track upgrade start
@@ -77,7 +77,7 @@ export default function SubscriptionPage() {
         setErrorMessage(error.message);
       } else {
         setErrorMessage(
-          "Failed to process subscription change. Please try again later."
+          "Failed to process subscription change. Please try again later.",
         );
       }
     } finally {

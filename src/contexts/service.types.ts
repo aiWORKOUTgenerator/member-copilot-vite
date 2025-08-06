@@ -19,5 +19,5 @@ export interface ServiceContainer {
  * This forces consumers to use the useServices hook which performs a null check.
  */
 export const ServiceContext = createContext<ServiceContainer | undefined>(
-  undefined
+  undefined,
 );

@@ -1,47 +1,40 @@
+import { vi } from 'vitest';
+
 // Mock data for testing
 export const mockUser = {
   id: 'test-user-id',
   email: 'test@example.com',
   firstName: 'Test',
   lastName: 'User',
-  phoneNumber: '+1234567890',
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
 };
 
 export const mockContact = {
   id: 'test-contact-id',
   userId: 'test-user-id',
-  email: 'test@example.com',
   phoneNumber: '+1234567890',
-  firstName: 'Test',
-  lastName: 'User',
   isVerified: true,
-  createdAt: new Date('2024-01-01').toISOString(),
-  updatedAt: new Date('2024-01-01').toISOString(),
+  verificationDate: new Date().toISOString(),
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
 };
 
 export const mockWorkout = {
   id: 'test-workout-id',
   userId: 'test-user-id',
   title: 'Test Workout',
-  description: 'A test workout for testing purposes',
+  description: 'A test workout',
   exercises: [
     {
       name: 'Push-ups',
       sets: 3,
       reps: 10,
-      restTime: 60,
-    },
-    {
-      name: 'Squats',
-      sets: 3,
-      reps: 15,
-      restTime: 60,
+      rest: 60,
     },
   ],
-  duration: 30,
-  difficulty: 'intermediate',
-  createdAt: new Date('2024-01-01').toISOString(),
-  updatedAt: new Date('2024-01-01').toISOString(),
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
 };
 
 export const mockSubscription = {
@@ -49,51 +42,48 @@ export const mockSubscription = {
   userId: 'test-user-id',
   status: 'active',
   plan: 'premium',
-  currentPeriodStart: new Date('2024-01-01').toISOString(),
-  currentPeriodEnd: new Date('2024-02-01').toISOString(),
-  cancelAtPeriodEnd: false,
-  createdAt: new Date('2024-01-01').toISOString(),
-  updatedAt: new Date('2024-01-01').toISOString(),
+  currentPeriodStart: new Date().toISOString(),
+  currentPeriodEnd: new Date().toISOString(),
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
 };
 
 export const mockAttribute = {
   id: 'test-attribute-id',
   userId: 'test-user-id',
-  type: 'fitness_goal',
-  value: 'weight_loss',
-  createdAt: new Date('2024-01-01').toISOString(),
-  updatedAt: new Date('2024-01-01').toISOString(),
+  typeId: 'test-type-id',
+  value: 'test-value',
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
 };
 
 export const mockTrainerPersona = {
-  id: 'test-trainer-id',
+  id: 'test-persona-id',
   userId: 'test-user-id',
   name: 'Test Trainer',
   description: 'A test trainer persona',
   personality: 'motivational',
-  expertise: ['strength', 'cardio'],
-  createdAt: new Date('2024-01-01').toISOString(),
-  updatedAt: new Date('2024-01-01').toISOString(),
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
 };
 
-// Mock API responses
+// Utility functions for creating mock API responses
 export const mockApiResponse = <T>(data: T) => ({
   data,
   status: 200,
   message: 'Success',
 });
 
-export const mockApiError = (message: string, status: number = 400) => ({
+export const mockApiError = (status: number, message: string) => ({
   error: message,
   status,
-  message,
 });
 
-// Mock service functions
+// Utility for creating mock services
 export const createMockService = <T>(defaultData: T) => ({
   get: vi.fn().mockResolvedValue(mockApiResponse(defaultData)),
   create: vi.fn().mockResolvedValue(mockApiResponse(defaultData)),
   update: vi.fn().mockResolvedValue(mockApiResponse(defaultData)),
   delete: vi.fn().mockResolvedValue(mockApiResponse({ success: true })),
   list: vi.fn().mockResolvedValue(mockApiResponse([defaultData])),
-}); 
+});

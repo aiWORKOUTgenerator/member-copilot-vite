@@ -40,7 +40,7 @@ const FOCUS_OPTIONS_WITH_INTENSITY = QUICK_WORKOUT_FOCUS_OPTIONS.map(
         <LevelDots count={6} activeIndex={intensityLevel - 1} size="sm" />
       ),
     };
-  }
+  },
 );
 
 // Energy options with LevelDots indicators
@@ -58,7 +58,7 @@ const DURATION_OPTIONS_WITH_SUBTITLE = QUICK_WORKOUT_DURATION_OPTIONS.map(
     title: option.title,
     description: option.description,
     tertiary: option.subtitle,
-  })
+  }),
 );
 
 // Equipment options (no tertiary content needed)
@@ -105,7 +105,7 @@ export default function WorkoutCustomization({
 
   const handleChange = (
     key: keyof WorkoutCustomizationProps["options"],
-    value: unknown
+    value: unknown,
   ) => {
     onChange(key, value);
   };
@@ -113,7 +113,7 @@ export default function WorkoutCustomization({
   // Helper function to format the current selection for display
   const formatCurrentSelection = (
     config: (typeof CUSTOMIZATION_CONFIG)[0],
-    value: unknown
+    value: unknown,
   ) => {
     if (!value) return null;
 
@@ -349,20 +349,23 @@ export default function WorkoutCustomization({
   }
 
   // Group configurations by category
-  const groupedConfigs = CUSTOMIZATION_CONFIG.reduce((acc, config) => {
-    const category = config.category || "Other";
-    if (!acc[category]) {
-      acc[category] = [];
-    }
-    acc[category].push(config);
-    return acc;
-  }, {} as Record<string, typeof CUSTOMIZATION_CONFIG>);
+  const groupedConfigs = CUSTOMIZATION_CONFIG.reduce(
+    (acc, config) => {
+      const category = config.category || "Other";
+      if (!acc[category]) {
+        acc[category] = [];
+      }
+      acc[category].push(config);
+      return acc;
+    },
+    {} as Record<string, typeof CUSTOMIZATION_CONFIG>,
+  );
 
   const toggleCategory = (category: string) => {
     setExpandedCategories((prev) =>
       prev.includes(category)
         ? prev.filter((c) => c !== category)
-        : [...prev, category]
+        : [...prev, category],
     );
   };
 
@@ -413,7 +416,7 @@ export default function WorkoutCustomization({
                       const error = errors[config.key];
                       const currentSelection = formatCurrentSelection(
                         config,
-                        value
+                        value,
                       );
 
                       return (

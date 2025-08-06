@@ -12,7 +12,7 @@ export interface AttributeFormContextType {
   formValues: AttributeFormValues;
   updateFormValue: (
     key: string,
-    value: string | number | string[] | null
+    value: string | number | string[] | null,
   ) => void;
   resetForm: () => void;
   initFormValues: (contact?: Contact | null, prompts?: Prompt[]) => void;

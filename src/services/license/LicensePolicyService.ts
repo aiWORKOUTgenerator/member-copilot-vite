@@ -18,7 +18,7 @@ export class LicensePolicyService {
     try {
       const query = includeNonPublic ? "?includeNonPublic=true" : "";
       const response = await this.apiService.get<LicensePolicy[]>(
-        `${this.baseEndpoint}/${query}`
+        `${this.baseEndpoint}/${query}`,
       );
       return response || [];
     } catch (error) {
@@ -35,7 +35,7 @@ export class LicensePolicyService {
   async getLicensePolicy(policyId: string): Promise<LicensePolicy | null> {
     try {
       const response = await this.apiService.get<LicensePolicy>(
-        `${this.baseEndpoint}/${policyId}/`
+        `${this.baseEndpoint}/${policyId}/`,
       );
       return response;
     } catch (error) {

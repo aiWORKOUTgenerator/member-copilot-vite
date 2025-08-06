@@ -20,7 +20,7 @@ export function VerificationProvider({ children }: VerificationProviderProps) {
       isEmailVerified: verificationService.isEmailVerified(),
       isUserVerified: verificationService.isUserVerified(),
     }),
-    [verificationService]
+    [verificationService],
   );
 
   return (

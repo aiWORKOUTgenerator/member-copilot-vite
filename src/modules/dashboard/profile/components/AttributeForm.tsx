@@ -27,7 +27,7 @@ export function AttributeForm({
 
   // Filter prompts for this attribute type
   const attributePrompts = prompts.filter(
-    (prompt) => prompt.attributeType?.id === attributeTypeId
+    (prompt) => prompt.attributeType?.id === attributeTypeId,
   );
 
   // Initialize form values when component mounts
@@ -35,7 +35,9 @@ export function AttributeForm({
     if (contact) {
       initFormValues(
         contact,
-        prompts.filter((prompt) => prompt.attributeType?.id === attributeTypeId)
+        prompts.filter(
+          (prompt) => prompt.attributeType?.id === attributeTypeId,
+        ),
       );
     }
   }, [attributeTypeId, initFormValues, contact, prompts]);

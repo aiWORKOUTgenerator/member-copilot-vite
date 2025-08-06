@@ -63,7 +63,7 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
     if (!basicPriceId || activeLicenses.length === 0) return false;
 
     return activeLicenses.some(
-      (license) => license.policy?.stripe_price_id === basicPriceId
+      (license) => license.policy?.stripe_price_id === basicPriceId,
     );
   }, [activeLicenses]);
 
@@ -80,11 +80,11 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
     const attributeCompletions = ContactUtils.getAttributeCompletionStatus(
       contact,
       attributeTypes,
-      prompts
+      prompts,
     );
 
     return attributeCompletions.filter(
-      (completion) => completion.percentComplete < 100
+      (completion) => completion.percentComplete < 100,
     ).length;
   }, [
     contact,
@@ -166,7 +166,7 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
                           item.isUpgrade
                             ? "btn-accent font-bold text-accent-content border-2 border-warning animate-pulse hover:animate-none hover:btn-warning hover:scale-105 transition-all duration-200"
                             : "",
-                          "rounded-md font-medium"
+                          "rounded-md font-medium",
                         )}
                         aria-current={isCurrentPage ? "page" : undefined}
                       >
@@ -233,7 +233,7 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
                             : "",
                           item.isUpgrade
                             ? "bg-accent text-accent-content font-bold border-2 border-warning hover:bg-warning hover:text-warning-content"
-                            : ""
+                            : "",
                         )}
                       >
                         {item.name}

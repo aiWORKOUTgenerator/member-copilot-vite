@@ -11,6 +11,6 @@ export interface PromptService {
     promptValues: Array<{
       prompt_id: string;
       value: string | number;
-    }>
+    }>,
   ): Promise<void>;
 }

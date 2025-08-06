@@ -19,7 +19,7 @@ export interface ApiService {
    */
   post<T, D extends Record<string, unknown>>(
     endpoint: string,
-    data: D
+    data: D,
   ): Promise<T>;
 
   /**
@@ -30,7 +30,7 @@ export interface ApiService {
    */
   put<T, D extends Record<string, unknown>>(
     endpoint: string,
-    data: D
+    data: D,
   ): Promise<T>;
 
   /**

@@ -26,7 +26,7 @@ export class AttributeServiceImpl implements AttributeService {
     try {
       // Get attributes from API
       const attributesData = await this.apiService.get<AttributeProps[]>(
-        `${this.baseEndpoint}/attributes/`
+        `${this.baseEndpoint}/attributes/`,
       );
 
       // Map the API response to domain entities

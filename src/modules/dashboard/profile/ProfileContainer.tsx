@@ -38,7 +38,7 @@ export default function TrainingProfileLayout() {
     return ContactUtils.getAttributeCompletionStatus(
       contact,
       attributeTypes,
-      prompts
+      prompts,
     );
   }, [contact, attributeTypes, prompts]);
 
@@ -54,7 +54,7 @@ export default function TrainingProfileLayout() {
         attributeTypeId !== "profile"
       ) {
         const selectedAttributeType = attributeTypes.find(
-          (type) => type.id.toString() === attributeTypeId
+          (type) => type.id.toString() === attributeTypeId,
         );
 
         if (selectedAttributeType) {
@@ -95,7 +95,7 @@ export default function TrainingProfileLayout() {
           items={attributeTypes.map((attributeType) => {
             // Find completion info for this attribute type
             const completion = attributeCompletions.find(
-              (c) => c.attributeType.id === attributeType.id
+              (c) => c.attributeType.id === attributeType.id,
             );
 
             return {
@@ -118,8 +118,8 @@ export default function TrainingProfileLayout() {
                       completion.percentComplete === 100
                         ? "progress-success"
                         : completion.hasProvidedValue
-                        ? "progress-primary"
-                        : "progress-secondary"
+                          ? "progress-primary"
+                          : "progress-secondary"
                     }`}
                     value={completion.percentComplete}
                     max="100"

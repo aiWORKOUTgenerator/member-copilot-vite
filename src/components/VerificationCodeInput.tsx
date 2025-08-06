@@ -37,7 +37,7 @@ export const VerificationCodeInput = forwardRef<
       "aria-label": ariaLabel,
       "aria-describedby": ariaDescribedBy,
     },
-    ref
+    ref,
   ) => {
     // Handle value change
     const handleChange = useCallback(
@@ -51,7 +51,7 @@ export const VerificationCodeInput = forwardRef<
           }, 100);
         }
       },
-      [onChange, onComplete]
+      [onChange, onComplete],
     );
 
     return (
@@ -145,7 +145,7 @@ export const VerificationCodeInput = forwardRef<
         </p>
       </div>
     );
-  }
+  },
 );
 
 VerificationCodeInput.displayName = "VerificationCodeInput";
@@ -185,7 +185,7 @@ export const SimpleVerificationCodeInput = forwardRef<
       "aria-label": ariaLabel,
       "aria-describedby": ariaDescribedBy,
     },
-    ref
+    ref,
   ) => {
     const handleChange = useCallback(
       (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -201,7 +201,7 @@ export const SimpleVerificationCodeInput = forwardRef<
           }
         }
       },
-      [onChange, onComplete]
+      [onChange, onComplete],
     );
 
     return (
@@ -250,7 +250,7 @@ export const SimpleVerificationCodeInput = forwardRef<
         )}
       </div>
     );
-  }
+  },
 );
 
 SimpleVerificationCodeInput.displayName = "SimpleVerificationCodeInput";

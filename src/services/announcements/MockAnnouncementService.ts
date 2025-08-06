@@ -102,7 +102,7 @@ Recovery is just as important as the workout itself! Here are some expert tips t
 Remember: **Progress happens during recovery, not just during workouts!**`,
           priority: "low" as const,
           created_at: new Date(
-            Date.now() - 1000 * 60 * 60 * 24 * 3
+            Date.now() - 1000 * 60 * 60 * 24 * 3,
           ).toISOString(), // 3 days ago
           is_active: true,
         },
@@ -141,7 +141,7 @@ New year, new goals! Join our community challenge and let's crush our fitness go
 Let's make this January our strongest month yet! Share your goals and join the challenge today! 🚀`,
           priority: "medium" as const,
           created_at: new Date(
-            Date.now() - 1000 * 60 * 60 * 24 * 5
+            Date.now() - 1000 * 60 * 60 * 24 * 5,
           ).toISOString(), // 5 days ago
           is_active: true,
         },

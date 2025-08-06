@@ -63,7 +63,7 @@ export default function WorkoutFeedbackForm({
         setValidationErrors((prev) => ({ ...prev, [field]: "" }));
       }
     },
-    [validationErrors]
+    [validationErrors],
   );
 
   const validateForm = useCallback((): boolean => {
@@ -125,7 +125,7 @@ export default function WorkoutFeedbackForm({
         // Error handling is done by parent component
       }
     },
-    [formData, workoutId, onSubmit, validateForm]
+    [formData, workoutId, onSubmit, validateForm],
   );
 
   return (

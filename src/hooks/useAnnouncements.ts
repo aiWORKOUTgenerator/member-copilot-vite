@@ -14,7 +14,7 @@ export function useAnnouncements(): AnnouncementState {
 
   if (context === undefined) {
     throw new Error(
-      "useAnnouncements must be used within an AnnouncementProvider"
+      "useAnnouncements must be used within an AnnouncementProvider",
     );
   }
 

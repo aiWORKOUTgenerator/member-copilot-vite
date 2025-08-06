@@ -59,7 +59,7 @@ import { Button } from '../Button';
 describe('Button', () => {
   it('renders with default props', () => {
     render(<Button>Click me</Button>);
-    
+
     const button = screen.getByRole('button', { name: /click me/i });
     expect(button).toBeInTheDocument();
   });
@@ -67,10 +67,10 @@ describe('Button', () => {
   it('calls onClick when clicked', () => {
     const handleClick = vi.fn();
     render(<Button onClick={handleClick}>Click me</Button>);
-    
+
     const button = screen.getByRole('button', { name: /click me/i });
     fireEvent.click(button);
-    
+
     expect(handleClick).toHaveBeenCalledTimes(1);
   });
 });
@@ -81,13 +81,13 @@ describe('Button', () => {
 Use `renderHook` for testing custom hooks:
 
 ```typescript
-import { renderHook } from '@testing-library/react';
-import { useContact } from '../useContact';
+import { renderHook } from "@testing-library/react";
+import { useContact } from "../useContact";
 
-describe('useContact', () => {
-  it('returns contact data', () => {
+describe("useContact", () => {
+  it("returns contact data", () => {
     const { result } = renderHook(() => useContact());
-    
+
     expect(result.current.contact).toBeDefined();
     expect(result.current.isLoading).toBe(false);
   });
@@ -99,20 +99,20 @@ describe('useContact', () => {
 Mock external dependencies and test service methods:
 
 ```typescript
-import { ApiServiceImpl } from '../ApiServiceImpl';
+import { ApiServiceImpl } from "../ApiServiceImpl";
 
 // Mock fetch globally
 global.fetch = vi.fn();
 
-describe('ApiServiceImpl', () => {
-  it('makes successful GET request', async () => {
+describe("ApiServiceImpl", () => {
+  it("makes successful GET request", async () => {
     vi.mocked(fetch).mockResolvedValueOnce({
       ok: true,
-      json: vi.fn().mockResolvedValue({ data: 'test' }),
+      json: vi.fn().mockResolvedValue({ data: "test" }),
     } as Response);
 
-    const result = await apiService.get('/test');
-    expect(result).toEqual({ data: 'test' });
+    const result = await apiService.get("/test");
+    expect(result).toEqual({ data: "test" });
   });
 });
 ```
@@ -124,7 +124,7 @@ describe('ApiServiceImpl', () => {
 Use centralized mock data from `test/mocks/index.ts`:
 
 ```typescript
-import { mockUser, mockContact, mockWorkout } from '../../test/mocks';
+import { mockUser, mockContact, mockWorkout } from "../../test/mocks";
 
 // Use in tests
 const user = mockUser;
@@ -136,7 +136,7 @@ const contact = mockContact;
 Create mock services for testing:
 
 ```typescript
-import { createMockService } from '../../test/mocks';
+import { createMockService } from "../../test/mocks";
 
 const mockUserService = createMockService(mockUser);
 ```
@@ -147,7 +147,7 @@ Authentication is automatically mocked in `test-utils.tsx`:
 
 ```typescript
 // Available in all tests
-const { mockUseAuth, mockAnalytics } = require('../../test/test-utils');
+const { mockUseAuth, mockAnalytics } = require("../../test/test-utils");
 ```
 
 ## 🧪 Test Utilities
@@ -166,10 +166,10 @@ The `render` function from `test-utils.tsx` includes:
 Use `@testing-library/user-event` for realistic user interactions:
 
 ```typescript
-import userEvent from '@testing-library/user-event';
+import userEvent from "@testing-library/user-event";
 
 const user = userEvent.setup();
-await user.type(input, 'test@example.com');
+await user.type(input, "test@example.com");
 await user.click(button);
 ```
 
@@ -292,4 +292,4 @@ Husky hooks ensure:
 - [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/)
 - [Vitest Documentation](https://vitest.dev/)
 - [Jest DOM Matchers](https://github.com/testing-library/jest-dom)
-- [User Event Testing](https://testing-library.com/docs/user-event/intro/) 
+- [User Event Testing](https://testing-library.com/docs/user-event/intro/)

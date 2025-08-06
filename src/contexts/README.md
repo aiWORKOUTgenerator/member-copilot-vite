@@ -32,11 +32,11 @@ This separation allows each service to focus on a single responsibility, followi
 ### Option 1: Use the general `useServices` hook
 
 ```tsx
-import { useServices } from '@/lib/context/ServiceContext';
+import { useServices } from "@/lib/context/ServiceContext";
 
 function MyComponent() {
   const { userService } = useServices();
-  
+
   // Use userService...
 }
 ```
@@ -44,11 +44,11 @@ function MyComponent() {
 ### Option 2: Use a specialized hook (recommended)
 
 ```tsx
-import { useUserService } from '@/lib/context/ServiceContext';
+import { useUserService } from "@/lib/context/ServiceContext";
 
 function MyComponent() {
   const userService = useUserService();
-  
+
   // Use userService...
 }
 ```
@@ -82,9 +82,9 @@ export interface ProductService {
 // 2. Create src/services/product/ProductServiceImpl.ts
 export class ProductServiceImpl implements ProductService {
   constructor(private apiService: ApiService) {}
-  
+
   async getProducts(): Promise<Product[]> {
-    return this.apiService.get<Product[]>('/api/products');
+    return this.apiService.get<Product[]>("/api/products");
   }
   // ...other methods
 }
@@ -104,8 +104,12 @@ export interface ServiceContainer {
 // In createServices():
 return {
   apiService,
-  userService: useMocks ? new MockUserService() : new UserServiceImpl(apiService),
-  productService: useMocks ? new MockProductService() : new ProductServiceImpl(apiService),
+  userService: useMocks
+    ? new MockUserService()
+    : new UserServiceImpl(apiService),
+  productService: useMocks
+    ? new MockProductService()
+    : new ProductServiceImpl(apiService),
 };
 
 // 5. Add convenience hook
@@ -120,9 +124,9 @@ export function useProductService(): ProductService {
 You can easily override services in tests:
 
 ```tsx
-import { render } from '@testing-library/react';
-import { ServiceProvider } from '@/lib/context/ServiceContext';
-import UserManagement from './UserManagement';
+import { render } from "@testing-library/react";
+import { ServiceProvider } from "@/lib/context/ServiceContext";
+import UserManagement from "./UserManagement";
 
 // Create a mock service
 const mockUserService = {
@@ -131,13 +135,13 @@ const mockUserService = {
   // ...other methods
 };
 
-test('UserManagement component uses userService', () => {
+test("UserManagement component uses userService", () => {
   render(
     <ServiceProvider services={{ userService: mockUserService }}>
       <UserManagement />
-    </ServiceProvider>
+    </ServiceProvider>,
   );
-  
+
   expect(mockUserService.getUsers).toHaveBeenCalled();
 });
 ```
@@ -150,4 +154,4 @@ test('UserManagement component uses userService', () => {
 4. **Use Hooks**: Always access services through hooks, never directly
 5. **Mock for Tests**: Provide mock implementations for testing and development
 6. **Composition**: Use composition over inheritance for service implementation
-7. **Error Handling**: Handle errors at the appropriate level, don't expose low-level errors to UI 
+7. **Error Handling**: Handle errors at the appropriate level, don't expose low-level errors to UI

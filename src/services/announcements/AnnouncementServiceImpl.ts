@@ -32,7 +32,7 @@ export class AnnouncementServiceImpl implements AnnouncementService {
   async getAnnouncements(): Promise<Announcement[]> {
     try {
       const response = await this.apiService.get<AnnouncementsResponse>(
-        `${this.baseEndpoint}/announcements/`
+        `${this.baseEndpoint}/announcements/`,
       );
 
       return response.announcements

@@ -89,7 +89,7 @@ export default function WorkoutInstancePage() {
       const duration = Math.round(
         (new Date().getTime() -
           new Date(currentInstance.performedAt).getTime()) /
-          60000
+          60000,
       );
 
       // Make direct API call to complete the workout
@@ -139,7 +139,7 @@ export default function WorkoutInstancePage() {
       sectionIndex: null,
       exerciseIndex: null,
       currentExercise: null,
-    }
+    },
   );
   const [recommendedExercises, setRecommendedExercises] = useState<
     RecommendedExercise[]
@@ -147,7 +147,7 @@ export default function WorkoutInstancePage() {
   const [isLoadingRecommendations, setIsLoadingRecommendations] =
     useState(false);
   const [activeTab, setActiveTab] = useState<"recommended" | "custom">(
-    "recommended"
+    "recommended",
   );
   const [customExercise, setCustomExercise] = useState<CustomExercise>({
     name: "",
@@ -283,7 +283,7 @@ export default function WorkoutInstancePage() {
       // If we found a next incomplete exercise, scroll to it
       if (nextExerciseId) {
         const nextElement = document.querySelector(
-          `[data-exercise-id="${nextExerciseId}"]`
+          `[data-exercise-id="${nextExerciseId}"]`,
         );
         if (nextElement) {
           const rect = nextElement.getBoundingClientRect();
@@ -316,7 +316,7 @@ export default function WorkoutInstancePage() {
   const handleWorkoutComplete = (
     totalDuration: number,
     completedExercises: number,
-    totalExercises: number
+    totalExercises: number,
   ) => {
     analytics.track("Workout Completed", {
       workoutInstanceId: currentInstance?.id,
@@ -335,7 +335,7 @@ export default function WorkoutInstancePage() {
       workoutInstanceId: currentInstance?.id,
       reason,
       minutesElapsed: Math.floor(
-        (Date.now() - workoutStartTime.current) / 60000
+        (Date.now() - workoutStartTime.current) / 60000,
       ),
       tracked_at: new Date().toISOString(),
     });
@@ -383,7 +383,7 @@ export default function WorkoutInstancePage() {
 
       // Create a deep copy of the current jsonFormat
       const updatedJsonFormat = JSON.parse(
-        JSON.stringify(currentInstance.jsonFormat)
+        JSON.stringify(currentInstance.jsonFormat),
       );
 
       // Update the specific exercise
@@ -410,7 +410,7 @@ export default function WorkoutInstancePage() {
         }
       }
     },
-    [currentInstance, updateInstanceJsonFormatOptimistically, analytics]
+    [currentInstance, updateInstanceJsonFormatOptimistically, analytics],
   );
 
   const handleExerciseNotes = useCallback(
@@ -430,7 +430,7 @@ export default function WorkoutInstancePage() {
 
       // Create a deep copy of the current jsonFormat
       const updatedJsonFormat = JSON.parse(
-        JSON.stringify(currentInstance.jsonFormat)
+        JSON.stringify(currentInstance.jsonFormat),
       );
 
       // Update the specific exercise notes
@@ -443,7 +443,7 @@ export default function WorkoutInstancePage() {
         updateInstanceJsonFormatOptimistically(updatedJsonFormat);
       }
     },
-    [currentInstance, updateInstanceJsonFormatOptimistically]
+    [currentInstance, updateInstanceJsonFormatOptimistically],
   );
 
   const handleMarkAllComplete = useCallback(async () => {
@@ -467,7 +467,7 @@ export default function WorkoutInstancePage() {
 
     // Create a deep copy and mark all exercises as completed
     const updatedJsonFormat = JSON.parse(
-      JSON.stringify(currentInstance.jsonFormat)
+      JSON.stringify(currentInstance.jsonFormat),
     );
 
     updatedJsonFormat.sections.forEach(
@@ -475,7 +475,7 @@ export default function WorkoutInstancePage() {
         section.exercises?.forEach((exercise: { completed: boolean }) => {
           exercise.completed = true;
         });
-      }
+      },
     );
 
     // Update optimistically
@@ -528,7 +528,7 @@ export default function WorkoutInstancePage() {
     handleWorkoutComplete(
       currentInstance.duration || 0,
       workoutProgress.completedExercises,
-      workoutProgress.totalExercises
+      workoutProgress.totalExercises,
     );
 
     // Complete the workout immediately via API if 100% done
@@ -548,9 +548,8 @@ export default function WorkoutInstancePage() {
     async (currentExercise: Exercise) => {
       setIsLoadingRecommendations(true);
       try {
-        const recommendations = await getExerciseRecommendations(
-          currentExercise
-        );
+        const recommendations =
+          await getExerciseRecommendations(currentExercise);
         setRecommendedExercises(recommendations);
       } catch (error) {
         console.error("Error loading recommendations:", error);
@@ -559,7 +558,7 @@ export default function WorkoutInstancePage() {
         setIsLoadingRecommendations(false);
       }
     },
-    [getExerciseRecommendations]
+    [getExerciseRecommendations],
   );
 
   const handleExerciseSwap = useCallback(
@@ -567,7 +566,7 @@ export default function WorkoutInstancePage() {
       exerciseId: string,
       sectionIndex: number,
       exerciseIndex: number,
-      currentExercise: Exercise
+      currentExercise: Exercise,
     ) => {
       if (currentInstance?.completed) {
         console.log("Cannot swap exercises - workout is already completed");
@@ -586,11 +585,11 @@ export default function WorkoutInstancePage() {
       // Load recommended exercises
       loadRecommendedExercises(currentExercise);
     },
-    [currentInstance, loadRecommendedExercises]
+    [currentInstance, loadRecommendedExercises],
   );
 
   const handleSwapWithRecommended = (
-    recommendedExercise: RecommendedExercise
+    recommendedExercise: RecommendedExercise,
   ) => {
     if (
       swapExerciseState.sectionIndex === null ||
@@ -601,7 +600,7 @@ export default function WorkoutInstancePage() {
     }
 
     const updatedJsonFormat = JSON.parse(
-      JSON.stringify(currentInstance.jsonFormat)
+      JSON.stringify(currentInstance.jsonFormat),
     );
     const newExercise = {
       name: recommendedExercise.name,
@@ -633,7 +632,7 @@ export default function WorkoutInstancePage() {
     }
 
     const updatedJsonFormat = JSON.parse(
-      JSON.stringify(currentInstance.jsonFormat)
+      JSON.stringify(currentInstance.jsonFormat),
     );
     const newExercise = {
       name: customExercise.name.trim(),
@@ -941,7 +940,7 @@ export default function WorkoutInstancePage() {
                   {
                     month: "short",
                     day: "numeric",
-                  }
+                  },
                 )}
               </div>
               <div className="text-xs text-base-content/70">Date</div>
@@ -1150,7 +1149,7 @@ function SwapExerciseModal({
 
   const handleCustomExerciseFieldChange = (
     field: keyof CustomExercise,
-    value: string | number
+    value: string | number,
   ) => {
     onCustomExerciseChange({
       ...customExercise,
@@ -1534,8 +1533,8 @@ function RecommendedExercisesTab({
                     exercise.difficulty === "Beginner"
                       ? "badge-success"
                       : exercise.difficulty === "Intermediate"
-                      ? "badge-warning"
-                      : "badge-error"
+                        ? "badge-warning"
+                        : "badge-error"
                   }`}
                 >
                   {exercise.difficulty}
@@ -1708,7 +1707,7 @@ function CustomExerciseTab({
             onChange={(e) =>
               onChange(
                 "weight",
-                e.target.value ? parseFloat(e.target.value) : ""
+                e.target.value ? parseFloat(e.target.value) : "",
               )
             }
             placeholder="Weight in pounds"
@@ -1728,7 +1727,7 @@ function CustomExerciseTab({
             onChange={(e) =>
               onChange(
                 "duration",
-                e.target.value ? parseInt(e.target.value) : ""
+                e.target.value ? parseInt(e.target.value) : "",
               )
             }
             placeholder="Duration in seconds"
@@ -1796,7 +1795,7 @@ function VerticalProgressIndicator({
     const exercises = section.exercises;
     const total = exercises.length;
     const completed = exercises.filter(
-      (exercise) => (exercise as ExerciseInstance).completed
+      (exercise) => (exercise as ExerciseInstance).completed,
     ).length;
 
     return { completed, total };
@@ -1831,8 +1830,8 @@ function VerticalProgressIndicator({
                   isCompleted
                     ? "bg-success border-success"
                     : isActive
-                    ? "bg-primary border-primary"
-                    : "bg-base-100 border-base-300"
+                      ? "bg-primary border-primary"
+                      : "bg-base-100 border-base-300"
                 }`}
               />
 
@@ -1865,7 +1864,7 @@ const SectionCard = React.forwardRef<
       exerciseId: string,
       sectionIndex: number,
       exerciseIndex: number,
-      currentExercise: Exercise
+      currentExercise: Exercise,
     ) => void;
     disabled?: boolean;
   }
@@ -1879,13 +1878,13 @@ const SectionCard = React.forwardRef<
       onExerciseSwap,
       disabled = false,
     },
-    ref
+    ref,
   ) => {
     const [isExpanded, setIsExpanded] = useState(true);
 
     const exercises = Array.isArray(section.exercises) ? section.exercises : [];
     const completedInSection = exercises.filter(
-      (exercise) => (exercise as ExerciseInstance).completed
+      (exercise) => (exercise as ExerciseInstance).completed,
     ).length;
 
     return (
@@ -1937,7 +1936,7 @@ const SectionCard = React.forwardRef<
         )}
       </div>
     );
-  }
+  },
 );
 
 SectionCard.displayName = "SectionCard";
@@ -1959,7 +1958,7 @@ function ExerciseCard({
     exerciseId: string,
     sectionIndex: number,
     exerciseIndex: number,
-    currentExercise: Exercise
+    currentExercise: Exercise,
   ) => void;
   disabled?: boolean;
 }) {
@@ -2202,15 +2201,15 @@ function ExerciseCard({
               disabled
                 ? "btn-disabled opacity-60 cursor-not-allowed"
                 : isCompleted
-                ? "btn-success shadow-lg"
-                : "btn-outline btn-primary hover:scale-105"
+                  ? "btn-success shadow-lg"
+                  : "btn-outline btn-primary hover:scale-105"
             }`}
             aria-label={
               disabled
                 ? "Exercise completion locked (workout completed)"
                 : isCompleted
-                ? "Mark as incomplete"
-                : "Mark as complete"
+                  ? "Mark as incomplete"
+                  : "Mark as complete"
             }
           >
             {isCompleted ? (

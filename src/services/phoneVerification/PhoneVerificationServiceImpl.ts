@@ -49,7 +49,7 @@ export class PhoneVerificationServiceImpl implements PhoneVerificationService {
    * Send a verification code to the specified phone number
    */
   async sendVerificationCode(
-    request: SendVerificationCodeRequest
+    request: SendVerificationCodeRequest,
   ): Promise<SendVerificationCodeResponse> {
     try {
       // Validate phone number format before sending to backend
@@ -60,7 +60,7 @@ export class PhoneVerificationServiceImpl implements PhoneVerificationService {
       // Format phone number to ensure consistent format
       const formattedPhone = this.formatPhoneNumber(
         request.phone_number,
-        request.country_code
+        request.country_code,
       );
 
       const apiResponse = await this.apiService.post<
@@ -91,7 +91,7 @@ export class PhoneVerificationServiceImpl implements PhoneVerificationService {
       console.error("Failed to send verification code:", error);
       throw new PhoneVerificationError(
         PhoneVerificationErrorType.UNKNOWN_ERROR,
-        "Failed to send verification code. Please try again."
+        "Failed to send verification code. Please try again.",
       );
     }
   }
@@ -143,7 +143,7 @@ export class PhoneVerificationServiceImpl implements PhoneVerificationService {
       console.error("Failed to verify code:", error);
       throw new PhoneVerificationError(
         PhoneVerificationErrorType.UNKNOWN_ERROR,
-        "Failed to verify code. Please try again."
+        "Failed to verify code. Please try again.",
       );
     }
   }
@@ -171,7 +171,7 @@ export class PhoneVerificationServiceImpl implements PhoneVerificationService {
       console.error("Failed to resend verification code:", error);
       throw new PhoneVerificationError(
         PhoneVerificationErrorType.UNKNOWN_ERROR,
-        "Failed to resend verification code. Please try again."
+        "Failed to resend verification code. Please try again.",
       );
     }
   }
@@ -180,11 +180,11 @@ export class PhoneVerificationServiceImpl implements PhoneVerificationService {
    * Get current verification session status
    */
   async getVerificationStatus(
-    verificationId: string
+    verificationId: string,
   ): Promise<PhoneVerificationSession> {
     try {
       const response = await this.apiService.get<PhoneVerificationSession>(
-        `${this.baseEndpoint}/status/${verificationId}`
+        `${this.baseEndpoint}/status/${verificationId}`,
       );
 
       return response;
@@ -192,7 +192,7 @@ export class PhoneVerificationServiceImpl implements PhoneVerificationService {
       console.error("Failed to get verification status:", error);
       throw new PhoneVerificationError(
         PhoneVerificationErrorType.UNKNOWN_ERROR,
-        "Failed to get verification status. Please try again."
+        "Failed to get verification status. Please try again.",
       );
     }
   }

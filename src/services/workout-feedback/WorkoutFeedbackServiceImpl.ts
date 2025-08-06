@@ -33,7 +33,7 @@ export class WorkoutFeedbackServiceImpl implements WorkoutFeedbackService {
   }
 
   async submitFeedback(
-    request: CreateWorkoutFeedbackRequest
+    request: CreateWorkoutFeedbackRequest,
   ): Promise<WorkoutFeedback> {
     try {
       const payload = {
@@ -60,12 +60,12 @@ export class WorkoutFeedbackServiceImpl implements WorkoutFeedbackService {
   }
 
   async getFeedbackForWorkout(
-    workoutId: string
+    workoutId: string,
   ): Promise<WorkoutFeedback | null> {
     try {
       const feedbackData =
         await this.apiService.get<WorkoutFeedbackProps | null>(
-          `${this.baseEndpoint}/workout-feedback/workout/${workoutId}/`
+          `${this.baseEndpoint}/workout-feedback/workout/${workoutId}/`,
         );
 
       return feedbackData ? new WorkoutFeedback(feedbackData) : null;
@@ -82,7 +82,7 @@ export class WorkoutFeedbackServiceImpl implements WorkoutFeedbackService {
   async getUserFeedback(): Promise<WorkoutFeedback[]> {
     try {
       const feedbackData = await this.apiService.get<WorkoutFeedbackProps[]>(
-        `${this.baseEndpoint}/workout-feedback/`
+        `${this.baseEndpoint}/workout-feedback/`,
       );
 
       return feedbackData.map((data) => new WorkoutFeedback(data));
@@ -94,7 +94,7 @@ export class WorkoutFeedbackServiceImpl implements WorkoutFeedbackService {
 
   async updateFeedback(
     feedbackId: string,
-    request: CreateWorkoutFeedbackRequest
+    request: CreateWorkoutFeedbackRequest,
   ): Promise<WorkoutFeedback> {
     try {
       const payload = {

@@ -38,7 +38,7 @@ export default function WorkoutList({
 
   const renderWorkoutItem = (
     workout: GeneratedWorkout,
-    isRestricted = false
+    isRestricted = false,
   ) => {
     // Format the date to a nice human-readable string
     const createdDate = new Date(workout.createdAt);

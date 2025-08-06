@@ -21,7 +21,7 @@ export class ApiServiceImpl implements ApiService {
     headers: HeadersInit = {
       "Content-Type": "application/json",
     },
-    tokenProvider?: TokenProvider
+    tokenProvider?: TokenProvider,
   ) {
     this.baseUrl = baseUrl;
     this.defaultHeaders = headers;
@@ -95,7 +95,7 @@ export class ApiServiceImpl implements ApiService {
    */
   async post<T, D extends Record<string, unknown>>(
     endpoint: string,
-    data: D
+    data: D,
   ): Promise<T> {
     const url = this.formatUrl(endpoint);
     const headers = await this.getHeaders();
@@ -121,7 +121,7 @@ export class ApiServiceImpl implements ApiService {
    */
   async put<T, D extends Record<string, unknown>>(
     endpoint: string,
-    data: D
+    data: D,
   ): Promise<T> {
     const url = this.formatUrl(endpoint);
     const headers = await this.getHeaders();

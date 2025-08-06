@@ -61,7 +61,7 @@ export default function WorkoutFocusCustomization({
           Selected:{" "}
           {
             WORKOUT_FOCUS_OPTIONS.find(
-              (option) => option.value === selectedFocus
+              (option) => option.value === selectedFocus,
             )?.label
           }
         </p>

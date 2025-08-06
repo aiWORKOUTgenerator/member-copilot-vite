@@ -35,7 +35,9 @@ export function WorkoutInstancesProvider({
       setInstances(data);
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "Failed to fetch workout instances"
+        err instanceof Error
+          ? err.message
+          : "Failed to fetch workout instances",
       );
     } finally {
       setIsLoading(false);
@@ -45,9 +47,8 @@ export function WorkoutInstancesProvider({
   const createInstance = useCallback(
     async (request: CreateWorkoutInstanceRequest) => {
       try {
-        const newInstance = await workoutInstanceService.createWorkoutInstance(
-          request
-        );
+        const newInstance =
+          await workoutInstanceService.createWorkoutInstance(request);
 
         // Update state with the new instance
         setInstances((prevInstances) => [...prevInstances, newInstance]);
@@ -62,27 +63,27 @@ export function WorkoutInstancesProvider({
         throw new Error(errorMessage);
       }
     },
-    [workoutInstanceService]
+    [workoutInstanceService],
   );
 
   const updateInstanceInList = useCallback(
     (updatedInstance: WorkoutInstance) => {
       setInstances((prevInstances) =>
         prevInstances.map((instance) =>
-          instance.id === updatedInstance.id ? updatedInstance : instance
-        )
+          instance.id === updatedInstance.id ? updatedInstance : instance,
+        ),
       );
     },
-    []
+    [],
   );
 
   const getInstancesByGeneratedWorkoutId = useCallback(
     (generatedWorkoutId: string) => {
       return instances.filter(
-        (instance) => instance.generatedWorkoutId === generatedWorkoutId
+        (instance) => instance.generatedWorkoutId === generatedWorkoutId,
       );
     },
-    [instances]
+    [instances],
   );
 
   // Reset data when user signs out

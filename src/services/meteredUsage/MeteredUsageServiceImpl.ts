@@ -11,7 +11,7 @@ export class MeteredUsageServiceImpl implements IMeteredUsageService {
   async getMeteredUsage(): Promise<MeteredUsage[]> {
     try {
       const usageData = await this.apiService.get<MeteredUsage[]>(
-        `${this.baseEndpoint}`
+        `${this.baseEndpoint}`,
       );
       return usageData || [];
     } catch (error) {

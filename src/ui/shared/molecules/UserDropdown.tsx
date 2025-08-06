@@ -43,7 +43,7 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({
   const allMenuItems = [
     ...menuItems,
     ...defaultMenuItems.filter(
-      (item) => !menuItems.some((mi) => mi.label === item.label)
+      (item) => !menuItems.some((mi) => mi.label === item.label),
     ),
   ];
 

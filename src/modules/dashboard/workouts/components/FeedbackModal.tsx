@@ -82,7 +82,7 @@ export default function FeedbackModal({
         handleClose();
       }
     },
-    [handleClose]
+    [handleClose],
   );
 
   const getSizeClass = () => {

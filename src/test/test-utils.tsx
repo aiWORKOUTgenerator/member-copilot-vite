@@ -1,27 +1,30 @@
-import React, { ReactElement } from 'react';
-import { render, RenderOptions } from '@testing-library/react';
-import { BrowserRouter } from 'react-router';
-import { ClerkProvider } from '@clerk/clerk-react';
-import { CombinedProviders } from '../contexts/CombinedProviders';
-import { ContactProvider } from '../contexts/ContactContext';
+import { ReactElement } from "react";
+import {
+  render,
+  RenderOptions,
+  screen,
+  fireEvent,
+  waitFor,
+} from "@testing-library/react";
+import { vi } from "vitest";
 
 // Mock Clerk authentication
 const mockUseAuth = {
   isSignedIn: true,
   isLoaded: true,
-  userId: 'test-user-id',
+  userId: "test-user-id",
   user: {
-    id: 'test-user-id',
-    emailAddresses: [{ emailAddress: 'test@example.com' }],
-    firstName: 'Test',
-    lastName: 'User',
+    id: "test-user-id",
+    emailAddresses: [{ emailAddress: "test@example.com" }],
+    firstName: "Test",
+    lastName: "User",
   },
   signOut: vi.fn(),
-  getToken: vi.fn().mockResolvedValue('mock-token'),
+  getToken: vi.fn().mockResolvedValue("mock-token"),
 };
 
 // Mock the auth hook
-vi.mock('../hooks/auth', () => ({
+vi.mock("../hooks/auth", () => ({
   useAuth: () => mockUseAuth,
 }));
 
@@ -32,35 +35,22 @@ const mockAnalytics = {
   page: vi.fn(),
 };
 
-vi.mock('../hooks/useAnalytics', () => ({
+vi.mock("../hooks/useAnalytics", () => ({
   useAnalytics: () => mockAnalytics,
 }));
 
-// Custom render function that includes all necessary providers
-const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <ClerkProvider publishableKey="pk_test_mock">
-      <BrowserRouter>
-        <ContactProvider>
-          <CombinedProviders>
-            {children}
-          </CombinedProviders>
-        </ContactProvider>
-      </BrowserRouter>
-    </ClerkProvider>
-  );
-};
+// Import the component from a separate file
+import { AllTheProviders } from "./test-providers";
 
+// Custom render function that includes all necessary providers
 const customRender = (
   ui: ReactElement,
-  options?: Omit<RenderOptions, 'wrapper'>
+  options?: Omit<RenderOptions, "wrapper">,
 ) => render(ui, { wrapper: AllTheProviders, ...options });
 
-// Re-export everything
-export * from '@testing-library/react';
-
-// Override render method
+// Export testing library functions
+export { screen, fireEvent, waitFor };
 export { customRender as render };
 
 // Export mock functions for testing
-export { mockUseAuth, mockAnalytics }; 
+export { mockUseAuth, mockAnalytics };

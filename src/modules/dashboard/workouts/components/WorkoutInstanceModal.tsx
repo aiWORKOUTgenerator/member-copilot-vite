@@ -59,21 +59,21 @@ export default function WorkoutInstanceModal({
         onClose();
       }
     },
-    [onClose]
+    [onClose],
   );
 
   // Calculate workout stats
   const totalExercises =
     workoutInstance.jsonFormat?.sections.reduce(
       (total, section) => total + (section.exercises?.length || 0),
-      0
+      0,
     ) || 0;
 
   const completedExercises =
     workoutInstance.jsonFormat?.sections.reduce(
       (total, section) =>
         total + (section.exercises?.filter((ex) => ex.completed).length || 0),
-      0
+      0,
     ) || 0;
 
   const completionPercentage =

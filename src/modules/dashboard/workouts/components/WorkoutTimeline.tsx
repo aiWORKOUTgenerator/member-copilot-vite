@@ -34,7 +34,7 @@ interface WeekSummary {
 function generateCalendarDays(
   year: number,
   month: number,
-  workouts: WorkoutInstance[]
+  workouts: WorkoutInstance[],
 ): TimelineDay[] {
   const firstDay = new Date(year, month, 1);
   const startOfWeek = new Date(firstDay);
@@ -75,7 +75,7 @@ function generateCalendarDays(
  */
 function generateWeekDays(
   startDate: Date,
-  workouts: WorkoutInstance[]
+  workouts: WorkoutInstance[],
 ): TimelineDay[] {
   const days: TimelineDay[] = [];
   const currentDate = new Date(startDate);
@@ -133,7 +133,7 @@ function calculateWeeklySummaries(days: TimelineDay[]): WeekSummary[] {
     const completedWorkouts = allWorkouts.filter((w) => w.completed).length;
     const totalDuration = allWorkouts.reduce(
       (sum, w) => sum + (w.duration || 0),
-      0
+      0,
     );
     const activeDays = weekDays.filter((day) => day.workouts.length > 0).length;
     const completionRate =
@@ -278,8 +278,8 @@ export function WorkoutTimeline({
               day.isToday
                 ? "text-primary"
                 : day.isCurrentMonth
-                ? ""
-                : "text-base-content/50"
+                  ? ""
+                  : "text-base-content/50"
             }`}
           >
             {dayNumber}
@@ -458,7 +458,7 @@ export function WorkoutTimeline({
         {/* Mobile: Always show week view with larger day cells */}
         <div className="col-span-7 grid grid-cols-7 gap-1 sm:hidden">
           {generateWeekDays(getStartOfWeek(currentDate), workouts).map((day) =>
-            renderDay(day, false)
+            renderDay(day, false),
           )}
         </div>
 

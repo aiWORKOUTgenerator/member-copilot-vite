@@ -36,7 +36,7 @@ export class MemberServiceImpl implements MemberService {
   async getOrCreateContact(): Promise<Contact> {
     return this.apiService.post<Contact, Record<string, unknown>>(
       `${this.baseEndpoint}/contact/`,
-      {}
+      {},
     );
   }
 }

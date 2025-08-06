@@ -43,20 +43,21 @@ export function CurrentWorkoutInstanceProvider({
       setError(null);
 
       try {
-        const instance = await workoutInstanceService.getWorkoutInstance(
-          instanceId
-        );
+        const instance =
+          await workoutInstanceService.getWorkoutInstance(instanceId);
         setCurrentInstance(instance);
         setHasPendingChanges(false);
       } catch (err) {
         setError(
-          err instanceof Error ? err.message : "Failed to load workout instance"
+          err instanceof Error
+            ? err.message
+            : "Failed to load workout instance",
         );
       } finally {
         setIsLoading(false);
       }
     },
-    [workoutInstanceService]
+    [workoutInstanceService],
   );
 
   useEffect(() => {
@@ -86,14 +87,14 @@ export function CurrentWorkoutInstanceProvider({
         return updatedInstance;
       });
     },
-    []
+    [],
   );
 
   const updateInstanceJsonFormatOptimistically = useCallback(
     (jsonFormat: WorkoutInstanceStructure) => {
       updateInstanceOptimistically({ jsonFormat });
     },
-    [updateInstanceOptimistically]
+    [updateInstanceOptimistically],
   );
 
   const updateInstance = useCallback(
@@ -102,7 +103,7 @@ export function CurrentWorkoutInstanceProvider({
         const updatedInstance =
           await workoutInstanceService.updateWorkoutInstance(
             instanceId,
-            request
+            request,
           );
 
         // Update current instance if it's the same one
@@ -121,7 +122,7 @@ export function CurrentWorkoutInstanceProvider({
         throw new Error(errorMessage);
       }
     },
-    [workoutInstanceService, currentInstance]
+    [workoutInstanceService, currentInstance],
   );
 
   const deleteInstance = useCallback(
@@ -142,7 +143,7 @@ export function CurrentWorkoutInstanceProvider({
         throw new Error(errorMessage);
       }
     },
-    [workoutInstanceService, currentInstance, clearInstance]
+    [workoutInstanceService, currentInstance, clearInstance],
   );
 
   const syncToServer = useCallback(async () => {
@@ -160,7 +161,7 @@ export function CurrentWorkoutInstanceProvider({
       const updatedInstance =
         await workoutInstanceService.updateWorkoutInstance(
           currentInstance.id,
-          updateRequest
+          updateRequest,
         );
 
       setCurrentInstance(updatedInstance);
@@ -175,7 +176,7 @@ export function CurrentWorkoutInstanceProvider({
     async (currentExercise: Exercise): Promise<RecommendedExercise[]> => {
       if (!currentInstance) {
         console.error(
-          "No current instance available for exercise recommendations"
+          "No current instance available for exercise recommendations",
         );
         return [];
       }
@@ -185,14 +186,14 @@ export function CurrentWorkoutInstanceProvider({
           currentInstance.id,
           currentExercise.name,
           undefined, // reason - could be added as parameter later
-          undefined // preferences - could be added as parameter later
+          undefined, // preferences - could be added as parameter later
         );
       } catch (error) {
         console.error("Error loading recommendations:", error);
         return [];
       }
     },
-    [workoutInstanceService, currentInstance]
+    [workoutInstanceService, currentInstance],
   );
 
   // Auto-sync to server after a delay (debounced sync)

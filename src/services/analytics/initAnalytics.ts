@@ -18,7 +18,7 @@ export function initAnalytics(): AnalyticsService {
 
   if (!writeKey || !dataPlaneUrl) {
     throw new Error(
-      "Rudderstack configuration is missing. Please set RUDDERSTACK_WRITE_KEY and RUDDERSTACK_DATA_PLANE_URL environment variables."
+      "Rudderstack configuration is missing. Please set RUDDERSTACK_WRITE_KEY and RUDDERSTACK_DATA_PLANE_URL environment variables.",
     );
   }
 

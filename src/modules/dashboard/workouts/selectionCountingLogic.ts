@@ -74,7 +74,7 @@ export class SelectionCounter {
 
   // Duration & Equipment step counting (Step 1)
   static getDurationEquipmentSelections(
-    options: PerWorkoutOptions
+    options: PerWorkoutOptions,
   ): StepSelections {
     const hasDuration = !!options.customization_duration;
     const hasEquipment = !!(
@@ -104,7 +104,7 @@ export class SelectionCounter {
   // Get current step selections based on active step
   static getCurrentStepSelections(
     activeStep: "focus-energy" | "duration-equipment",
-    options: PerWorkoutOptions
+    options: PerWorkoutOptions,
   ): StepSelections {
     return activeStep === "focus-energy"
       ? this.getFocusEnergySelections(options)
@@ -114,7 +114,7 @@ export class SelectionCounter {
   // Get overall selection state for all steps
   static getSelectionState(
     activeStep: "focus-energy" | "duration-equipment",
-    options: PerWorkoutOptions
+    options: PerWorkoutOptions,
   ): SelectionState {
     return {
       focusEnergy: this.getFocusEnergySelections(options),
@@ -126,7 +126,7 @@ export class SelectionCounter {
   // Get individual field selection state
   static getFieldSelectionState(
     fieldKey: keyof PerWorkoutOptions,
-    value: unknown
+    value: unknown,
   ): {
     hasValue: boolean;
     isValid: boolean;
@@ -203,7 +203,7 @@ export class ButtonStateLogic {
     activeStep: "focus-energy" | "duration-equipment",
     options: PerWorkoutOptions,
     errors: Partial<Record<keyof PerWorkoutOptions, string>>,
-    isGenerating: boolean = false
+    isGenerating: boolean = false,
   ): ButtonState {
     if (isGenerating) {
       return {
@@ -216,7 +216,7 @@ export class ButtonStateLogic {
 
     const currentStepSelections = SelectionCounter.getCurrentStepSelections(
       activeStep,
-      options
+      options,
     );
     const hasValidationErrors = Object.keys(errors).length > 0;
 
@@ -284,11 +284,11 @@ export class ButtonStateLogic {
   static getProgressIndicator(
     activeStep: "focus-energy" | "duration-equipment",
     options: PerWorkoutOptions,
-    errors: Partial<Record<keyof PerWorkoutOptions, string>>
+    errors: Partial<Record<keyof PerWorkoutOptions, string>>,
   ): ProgressIndicator {
     const currentStepSelections = SelectionCounter.getCurrentStepSelections(
       activeStep,
-      options
+      options,
     );
     const hasErrors = Object.keys(errors).length > 0;
 
@@ -343,22 +343,22 @@ export function useStepSelections(
   activeStep: "focus-energy" | "duration-equipment",
   options: PerWorkoutOptions,
   errors: Partial<Record<keyof PerWorkoutOptions, string>>,
-  isGenerating: boolean = false
+  isGenerating: boolean = false,
 ) {
   const selectionState = SelectionCounter.getSelectionState(
     activeStep,
-    options
+    options,
   );
   const buttonState = ButtonStateLogic.getHybridButtonState(
     activeStep,
     options,
     errors,
-    isGenerating
+    isGenerating,
   );
   const progressIndicator = ButtonStateLogic.getProgressIndicator(
     activeStep,
     options,
-    errors
+    errors,
   );
 
   // Get field states for enhanced feedback - include all possible fields
@@ -380,7 +380,7 @@ export function useStepSelections(
     allFields.map((fieldKey) => [
       fieldKey,
       SelectionCounter.getFieldSelectionState(fieldKey, options[fieldKey]),
-    ])
+    ]),
   );
 
   return {

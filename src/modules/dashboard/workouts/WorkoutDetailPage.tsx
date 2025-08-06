@@ -60,7 +60,7 @@ export default function WorkoutDetailPage() {
   // Check if feedback already exists for this workout
   const existingFeedback = generatedWorkout
     ? userFeedback.find(
-        (feedback) => feedback.workoutId === generatedWorkout.id
+        (feedback) => feedback.workoutId === generatedWorkout.id,
       )
     : null;
   const [workoutFormat, setWorkoutFormat] = useState<
@@ -315,7 +315,7 @@ export default function WorkoutDetailPage() {
               | "structured"
               | "step-by-step"
               | "simple"
-              | "very-simple"
+              | "very-simple",
           )
         }
         tabs={tabs}

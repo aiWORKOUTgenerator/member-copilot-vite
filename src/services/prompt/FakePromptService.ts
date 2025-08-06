@@ -174,7 +174,7 @@ export class FakePromptService implements PromptService {
     promptValues: Array<{
       prompt_id: string;
       value: string | number;
-    }>
+    }>,
   ): Promise<void> {
     console.log(`Submitting prompt values:`, promptValues);
     return Promise.resolve();

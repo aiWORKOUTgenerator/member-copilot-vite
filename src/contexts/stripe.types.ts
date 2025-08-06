@@ -8,5 +8,5 @@ export interface StripeContextType {
 }
 
 export const StripeContext = createContext<StripeContextType | undefined>(
-  undefined
+  undefined,
 );

@@ -86,14 +86,14 @@ export const ContactUtils = {
         id: number | string;
       } | null;
       variableName: string;
-    }>
+    }>,
   ): AttributeCompletion[] {
     if (!contact) return [];
 
     return attributeTypes.map((attributeType) => {
       // Get prompts for this attribute type
       const attributePrompts = prompts.filter(
-        (prompt) => prompt.attributeType?.id === attributeType.id
+        (prompt) => prompt.attributeType?.id === attributeType.id,
       );
 
       // Count completed prompts
@@ -101,7 +101,7 @@ export const ContactUtils = {
         (prompt) =>
           contact.attributes[prompt.variableName] !== undefined &&
           contact.attributes[prompt.variableName] !== null &&
-          contact.attributes[prompt.variableName] !== ""
+          contact.attributes[prompt.variableName] !== "",
       ).length;
 
       // Calculate stats

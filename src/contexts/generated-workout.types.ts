@@ -13,7 +13,7 @@ export interface GeneratedWorkoutState {
   createWorkout: (
     configId: string,
     workoutParams: WorkoutParams,
-    prompt: string
+    prompt: string,
   ) => Promise<GeneratedWorkout>;
 }
 

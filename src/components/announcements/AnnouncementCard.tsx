@@ -40,7 +40,7 @@ export function AnnouncementCard({
   const formatDate = (date: Date) => {
     const now = new Date();
     const diffInHours = Math.floor(
-      (now.getTime() - date.getTime()) / (1000 * 60 * 60)
+      (now.getTime() - date.getTime()) / (1000 * 60 * 60),
     );
 
     if (diffInHours < 1) {

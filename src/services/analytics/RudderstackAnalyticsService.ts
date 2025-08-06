@@ -15,7 +15,7 @@ export class RudderstackAnalyticsService implements AnalyticsService {
   constructor(
     private readonly writeKey: string,
     private readonly dataPlaneUrl: string,
-    private readonly options: Record<string, unknown> = {}
+    private readonly options: Record<string, unknown> = {},
   ) {}
 
   /**

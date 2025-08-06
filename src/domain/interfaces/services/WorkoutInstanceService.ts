@@ -47,7 +47,7 @@ export interface WorkoutInstanceService {
    * @returns Promise resolving to array of WorkoutInstance
    */
   getWorkoutInstancesByGeneratedWorkoutId(
-    generatedWorkoutId: string
+    generatedWorkoutId: string,
   ): Promise<WorkoutInstance[]>;
 
   /**
@@ -63,7 +63,7 @@ export interface WorkoutInstanceService {
    * @returns Promise resolving to the created WorkoutInstance
    */
   createWorkoutInstance(
-    request: CreateWorkoutInstanceRequest
+    request: CreateWorkoutInstanceRequest,
   ): Promise<WorkoutInstance>;
 
   /**
@@ -74,7 +74,7 @@ export interface WorkoutInstanceService {
    */
   updateWorkoutInstance(
     instanceId: string,
-    request: UpdateWorkoutInstanceRequest
+    request: UpdateWorkoutInstanceRequest,
   ): Promise<WorkoutInstance>;
 
   /**
@@ -96,6 +96,6 @@ export interface WorkoutInstanceService {
     instanceId: string,
     exerciseName: string,
     reason?: string,
-    preferences?: string[]
+    preferences?: string[],
   ): Promise<RecommendedExercise[]>;
 }

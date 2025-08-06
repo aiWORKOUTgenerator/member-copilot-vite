@@ -27,7 +27,7 @@ export function PhoneVerificationModal({
   description = "We'll send you a verification code to confirm your phone number.",
 }: PhoneVerificationModalProps) {
   const [currentStep, setCurrentStep] = useState<VerificationStep>(
-    VerificationStep.ENTER_PHONE
+    VerificationStep.ENTER_PHONE,
   );
   const [phoneNumber, setPhoneNumber] = useState(initialPhoneNumber);
   const [verificationCode, setVerificationCode] = useState("");
@@ -65,7 +65,7 @@ export function PhoneVerificationModal({
         setVerificationCode("");
       }
     },
-    [actions]
+    [actions],
   );
 
   const handleSuccessComplete = useCallback(() => {

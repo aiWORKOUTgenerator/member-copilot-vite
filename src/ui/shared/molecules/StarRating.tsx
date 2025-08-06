@@ -34,7 +34,7 @@ export default function StarRating({
         onChange(rating);
       }
     },
-    [disabled, onChange]
+    [disabled, onChange],
   );
 
   const handleStarHover = useCallback(
@@ -43,7 +43,7 @@ export default function StarRating({
         setHoverValue(rating);
       }
     },
-    [disabled]
+    [disabled],
   );
 
   const handleMouseLeave = useCallback(() => {
@@ -69,7 +69,7 @@ export default function StarRating({
         handleStarClick(prevRating);
       }
     },
-    [disabled, handleStarClick]
+    [disabled, handleStarClick],
   );
 
   const displayValue = hoverValue || value;

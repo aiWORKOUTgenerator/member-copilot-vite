@@ -6,6 +6,6 @@ export interface GeneratedWorkoutService {
   createGeneratedWorkout(
     configId: string,
     workoutParams: WorkoutParams,
-    prompt: string
+    prompt: string,
   ): Promise<GeneratedWorkout>;
 }

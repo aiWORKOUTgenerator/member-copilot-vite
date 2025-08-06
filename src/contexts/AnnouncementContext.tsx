@@ -30,7 +30,7 @@ export function AnnouncementProvider({ children }: AnnouncementProviderProps) {
       setAnnouncements(data);
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "Failed to fetch announcements"
+        err instanceof Error ? err.message : "Failed to fetch announcements",
       );
     } finally {
       setIsLoading(false);

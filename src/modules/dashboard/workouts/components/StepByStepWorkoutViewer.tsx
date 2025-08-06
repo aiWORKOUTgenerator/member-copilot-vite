@@ -38,13 +38,13 @@ const StepByStepWorkoutViewer = ({
       typeof workout === "object" &&
       workout.title &&
       workout.description,
-    [workout]
+    [workout],
   );
 
   // Check if sections exist and are an array using useMemo to prevent re-renders
   const sections = useMemo(
     () => (Array.isArray(workout?.sections) ? workout.sections : []),
-    [workout?.sections]
+    [workout?.sections],
   );
 
   // Flatten workout into a sequence of steps
@@ -54,7 +54,7 @@ const StepByStepWorkoutViewer = ({
   // Memoize currentStep and progress calculations
   const currentStep = useMemo(
     () => (steps.length > 0 ? steps[currentStepIndex] : null),
-    [steps, currentStepIndex]
+    [steps, currentStepIndex],
   );
 
   const progress = useMemo(
@@ -62,7 +62,7 @@ const StepByStepWorkoutViewer = ({
       steps.length > 0
         ? Math.round(((currentStepIndex + 1) / steps.length) * 100)
         : 0,
-    [currentStepIndex, steps.length]
+    [currentStepIndex, steps.length],
   );
 
   // Recursive function to flatten sections and subsections
@@ -71,7 +71,7 @@ const StepByStepWorkoutViewer = ({
       section: Section,
       sectionIndex: number,
       subSectionPath: number[] = [],
-      parentSectionName: string = ""
+      parentSectionName: string = "",
     ): WorkoutStep[] => {
       if (!section || typeof section !== "object") {
         return [];
@@ -189,7 +189,7 @@ const StepByStepWorkoutViewer = ({
           subSection,
           sectionIndex,
           [...subSectionPath, subSectionIndex],
-          currentSectionName
+          currentSectionName,
         );
         steps.push(...subSectionSteps);
 
@@ -214,7 +214,7 @@ const StepByStepWorkoutViewer = ({
 
       return steps;
     },
-    []
+    [],
   );
 
   // Create flattened array of steps on mount
@@ -374,7 +374,7 @@ const StepByStepWorkoutViewer = ({
               <h3 className="text-xl font-bold mb-2">Rest Period</h3>
               <div className="text-4xl font-bold mb-2">
                 {formatTime(
-                  (currentStep.content as { duration: number }).duration
+                  (currentStep.content as { duration: number }).duration,
                 )}
               </div>
               <p className="opacity-70">

@@ -14,7 +14,7 @@ export function useAttributeTypes(): AttributeTypeState {
 
   if (context === undefined) {
     throw new Error(
-      "useAttributeTypes must be used within an AttributeTypeProvider"
+      "useAttributeTypes must be used within an AttributeTypeProvider",
     );
   }
 

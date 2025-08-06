@@ -34,7 +34,7 @@ export default function SorenessCustomization({
     if (isSelected) {
       // Remove the body part
       const newBodyParts = selectedBodyParts.filter(
-        (part) => part !== bodyPartValue
+        (part) => part !== bodyPartValue,
       );
       onChange(newBodyParts.length > 0 ? newBodyParts : undefined);
     } else {

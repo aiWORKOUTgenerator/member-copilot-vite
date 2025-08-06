@@ -13,7 +13,7 @@ export function useCurrentWorkoutInstance(): CurrentWorkoutInstanceState {
 
   if (context === undefined) {
     throw new Error(
-      "useCurrentWorkoutInstance must be used within a CurrentWorkoutInstanceProvider"
+      "useCurrentWorkoutInstance must be used within a CurrentWorkoutInstanceProvider",
     );
   }
 

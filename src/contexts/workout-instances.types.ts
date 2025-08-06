@@ -11,11 +11,11 @@ export interface WorkoutInstancesState {
   error: string | null;
   fetchInstances: () => Promise<void>;
   createInstance: (
-    request: CreateWorkoutInstanceRequest
+    request: CreateWorkoutInstanceRequest,
   ) => Promise<WorkoutInstance>;
   updateInstanceInList: (updatedInstance: WorkoutInstance) => void;
   getInstancesByGeneratedWorkoutId: (
-    generatedWorkoutId: string
+    generatedWorkoutId: string,
   ) => WorkoutInstance[];
 }
 

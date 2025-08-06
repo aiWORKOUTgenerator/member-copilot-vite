@@ -144,7 +144,7 @@ export default function SignUpPage() {
       if (err instanceof Error && isClerkAPIResponseError(err)) {
         // Check if the error is due to user already existing
         const identifierExists = err.errors.some(
-          (error) => error.code === "form_identifier_exists"
+          (error) => error.code === "form_identifier_exists",
         );
 
         if (identifierExists && signIn) {
@@ -156,8 +156,8 @@ export default function SignUpPage() {
           setTimeout(() => {
             navigate(
               `/sign-in/email-otp?email=${encodeURIComponent(
-                emailAddress
-              )}&from=signup`
+                emailAddress,
+              )}&from=signup`,
             );
           }, 100);
           return;
@@ -165,7 +165,7 @@ export default function SignUpPage() {
           // For other errors, display the message
           setError(
             err.errors[0]?.longMessage ||
-              "An error occurred with authentication."
+              "An error occurred with authentication.",
           );
         }
       } else {

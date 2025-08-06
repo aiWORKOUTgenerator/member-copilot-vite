@@ -13,7 +13,7 @@ export default function BillingHistoryPage() {
   // Handler for redirecting to Stripe Billing Portal
   const handleRedirectToPortal = async (
     portalConfiguration: PortalConfiguration,
-    returnPath?: string
+    returnPath?: string,
   ) => {
     if (isProcessingPortal) return;
 
@@ -24,7 +24,7 @@ export default function BillingHistoryPage() {
       console.log(`Requesting customer portal session: ${portalConfiguration}`);
       const { url } = await createCustomerPortalSession(
         portalConfiguration,
-        returnPath
+        returnPath,
       );
       console.log(`Received portal URL: ${url}`);
 
@@ -40,7 +40,7 @@ export default function BillingHistoryPage() {
         setErrorMessage(error.message);
       } else {
         setErrorMessage(
-          "Failed to open the billing portal. Please try again later."
+          "Failed to open the billing portal. Please try again later.",
         );
       }
       setIsProcessingPortal(false); // Set to false only on error

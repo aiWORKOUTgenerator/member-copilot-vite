@@ -30,7 +30,7 @@ export default function UsagePage() {
             <div className="stat-title">Workouts Generated</div>
             <div className="stat-value">
               {getTotalAggregatedValueForMeter(
-                MeteredFeature.WORKOUTS_GENERATED
+                MeteredFeature.WORKOUTS_GENERATED,
               )}
               <span className="text-sm font-normal">
                 {" "}

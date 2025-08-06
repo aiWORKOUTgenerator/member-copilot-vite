@@ -14,7 +14,7 @@ export function useTrainerPersona(): TrainerPersonaState {
 
   if (context === undefined) {
     throw new Error(
-      "useTrainerPersona must be used within a TrainerPersonaProvider"
+      "useTrainerPersona must be used within a TrainerPersonaProvider",
     );
   }
 

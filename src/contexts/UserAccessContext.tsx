@@ -66,10 +66,10 @@ export const UserAccessProvider: React.FC<UserAccessProviderProps> = ({
     (feature: string): boolean => {
       if (isLoading || activeLicenses.length === 0) return false;
       return activeLicenses.some(
-        (license) => license.policy?.features[feature] === true
+        (license) => license.policy?.features[feature] === true,
       );
     },
-    [activeLicenses, isLoading]
+    [activeLicenses, isLoading],
   );
 
   const getTotalAggregatedValueForMeter = useCallback(
@@ -78,7 +78,7 @@ export const UserAccessProvider: React.FC<UserAccessProviderProps> = ({
         .filter((usage) => usage.meter === meterId)
         .reduce((total, item) => total + item.aggregated_value, 0);
     },
-    [meteredUsage]
+    [meteredUsage],
   );
 
   const getHighestLimitForMeter = useCallback(
@@ -91,7 +91,7 @@ export const UserAccessProvider: React.FC<UserAccessProviderProps> = ({
         return licenseLimit > highestLimit ? licenseLimit : highestLimit;
       }, 0); // Start with 0 as the base limit
     },
-    [activeLicenses, isLoading]
+    [activeLicenses, isLoading],
   );
 
   const isMeterLimitReached = useCallback(
@@ -106,14 +106,14 @@ export const UserAccessProvider: React.FC<UserAccessProviderProps> = ({
       const totalValue = getTotalAggregatedValueForMeter(meterId);
       return totalValue >= policyLimit;
     },
-    [isLoading, getTotalAggregatedValueForMeter, getHighestLimitForMeter]
+    [isLoading, getTotalAggregatedValueForMeter, getHighestLimitForMeter],
   );
 
   const getUsageForMeter = useCallback(
     (meterId: MeteredFeature): MeteredUsage | undefined => {
       return meteredUsage.find((usage) => usage.meter === meterId);
     },
-    [meteredUsage]
+    [meteredUsage],
   );
 
   const refreshAccessData = useCallback(async (): Promise<void> => {

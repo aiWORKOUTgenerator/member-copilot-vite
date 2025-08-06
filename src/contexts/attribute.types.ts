@@ -17,5 +17,5 @@ export interface AttributeState {
  * This forces consumers to use the useAttributes hook which performs a null check.
  */
 export const AttributeContext = createContext<AttributeState | undefined>(
-  undefined
+  undefined,
 );

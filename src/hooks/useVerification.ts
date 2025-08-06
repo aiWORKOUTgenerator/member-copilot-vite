@@ -13,7 +13,7 @@ export function useVerification(): VerificationState {
 
   if (context === undefined) {
     throw new Error(
-      "useVerification must be used within a VerificationProvider"
+      "useVerification must be used within a VerificationProvider",
     );
   }
 

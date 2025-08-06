@@ -14,7 +14,7 @@ export function useGeneratedWorkouts(): GeneratedWorkoutState {
 
   if (context === undefined) {
     throw new Error(
-      "useGeneratedWorkouts must be used within a GeneratedWorkoutProvider"
+      "useGeneratedWorkouts must be used within a GeneratedWorkoutProvider",
     );
   }
 

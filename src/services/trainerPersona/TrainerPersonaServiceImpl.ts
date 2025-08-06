@@ -33,7 +33,7 @@ export class TrainerPersonaServiceImpl implements TrainerPersonaService {
   async generateTrainerPersona(): Promise<void> {
     return this.apiService.post<void, Record<string, unknown>>(
       `${this.baseEndpoint}/`,
-      {}
+      {},
     );
   }
 }

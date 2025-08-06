@@ -27,7 +27,7 @@ export class PromptServiceImpl implements PromptService {
     try {
       // Get prompts from API
       const promptsData = await this.apiService.get<PromptProps[]>(
-        `${this.baseEndpoint}/prompts/`
+        `${this.baseEndpoint}/prompts/`,
       );
 
       // Map the API response to domain entities
@@ -64,7 +64,7 @@ export class PromptServiceImpl implements PromptService {
     promptValues: Array<{
       prompt_id: string;
       value: string | number;
-    }>
+    }>,
   ): Promise<void> {
     try {
       await this.apiService.post<

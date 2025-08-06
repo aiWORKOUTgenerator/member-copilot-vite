@@ -258,7 +258,7 @@ const MyAITrainerPage = () => {
                             <p className="text-base-content/90">{value}</p>
                           </div>
                         </div>
-                      )
+                      ),
                     )}
                   </div>
                 </div>

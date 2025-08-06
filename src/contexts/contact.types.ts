@@ -21,5 +21,5 @@ export interface ContactState {
  * This forces consumers to use the useContact hook which performs a null check.
  */
 export const ContactContext = createContext<ContactState | undefined>(
-  undefined
+  undefined,
 );

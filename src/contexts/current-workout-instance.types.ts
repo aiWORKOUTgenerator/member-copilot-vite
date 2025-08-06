@@ -20,17 +20,17 @@ export interface CurrentWorkoutInstanceState {
   clearInstance: () => void;
   updateInstance: (
     instanceId: string,
-    request: UpdateWorkoutInstanceRequest
+    request: UpdateWorkoutInstanceRequest,
   ) => Promise<WorkoutInstance>;
   deleteInstance: (instanceId: string) => Promise<void>;
   updateInstanceOptimistically: (updates: Partial<WorkoutInstance>) => void;
   updateInstanceJsonFormatOptimistically: (
-    jsonFormat: WorkoutInstanceStructure
+    jsonFormat: WorkoutInstanceStructure,
   ) => void;
   syncToServer: () => Promise<void>;
   hasPendingChanges: boolean;
   getExerciseRecommendations: (
-    currentExercise: Exercise
+    currentExercise: Exercise,
   ) => Promise<RecommendedExercise[]>;
 }
 

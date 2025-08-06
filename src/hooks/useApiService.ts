@@ -10,7 +10,7 @@ import { ApiService } from "@/domain/interfaces/api/ApiService";
  * @returns An ApiService instance with authentication configured
  */
 export function useApiService(
-  baseUrl: string = import.meta.env.VITE_API_URL || ""
+  baseUrl: string = import.meta.env.VITE_API_URL || "",
 ): ApiService {
   const { getToken } = useAuth();
 
@@ -25,7 +25,7 @@ export function useApiService(
       {
         "Content-Type": "application/json",
       },
-      tokenProvider
+      tokenProvider,
     );
   }, [baseUrl, getToken]);
 

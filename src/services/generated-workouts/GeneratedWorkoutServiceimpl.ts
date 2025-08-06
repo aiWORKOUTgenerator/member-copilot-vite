@@ -48,7 +48,7 @@ export class GeneratedWorkoutServiceImpl implements GeneratedWorkoutService {
   async createGeneratedWorkout(
     configId: string,
     workoutParams: WorkoutParams,
-    prompt: string
+    prompt: string,
   ): Promise<GeneratedWorkout> {
     try {
       interface WorkoutResponse {

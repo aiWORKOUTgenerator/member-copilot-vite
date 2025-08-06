@@ -23,7 +23,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       id,
       ...props
     },
-    ref
+    ref,
   ) => {
     // Generate a unique ID if one isn't provided
     const inputId = id || `input-${Math.random().toString(36).substring(2, 9)}`;
@@ -57,8 +57,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               hasError
                 ? `${inputId}-error`
                 : helperText
-                ? `${inputId}-helper`
-                : undefined
+                  ? `${inputId}-helper`
+                  : undefined
             }
             {...props}
           />
@@ -86,7 +86,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         )}
       </div>
     );
-  }
+  },
 );
 
 Input.displayName = "Input";

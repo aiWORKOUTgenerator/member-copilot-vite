@@ -19,7 +19,7 @@ import { usePusherService } from "@/hooks/useServices";
 export function usePusherEvent(
   channel: string,
   event: string,
-  onEvent: (data: unknown) => void
+  onEvent: (data: unknown) => void,
 ): void {
   const pusherService = usePusherService();
 

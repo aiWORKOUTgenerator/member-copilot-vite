@@ -20,7 +20,7 @@ export class AnalyticsFactory {
       writeKey: string;
       dataPlaneUrl: string;
       configOptions?: Record<string, unknown>;
-    }
+    },
   ): AnalyticsService {
     if (AnalyticsFactory.instance) {
       return AnalyticsFactory.instance;
@@ -32,7 +32,7 @@ export class AnalyticsFactory {
         AnalyticsFactory.instance = new RudderstackAnalyticsService(
           options.writeKey,
           options.dataPlaneUrl,
-          options.configOptions || {}
+          options.configOptions || {},
         );
         break;
       default:

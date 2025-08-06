@@ -37,14 +37,14 @@ export default function GenerateWorkoutPage() {
   >("focus-energy");
   const [prompt, setPrompt] = useState("");
   const [perWorkoutOptions, setPerWorkoutOptions] = useState<PerWorkoutOptions>(
-    {}
+    {},
   );
   const [errors] = useState<Partial<Record<keyof PerWorkoutOptions, string>>>(
-    {}
+    {},
   );
 
   const prevStepRef = useRef<"focus-energy" | "duration-equipment">(
-    activeQuickStep
+    activeQuickStep,
   );
   const [isGenerating, setIsGenerating] = useState(false);
   const [displayPrompts, setDisplayPrompts] = useState<string[]>([]);
@@ -68,7 +68,7 @@ export default function GenerateWorkoutPage() {
 
   // Helper function to convert options to string format for API submission
   const convertOptionsToStrings = (
-    options: PerWorkoutOptions
+    options: PerWorkoutOptions,
   ): Record<string, string> => {
     const stringOptions: Record<string, string> = {};
 
@@ -128,7 +128,7 @@ export default function GenerateWorkoutPage() {
           const response = await createWorkout(
             import.meta.env.VITE_GENERATED_WORKOUT_CONFIGURATION_ID,
             combinedParams,
-            "" // No prompt for quick workout
+            "", // No prompt for quick workout
           );
 
           console.log("Generated workout:", response);
@@ -145,7 +145,7 @@ export default function GenerateWorkoutPage() {
 
           // Track generation failures
           handleGenerationError(
-            error instanceof Error ? error.message : String(error)
+            error instanceof Error ? error.message : String(error),
           );
         }
       }
@@ -166,7 +166,7 @@ export default function GenerateWorkoutPage() {
         const response = await createWorkout(
           import.meta.env.VITE_GENERATED_WORKOUT_CONFIGURATION_ID,
           combinedParams,
-          workoutPrompt
+          workoutPrompt,
         );
 
         console.log("Generated workout:", response);
@@ -183,7 +183,7 @@ export default function GenerateWorkoutPage() {
 
         // Track generation failures
         handleGenerationError(
-          error instanceof Error ? error.message : String(error)
+          error instanceof Error ? error.message : String(error),
         );
       }
     }
@@ -191,7 +191,7 @@ export default function GenerateWorkoutPage() {
 
   const handlePerWorkoutOptionChange = (
     option: keyof PerWorkoutOptions,
-    value: unknown
+    value: unknown,
   ) => {
     // Update options
     const newOptions = {
@@ -387,7 +387,7 @@ export default function GenerateWorkoutPage() {
                       className="btn btn-sm btn-ghost"
                       onClick={() => {
                         const shuffled = [...WORKOUT_PROMPTS].sort(
-                          () => 0.5 - Math.random()
+                          () => 0.5 - Math.random(),
                         );
                         setDisplayPrompts(shuffled.slice(0, 3));
                       }}
@@ -422,8 +422,8 @@ export default function GenerateWorkoutPage() {
                           index === 0
                             ? "success"
                             : index === 1
-                            ? "info"
-                            : "warning"
+                              ? "info"
+                              : "warning"
                         } cursor-pointer hover:bg-base-300`}
                         onClick={() => setExamplePrompt(example)}
                       >

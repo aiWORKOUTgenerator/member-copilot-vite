@@ -32,7 +32,7 @@ export function AttributeProvider({ children }: AttributeProviderProps) {
       setIsLoaded(true);
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "Failed to fetch attributes"
+        err instanceof Error ? err.message : "Failed to fetch attributes",
       );
       console.error("Error fetching attributes:", err);
     } finally {

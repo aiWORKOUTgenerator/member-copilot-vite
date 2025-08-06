@@ -39,7 +39,7 @@ export function AttributeTypeProvider({
       setIsLoaded(true);
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "Failed to fetch attribute types"
+        err instanceof Error ? err.message : "Failed to fetch attribute types",
       );
       console.error("Error fetching attribute types:", err);
     } finally {

@@ -31,7 +31,7 @@ export function useAuth() {
         setIsSigningOut(false);
       }
     },
-    [signOut, navigate]
+    [signOut, navigate],
   );
 
   return {

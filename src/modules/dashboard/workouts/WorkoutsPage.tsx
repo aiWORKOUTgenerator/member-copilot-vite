@@ -25,7 +25,7 @@ export default function AIWorkouts() {
     useUserAccess();
 
   const isWorkoutGenerationLimitReached = isMeterLimitReached(
-    MeteredFeature.WORKOUTS_GENERATED
+    MeteredFeature.WORKOUTS_GENERATED,
   );
 
   const isLoading = isLoadingGeneratedWorkouts || isLoadingMeteredUsage;

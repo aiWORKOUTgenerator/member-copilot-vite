@@ -71,7 +71,7 @@ export function usePhoneVerification(): UsePhoneVerificationReturn {
 
   // Refs for cleanup
   const cooldownIntervalRef = useRef<ReturnType<typeof setInterval> | null>(
-    null
+    null,
   );
 
   // Computed values
@@ -121,9 +121,8 @@ export function usePhoneVerification(): UsePhoneVerificationReturn {
           country_code: countryCode,
         };
 
-        const response = await phoneVerificationService.sendVerificationCode(
-          request
-        );
+        const response =
+          await phoneVerificationService.sendVerificationCode(request);
 
         if (response.success) {
           // Create session from response
@@ -153,14 +152,14 @@ export function usePhoneVerification(): UsePhoneVerificationReturn {
             ? err
             : new PhoneVerificationError(
                 "unknown_error" as PhoneVerificationErrorType,
-                "Failed to send verification code"
+                "Failed to send verification code",
               );
         setError(error);
       } finally {
         setIsSending(false);
       }
     },
-    [phoneVerificationService, startResendCooldown]
+    [phoneVerificationService, startResendCooldown],
   );
 
   // Verify code
@@ -170,8 +169,8 @@ export function usePhoneVerification(): UsePhoneVerificationReturn {
         setError(
           new PhoneVerificationError(
             "verification_not_found" as PhoneVerificationErrorType,
-            "No active verification session"
-          )
+            "No active verification session",
+          ),
         );
         return false;
       }
@@ -223,7 +222,7 @@ export function usePhoneVerification(): UsePhoneVerificationReturn {
             ? err
             : new PhoneVerificationError(
                 "unknown_error" as PhoneVerificationErrorType,
-                "Failed to verify code"
+                "Failed to verify code",
               );
         setError(error);
 
@@ -241,7 +240,7 @@ export function usePhoneVerification(): UsePhoneVerificationReturn {
         setIsVerifying(false);
       }
     },
-    [session, phoneVerificationService, refetchContact]
+    [session, phoneVerificationService, refetchContact],
   );
 
   // Resend code
@@ -250,8 +249,8 @@ export function usePhoneVerification(): UsePhoneVerificationReturn {
       setError(
         new PhoneVerificationError(
           "verification_not_found" as PhoneVerificationErrorType,
-          "No active verification session"
-        )
+          "No active verification session",
+        ),
       );
       return;
     }
@@ -292,7 +291,7 @@ export function usePhoneVerification(): UsePhoneVerificationReturn {
           ? err
           : new PhoneVerificationError(
               "unknown_error" as PhoneVerificationErrorType,
-              "Failed to resend verification code"
+              "Failed to resend verification code",
             );
       setError(error);
     } finally {
@@ -373,9 +372,8 @@ export function usePhoneVerificationSend() {
           country_code: countryCode,
         };
 
-        const response = await phoneVerificationService.sendVerificationCode(
-          request
-        );
+        const response =
+          await phoneVerificationService.sendVerificationCode(request);
         return response;
       } catch (err) {
         const error =
@@ -383,7 +381,7 @@ export function usePhoneVerificationSend() {
             ? err
             : new PhoneVerificationError(
                 "unknown_error" as PhoneVerificationErrorType,
-                "Failed to send verification code"
+                "Failed to send verification code",
               );
         setError(error);
         throw error;
@@ -391,7 +389,7 @@ export function usePhoneVerificationSend() {
         setIsLoading(false);
       }
     },
-    [phoneVerificationService]
+    [phoneVerificationService],
   );
 
   return {
@@ -430,7 +428,7 @@ export function usePhoneVerificationVerify() {
             ? err
             : new PhoneVerificationError(
                 "unknown_error" as PhoneVerificationErrorType,
-                "Failed to verify code"
+                "Failed to verify code",
               );
         setError(error);
         throw error;
@@ -438,7 +436,7 @@ export function usePhoneVerificationVerify() {
         setIsLoading(false);
       }
     },
-    [phoneVerificationService]
+    [phoneVerificationService],
   );
 
   return {

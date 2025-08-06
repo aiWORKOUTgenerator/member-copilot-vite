@@ -63,7 +63,7 @@ export class WorkoutInstanceServiceImpl implements WorkoutInstanceService {
         .sort(
           (a, b) =>
             new Date(b.performedAt).getTime() -
-            new Date(a.performedAt).getTime()
+            new Date(a.performedAt).getTime(),
         );
     } catch (error) {
       console.error("Error in getWorkoutInstances:", error);
@@ -72,13 +72,13 @@ export class WorkoutInstanceServiceImpl implements WorkoutInstanceService {
   }
 
   async getWorkoutInstancesByGeneratedWorkoutId(
-    generatedWorkoutId: string
+    generatedWorkoutId: string,
   ): Promise<WorkoutInstance[]> {
     try {
       const workoutInstancesData = await this.apiService.get<
         WorkoutInstanceProps[]
       >(
-        `${this.baseEndpoint}/workout-instances/?generated_workout_id=${generatedWorkoutId}`
+        `${this.baseEndpoint}/workout-instances/?generated_workout_id=${generatedWorkoutId}`,
       );
 
       return workoutInstancesData
@@ -86,23 +86,23 @@ export class WorkoutInstanceServiceImpl implements WorkoutInstanceService {
         .sort(
           (a, b) =>
             new Date(b.performedAt).getTime() -
-            new Date(a.performedAt).getTime()
+            new Date(a.performedAt).getTime(),
         );
     } catch (error) {
       console.error("Error in getWorkoutInstancesByGeneratedWorkoutId:", error);
       throw new Error(
-        "Failed to fetch workout instances for generated workout"
+        "Failed to fetch workout instances for generated workout",
       );
     }
   }
 
   async getWorkoutInstance(
-    instanceId: string
+    instanceId: string,
   ): Promise<WorkoutInstance | null> {
     try {
       const workoutInstanceData =
         await this.apiService.get<WorkoutInstanceProps>(
-          `${this.baseEndpoint}/workout-instances/${instanceId}/`
+          `${this.baseEndpoint}/workout-instances/${instanceId}/`,
         );
 
       return new WorkoutInstance(workoutInstanceData);
@@ -118,7 +118,7 @@ export class WorkoutInstanceServiceImpl implements WorkoutInstanceService {
   }
 
   async createWorkoutInstance(
-    request: CreateWorkoutInstanceRequest
+    request: CreateWorkoutInstanceRequest,
   ): Promise<WorkoutInstance> {
     try {
       const payload: CreateWorkoutInstancePayload = {
@@ -144,7 +144,7 @@ export class WorkoutInstanceServiceImpl implements WorkoutInstanceService {
 
   async updateWorkoutInstance(
     instanceId: string,
-    request: UpdateWorkoutInstanceRequest
+    request: UpdateWorkoutInstanceRequest,
   ): Promise<WorkoutInstance> {
     try {
       const payload: UpdateWorkoutInstancePayload = {
@@ -157,7 +157,7 @@ export class WorkoutInstanceServiceImpl implements WorkoutInstanceService {
 
       // Remove undefined values from payload
       const cleanPayload = Object.fromEntries(
-        Object.entries(payload).filter(([, value]) => value !== undefined)
+        Object.entries(payload).filter(([, value]) => value !== undefined),
       );
 
       const updatedWorkoutInstance = await this.apiService.put<
@@ -175,7 +175,7 @@ export class WorkoutInstanceServiceImpl implements WorkoutInstanceService {
   async deleteWorkoutInstance(instanceId: string): Promise<void> {
     try {
       await this.apiService.delete(
-        `${this.baseEndpoint}/workout-instances/${instanceId}/`
+        `${this.baseEndpoint}/workout-instances/${instanceId}/`,
       );
     } catch (error) {
       console.error("Error in deleteWorkoutInstance:", error);
@@ -187,7 +187,7 @@ export class WorkoutInstanceServiceImpl implements WorkoutInstanceService {
     instanceId: string,
     exerciseName: string,
     reason?: string,
-    preferences?: string[]
+    preferences?: string[],
   ): Promise<RecommendedExercise[]> {
     try {
       interface ExerciseAlternativesRequest extends Record<string, unknown> {
@@ -234,7 +234,7 @@ export class WorkoutInstanceServiceImpl implements WorkoutInstanceService {
         ExerciseAlternativesRequest
       >(
         `${this.baseEndpoint}/workout-instances/${instanceId}/exercise-alternatives/`,
-        requestBody
+        requestBody,
       );
 
       // Transform the response to match our RecommendedExercise interface

@@ -89,7 +89,7 @@ export default function EmailOTPSignUpPage() {
           if (isClerkAPIResponseError(err)) {
             // Check if the error is due to user already existing
             const identifierExists = err.errors.some(
-              (error) => error.code === "form_identifier_exists"
+              (error) => error.code === "form_identifier_exists",
             );
 
             if (identifierExists) {
@@ -101,8 +101,8 @@ export default function EmailOTPSignUpPage() {
               setTimeout(() => {
                 navigate(
                   `/sign-in/email-otp?email=${encodeURIComponent(
-                    emailAddress
-                  )}&from=signup`
+                    emailAddress,
+                  )}&from=signup`,
                 );
               }, 100);
               return;
@@ -111,7 +111,7 @@ export default function EmailOTPSignUpPage() {
             // For other errors, display the message
             setError(
               err.errors[0]?.longMessage ||
-                "An error occurred sending the verification code."
+                "An error occurred sending the verification code.",
             );
           } else {
             setError("An error occurred. Please try again.");
@@ -123,7 +123,7 @@ export default function EmailOTPSignUpPage() {
         setLoading(false);
       }
     },
-    [isLoaded, signUp, emailAddress, navigate]
+    [isLoaded, signUp, emailAddress, navigate],
   );
 
   // Auto-submit form if auto-submit=1 parameter is present with valid email
@@ -200,7 +200,7 @@ export default function EmailOTPSignUpPage() {
         if (isClerkAPIResponseError(err)) {
           setError(
             err.errors[0]?.longMessage ||
-              "Invalid verification code. Please try again."
+              "Invalid verification code. Please try again.",
           );
         } else {
           setError("An error occurred. Please try again.");

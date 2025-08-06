@@ -13,7 +13,7 @@ export function useWorkoutInstances(): WorkoutInstancesState {
 
   if (context === undefined) {
     throw new Error(
-      "useWorkoutInstances must be used within a WorkoutInstancesProvider"
+      "useWorkoutInstances must be used within a WorkoutInstancesProvider",
     );
   }
 
@@ -39,7 +39,7 @@ export function useWorkoutInstancesError(): string | null {
 }
 
 export function useWorkoutInstancesByGeneratedWorkoutId(
-  generatedWorkoutId: string
+  generatedWorkoutId: string,
 ): WorkoutInstance[] {
   const { getInstancesByGeneratedWorkoutId } = useWorkoutInstances();
   return getInstancesByGeneratedWorkoutId(generatedWorkoutId);

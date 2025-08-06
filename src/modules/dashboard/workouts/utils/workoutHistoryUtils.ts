@@ -5,7 +5,7 @@ import { WorkoutInstance } from "@/domain/entities/workoutInstance";
  */
 export function filterLastDays(
   instances: WorkoutInstance[],
-  days: number = 30
+  days: number = 30,
 ): WorkoutInstance[] {
   const cutoffDate = new Date();
   cutoffDate.setDate(cutoffDate.getDate() - days);
@@ -20,11 +20,11 @@ export function filterLastDays(
  * Sort workout instances by performed date (most recent first)
  */
 export function sortByDateDesc(
-  instances: WorkoutInstance[]
+  instances: WorkoutInstance[],
 ): WorkoutInstance[] {
   return instances.sort(
     (a, b) =>
-      new Date(b.performedAt).getTime() - new Date(a.performedAt).getTime()
+      new Date(b.performedAt).getTime() - new Date(a.performedAt).getTime(),
   );
 }
 
@@ -39,8 +39,8 @@ export function calculateStats(instances: WorkoutInstance[]) {
   const lastTwoWeeks = filterLastDays(instances, 14);
   const uniqueDates = new Set(
     lastTwoWeeks.map(
-      (instance) => new Date(instance.performedAt).toISOString().split("T")[0]
-    )
+      (instance) => new Date(instance.performedAt).toISOString().split("T")[0],
+    ),
   );
   const activeDays = uniqueDates.size;
   const activeDaysPercent = Math.round((activeDays / daysInPeriod) * 100);

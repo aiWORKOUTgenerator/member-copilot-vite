@@ -43,7 +43,7 @@ export function WorkoutFeedbackProvider({
       setUserFeedback(data);
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "Failed to fetch user feedback"
+        err instanceof Error ? err.message : "Failed to fetch user feedback",
       );
     } finally {
       setIsLoading(false);
@@ -56,9 +56,8 @@ export function WorkoutFeedbackProvider({
       setError(null);
 
       try {
-        const newFeedback = await workoutFeedbackService.submitFeedback(
-          request
-        );
+        const newFeedback =
+          await workoutFeedbackService.submitFeedback(request);
 
         // Update state with the new feedback
         setUserFeedback((prevFeedback) => [...prevFeedback, newFeedback]);
@@ -73,7 +72,7 @@ export function WorkoutFeedbackProvider({
         setIsSubmitting(false);
       }
     },
-    [workoutFeedbackService]
+    [workoutFeedbackService],
   );
 
   const getFeedbackForWorkout = useCallback(
@@ -89,7 +88,7 @@ export function WorkoutFeedbackProvider({
         throw new Error(errorMessage);
       }
     },
-    [workoutFeedbackService]
+    [workoutFeedbackService],
   );
 
   const updateFeedback = useCallback(
@@ -100,14 +99,14 @@ export function WorkoutFeedbackProvider({
       try {
         const updatedFeedback = await workoutFeedbackService.updateFeedback(
           feedbackId,
-          request
+          request,
         );
 
         // Update state with the updated feedback
         setUserFeedback((prevFeedback) =>
           prevFeedback.map((feedback) =>
-            feedback.id === feedbackId ? updatedFeedback : feedback
-          )
+            feedback.id === feedbackId ? updatedFeedback : feedback,
+          ),
         );
 
         return updatedFeedback;
@@ -120,7 +119,7 @@ export function WorkoutFeedbackProvider({
         setIsSubmitting(false);
       }
     },
-    [workoutFeedbackService]
+    [workoutFeedbackService],
   );
 
   // Fetch user feedback when the component mounts

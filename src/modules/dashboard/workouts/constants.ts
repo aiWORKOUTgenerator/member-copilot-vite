@@ -159,25 +159,25 @@ export const ENERGY_LEVEL_OPTIONS: EnergyLevelOption[] = [
 
 // Helper functions for working with constants
 export const getWorkoutFocusById = (
-  id: string
+  id: string,
 ): WorkoutFocusOption | undefined => {
   return QUICK_WORKOUT_FOCUS_OPTIONS.find((option) => option.id === id);
 };
 
 export const getWorkoutDurationById = (
-  id: string
+  id: string,
 ): WorkoutDurationOption | undefined => {
   return QUICK_WORKOUT_DURATION_OPTIONS.find((option) => option.id === id);
 };
 
 export const getWorkoutEquipmentById = (
-  id: string
+  id: string,
 ): WorkoutEquipmentOption | undefined => {
   return QUICK_WORKOUT_EQUIPMENT_OPTIONS.find((option) => option.id === id);
 };
 
 export const getEnergyLevelById = (
-  id: string
+  id: string,
 ): EnergyLevelOption | undefined => {
   return ENERGY_LEVEL_OPTIONS.find((option) => option.id === id);
 };

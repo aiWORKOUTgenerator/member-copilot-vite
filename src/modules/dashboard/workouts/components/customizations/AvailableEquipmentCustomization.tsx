@@ -40,7 +40,7 @@ export default function AvailableEquipmentCustomization({
     if (isSelected) {
       // Remove the equipment
       const newEquipment = selectedEquipment.filter(
-        (item) => item !== equipmentValue
+        (item) => item !== equipmentValue,
       );
       onChange(newEquipment.length > 0 ? newEquipment : undefined);
     } else {
@@ -85,7 +85,7 @@ export default function AvailableEquipmentCustomization({
           <div className="flex flex-wrap gap-1">
             {selectedEquipment.map((equipment) => {
               const option = EQUIPMENT_OPTIONS.find(
-                (opt) => opt.value === equipment
+                (opt) => opt.value === equipment,
               );
               return (
                 <span key={equipment} className="badge badge-outline badge-sm">

@@ -12,7 +12,7 @@ export function useAttributeForm(): AttributeFormContextType {
 
   if (context === undefined) {
     throw new Error(
-      "useAttributeForm must be used within an AttributeFormProvider"
+      "useAttributeForm must be used within an AttributeFormProvider",
     );
   }
 

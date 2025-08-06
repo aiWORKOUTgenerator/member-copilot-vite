@@ -107,12 +107,12 @@ export class SubscriptionServiceImpl implements SubscriptionService {
         `${this.baseEndpoint}/create-checkout-session/`,
         {
           price_id: stripePriceId,
-        }
+        },
       );
     } catch (error) {
       console.error(
         `Error in createCheckoutSession for price ${stripePriceId}:`,
-        error
+        error,
       );
       if (error instanceof Error) {
         throw error;
@@ -130,10 +130,10 @@ export class SubscriptionServiceImpl implements SubscriptionService {
    */
   async createCustomerPortalSession(
     portalConfiguration: PortalConfiguration,
-    returnPath?: string
+    returnPath?: string,
   ): Promise<{ url: string }> {
     console.log(
-      `createCustomerPortalSession called, config: ${portalConfiguration}, returnPath: ${returnPath}`
+      `createCustomerPortalSession called, config: ${portalConfiguration}, returnPath: ${returnPath}`,
     );
     try {
       const payload: {
@@ -148,12 +148,12 @@ export class SubscriptionServiceImpl implements SubscriptionService {
 
       return await this.apiService.post<{ url: string }, typeof payload>(
         `${this.baseEndpoint}/create-portal-session/`,
-        payload
+        payload,
       );
     } catch (error) {
       console.error(
         `Error in createCustomerPortalSession (config: ${portalConfiguration}):`,
-        error
+        error,
       );
       if (error instanceof Error) {
         throw error;

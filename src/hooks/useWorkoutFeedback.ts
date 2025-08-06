@@ -14,7 +14,7 @@ export function useWorkoutFeedback(): WorkoutFeedbackState {
 
   if (context === undefined) {
     throw new Error(
-      "useWorkoutFeedback must be used within a WorkoutFeedbackProvider"
+      "useWorkoutFeedback must be used within a WorkoutFeedbackProvider",
     );
   }
 
@@ -57,7 +57,7 @@ export function useWorkoutFeedbackError(): string | null {
  * Hook to get feedback for a specific workout
  */
 export function useWorkoutFeedbackForWorkout(
-  workoutId: string
+  workoutId: string,
 ): WorkoutFeedback | undefined {
   const { userFeedback } = useWorkoutFeedback();
   return userFeedback.find((feedback) => feedback.workoutId === workoutId);

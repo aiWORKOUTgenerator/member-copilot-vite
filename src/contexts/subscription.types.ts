@@ -21,7 +21,7 @@ export interface SubscriptionContextType {
   createCheckoutSession: (stripePriceId: string) => Promise<{ url: string }>;
   createCustomerPortalSession: (
     portalConfiguration: PortalConfiguration,
-    returnPath?: string
+    returnPath?: string,
   ) => Promise<{ url: string }>;
   refreshSubscriptionData: () => Promise<void>;
 }

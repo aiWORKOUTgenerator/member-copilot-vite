@@ -38,7 +38,7 @@ export function GeneratedWorkoutProvider({
       setError(
         err instanceof Error
           ? err.message
-          : "Failed to fetch generated workouts"
+          : "Failed to fetch generated workouts",
       );
     } finally {
       setIsLoading(false);
@@ -54,7 +54,7 @@ export function GeneratedWorkoutProvider({
         const newWorkout = await generatedWorkoutService.createGeneratedWorkout(
           configId,
           workoutParams,
-          prompt
+          prompt,
         );
 
         // Update state with the new workout
@@ -70,7 +70,7 @@ export function GeneratedWorkoutProvider({
         setIsLoading(false);
       }
     },
-    [generatedWorkoutService]
+    [generatedWorkoutService],
   );
 
   // Fetch workout data when the component mounts

@@ -16,5 +16,5 @@ export interface AnnouncementState {
  * This forces consumers to use the useAnnouncements hook which performs a null check.
  */
 export const AnnouncementContext = createContext<AnnouncementState | undefined>(
-  undefined
+  undefined,
 );

@@ -66,7 +66,7 @@ export function isValidRating(rating: number): boolean {
  * Validation helper for feedback request
  */
 export function validateWorkoutFeedbackRequest(
-  request: CreateWorkoutFeedbackRequest
+  request: CreateWorkoutFeedbackRequest,
 ): string | null {
   if (!request.workoutId) {
     return "Workout ID is required";

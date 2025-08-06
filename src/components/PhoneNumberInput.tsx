@@ -55,7 +55,7 @@ export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
     (phoneValue: string | undefined) => {
       onChange?.(phoneValue);
     },
-    [onChange]
+    [onChange],
   );
 
   // Handle focus states

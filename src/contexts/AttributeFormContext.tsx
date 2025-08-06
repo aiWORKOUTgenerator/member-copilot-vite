@@ -42,7 +42,7 @@ export function AttributeFormProvider({
         });
       }
     },
-    [errors]
+    [errors],
   );
 
   // Reset form to initial values
@@ -89,12 +89,12 @@ export function AttributeFormProvider({
       setFormValues(initialData);
       setErrors({});
     },
-    []
+    [],
   );
 
   // Check if form has been modified from initial values
   const isFormDirty = Object.keys(formValues).some(
-    (key) => formValues[key] !== initialValues[key]
+    (key) => formValues[key] !== initialValues[key],
   );
 
   // Form is valid if there are no errors

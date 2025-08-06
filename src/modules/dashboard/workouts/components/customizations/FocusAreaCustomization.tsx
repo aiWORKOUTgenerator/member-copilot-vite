@@ -70,7 +70,7 @@ export default function FocusAreaCustomization({
             .map(
               (area) =>
                 FOCUS_AREA_OPTIONS.find((option) => option.value === area)
-                  ?.label
+                  ?.label,
             )
             .join(", ")}
         </p>

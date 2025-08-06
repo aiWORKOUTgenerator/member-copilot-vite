@@ -96,7 +96,7 @@ export default function EmailOTPSignInPage() {
 
       // Find the email code factor
       const emailCodeFactor = signInAttempt.supportedFirstFactors.find(
-        (factor) => factor.strategy === "email_code"
+        (factor) => factor.strategy === "email_code",
       );
 
       if (!emailCodeFactor || emailCodeFactor.strategy !== "email_code") {
@@ -118,7 +118,7 @@ export default function EmailOTPSignInPage() {
         if (isClerkAPIResponseError(err)) {
           setError(
             err.errors[0]?.longMessage ||
-              "An error occurred sending the verification code."
+              "An error occurred sending the verification code.",
           );
         } else {
           setError(err.message || "An error occurred. Please try again.");
@@ -176,12 +176,12 @@ export default function EmailOTPSignInPage() {
           const isExpiredSession = err.errors.some(
             (error) =>
               error.code === "resource_forbidden" ||
-              error.message?.includes("not allowed on older sign ins")
+              error.message?.includes("not allowed on older sign ins"),
           );
 
           if (isExpiredSession) {
             setError(
-              "Your verification session has expired. Please request a new code."
+              "Your verification session has expired. Please request a new code.",
             );
             // Return to email input mode to allow requesting a new code
             setVerifying(false);
@@ -190,7 +190,7 @@ export default function EmailOTPSignInPage() {
 
           setError(
             err.errors[0]?.longMessage ||
-              "Invalid verification code. Please try again."
+              "Invalid verification code. Please try again.",
           );
         } else {
           setError(err.message || "An error occurred. Please try again.");
@@ -222,7 +222,7 @@ export default function EmailOTPSignInPage() {
       }
 
       const emailCodeFactor = signInAttempt.supportedFirstFactors.find(
-        (factor) => factor.strategy === "email_code"
+        (factor) => factor.strategy === "email_code",
       );
 
       if (!emailCodeFactor || emailCodeFactor.strategy !== "email_code") {

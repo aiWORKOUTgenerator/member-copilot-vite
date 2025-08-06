@@ -92,7 +92,7 @@ export function AnnouncementModal({
         .replace(/^# (.+)$/gm, '<h1 class="text-2xl font-bold mb-4">$1</h1>')
         .replace(
           /^## (.+)$/gm,
-          '<h2 class="text-xl font-semibold mb-3">$1</h2>'
+          '<h2 class="text-xl font-semibold mb-3">$1</h2>',
         )
         .replace(/^### (.+)$/gm, '<h3 class="text-lg font-medium mb-2">$1</h3>')
         // Bold text
@@ -120,7 +120,7 @@ export function AnnouncementModal({
           <div className="flex items-center gap-3">
             <div
               className={`badge ${getPriorityStyles(
-                announcement.priority
+                announcement.priority,
               )} text-xs uppercase font-semibold`}
             >
               {announcement.priority}

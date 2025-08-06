@@ -39,7 +39,7 @@ export function RadioGroupOfCards<T extends SelectableItem>({
 }: RadioGroupOfCardsProps<T>) {
   // Initialize internal state based on whether it's controlled or uncontrolled
   const [internalSelected, setInternalSelected] = useState<T | T[] | undefined>(
-    defaultSelected
+    defaultSelected,
   );
 
   // Use the controlled value if provided, otherwise use internal state

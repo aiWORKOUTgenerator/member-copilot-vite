@@ -73,18 +73,18 @@ export class MockWorkoutInstanceService implements WorkoutInstanceService {
         });
 
         console.log(
-          `MockWorkoutInstanceService: Loaded ${instances.length} instances from localStorage`
+          `MockWorkoutInstanceService: Loaded ${instances.length} instances from localStorage`,
         );
       } else {
         // No stored data, start with empty storage
         console.log(
-          "MockWorkoutInstanceService: No existing data found, starting with empty storage"
+          "MockWorkoutInstanceService: No existing data found, starting with empty storage",
         );
       }
     } catch (error) {
       console.warn(
         "MockWorkoutInstanceService: Error loading from localStorage, starting with empty storage",
-        error
+        error,
       );
     }
   }
@@ -97,7 +97,7 @@ export class MockWorkoutInstanceService implements WorkoutInstanceService {
     } catch (error) {
       console.warn(
         "MockWorkoutInstanceService: Error saving to localStorage",
-        error
+        error,
       );
     }
   }
@@ -114,18 +114,18 @@ export class MockWorkoutInstanceService implements WorkoutInstanceService {
     await this.delay(300); // Simulate network delay
 
     const instances = Array.from(this.instanceStore.values()).map(
-      (data) => new WorkoutInstance(data)
+      (data) => new WorkoutInstance(data),
     );
 
     // Sort by performed_at date (most recent first)
     return instances.sort(
       (a, b) =>
-        new Date(b.performedAt).getTime() - new Date(a.performedAt).getTime()
+        new Date(b.performedAt).getTime() - new Date(a.performedAt).getTime(),
     );
   }
 
   async getWorkoutInstancesByGeneratedWorkoutId(
-    generatedWorkoutId: string
+    generatedWorkoutId: string,
   ): Promise<WorkoutInstance[]> {
     await this.delay(200);
 
@@ -136,12 +136,12 @@ export class MockWorkoutInstanceService implements WorkoutInstanceService {
     // Sort by performed_at date (most recent first)
     return instances.sort(
       (a, b) =>
-        new Date(b.performedAt).getTime() - new Date(a.performedAt).getTime()
+        new Date(b.performedAt).getTime() - new Date(a.performedAt).getTime(),
     );
   }
 
   async getWorkoutInstance(
-    instanceId: string
+    instanceId: string,
   ): Promise<WorkoutInstance | null> {
     await this.delay(150);
 
@@ -150,7 +150,7 @@ export class MockWorkoutInstanceService implements WorkoutInstanceService {
   }
 
   async createWorkoutInstance(
-    request: CreateWorkoutInstanceRequest
+    request: CreateWorkoutInstanceRequest,
   ): Promise<WorkoutInstance> {
     await this.delay(400); // Simulate longer creation time
 
@@ -179,7 +179,7 @@ export class MockWorkoutInstanceService implements WorkoutInstanceService {
 
   async updateWorkoutInstance(
     instanceId: string,
-    request: UpdateWorkoutInstanceRequest
+    request: UpdateWorkoutInstanceRequest,
   ): Promise<WorkoutInstance> {
     await this.delay(250);
 
@@ -218,7 +218,7 @@ export class MockWorkoutInstanceService implements WorkoutInstanceService {
 
   async getExerciseRecommendations(
     instanceId: string,
-    exerciseName: string
+    exerciseName: string,
   ): Promise<RecommendedExercise[]> {
     await this.delay(300); // Simulate network delay
 

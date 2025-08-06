@@ -34,7 +34,7 @@ export class MockWorkoutFeedbackService implements WorkoutFeedbackService {
   }
 
   async submitFeedback(
-    request: CreateWorkoutFeedbackRequest
+    request: CreateWorkoutFeedbackRequest,
   ): Promise<WorkoutFeedback> {
     // Simulate API delay
     await this.delay(500);
@@ -63,7 +63,7 @@ export class MockWorkoutFeedbackService implements WorkoutFeedbackService {
   }
 
   async getFeedbackForWorkout(
-    workoutId: string
+    workoutId: string,
   ): Promise<WorkoutFeedback | null> {
     // Simulate API delay
     await this.delay(300);
@@ -85,7 +85,7 @@ export class MockWorkoutFeedbackService implements WorkoutFeedbackService {
 
   async updateFeedback(
     feedbackId: string,
-    request: CreateWorkoutFeedbackRequest
+    request: CreateWorkoutFeedbackRequest,
   ): Promise<WorkoutFeedback> {
     // Simulate API delay
     await this.delay(500);

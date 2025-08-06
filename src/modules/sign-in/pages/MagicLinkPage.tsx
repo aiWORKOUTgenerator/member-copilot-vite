@@ -64,7 +64,7 @@ export default function MagicLinkSignInPage() {
 
       // Check if magic link sign-in is supported for this user
       const magicLinkFactor = signInAttempt.supportedFirstFactors?.find(
-        (factor) => factor.strategy === "email_link"
+        (factor) => factor.strategy === "email_link",
       );
 
       if (!magicLinkFactor) {
@@ -92,7 +92,7 @@ export default function MagicLinkSignInPage() {
           console.log("Clerk error:", err.errors[0]?.longMessage);
           setError(
             err.errors[0]?.longMessage ||
-              "An error occurred with authentication."
+              "An error occurred with authentication.",
           );
         } else {
           console.log("Error:", err);

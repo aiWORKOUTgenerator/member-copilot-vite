@@ -23,7 +23,7 @@ export function TrainerPersonaProvider({
   const trainerPersonaService = useTrainerPersonaService();
   const { isSignedIn } = useAuth();
   const [trainerPersona, setTrainerPersona] = useState<TrainerPersona | null>(
-    null
+    null,
   );
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -59,7 +59,7 @@ export function TrainerPersonaProvider({
       setError(
         error instanceof Error
           ? error.message
-          : "Failed to generate trainer persona"
+          : "Failed to generate trainer persona",
       );
       setIsLoading(false);
     }

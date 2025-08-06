@@ -122,7 +122,7 @@ export class PhoneVerificationError extends Error {
     type: PhoneVerificationErrorType,
     message: string,
     details?: Record<string, unknown>,
-    retryable: boolean = false
+    retryable: boolean = false,
   ) {
     super(message);
     this.name = "PhoneVerificationError";
@@ -138,7 +138,7 @@ export class PhoneVerificationError extends Error {
     return new PhoneVerificationError(
       PhoneVerificationErrorType.INVALID_PHONE_NUMBER,
       `Invalid phone number format: ${phone}`,
-      { phone }
+      { phone },
     );
   }
 
@@ -150,7 +150,7 @@ export class PhoneVerificationError extends Error {
       PhoneVerificationErrorType.INVALID_CODE,
       `Invalid verification code`,
       undefined,
-      true
+      true,
     );
   }
 
@@ -160,7 +160,7 @@ export class PhoneVerificationError extends Error {
   static codeExpired(): PhoneVerificationError {
     return new PhoneVerificationError(
       PhoneVerificationErrorType.CODE_EXPIRED,
-      "Verification code has expired. Please request a new code."
+      "Verification code has expired. Please request a new code.",
     );
   }
 
@@ -170,7 +170,7 @@ export class PhoneVerificationError extends Error {
   static maxAttemptsReached(): PhoneVerificationError {
     return new PhoneVerificationError(
       PhoneVerificationErrorType.MAX_ATTEMPTS_REACHED,
-      "Maximum verification attempts reached. Please request a new code."
+      "Maximum verification attempts reached. Please request a new code.",
     );
   }
 
@@ -182,7 +182,7 @@ export class PhoneVerificationError extends Error {
       PhoneVerificationErrorType.RATE_LIMITED,
       `Too many attempts. Please try again in ${retryAfter} seconds.`,
       { retryAfter },
-      true
+      true,
     );
   }
 
@@ -194,7 +194,7 @@ export class PhoneVerificationError extends Error {
       PhoneVerificationErrorType.NETWORK_ERROR,
       "Network error occurred. Please check your connection and try again.",
       { originalError: originalError?.message },
-      true
+      true,
     );
   }
 
@@ -206,7 +206,7 @@ export class PhoneVerificationError extends Error {
       PhoneVerificationErrorType.SERVICE_UNAVAILABLE,
       "Phone verification service is currently unavailable. Please try again later.",
       undefined,
-      true
+      true,
     );
   }
 }

@@ -11,7 +11,7 @@ export const SubscriptionProvider = ({ children }: { children: ReactNode }) => {
   const [tiers, setTiers] = useState<SubscriptionTier[]>([]);
   const subscriptionService = useSubscriptionService();
   const [selectedTier, setSelectedTier] = useState<SubscriptionTier | null>(
-    null
+    null,
   );
   const [isLoadingTiers, setIsLoadingTiers] = useState<boolean>(true);
   const [currentUserSubscription, setCurrentUserSubscription] =
@@ -44,7 +44,7 @@ export const SubscriptionProvider = ({ children }: { children: ReactNode }) => {
 
       if (subscriptionTiers.length > 0) {
         const tier = subscriptionTiers.find(
-          (tier) => tier.stripePriceId === subscription?.items.data[0].price.id
+          (tier) => tier.stripePriceId === subscription?.items.data[0].price.id,
         );
         if (tier) {
           setSelectedTier(tier);
@@ -71,11 +71,11 @@ export const SubscriptionProvider = ({ children }: { children: ReactNode }) => {
 
   const createCustomerPortalSession = async (
     portalConfiguration: PortalConfiguration,
-    returnPath?: string
+    returnPath?: string,
   ) => {
     return await subscriptionService.createCustomerPortalSession(
       portalConfiguration,
-      returnPath
+      returnPath,
     );
   };
 

@@ -112,7 +112,7 @@ const SectionCard = ({
                                   <div className="text-center text-sm opacity-60 my-2">
                                     Rest{" "}
                                     {formatTime(
-                                      section.rest_between_exercises!
+                                      section.rest_between_exercises!,
                                     )}
                                   </div>
                                 )}
@@ -134,7 +134,7 @@ const SectionCard = ({
                                 </div>
                               </div>
                             )}
-                        </div>
+                        </div>,
                       );
                     }
 

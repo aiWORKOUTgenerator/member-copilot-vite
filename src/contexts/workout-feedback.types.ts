@@ -14,12 +14,12 @@ export interface WorkoutFeedbackState {
   error: string | null;
   refetch: () => Promise<void>;
   submitFeedback: (
-    request: CreateWorkoutFeedbackRequest
+    request: CreateWorkoutFeedbackRequest,
   ) => Promise<WorkoutFeedback>;
   getFeedbackForWorkout: (workoutId: string) => Promise<WorkoutFeedback | null>;
   updateFeedback: (
     feedbackId: string,
-    request: CreateWorkoutFeedbackRequest
+    request: CreateWorkoutFeedbackRequest,
   ) => Promise<WorkoutFeedback>;
   clearError: () => void;
 }

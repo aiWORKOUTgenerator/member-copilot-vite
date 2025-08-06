@@ -26,7 +26,7 @@ export const PromptList: React.FC<PromptListProps> = ({
 
   const handlePromptChange = (
     promptId: string,
-    value: string | string[] | number
+    value: string | string[] | number,
   ) => {
     setValues((prev) => ({
       ...prev,
@@ -100,9 +100,8 @@ export const PromptList: React.FC<PromptListProps> = ({
       if (Array.isArray(value) && prompt.validationRules?.minSelections) {
         const minSelections = prompt.validationRules.minSelections;
         if (typeof minSelections === "number" && value.length < minSelections) {
-          errors[
-            prompt.id
-          ] = `Please select at least ${minSelections} option(s)`;
+          errors[prompt.id] =
+            `Please select at least ${minSelections} option(s)`;
         }
       }
     });

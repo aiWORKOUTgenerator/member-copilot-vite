@@ -51,7 +51,7 @@ export default function DashboardHomePage() {
   } = useUserAccess();
 
   const isWorkoutGenerationLimitReached = isMeterLimitReached(
-    MeteredFeature.WORKOUTS_GENERATED
+    MeteredFeature.WORKOUTS_GENERATED,
   );
 
   // Check if user is on basic/free tier
@@ -60,14 +60,14 @@ export default function DashboardHomePage() {
     if (!basicPriceId || activeLicenses.length === 0) return false;
 
     return activeLicenses.some(
-      (license: License) => license.policy?.stripe_price_id === basicPriceId
+      (license: License) => license.policy?.stripe_price_id === basicPriceId,
     );
   }, [activeLicenses]);
 
   // Get workout usage stats for the banner
   const workoutUsage = useMemo(() => {
     const used = getTotalAggregatedValueForMeter(
-      MeteredFeature.WORKOUTS_GENERATED
+      MeteredFeature.WORKOUTS_GENERATED,
     );
     const limit = getHighestLimitForMeter(MeteredFeature.WORKOUTS_GENERATED);
     return { used, limit };
@@ -80,8 +80,8 @@ export default function DashboardHomePage() {
       ContactUtils.getAttributeCompletionStatus(
         contact,
         attributeTypes,
-        prompts
-      )
+        prompts,
+      ),
     );
   }, [
     contact,
@@ -95,7 +95,7 @@ export default function DashboardHomePage() {
   // Filter for incomplete attributes (less than 100% complete)
   const incompleteAttributes = useMemo(() => {
     return attributeCompletions.filter(
-      (completion) => completion.percentComplete < 100
+      (completion) => completion.percentComplete < 100,
     );
   }, [attributeCompletions]);
 
@@ -109,7 +109,7 @@ export default function DashboardHomePage() {
       const totalCompletion =
         attributeCompletions.reduce(
           (sum, attr) => sum + attr.percentComplete,
-          0
+          0,
         ) / attributeCompletions.length || 0;
 
       analytics.track("Dashboard Home Viewed", {
