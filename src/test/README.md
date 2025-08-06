@@ -8,6 +8,7 @@ This directory contains the comprehensive testing infrastructure for the member-
 src/test/
 ├── setup.ts              # Test environment setup
 ├── test-utils.tsx        # Custom render utilities
+├── mock-utils.tsx        # Controlled mocking utilities
 ├── mocks/                # Mock data and services
 │   └── index.ts         # Centralized mock exports
 └── README.md            # This file
@@ -81,11 +82,11 @@ describe('Button', () => {
 Use `renderHook` for testing custom hooks:
 
 ```typescript
-import { renderHook } from '@testing-library/react';
-import { useContact } from '../useContact';
+import { renderHook } from "@testing-library/react";
+import { useContact } from "../useContact";
 
-describe('useContact', () => {
-  it('returns contact data', () => {
+describe("useContact", () => {
+  it("returns contact data", () => {
     const { result } = renderHook(() => useContact());
 
     expect(result.current.contact).toBeDefined();
@@ -99,56 +100,131 @@ describe('useContact', () => {
 Mock external dependencies and test service methods:
 
 ```typescript
-import { ApiServiceImpl } from '../ApiServiceImpl';
+import { ApiServiceImpl } from "../ApiServiceImpl";
 
 // Mock fetch globally
 global.fetch = vi.fn();
 
-describe('ApiServiceImpl', () => {
-  it('makes successful GET request', async () => {
+describe("ApiServiceImpl", () => {
+  it("makes successful GET request", async () => {
     vi.mocked(fetch).mockResolvedValueOnce({
       ok: true,
-      json: vi.fn().mockResolvedValue({ data: 'test' }),
+      json: vi.fn().mockResolvedValue({ data: "test" }),
     } as Response);
 
-    const result = await apiService.get('/test');
-    expect(result).toEqual({ data: 'test' });
+    const result = await apiService.get("/test");
+    expect(result).toEqual({ data: "test" });
   });
 });
 ```
 
-## 🎭 Mocking
+## 🎭 Controlled Mocking
 
-### Mock Data
+### Why Controlled Mocking?
 
-Use centralized mock data from `test/mocks/index.ts`:
+Global mocks at the top level of test utilities can cause test isolation issues. We use a controlled approach that:
 
-```typescript
-import { mockUser, mockContact, mockWorkout } from '../../test/mocks';
+- **Prevents test pollution** between test files
+- **Allows fine-grained control** over mock behavior
+- **Enables proper cleanup** between tests
+- **Improves test reliability** and debugging
 
-// Use in tests
-const user = mockUser;
-const contact = mockContact;
-```
+### Using Controlled Mocks
 
-### Service Mocks
-
-Create mock services for testing:
+#### For Authentication
 
 ```typescript
-import { createMockService } from '../../test/mocks';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { setupAuthMock, clearMocks } from '../../test/mock-utils';
 
-const mockUserService = createMockService(mockUser);
+describe('MyComponent', () => {
+  let mockAuth: any;
+
+  beforeEach(async () => {
+    clearMocks();
+    mockAuth = setupAuthMock();
+    
+    // Import component after setting up mocks
+    const { MyComponent } = await import('../MyComponent');
+  });
+
+  it('shows user info when authenticated', () => {
+    mockAuth.isSignedIn = true;
+    // ... test implementation
+  });
+});
 ```
 
-### Authentication Mocks
-
-Authentication is automatically mocked in `test-utils.tsx`:
+#### For Analytics
 
 ```typescript
-// Available in all tests
-const { mockUseAuth, mockAnalytics } = require('../../test/test-utils');
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { setupAnalyticsMock, clearMocks } from '../../test/mock-utils';
+
+describe('MyComponent', () => {
+  let mockAnalytics: any;
+
+  beforeEach(async () => {
+    clearMocks();
+    mockAnalytics = setupAnalyticsMock();
+    
+    // Import component after setting up mocks
+    const { MyComponent } = await import('../MyComponent');
+  });
+
+  it('tracks user interactions', () => {
+    // ... test implementation
+    expect(mockAnalytics.track).toHaveBeenCalledWith('button_clicked');
+  });
+});
 ```
+
+#### For Custom Hooks
+
+```typescript
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { renderHook } from '@testing-library/react';
+import { clearMocks } from '../../test/mock-utils';
+
+describe('useCustomHook', () => {
+  let useCustomHook: any;
+
+  beforeEach(async () => {
+    clearMocks();
+    
+    // Create fresh mocks for each test
+    const mockService = {
+      getData: vi.fn().mockResolvedValue({ data: 'test' }),
+    };
+
+    // Mock the service with controlled approach
+    vi.doMock('../services/CustomService', () => ({
+      CustomService: mockService,
+    }));
+
+    // Import after mocking for better isolation
+    const module = await import('../useCustomHook');
+    useCustomHook = module.useCustomHook;
+  });
+
+  it('returns data from service', async () => {
+    const { result } = renderHook(() => useCustomHook());
+    
+    // ... test implementation
+  });
+});
+```
+
+### Mock Utilities
+
+#### `setupAuthMock()`
+Creates a controlled mock for authentication hooks.
+
+#### `setupAnalyticsMock()`
+Creates a controlled mock for analytics hooks.
+
+#### `clearMocks()`
+Clears all mocks and resets modules for proper test isolation.
 
 ## 🧪 Test Utilities
 
@@ -158,18 +234,17 @@ The `render` function from `test-utils.tsx` includes:
 
 - React Router (`BrowserRouter`)
 - All context providers (`CombinedProviders`)
-- Authentication mocks
-- Analytics mocks
+- No global mocks (use controlled mocking instead)
 
 ### User Event Testing
 
 Use `@testing-library/user-event` for realistic user interactions:
 
 ```typescript
-import userEvent from '@testing-library/user-event';
+import userEvent from "@testing-library/user-event";
 
 const user = userEvent.setup();
-await user.type(input, 'test@example.com');
+await user.type(input, "test@example.com");
 await user.click(button);
 ```
 
@@ -181,6 +256,14 @@ await user.click(button);
 2. **Use descriptive test names** that explain the behavior
 3. **Test one thing per test** - keep tests focused
 4. **Arrange, Act, Assert** pattern for test structure
+
+### Mocking Best Practices
+
+1. **Use controlled mocking** instead of global mocks
+2. **Reset mocks between tests** using `clearMocks()`
+3. **Import modules after mocking** for better isolation
+4. **Create fresh mocks** in `beforeEach` hooks
+5. **Avoid top-level `vi.mock()`** in test utilities
 
 ### Accessibility Testing
 
@@ -237,8 +320,9 @@ Add these to your ESLint config for testing:
 ### Mocking Issues
 
 - **Clear mocks** in `beforeEach` hooks
-- **Use `vi.mocked()`** for TypeScript support
-- **Mock at the right level** (module vs function)
+- **Use `vi.doMock()`** for controlled mocking
+- **Import after mocking** for better isolation
+- **Reset modules** when needed
 
 ### Async Testing
 
@@ -249,7 +333,7 @@ Add these to your ESLint config for testing:
 ### Provider Issues
 
 - **Wrap components** with necessary providers
-- **Mock context values** when needed
+- **Use controlled mocks** for context values
 - **Test provider behavior** separately
 
 ## 📈 Coverage Goals

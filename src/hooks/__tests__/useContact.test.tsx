@@ -1,27 +1,38 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import { mockContact } from '../../test/mocks';
-
-// Mock the ContactContext
-const mockContactContext = {
-  contact: mockContact,
-  isLoading: false,
-  error: null,
-  refetch: vi.fn(),
-  isLoaded: true,
-};
-
-// Mock the useContact hook
-vi.mock('../useContact', () => ({
-  useContact: vi.fn(() => mockContactContext),
-}));
-
-// Import after mocking
-import { useContact } from '../useContact';
+import { clearMocks } from '../../test/mock-utils';
 
 describe('useContact', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
+  let mockContactContext: {
+    contact: typeof mockContact;
+    isLoading: boolean;
+    error: string | null;
+    refetch: ReturnType<typeof vi.fn>;
+    isLoaded: boolean;
+  };
+  let useContact: () => typeof mockContactContext;
+
+  beforeEach(async () => {
+    clearMocks();
+
+    // Create fresh mocks for each test
+    mockContactContext = {
+      contact: mockContact,
+      isLoading: false,
+      error: null,
+      refetch: vi.fn(),
+      isLoaded: true,
+    };
+
+    // Mock the useContact hook with controlled approach
+    vi.doMock('../useContact', () => ({
+      useContact: vi.fn(() => mockContactContext),
+    }));
+
+    // Import after mocking for better isolation
+    const module = await import('../useContact');
+    useContact = module.useContact;
   });
 
   it('returns contact data', () => {

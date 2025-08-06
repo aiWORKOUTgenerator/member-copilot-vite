@@ -6,38 +6,6 @@ import {
   fireEvent,
   waitFor,
 } from '@testing-library/react';
-import { vi } from 'vitest';
-
-// Mock Clerk authentication
-const mockUseAuth = {
-  isSignedIn: true,
-  isLoaded: true,
-  userId: 'test-user-id',
-  user: {
-    id: 'test-user-id',
-    emailAddresses: [{ emailAddress: 'test@example.com' }],
-    firstName: 'Test',
-    lastName: 'User',
-  },
-  signOut: vi.fn(),
-  getToken: vi.fn().mockResolvedValue('mock-token'),
-};
-
-// Mock the auth hook
-vi.mock('../hooks/auth', () => ({
-  useAuth: () => mockUseAuth,
-}));
-
-// Mock analytics
-const mockAnalytics = {
-  track: vi.fn(),
-  identify: vi.fn(),
-  page: vi.fn(),
-};
-
-vi.mock('../hooks/useAnalytics', () => ({
-  useAnalytics: () => mockAnalytics,
-}));
 
 // Import the component from a separate file
 import { AllTheProviders } from './test-providers';
@@ -52,5 +20,5 @@ const customRender = (
 export { screen, fireEvent, waitFor };
 export { customRender as render };
 
-// Export mock functions for testing
-export { mockUseAuth, mockAnalytics };
+// Re-export mock utilities for convenience
+export { setupAuthMock, setupAnalyticsMock, clearMocks } from './mock-utils';
