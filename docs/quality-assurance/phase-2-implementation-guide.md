@@ -328,6 +328,7 @@ const error = new Error('Invalid code');
 
 });
 });
+
 EOF
 
 ````
