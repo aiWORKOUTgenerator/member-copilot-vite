@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { ReactNode, useState } from "react";
-import { TitleContext } from "./title.types";
+import { ReactNode, useState } from 'react';
+import { TitleContext } from './title.types';
 
 interface TitleProviderProps {
   children: ReactNode;
@@ -14,7 +14,7 @@ interface TitleProviderProps {
  */
 export function TitleProvider({
   children,
-  defaultTitle = "Dashboard",
+  defaultTitle = 'Dashboard',
 }: TitleProviderProps) {
   const [title, setTitle] = useState<string>(defaultTitle);
 

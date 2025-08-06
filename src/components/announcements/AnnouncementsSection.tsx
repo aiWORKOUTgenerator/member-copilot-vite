@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { Announcement } from "@/domain/entities/announcement";
-import { useAnnouncements } from "@/hooks/useAnnouncements";
-import { AnnouncementCard } from "./AnnouncementCard";
-import { AnnouncementModal } from "./AnnouncementModal";
+import { useState } from 'react';
+import { Announcement } from '@/domain/entities/announcement';
+import { useAnnouncements } from '@/hooks/useAnnouncements';
+import { AnnouncementCard } from './AnnouncementCard';
+import { AnnouncementModal } from './AnnouncementModal';
 
 export function AnnouncementsSection() {
   const { announcements, isLoading, error } = useAnnouncements();

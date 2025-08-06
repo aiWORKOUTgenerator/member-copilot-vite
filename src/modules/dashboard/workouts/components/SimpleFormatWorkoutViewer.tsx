@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
 interface SimpleFormatWorkoutViewerProps {
   simpleFormat: string | null;
@@ -9,13 +9,13 @@ interface SimpleFormatWorkoutViewerProps {
 const SimpleFormatWorkoutViewer = ({
   simpleFormat,
 }: SimpleFormatWorkoutViewerProps) => {
-  const [content, setContent] = useState<string>("");
+  const [content, setContent] = useState<string>('');
 
   useEffect(() => {
     if (simpleFormat) {
       setContent(simpleFormat);
     } else {
-      setContent("No simple format available for this workout.");
+      setContent('No simple format available for this workout.');
     }
   }, [simpleFormat]);
 

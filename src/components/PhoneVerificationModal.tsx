@@ -1,7 +1,7 @@
-import { usePhoneVerification } from "@/hooks/usePhoneVerification";
-import { useCallback, useEffect, useState } from "react";
-import { PhoneNumberInput } from "./PhoneNumberInput";
-import { VerificationCodeInput } from "./VerificationCodeInput";
+import { usePhoneVerification } from '@/hooks/usePhoneVerification';
+import { useCallback, useEffect, useState } from 'react';
+import { PhoneNumberInput } from './PhoneNumberInput';
+import { VerificationCodeInput } from './VerificationCodeInput';
 
 export interface PhoneVerificationModalProps {
   isOpen: boolean;
@@ -22,15 +22,15 @@ export function PhoneVerificationModal({
   isOpen,
   onClose,
   onSuccess,
-  initialPhoneNumber = "",
-  title = "Verify Your Phone Number",
+  initialPhoneNumber = '',
+  title = 'Verify Your Phone Number',
   description = "We'll send you a verification code to confirm your phone number.",
 }: PhoneVerificationModalProps) {
   const [currentStep, setCurrentStep] = useState<VerificationStep>(
     VerificationStep.ENTER_PHONE
   );
   const [phoneNumber, setPhoneNumber] = useState(initialPhoneNumber);
-  const [verificationCode, setVerificationCode] = useState("");
+  const [verificationCode, setVerificationCode] = useState('');
 
   const {
     isSending,
@@ -62,7 +62,7 @@ export function PhoneVerificationModal({
         setCurrentStep(VerificationStep.SUCCESS);
         // Don't call onSuccess immediately - wait for user to click "Continue"
       } else {
-        setVerificationCode("");
+        setVerificationCode('');
       }
     },
     [actions]
@@ -114,7 +114,7 @@ export function PhoneVerificationModal({
                 <p className="text-sm text-base-content/70">{description}</p>
                 <PhoneNumberInput
                   value={phoneNumber}
-                  onChange={(value) => setPhoneNumber(value || "")}
+                  onChange={(value) => setPhoneNumber(value || '')}
                   error={error?.message}
                   showVerificationStatus={false}
                 />
@@ -126,7 +126,7 @@ export function PhoneVerificationModal({
                   {isSending ? (
                     <span className="loading loading-spinner loading-sm"></span>
                   ) : null}
-                  {isSending ? "Sending..." : "Send Code"}
+                  {isSending ? 'Sending...' : 'Send Code'}
                 </button>
               </>
             )}
@@ -171,7 +171,7 @@ export function PhoneVerificationModal({
                       {isResending ? (
                         <span className="loading loading-spinner loading-xs"></span>
                       ) : null}
-                      {isResending ? "Resending..." : "Resend Code"}
+                      {isResending ? 'Resending...' : 'Resend Code'}
                     </button>
                   )}
                 </div>

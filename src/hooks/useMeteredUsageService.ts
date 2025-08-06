@@ -1,7 +1,7 @@
-import { MeteredUsageServiceImpl } from "@/services/meteredUsage/MeteredUsageServiceImpl";
-import { useMemo } from "react";
-import { MeteredUsageService } from "../domain/interfaces/meteredUsage/MeteredUsageService";
-import { useApiService } from "./useApiService";
+import { MeteredUsageServiceImpl } from '@/services/meteredUsage/MeteredUsageServiceImpl';
+import { useMemo } from 'react';
+import { MeteredUsageService } from '../domain/interfaces/meteredUsage/MeteredUsageService';
+import { useApiService } from './useApiService';
 
 /**
  * Hook to access the metered usage service functionality

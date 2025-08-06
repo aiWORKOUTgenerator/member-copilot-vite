@@ -6,11 +6,11 @@
  * Phone verification status enumeration
  */
 export enum PhoneVerificationStatus {
-  NOT_VERIFIED = "not_verified",
-  PENDING = "pending",
-  VERIFIED = "verified",
-  EXPIRED = "expired",
-  FAILED = "failed",
+  NOT_VERIFIED = 'not_verified',
+  PENDING = 'pending',
+  VERIFIED = 'verified',
+  EXPIRED = 'expired',
+  FAILED = 'failed',
 }
 
 /**
@@ -98,16 +98,16 @@ export interface PhoneVerificationSession {
  * Phone verification error types
  */
 export enum PhoneVerificationErrorType {
-  INVALID_PHONE_NUMBER = "invalid_phone_number",
-  INVALID_CODE = "invalid_code",
-  CODE_EXPIRED = "code_expired",
-  MAX_ATTEMPTS_REACHED = "max_attempts_reached",
-  RATE_LIMITED = "rate_limited",
-  NETWORK_ERROR = "network_error",
-  SERVICE_UNAVAILABLE = "service_unavailable",
-  VERIFICATION_NOT_FOUND = "verification_not_found",
-  PHONE_ALREADY_VERIFIED = "phone_already_verified",
-  UNKNOWN_ERROR = "unknown_error",
+  INVALID_PHONE_NUMBER = 'invalid_phone_number',
+  INVALID_CODE = 'invalid_code',
+  CODE_EXPIRED = 'code_expired',
+  MAX_ATTEMPTS_REACHED = 'max_attempts_reached',
+  RATE_LIMITED = 'rate_limited',
+  NETWORK_ERROR = 'network_error',
+  SERVICE_UNAVAILABLE = 'service_unavailable',
+  VERIFICATION_NOT_FOUND = 'verification_not_found',
+  PHONE_ALREADY_VERIFIED = 'phone_already_verified',
+  UNKNOWN_ERROR = 'unknown_error',
 }
 
 /**
@@ -125,7 +125,7 @@ export class PhoneVerificationError extends Error {
     retryable: boolean = false
   ) {
     super(message);
-    this.name = "PhoneVerificationError";
+    this.name = 'PhoneVerificationError';
     this.type = type;
     this.details = details;
     this.retryable = retryable;
@@ -160,7 +160,7 @@ export class PhoneVerificationError extends Error {
   static codeExpired(): PhoneVerificationError {
     return new PhoneVerificationError(
       PhoneVerificationErrorType.CODE_EXPIRED,
-      "Verification code has expired. Please request a new code."
+      'Verification code has expired. Please request a new code.'
     );
   }
 
@@ -170,7 +170,7 @@ export class PhoneVerificationError extends Error {
   static maxAttemptsReached(): PhoneVerificationError {
     return new PhoneVerificationError(
       PhoneVerificationErrorType.MAX_ATTEMPTS_REACHED,
-      "Maximum verification attempts reached. Please request a new code."
+      'Maximum verification attempts reached. Please request a new code.'
     );
   }
 
@@ -192,7 +192,7 @@ export class PhoneVerificationError extends Error {
   static networkError(originalError?: Error): PhoneVerificationError {
     return new PhoneVerificationError(
       PhoneVerificationErrorType.NETWORK_ERROR,
-      "Network error occurred. Please check your connection and try again.",
+      'Network error occurred. Please check your connection and try again.',
       { originalError: originalError?.message },
       true
     );
@@ -204,7 +204,7 @@ export class PhoneVerificationError extends Error {
   static serviceUnavailable(): PhoneVerificationError {
     return new PhoneVerificationError(
       PhoneVerificationErrorType.SERVICE_UNAVAILABLE,
-      "Phone verification service is currently unavailable. Please try again later.",
+      'Phone verification service is currently unavailable. Please try again later.',
       undefined,
       true
     );
@@ -228,10 +228,10 @@ export const PhoneNumberUtils = {
    */
   formatPhoneNumber(phone: string): string {
     // Remove all non-digits except the leading +
-    const cleaned = phone.replace(/[^\d+]/g, "");
+    const cleaned = phone.replace(/[^\d+]/g, '');
 
     // If it doesn't start with +, add it
-    if (!cleaned.startsWith("+")) {
+    if (!cleaned.startsWith('+')) {
       return `+${cleaned}`;
     }
 
@@ -253,7 +253,7 @@ export const PhoneNumberUtils = {
     if (phone.length < 4) return phone;
 
     const last4 = phone.slice(-4);
-    const masked = "*".repeat(Math.max(0, phone.length - 4));
+    const masked = '*'.repeat(Math.max(0, phone.length - 4));
 
     return `${phone.slice(0, 2)}${masked.slice(2)}${last4}`;
   },
@@ -266,14 +266,14 @@ export const PhoneVerificationTypeGuards = {
   isVerificationSession(obj: unknown): obj is PhoneVerificationSession {
     return (
       obj !== null &&
-      typeof obj === "object" &&
-      "verification_id" in obj &&
-      "phone_number" in obj &&
-      "status" in obj &&
-      "attempts_made" in obj &&
-      "expires_at" in obj &&
-      "can_resend_at" in obj &&
-      "last_error" in obj
+      typeof obj === 'object' &&
+      'verification_id' in obj &&
+      'phone_number' in obj &&
+      'status' in obj &&
+      'attempts_made' in obj &&
+      'expires_at' in obj &&
+      'can_resend_at' in obj &&
+      'last_error' in obj
     );
   },
 

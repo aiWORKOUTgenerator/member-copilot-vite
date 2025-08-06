@@ -1,5 +1,5 @@
-import { createContext } from "react";
-import { TrainerPersona } from "@/domain/entities/trainerPersona";
+import { createContext } from 'react';
+import { TrainerPersona } from '@/domain/entities/trainerPersona';
 
 /**
  * TrainerPersonaState interface defines the shape of our trainer persona context value.

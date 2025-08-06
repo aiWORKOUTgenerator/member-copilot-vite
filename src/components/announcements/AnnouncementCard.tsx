@@ -1,4 +1,4 @@
-import { Announcement } from "@/domain/entities/announcement";
+import { Announcement } from '@/domain/entities/announcement';
 
 interface AnnouncementCardProps {
   announcement: Announcement;
@@ -10,27 +10,27 @@ export function AnnouncementCard({
   onViewMore,
 }: AnnouncementCardProps) {
   // Priority-based styling configuration
-  const getPriorityStyles = (priority: "high" | "medium" | "low") => {
+  const getPriorityStyles = (priority: 'high' | 'medium' | 'low') => {
     switch (priority) {
-      case "high":
+      case 'high':
         return {
-          cardClass: "card-bordered border-error",
-          badgeClass: "badge-error",
+          cardClass: 'card-bordered border-error',
+          badgeClass: 'badge-error',
         };
-      case "medium":
+      case 'medium':
         return {
-          cardClass: "card-bordered border-warning",
-          badgeClass: "badge-warning",
+          cardClass: 'card-bordered border-warning',
+          badgeClass: 'badge-warning',
         };
-      case "low":
+      case 'low':
         return {
-          cardClass: "card-bordered border-info",
-          badgeClass: "badge-info",
+          cardClass: 'card-bordered border-info',
+          badgeClass: 'badge-info',
         };
       default:
         return {
-          cardClass: "card-bordered border-info",
-          badgeClass: "badge-info",
+          cardClass: 'card-bordered border-info',
+          badgeClass: 'badge-info',
         };
     }
   };
@@ -44,11 +44,11 @@ export function AnnouncementCard({
     );
 
     if (diffInHours < 1) {
-      return "Just now";
+      return 'Just now';
     } else if (diffInHours < 24) {
       return `${diffInHours}h ago`;
     } else if (diffInHours < 48) {
-      return "Yesterday";
+      return 'Yesterday';
     } else {
       const diffInDays = Math.floor(diffInHours / 24);
       return `${diffInDays}d ago`;

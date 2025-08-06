@@ -1,9 +1,9 @@
-import { useContext } from "react";
-import { Announcement } from "@/domain/entities/announcement";
+import { useContext } from 'react';
+import { Announcement } from '@/domain/entities/announcement';
 import {
   AnnouncementContext,
   AnnouncementState,
-} from "@/contexts/announcement.types";
+} from '@/contexts/announcement.types';
 
 /**
  * Custom hook to access the announcement data from the AnnouncementContext.
@@ -14,7 +14,7 @@ export function useAnnouncements(): AnnouncementState {
 
   if (context === undefined) {
     throw new Error(
-      "useAnnouncements must be used within an AnnouncementProvider"
+      'useAnnouncements must be used within an AnnouncementProvider'
     );
   }
 

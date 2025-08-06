@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import React, { ReactNode } from "react";
-import { ArrowDownIcon, SignOutIcon, UserIcon } from "../atoms/IconSet";
-import { useAuth } from "@/hooks/auth";
-import { Button } from "../atoms";
+import React, { ReactNode } from 'react';
+import { ArrowDownIcon, SignOutIcon, UserIcon } from '../atoms/IconSet';
+import { useAuth } from '@/hooks/auth';
+import { Button } from '../atoms';
 export interface MenuItem {
   label: string;
   href?: string;
@@ -27,12 +27,12 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({
   // Default menu items
   const defaultMenuItems: MenuItem[] = [
     {
-      label: "Profile Settings",
-      href: "/user",
+      label: 'Profile Settings',
+      href: '/user',
       icon: <UserIcon size="sm" className="mr-2" />,
     },
     {
-      label: "Sign out",
+      label: 'Sign out',
       danger: true,
       icon: <SignOutIcon size="sm" className="mr-2" />,
       onClick: () => signOut(),
@@ -80,12 +80,12 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({
                 href={item.href}
                 onClick={item.onClick}
                 className={`flex items-center ${
-                  item.danger ? "text-error" : ""
+                  item.danger ? 'text-error' : ''
                 }`}
               >
                 {item.icon && item.icon}
                 {item.label}
-                {item.label === "Sign out" && isSigningOut && (
+                {item.label === 'Sign out' && isSigningOut && (
                   <span className="loading loading-spinner loading-xs ml-2"></span>
                 )}
               </a>

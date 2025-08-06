@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useState } from "react";
+import { useState } from 'react';
 
 interface WebShareProps {
   title?: string;
@@ -17,12 +17,12 @@ const WebShareButton = ({ title, text, children, disabled }: WebShareProps) => {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: title || "Shared Content",
+          title: title || 'Shared Content',
           text: text,
         });
-        console.log("Content shared successfully");
+        console.log('Content shared successfully');
       } catch (error) {
-        console.log("Error sharing content:", error);
+        console.log('Error sharing content:', error);
       }
     } else {
       // Fallback to clipboard copy
@@ -31,8 +31,8 @@ const WebShareButton = ({ title, text, children, disabled }: WebShareProps) => {
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
       } catch (err) {
-        console.log("Failed to copy: ", err);
-        alert("Unable to share or copy. Please copy the text manually.");
+        console.log('Failed to copy: ', err);
+        alert('Unable to share or copy. Please copy the text manually.');
       }
     }
   };
@@ -42,11 +42,11 @@ const WebShareButton = ({ title, text, children, disabled }: WebShareProps) => {
       <button
         onClick={handleShare}
         className={`btn btn-secondary btn-sm w-full ${
-          disabled ? "opacity-50" : ""
+          disabled ? 'opacity-50' : ''
         }`}
         disabled={disabled}
       >
-        {copied ? "Copied!" : children}
+        {copied ? 'Copied!' : children}
       </button>
     </div>
   );

@@ -1,5 +1,5 @@
-import { useContext, useEffect, useState } from "react";
-import { PusherBeamsContext } from "@/contexts/pusher-beams.types";
+import { useContext, useEffect, useState } from 'react';
+import { PusherBeamsContext } from '@/contexts/pusher-beams.types';
 
 /**
  * Hook for managing device interests in Pusher Beams
@@ -33,7 +33,7 @@ export function usePusherBeamsInterests(initialInterests: string[] = []) {
   useEffect(() => {
     const initInterests = async () => {
       if (!service) {
-        console.error("Pusher Beams service not initialized");
+        console.error('Pusher Beams service not initialized');
         return;
       }
 
@@ -50,7 +50,7 @@ export function usePusherBeamsInterests(initialInterests: string[] = []) {
         const currentInterests = await service?.getDeviceInterests();
         setInterests(currentInterests);
       } catch (error) {
-        console.error("Error initializing Pusher Beams interests:", error);
+        console.error('Error initializing Pusher Beams interests:', error);
       }
     };
 
@@ -85,7 +85,7 @@ export function usePusherBeamsInterests(initialInterests: string[] = []) {
       await service?.clearDeviceInterests();
       setInterests([]);
     } catch (error) {
-      console.error("Error clearing interests:", error);
+      console.error('Error clearing interests:', error);
     }
   };
 
