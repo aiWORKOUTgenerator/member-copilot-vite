@@ -133,7 +133,6 @@ export default function StarRating({
             onKeyDown={(e) => handleKeyDown(e, starNumber)}
             disabled={disabled}
             aria-label={`${starNumber} star${starNumber !== 1 ? 's' : ''}`}
-            role="radio"
             aria-checked={value === starNumber}
             tabIndex={value === starNumber ? 0 : -1}
           />
