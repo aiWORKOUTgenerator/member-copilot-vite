@@ -7,6 +7,7 @@
  * Examples: User, Product, Order
  */
 
+export * from './appConfiguration';
 export * from './contact';
 export * from './attribute';
 export * from './prompt';
