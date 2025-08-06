@@ -771,7 +771,15 @@ EOF
 
 ### Step 7: Update Coverage Thresholds with Staggered Approach (15 minutes)
 
+> ⚠️ **Warning:** The following command will **overwrite** your existing `vitest.config.ts` file. Any previous configuration will be **lost**. If you have custom settings, please back up your current `vitest.config.ts` before proceeding.
+
 ```bash
+# Backup existing config (if it exists)
+if [ -f "vitest.config.ts" ]; then
+  cp vitest.config.ts vitest.config.ts.backup
+  echo "✅ Backed up existing vitest.config.ts to vitest.config.ts.backup"
+fi
+
 # Update vitest.config.ts with staggered thresholds and retry logic
 cat > vitest.config.ts << 'EOF'
 import { defineConfig } from "vitest/config";
@@ -884,6 +892,33 @@ npm run verify
 
 # Quick verification should include basic tests
 npm run verify:quick
+```
+
+### 4. Configuration Management (If You Had Custom Settings)
+
+If you had custom configuration in your original `vitest.config.ts`, you can:
+
+#### Option A: Restore and Merge Manually
+```bash
+# Restore your original config
+cp vitest.config.ts.backup vitest.config.ts
+
+# Manually merge the coverage thresholds into your existing config
+# Copy the 'coverage' section from the new config into your existing one
+```
+
+#### Option B: Use the New Config as Base
+```bash
+# If you prefer the new config, keep it and add your custom settings
+# Edit vitest.config.ts to add your specific plugins or settings
+```
+
+#### Option C: Compare and Choose
+```bash
+# Compare the configurations
+diff vitest.config.ts.backup vitest.config.ts
+
+# Choose which elements to keep from each
 ```
 
 ## Expected Results
