@@ -1,9 +1,9 @@
-import { useContext } from "react";
-import { WorkoutInstance } from "@/domain/entities/workoutInstance";
+import { useContext } from 'react';
+import { WorkoutInstance } from '@/domain/entities/workoutInstance';
 import {
   CurrentWorkoutInstanceContext,
   CurrentWorkoutInstanceState,
-} from "@/contexts/current-workout-instance.types";
+} from '@/contexts/current-workout-instance.types';
 
 /**
  * Hook to access the current workout instance
@@ -13,7 +13,7 @@ export function useCurrentWorkoutInstance(): CurrentWorkoutInstanceState {
 
   if (context === undefined) {
     throw new Error(
-      "useCurrentWorkoutInstance must be used within a CurrentWorkoutInstanceProvider",
+      'useCurrentWorkoutInstance must be used within a CurrentWorkoutInstanceProvider'
     );
   }
 

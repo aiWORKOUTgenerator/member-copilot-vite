@@ -1,5 +1,5 @@
-import { AnalyticsService } from "./AnalyticsService";
-import { RudderstackAnalyticsService } from "./RudderstackAnalyticsService";
+import { AnalyticsService } from './AnalyticsService';
+import { RudderstackAnalyticsService } from './RudderstackAnalyticsService';
 
 /**
  * Factory service for creating and managing analytics service implementations
@@ -15,12 +15,12 @@ export class AnalyticsFactory {
    * @returns An analytics service implementation
    */
   public static createAnalytics(
-    type: "rudderstack",
+    type: 'rudderstack',
     options: {
       writeKey: string;
       dataPlaneUrl: string;
       configOptions?: Record<string, unknown>;
-    },
+    }
   ): AnalyticsService {
     if (AnalyticsFactory.instance) {
       return AnalyticsFactory.instance;
@@ -28,11 +28,11 @@ export class AnalyticsFactory {
 
     // Create the appropriate implementation based on the type
     switch (type) {
-      case "rudderstack":
+      case 'rudderstack':
         AnalyticsFactory.instance = new RudderstackAnalyticsService(
           options.writeKey,
           options.dataPlaneUrl,
-          options.configOptions || {},
+          options.configOptions || {}
         );
         break;
       default:

@@ -1,8 +1,8 @@
-import { useContext } from "react";
+import { useContext } from 'react';
 import {
   VerificationContext,
   VerificationState,
-} from "@/contexts/verification.types";
+} from '@/contexts/verification.types';
 
 /**
  * Custom hook to access the verification state from the VerificationContext.
@@ -13,7 +13,7 @@ export function useVerification(): VerificationState {
 
   if (context === undefined) {
     throw new Error(
-      "useVerification must be used within a VerificationProvider",
+      'useVerification must be used within a VerificationProvider'
     );
   }
 

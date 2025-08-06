@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import React, { ReactNode } from "react";
+import React, { ReactNode } from 'react';
 
 export interface PageLayoutProps {
   children: ReactNode;
@@ -16,10 +16,10 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
   children,
   header,
   footer,
-  className = "",
+  className = '',
   withContainer = true,
   withCard = true,
-  bgColor = "bg-white",
+  bgColor = 'bg-white',
 }) => {
   return (
     <div className={`min-h-screen py-8 ${bgColor} ${className}`}>

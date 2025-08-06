@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import React from "react";
+import React from 'react';
 
 // Common icon sizes
-export type IconSize = "xs" | "sm" | "md" | "lg" | "xl";
+export type IconSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
 // Props for the Icon component
 export interface IconProps {
@@ -29,8 +29,8 @@ export interface IconProps {
  */
 export const Icon: React.FC<IconProps> = ({
   icon: IconComponent,
-  size = "md",
-  className = "",
+  size = 'md',
+  className = '',
   ariaLabel,
 }) => {
   // Map size names to pixel values
@@ -43,7 +43,7 @@ export const Icon: React.FC<IconProps> = ({
   };
 
   // Determine width and height
-  const dimensions = typeof size === "string" ? sizeMap[size] : size;
+  const dimensions = typeof size === 'string' ? sizeMap[size] : size;
 
   if (!IconComponent) {
     return null;
@@ -53,9 +53,9 @@ export const Icon: React.FC<IconProps> = ({
     <span
       className={className}
       style={{
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
         width: dimensions,
         height: dimensions,
       }}

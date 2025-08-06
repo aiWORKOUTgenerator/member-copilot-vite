@@ -1,14 +1,14 @@
 import {
   WorkoutInstance,
   WorkoutInstanceStructure,
-} from "@/domain/entities/workoutInstance";
-import { ApiService } from "@/domain/interfaces/api/ApiService";
+} from '@/domain/entities/workoutInstance';
+import { ApiService } from '@/domain/interfaces/api/ApiService';
 import {
   WorkoutInstanceService,
   CreateWorkoutInstanceRequest,
   UpdateWorkoutInstanceRequest,
   RecommendedExercise,
-} from "@/domain/interfaces/services/WorkoutInstanceService";
+} from '@/domain/interfaces/services/WorkoutInstanceService';
 
 interface WorkoutInstanceProps {
   id: string;
@@ -40,9 +40,9 @@ interface UpdateWorkoutInstancePayload extends Record<string, unknown> {
 }
 
 export class WorkoutInstanceServiceImpl implements WorkoutInstanceService {
-  readonly serviceName = "WorkoutInstanceService";
+  readonly serviceName = 'WorkoutInstanceService';
   private readonly apiService: ApiService;
-  private readonly baseEndpoint = "/members";
+  private readonly baseEndpoint = '/members';
 
   /**
    * Creates a new instance of WorkoutInstanceServiceImpl
@@ -63,22 +63,22 @@ export class WorkoutInstanceServiceImpl implements WorkoutInstanceService {
         .sort(
           (a, b) =>
             new Date(b.performedAt).getTime() -
-            new Date(a.performedAt).getTime(),
+            new Date(a.performedAt).getTime()
         );
     } catch (error) {
-      console.error("Error in getWorkoutInstances:", error);
-      throw new Error("Failed to fetch workout instances");
+      console.error('Error in getWorkoutInstances:', error);
+      throw new Error('Failed to fetch workout instances');
     }
   }
 
   async getWorkoutInstancesByGeneratedWorkoutId(
-    generatedWorkoutId: string,
+    generatedWorkoutId: string
   ): Promise<WorkoutInstance[]> {
     try {
       const workoutInstancesData = await this.apiService.get<
         WorkoutInstanceProps[]
       >(
-        `${this.baseEndpoint}/workout-instances/?generated_workout_id=${generatedWorkoutId}`,
+        `${this.baseEndpoint}/workout-instances/?generated_workout_id=${generatedWorkoutId}`
       );
 
       return workoutInstancesData
@@ -86,39 +86,39 @@ export class WorkoutInstanceServiceImpl implements WorkoutInstanceService {
         .sort(
           (a, b) =>
             new Date(b.performedAt).getTime() -
-            new Date(a.performedAt).getTime(),
+            new Date(a.performedAt).getTime()
         );
     } catch (error) {
-      console.error("Error in getWorkoutInstancesByGeneratedWorkoutId:", error);
+      console.error('Error in getWorkoutInstancesByGeneratedWorkoutId:', error);
       throw new Error(
-        "Failed to fetch workout instances for generated workout",
+        'Failed to fetch workout instances for generated workout'
       );
     }
   }
 
   async getWorkoutInstance(
-    instanceId: string,
+    instanceId: string
   ): Promise<WorkoutInstance | null> {
     try {
       const workoutInstanceData =
         await this.apiService.get<WorkoutInstanceProps>(
-          `${this.baseEndpoint}/workout-instances/${instanceId}/`,
+          `${this.baseEndpoint}/workout-instances/${instanceId}/`
         );
 
       return new WorkoutInstance(workoutInstanceData);
     } catch (error) {
       // If it's a 404, return null as expected by the interface
-      if (error instanceof Error && error.message.includes("404")) {
+      if (error instanceof Error && error.message.includes('404')) {
         return null;
       }
 
-      console.error("Error in getWorkoutInstance:", error);
-      throw new Error("Failed to fetch workout instance");
+      console.error('Error in getWorkoutInstance:', error);
+      throw new Error('Failed to fetch workout instance');
     }
   }
 
   async createWorkoutInstance(
-    request: CreateWorkoutInstanceRequest,
+    request: CreateWorkoutInstanceRequest
   ): Promise<WorkoutInstance> {
     try {
       const payload: CreateWorkoutInstancePayload = {
@@ -137,14 +137,14 @@ export class WorkoutInstanceServiceImpl implements WorkoutInstanceService {
 
       return new WorkoutInstance(createdWorkoutInstance);
     } catch (error) {
-      console.error("Error in createWorkoutInstance:", error);
-      throw new Error("Failed to create workout instance");
+      console.error('Error in createWorkoutInstance:', error);
+      throw new Error('Failed to create workout instance');
     }
   }
 
   async updateWorkoutInstance(
     instanceId: string,
-    request: UpdateWorkoutInstanceRequest,
+    request: UpdateWorkoutInstanceRequest
   ): Promise<WorkoutInstance> {
     try {
       const payload: UpdateWorkoutInstancePayload = {
@@ -157,7 +157,7 @@ export class WorkoutInstanceServiceImpl implements WorkoutInstanceService {
 
       // Remove undefined values from payload
       const cleanPayload = Object.fromEntries(
-        Object.entries(payload).filter(([, value]) => value !== undefined),
+        Object.entries(payload).filter(([, value]) => value !== undefined)
       );
 
       const updatedWorkoutInstance = await this.apiService.put<
@@ -167,19 +167,19 @@ export class WorkoutInstanceServiceImpl implements WorkoutInstanceService {
 
       return new WorkoutInstance(updatedWorkoutInstance);
     } catch (error) {
-      console.error("Error in updateWorkoutInstance:", error);
-      throw new Error("Failed to update workout instance");
+      console.error('Error in updateWorkoutInstance:', error);
+      throw new Error('Failed to update workout instance');
     }
   }
 
   async deleteWorkoutInstance(instanceId: string): Promise<void> {
     try {
       await this.apiService.delete(
-        `${this.baseEndpoint}/workout-instances/${instanceId}/`,
+        `${this.baseEndpoint}/workout-instances/${instanceId}/`
       );
     } catch (error) {
-      console.error("Error in deleteWorkoutInstance:", error);
-      throw new Error("Failed to delete workout instance");
+      console.error('Error in deleteWorkoutInstance:', error);
+      throw new Error('Failed to delete workout instance');
     }
   }
 
@@ -187,7 +187,7 @@ export class WorkoutInstanceServiceImpl implements WorkoutInstanceService {
     instanceId: string,
     exerciseName: string,
     reason?: string,
-    preferences?: string[],
+    preferences?: string[]
   ): Promise<RecommendedExercise[]> {
     try {
       interface ExerciseAlternativesRequest extends Record<string, unknown> {
@@ -234,7 +234,7 @@ export class WorkoutInstanceServiceImpl implements WorkoutInstanceService {
         ExerciseAlternativesRequest
       >(
         `${this.baseEndpoint}/workout-instances/${instanceId}/exercise-alternatives/`,
-        requestBody,
+        requestBody
       );
 
       // Transform the response to match our RecommendedExercise interface
@@ -248,34 +248,34 @@ export class WorkoutInstanceServiceImpl implements WorkoutInstanceService {
         duration: alternative.duration,
         rest: alternative.rest,
         targetMuscles: alternative.targetMuscles || [],
-        difficulty: alternative.difficulty || "Beginner",
+        difficulty: alternative.difficulty || 'Beginner',
         equipment: alternative.equipment || [],
       }));
     } catch (error) {
-      console.error("Error in getExerciseRecommendations:", error);
+      console.error('Error in getExerciseRecommendations:', error);
 
       // Fallback to mock data for development
       return [
         {
-          id: "fallback-1",
-          name: "Push-ups",
+          id: 'fallback-1',
+          name: 'Push-ups',
           description:
-            "Classic bodyweight chest exercise that targets the same muscles",
+            'Classic bodyweight chest exercise that targets the same muscles',
           sets: 3,
           reps: 15,
-          targetMuscles: ["Chest", "Triceps", "Shoulders"],
-          difficulty: "Beginner",
+          targetMuscles: ['Chest', 'Triceps', 'Shoulders'],
+          difficulty: 'Beginner',
           rest: 60,
         },
         {
-          id: "fallback-2",
-          name: "Modified Version",
+          id: 'fallback-2',
+          name: 'Modified Version',
           description: `A modified version of ${exerciseName} with adjusted parameters`,
           sets: 2,
           reps: 8,
           weight: 5,
-          targetMuscles: ["Full Body"],
-          difficulty: "Beginner",
+          targetMuscles: ['Full Body'],
+          difficulty: 'Beginner',
           rest: 60,
         },
       ];

@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { useAttributeForm } from "@/hooks/useAttributeForm";
-import { useAttributeType } from "@/hooks/useAttributeTypes";
-import { useContact } from "@/hooks/useContact";
-import { usePrompts } from "@/hooks/usePrompts";
-import { usePromptService } from "@/hooks";
-import { PromptCard } from "@/ui";
-import { useEffect, useState } from "react";
-import { Link } from "react-router";
+import { useAttributeForm } from '@/hooks/useAttributeForm';
+import { useAttributeType } from '@/hooks/useAttributeTypes';
+import { useContact } from '@/hooks/useContact';
+import { usePrompts } from '@/hooks/usePrompts';
+import { usePromptService } from '@/hooks';
+import { PromptCard } from '@/ui';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router';
 
 // Component to display the attribute form with access to context
 export function AttributeForm({
@@ -27,7 +27,7 @@ export function AttributeForm({
 
   // Filter prompts for this attribute type
   const attributePrompts = prompts.filter(
-    (prompt) => prompt.attributeType?.id === attributeTypeId,
+    (prompt) => prompt.attributeType?.id === attributeTypeId
   );
 
   // Initialize form values when component mounts
@@ -35,9 +35,7 @@ export function AttributeForm({
     if (contact) {
       initFormValues(
         contact,
-        prompts.filter(
-          (prompt) => prompt.attributeType?.id === attributeTypeId,
-        ),
+        prompts.filter((prompt) => prompt.attributeType?.id === attributeTypeId)
       );
     }
   }, [attributeTypeId, initFormValues, contact, prompts]);
@@ -66,7 +64,7 @@ export function AttributeForm({
         .map(([promptId, value]) => ({
           prompt_id: promptId,
           value: Array.isArray(value)
-            ? value.join("::")
+            ? value.join('::')
             : (value as string | number),
         }));
 
@@ -75,8 +73,8 @@ export function AttributeForm({
       refetch();
       setSaveSuccess(true);
     } catch (error) {
-      console.error("Error saving form values:", error);
-      setSaveError("Failed to save changes. Please try again.");
+      console.error('Error saving form values:', error);
+      setSaveError('Failed to save changes. Please try again.');
     } finally {
       setIsSaving(false);
     }
@@ -130,9 +128,9 @@ export function AttributeForm({
           <PromptCard
             key={prompt.id}
             prompt={prompt}
-            value={formValues[prompt.id] || ""}
+            value={formValues[prompt.id] || ''}
             onChange={(value) => updateFormValue(prompt.id, value)}
-            validationMessage={""}
+            validationMessage={''}
             isValid={true}
           />
         ))
@@ -191,7 +189,7 @@ export function AttributeForm({
               Saving...
             </>
           ) : (
-            "Save Changes"
+            'Save Changes'
           )}
         </button>
       </div>

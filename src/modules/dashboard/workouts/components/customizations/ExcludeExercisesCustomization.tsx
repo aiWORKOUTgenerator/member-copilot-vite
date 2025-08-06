@@ -1,4 +1,4 @@
-import { CustomizationComponentProps } from "../types";
+import { CustomizationComponentProps } from '../types';
 
 export default function ExcludeExercisesCustomization({
   value,
@@ -12,7 +12,7 @@ export default function ExcludeExercisesCustomization({
         type="text"
         className="input input-bordered validator w-full"
         placeholder="e.g., burpees, jumping jacks, mountain climbers"
-        value={value || ""}
+        value={value || ''}
         onChange={(e) => onChange(e.target.value || undefined)}
         disabled={disabled}
       />

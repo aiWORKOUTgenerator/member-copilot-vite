@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useEffect } from "react";
-import { usePusherService } from "@/hooks/useServices";
+import { useEffect } from 'react';
+import { usePusherService } from '@/hooks/useServices';
 
 interface PusherEventProps {
   /**

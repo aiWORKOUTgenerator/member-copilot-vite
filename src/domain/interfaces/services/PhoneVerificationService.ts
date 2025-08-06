@@ -6,7 +6,7 @@ import {
   ResendCodeRequest,
   ResendCodeResponse,
   PhoneVerificationSession,
-} from "@/domain/entities/phoneVerification";
+} from '@/domain/entities/phoneVerification';
 
 /**
  * PhoneVerificationService interface defines operations for phone number verification.
@@ -20,7 +20,7 @@ export interface PhoneVerificationService {
    * @returns Promise resolving to verification response with session details
    */
   sendVerificationCode(
-    request: SendVerificationCodeRequest,
+    request: SendVerificationCodeRequest
   ): Promise<SendVerificationCodeResponse>;
 
   /**
@@ -43,7 +43,7 @@ export interface PhoneVerificationService {
    * @returns Promise resolving to current session state
    */
   getVerificationStatus(
-    verificationId: string,
+    verificationId: string
   ): Promise<PhoneVerificationSession>;
 
   /**

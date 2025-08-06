@@ -1,13 +1,13 @@
-import { Announcement } from "@/domain/entities/announcement";
-import { ApiService } from "@/domain/interfaces/api/ApiService";
-import { AnnouncementService } from "@/domain/interfaces/services/AnnouncementService";
+import { Announcement } from '@/domain/entities/announcement';
+import { ApiService } from '@/domain/interfaces/api/ApiService';
+import { AnnouncementService } from '@/domain/interfaces/services/AnnouncementService';
 
 interface AnnouncementProps {
   id: string;
   title: string;
   short_description: string;
   long_description: string;
-  priority: "high" | "medium" | "low";
+  priority: 'high' | 'medium' | 'low';
   created_at: string;
   is_active: boolean;
 }
@@ -17,9 +17,9 @@ interface AnnouncementsResponse {
 }
 
 export class AnnouncementServiceImpl implements AnnouncementService {
-  readonly serviceName = "AnnouncementService";
+  readonly serviceName = 'AnnouncementService';
   private readonly apiService: ApiService;
-  private readonly baseEndpoint = "/members";
+  private readonly baseEndpoint = '/members';
 
   /**
    * Creates a new instance of AnnouncementServiceImpl
@@ -32,15 +32,15 @@ export class AnnouncementServiceImpl implements AnnouncementService {
   async getAnnouncements(): Promise<Announcement[]> {
     try {
       const response = await this.apiService.get<AnnouncementsResponse>(
-        `${this.baseEndpoint}/announcements/`,
+        `${this.baseEndpoint}/announcements/`
       );
 
       return response.announcements
         .map((data) => new Announcement(data))
         .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
     } catch (error) {
-      console.error("Error in getAnnouncements:", error);
-      throw new Error("Failed to fetch announcements");
+      console.error('Error in getAnnouncements:', error);
+      throw new Error('Failed to fetch announcements');
     }
   }
 }

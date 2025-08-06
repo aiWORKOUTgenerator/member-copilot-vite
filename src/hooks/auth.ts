@@ -3,9 +3,9 @@
  * with additional features and consistent behavior
  */
 
-import { useClerk, useUser } from "@clerk/clerk-react";
-import { useCallback, useState } from "react";
-import { useNavigate } from "react-router";
+import { useClerk, useUser } from '@clerk/clerk-react';
+import { useCallback, useState } from 'react';
+import { useNavigate } from 'react-router';
 
 /**
  * Custom hook that provides authentication functionality
@@ -20,18 +20,18 @@ export function useAuth() {
    * Sign out the user and redirect to the specified path
    */
   const handleSignOut = useCallback(
-    async (redirectPath = "/") => {
+    async (redirectPath = '/') => {
       try {
         setIsSigningOut(true);
         await signOut();
         // After sign out, redirect to the specified path
         navigate(redirectPath);
       } catch (error) {
-        console.error("Error signing out:", error);
+        console.error('Error signing out:', error);
         setIsSigningOut(false);
       }
     },
-    [signOut, navigate],
+    [signOut, navigate]
   );
 
   return {

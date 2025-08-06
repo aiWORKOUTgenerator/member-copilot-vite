@@ -1,4 +1,4 @@
-import { WorkoutInstance } from "@/domain/entities/workoutInstance";
+import { WorkoutInstance } from '@/domain/entities/workoutInstance';
 import {
   Activity,
   Calendar,
@@ -9,9 +9,9 @@ import {
   StickyNote,
   Target,
   X,
-} from "lucide-react";
-import { useCallback, useEffect } from "react";
-import { formatDate } from "../utils/workoutHistoryUtils";
+} from 'lucide-react';
+import { useCallback, useEffect } from 'react';
+import { formatDate } from '../utils/workoutHistoryUtils';
 
 export interface WorkoutInstanceModalProps {
   /** Whether the modal is open */
@@ -31,25 +31,25 @@ export default function WorkoutInstanceModal({
   onClose,
   workoutInstance,
   onViewDetails,
-  className = "",
+  className = '',
 }: WorkoutInstanceModalProps) {
   // Handle escape key
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && isOpen) {
+      if (event.key === 'Escape' && isOpen) {
         onClose();
       }
     };
 
     if (isOpen) {
-      document.addEventListener("keydown", handleEscape);
+      document.addEventListener('keydown', handleEscape);
       // Prevent body scroll when modal is open
-      document.body.style.overflow = "hidden";
+      document.body.style.overflow = 'hidden';
     }
 
     return () => {
-      document.removeEventListener("keydown", handleEscape);
-      document.body.style.overflow = "unset";
+      document.removeEventListener('keydown', handleEscape);
+      document.body.style.overflow = 'unset';
     };
   }, [isOpen, onClose]);
 
@@ -59,21 +59,21 @@ export default function WorkoutInstanceModal({
         onClose();
       }
     },
-    [onClose],
+    [onClose]
   );
 
   // Calculate workout stats
   const totalExercises =
     workoutInstance.jsonFormat?.sections.reduce(
       (total, section) => total + (section.exercises?.length || 0),
-      0,
+      0
     ) || 0;
 
   const completedExercises =
     workoutInstance.jsonFormat?.sections.reduce(
       (total, section) =>
         total + (section.exercises?.filter((ex) => ex.completed).length || 0),
-      0,
+      0
     ) || 0;
 
   const completionPercentage =
@@ -139,7 +139,7 @@ export default function WorkoutInstanceModal({
             <div className="flex items-center gap-3">
               <div
                 className={`badge ${
-                  workoutInstance.completed ? "badge-success" : "badge-warning"
+                  workoutInstance.completed ? 'badge-success' : 'badge-warning'
                 } gap-2`}
               >
                 {workoutInstance.completed ? (
@@ -147,7 +147,7 @@ export default function WorkoutInstanceModal({
                 ) : (
                   <Circle className="w-3 h-3" />
                 )}
-                {workoutInstance.completed ? "Completed" : "In Progress"}
+                {workoutInstance.completed ? 'Completed' : 'In Progress'}
               </div>
               {totalExercises > 0 && (
                 <div className="badge badge-outline gap-2">
@@ -169,7 +169,7 @@ export default function WorkoutInstanceModal({
               <div className="w-full bg-base-300 rounded-full h-2">
                 <div
                   className={`h-2 rounded-full transition-all duration-300 ${
-                    workoutInstance.completed ? "bg-success" : "bg-primary"
+                    workoutInstance.completed ? 'bg-success' : 'bg-primary'
                   }`}
                   style={{ width: `${completionPercentage}%` }}
                 ></div>
@@ -206,8 +206,8 @@ export default function WorkoutInstanceModal({
                     key={exerciseIndex}
                     className={`flex items-center gap-3 p-3 rounded-lg border transition-colors ${
                       exercise.completed
-                        ? "bg-success/10 border-success/20"
-                        : "bg-base-200 border-base-300"
+                        ? 'bg-success/10 border-success/20'
+                        : 'bg-base-200 border-base-300'
                     }`}
                   >
                     <div className="flex-shrink-0">

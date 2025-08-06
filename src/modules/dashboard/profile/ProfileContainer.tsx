@@ -1,18 +1,18 @@
 import {
   useAttributeTypesData,
   useAttributeTypesLoading,
-} from "@/hooks/useAttributeTypes";
-import { useContactData } from "@/hooks/useContact";
-import { useTitle } from "@/hooks/useTitle";
-import { AttributeCompletion, ContactUtils } from "@/domain";
+} from '@/hooks/useAttributeTypes';
+import { useContactData } from '@/hooks/useContact';
+import { useTitle } from '@/hooks/useTitle';
+import { AttributeCompletion, ContactUtils } from '@/domain';
 import {
   RadioGroupOfCards,
   SelectableItem,
-} from "@/ui/shared/molecules/RadioGroupOfCards";
-import { useEffect, useMemo, useState } from "react";
-import { Outlet, useLocation, useNavigate } from "react-router";
-import { useAnalytics } from "@/hooks/useAnalytics";
-import { usePromptsData } from "@/hooks/usePrompts";
+} from '@/ui/shared/molecules/RadioGroupOfCards';
+import { useEffect, useMemo, useState } from 'react';
+import { Outlet, useLocation, useNavigate } from 'react-router';
+import { useAnalytics } from '@/hooks/useAnalytics';
+import { usePromptsData } from '@/hooks/usePrompts';
 
 export default function TrainingProfileLayout() {
   const { setTitle } = useTitle();
@@ -30,7 +30,7 @@ export default function TrainingProfileLayout() {
 
   // Set the page title
   useEffect(() => {
-    setTitle("Training Profile");
+    setTitle('Training Profile');
   }, [setTitle]);
 
   // Calculate attribute completion status
@@ -38,30 +38,30 @@ export default function TrainingProfileLayout() {
     return ContactUtils.getAttributeCompletionStatus(
       contact,
       attributeTypes,
-      prompts,
+      prompts
     );
   }, [contact, attributeTypes, prompts]);
 
   // Extract attributeTypeId from the path if we're in a specific attribute type route
   useEffect(() => {
     if (attributeTypes.length > 0 && pathname) {
-      const pathParts = pathname.split("/");
+      const pathParts = pathname.split('/');
       const attributeTypeId = pathParts[pathParts.length - 1];
 
       // Check if we're in a specific attribute type route
       if (
-        pathname.startsWith("/dashboard/profile/") &&
-        attributeTypeId !== "profile"
+        pathname.startsWith('/dashboard/profile/') &&
+        attributeTypeId !== 'profile'
       ) {
         const selectedAttributeType = attributeTypes.find(
-          (type) => type.id.toString() === attributeTypeId,
+          (type) => type.id.toString() === attributeTypeId
         );
 
         if (selectedAttributeType) {
           setDefaultSelected({
             id: selectedAttributeType.id,
             title: selectedAttributeType.name,
-            description: selectedAttributeType.description || "",
+            description: selectedAttributeType.description || '',
           });
         }
       }
@@ -72,7 +72,7 @@ export default function TrainingProfileLayout() {
 
   // Track profile page views
   useEffect(() => {
-    analytics.track("Profile Page Viewed", {
+    analytics.track('Profile Page Viewed', {
       tracked_at: new Date().toISOString(),
     });
   }, [analytics]);
@@ -95,18 +95,18 @@ export default function TrainingProfileLayout() {
           items={attributeTypes.map((attributeType) => {
             // Find completion info for this attribute type
             const completion = attributeCompletions.find(
-              (c) => c.attributeType.id === attributeType.id,
+              (c) => c.attributeType.id === attributeType.id
             );
 
             return {
               id: attributeType.id,
               title: attributeType.name,
-              description: attributeType.description || "",
+              description: attributeType.description || '',
               tertiary: completion ? (
                 <div className="flex flex-col g">
                   <div className="flex justify-between mb-1">
                     <span className="text-xs">
-                      {completion.completedPrompts}/{completion.totalPrompts}{" "}
+                      {completion.completedPrompts}/{completion.totalPrompts}{' '}
                       complete
                     </span>
                     <span className="text-xs">
@@ -116,10 +116,10 @@ export default function TrainingProfileLayout() {
                   <progress
                     className={`progress ${
                       completion.percentComplete === 100
-                        ? "progress-success"
+                        ? 'progress-success'
                         : completion.hasProvidedValue
-                          ? "progress-primary"
-                          : "progress-secondary"
+                          ? 'progress-primary'
+                          : 'progress-secondary'
                     }`}
                     value={completion.percentComplete}
                     max="100"

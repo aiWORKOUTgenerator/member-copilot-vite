@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import { useCurrentWorkoutInstance } from "@/hooks/useCurrentWorkoutInstance";
-import { RecommendedExercise } from "@/domain/interfaces/services/WorkoutInstanceService";
-import { useWorkoutInstances } from "@/hooks/useWorkoutInstances";
-import { useTrainerPersonaData } from "@/hooks/useTrainerPersona";
-import { Exercise, Section } from "@/domain/entities/generatedWorkout";
-import { ExerciseInstance } from "@/domain/entities/workoutInstance";
-import { useAnalytics } from "@/hooks/useAnalytics";
-import { Check, Clock, Target, X } from "lucide-react";
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router";
-import { TrainerPersonaDisplay } from "./components/TrainerPersonaDisplay";
+import { useCurrentWorkoutInstance } from '@/hooks/useCurrentWorkoutInstance';
+import { RecommendedExercise } from '@/domain/interfaces/services/WorkoutInstanceService';
+import { useWorkoutInstances } from '@/hooks/useWorkoutInstances';
+import { useTrainerPersonaData } from '@/hooks/useTrainerPersona';
+import { Exercise, Section } from '@/domain/entities/generatedWorkout';
+import { ExerciseInstance } from '@/domain/entities/workoutInstance';
+import { useAnalytics } from '@/hooks/useAnalytics';
+import { Check, Clock, Target, X } from 'lucide-react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router';
+import { TrainerPersonaDisplay } from './components/TrainerPersonaDisplay';
 
 interface WorkoutProgress {
   totalExercises: number;
@@ -36,11 +36,11 @@ interface SwapExerciseState {
 interface CustomExercise {
   name: string;
   description: string;
-  sets: number | "";
-  reps: number | "";
-  weight: number | "";
-  duration: number | "";
-  rest: number | "";
+  sets: number | '';
+  reps: number | '';
+  weight: number | '';
+  duration: number | '';
+  rest: number | '';
 }
 
 export default function WorkoutInstancePage() {
@@ -64,7 +64,7 @@ export default function WorkoutInstancePage() {
   // Track workout instance start
   useEffect(() => {
     if (currentInstance) {
-      analytics.track("Workout Instance Started", {
+      analytics.track('Workout Instance Started', {
         workoutInstanceId: currentInstance.id,
         generatedWorkoutId: currentInstance.generatedWorkoutId,
         isExistingInstance: !!currentInstance.performedAt,
@@ -76,20 +76,20 @@ export default function WorkoutInstancePage() {
 
   // Direct API call to complete workout immediately
   const completeWorkoutImmediately = async () => {
-    console.log("completeWorkoutImmediately");
+    console.log('completeWorkoutImmediately');
     if (!currentInstance) {
-      console.error("No current instance available");
+      console.error('No current instance available');
       return;
     }
 
     try {
-      console.log("Making immediate API call to complete workout...");
+      console.log('Making immediate API call to complete workout...');
 
       // Calculate duration
       const duration = Math.round(
         (new Date().getTime() -
           new Date(currentInstance.performedAt).getTime()) /
-          60000,
+          60000
       );
 
       // Make direct API call to complete the workout
@@ -98,15 +98,15 @@ export default function WorkoutInstancePage() {
         duration: duration,
       });
 
-      console.log("Workout completed successfully via API");
+      console.log('Workout completed successfully via API');
 
       // Update the workout instances list with the completed instance
       updateInstanceInList(updatedInstance);
 
       // Navigate back immediately after API success
-      navigate("/dashboard/workouts");
+      navigate('/dashboard/workouts');
     } catch (error) {
-      console.error("Failed to complete workout via API:", error);
+      console.error('Failed to complete workout via API:', error);
       // Could show error toast here
     }
   };
@@ -139,24 +139,24 @@ export default function WorkoutInstancePage() {
       sectionIndex: null,
       exerciseIndex: null,
       currentExercise: null,
-    },
+    }
   );
   const [recommendedExercises, setRecommendedExercises] = useState<
     RecommendedExercise[]
   >([]);
   const [isLoadingRecommendations, setIsLoadingRecommendations] =
     useState(false);
-  const [activeTab, setActiveTab] = useState<"recommended" | "custom">(
-    "recommended",
+  const [activeTab, setActiveTab] = useState<'recommended' | 'custom'>(
+    'recommended'
   );
   const [customExercise, setCustomExercise] = useState<CustomExercise>({
-    name: "",
-    description: "",
-    sets: "",
-    reps: "",
-    weight: "",
-    duration: "",
-    rest: "",
+    name: '',
+    description: '',
+    sets: '',
+    reps: '',
+    weight: '',
+    duration: '',
+    rest: '',
   });
 
   // Calculate progress whenever current instance changes
@@ -227,10 +227,10 @@ export default function WorkoutInstancePage() {
       });
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener('scroll', handleScroll);
     handleScroll(); // Initial call
 
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, [currentInstance?.jsonFormat?.sections]);
 
   // Auto-scroll to next incomplete exercise when one is completed
@@ -241,7 +241,7 @@ export default function WorkoutInstancePage() {
     const scrollToNextIncompleteExercise = () => {
       // Parse the completed exercise ID to find its position
       const [, completedSectionIndexStr, , completedExerciseIndexStr] =
-        lastCompletedExercise.split("-");
+        lastCompletedExercise.split('-');
       const completedSectionIndex = parseInt(completedSectionIndexStr);
       const completedExerciseIndex = parseInt(completedExerciseIndexStr);
 
@@ -283,7 +283,7 @@ export default function WorkoutInstancePage() {
       // If we found a next incomplete exercise, scroll to it
       if (nextExerciseId) {
         const nextElement = document.querySelector(
-          `[data-exercise-id="${nextExerciseId}"]`,
+          `[data-exercise-id="${nextExerciseId}"]`
         );
         if (nextElement) {
           const rect = nextElement.getBoundingClientRect();
@@ -300,7 +300,7 @@ export default function WorkoutInstancePage() {
 
             window.scrollTo({
               top: Math.max(0, targetScrollY),
-              behavior: "smooth",
+              behavior: 'smooth',
             });
           }
         }
@@ -316,9 +316,9 @@ export default function WorkoutInstancePage() {
   const handleWorkoutComplete = (
     totalDuration: number,
     completedExercises: number,
-    totalExercises: number,
+    totalExercises: number
   ) => {
-    analytics.track("Workout Completed", {
+    analytics.track('Workout Completed', {
       workoutInstanceId: currentInstance?.id,
       generatedWorkoutId: currentInstance?.generatedWorkoutId,
       durationMinutes: totalDuration,
@@ -331,11 +331,11 @@ export default function WorkoutInstancePage() {
 
   // Track workout abandonment
   const handleWorkoutAbandon = (reason: string) => {
-    analytics.track("Workout Abandoned", {
+    analytics.track('Workout Abandoned', {
       workoutInstanceId: currentInstance?.id,
       reason,
       minutesElapsed: Math.floor(
-        (Date.now() - workoutStartTime.current) / 60000,
+        (Date.now() - workoutStartTime.current) / 60000
       ),
       tracked_at: new Date().toISOString(),
     });
@@ -352,14 +352,14 @@ export default function WorkoutInstancePage() {
     if (progressPercentage > 0 && !currentInstance?.completed) {
       setShowExitConfirm(true);
     } else {
-      navigate("/dashboard/workouts");
+      navigate('/dashboard/workouts');
     }
   };
 
   const handleConfirmExit = () => {
-    handleWorkoutAbandon("User exited workout");
+    handleWorkoutAbandon('User exited workout');
     setShowExitConfirm(false);
-    navigate("/dashboard/workouts");
+    navigate('/dashboard/workouts');
   };
 
   const handleCancelExit = () => {
@@ -372,18 +372,18 @@ export default function WorkoutInstancePage() {
 
       // Don't allow editing if workout is already completed
       if (currentInstance.completed) {
-        console.log("Cannot modify exercises - workout is already completed");
+        console.log('Cannot modify exercises - workout is already completed');
         return;
       }
 
       // Parse the exerciseId to get section and exercise indices
-      const [, sectionIndexStr, , exerciseIndexStr] = exerciseId.split("-");
+      const [, sectionIndexStr, , exerciseIndexStr] = exerciseId.split('-');
       const sectionIndex = parseInt(sectionIndexStr);
       const exerciseIndex = parseInt(exerciseIndexStr);
 
       // Create a deep copy of the current jsonFormat
       const updatedJsonFormat = JSON.parse(
-        JSON.stringify(currentInstance.jsonFormat),
+        JSON.stringify(currentInstance.jsonFormat)
       );
 
       // Update the specific exercise
@@ -393,7 +393,7 @@ export default function WorkoutInstancePage() {
         exercise.completed = completed;
 
         // Track exercise completion
-        analytics.track("Exercise Completed", {
+        analytics.track('Exercise Completed', {
           workoutInstanceId: currentInstance.id,
           exerciseId,
           exerciseName: exercise.name,
@@ -410,7 +410,7 @@ export default function WorkoutInstancePage() {
         }
       }
     },
-    [currentInstance, updateInstanceJsonFormatOptimistically, analytics],
+    [currentInstance, updateInstanceJsonFormatOptimistically, analytics]
   );
 
   const handleExerciseNotes = useCallback(
@@ -419,18 +419,18 @@ export default function WorkoutInstancePage() {
 
       // Don't allow editing if workout is already completed
       if (currentInstance.completed) {
-        console.log("Cannot modify notes - workout is already completed");
+        console.log('Cannot modify notes - workout is already completed');
         return;
       }
 
       // Parse the exerciseId to get section and exercise indices
-      const [, sectionIndexStr, , exerciseIndexStr] = exerciseId.split("-");
+      const [, sectionIndexStr, , exerciseIndexStr] = exerciseId.split('-');
       const sectionIndex = parseInt(sectionIndexStr);
       const exerciseIndex = parseInt(exerciseIndexStr);
 
       // Create a deep copy of the current jsonFormat
       const updatedJsonFormat = JSON.parse(
-        JSON.stringify(currentInstance.jsonFormat),
+        JSON.stringify(currentInstance.jsonFormat)
       );
 
       // Update the specific exercise notes
@@ -443,7 +443,7 @@ export default function WorkoutInstancePage() {
         updateInstanceJsonFormatOptimistically(updatedJsonFormat);
       }
     },
-    [currentInstance, updateInstanceJsonFormatOptimistically],
+    [currentInstance, updateInstanceJsonFormatOptimistically]
   );
 
   const handleMarkAllComplete = useCallback(async () => {
@@ -451,12 +451,12 @@ export default function WorkoutInstancePage() {
 
     // Don't allow marking all complete if workout is already completed
     if (currentInstance.completed) {
-      console.log("Cannot mark all complete - workout is already completed");
+      console.log('Cannot mark all complete - workout is already completed');
       return;
     }
 
     // Track mark all complete action
-    analytics.track("Mark All Exercises Complete", {
+    analytics.track('Mark All Exercises Complete', {
       workoutInstanceId: currentInstance.id,
       totalExercises: workoutProgress.totalExercises,
       previouslyCompleted: workoutProgress.completedExercises,
@@ -467,7 +467,7 @@ export default function WorkoutInstancePage() {
 
     // Create a deep copy and mark all exercises as completed
     const updatedJsonFormat = JSON.parse(
-      JSON.stringify(currentInstance.jsonFormat),
+      JSON.stringify(currentInstance.jsonFormat)
     );
 
     updatedJsonFormat.sections.forEach(
@@ -475,7 +475,7 @@ export default function WorkoutInstancePage() {
         section.exercises?.forEach((exercise: { completed: boolean }) => {
           exercise.completed = true;
         });
-      },
+      }
     );
 
     // Update optimistically
@@ -488,17 +488,17 @@ export default function WorkoutInstancePage() {
       // Scroll to Complete Workout button
       const completeButton =
         document.querySelector('button:has-text("Complete Workout")') ||
-        document.querySelector("[data-complete-workout]");
+        document.querySelector('[data-complete-workout]');
       if (completeButton) {
         completeButton.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
+          behavior: 'smooth',
+          block: 'center',
         });
       } else {
         // Fallback: scroll to bottom
         window.scrollTo({
           top: document.documentElement.scrollHeight,
-          behavior: "smooth",
+          behavior: 'smooth',
         });
       }
     }, 1000);
@@ -528,7 +528,7 @@ export default function WorkoutInstancePage() {
     handleWorkoutComplete(
       currentInstance.duration || 0,
       workoutProgress.completedExercises,
-      workoutProgress.totalExercises,
+      workoutProgress.totalExercises
     );
 
     // Complete the workout immediately via API if 100% done
@@ -552,13 +552,13 @@ export default function WorkoutInstancePage() {
           await getExerciseRecommendations(currentExercise);
         setRecommendedExercises(recommendations);
       } catch (error) {
-        console.error("Error loading recommendations:", error);
+        console.error('Error loading recommendations:', error);
         setRecommendedExercises([]);
       } finally {
         setIsLoadingRecommendations(false);
       }
     },
-    [getExerciseRecommendations],
+    [getExerciseRecommendations]
   );
 
   const handleExerciseSwap = useCallback(
@@ -566,10 +566,10 @@ export default function WorkoutInstancePage() {
       exerciseId: string,
       sectionIndex: number,
       exerciseIndex: number,
-      currentExercise: Exercise,
+      currentExercise: Exercise
     ) => {
       if (currentInstance?.completed) {
-        console.log("Cannot swap exercises - workout is already completed");
+        console.log('Cannot swap exercises - workout is already completed');
         return;
       }
 
@@ -580,16 +580,16 @@ export default function WorkoutInstancePage() {
         exerciseIndex,
         currentExercise,
       });
-      setActiveTab("recommended");
+      setActiveTab('recommended');
 
       // Load recommended exercises
       loadRecommendedExercises(currentExercise);
     },
-    [currentInstance, loadRecommendedExercises],
+    [currentInstance, loadRecommendedExercises]
   );
 
   const handleSwapWithRecommended = (
-    recommendedExercise: RecommendedExercise,
+    recommendedExercise: RecommendedExercise
   ) => {
     if (
       swapExerciseState.sectionIndex === null ||
@@ -600,7 +600,7 @@ export default function WorkoutInstancePage() {
     }
 
     const updatedJsonFormat = JSON.parse(
-      JSON.stringify(currentInstance.jsonFormat),
+      JSON.stringify(currentInstance.jsonFormat)
     );
     const newExercise = {
       name: recommendedExercise.name,
@@ -611,7 +611,7 @@ export default function WorkoutInstancePage() {
       duration: recommendedExercise.duration,
       rest: recommendedExercise.rest,
       completed: false,
-      notes: "",
+      notes: '',
     };
 
     updatedJsonFormat.sections[swapExerciseState.sectionIndex!].exercises[
@@ -632,7 +632,7 @@ export default function WorkoutInstancePage() {
     }
 
     const updatedJsonFormat = JSON.parse(
-      JSON.stringify(currentInstance.jsonFormat),
+      JSON.stringify(currentInstance.jsonFormat)
     );
     const newExercise = {
       name: customExercise.name.trim(),
@@ -643,7 +643,7 @@ export default function WorkoutInstancePage() {
       duration: customExercise.duration || undefined,
       rest: customExercise.rest || undefined,
       completed: false,
-      notes: "",
+      notes: '',
     };
 
     updatedJsonFormat.sections[swapExerciseState.sectionIndex].exercises[
@@ -663,13 +663,13 @@ export default function WorkoutInstancePage() {
     });
     setRecommendedExercises([]);
     setCustomExercise({
-      name: "",
-      description: "",
-      sets: "",
-      reps: "",
-      weight: "",
-      duration: "",
-      rest: "",
+      name: '',
+      description: '',
+      sets: '',
+      reps: '',
+      weight: '',
+      duration: '',
+      rest: '',
     });
   };
 
@@ -741,7 +741,7 @@ export default function WorkoutInstancePage() {
     );
   }
 
-  const workoutTitle = currentInstance.jsonFormat.title || "Workout Session";
+  const workoutTitle = currentInstance.jsonFormat.title || 'Workout Session';
   const progressPercentage =
     workoutProgress.totalExercises > 0
       ? (workoutProgress.completedExercises / workoutProgress.totalExercises) *
@@ -771,7 +771,7 @@ export default function WorkoutInstancePage() {
               ) : (
                 <>
                   <div className="text-xs text-base-content/70">
-                    {workoutProgress.completedExercises} of{" "}
+                    {workoutProgress.completedExercises} of{' '}
                     {workoutProgress.totalExercises} exercises
                   </div>
                   <div className="text-xs badge badge-primary">
@@ -936,11 +936,11 @@ export default function WorkoutInstancePage() {
             <div>
               <div className="text-2xl font-bold text-secondary">
                 {new Date(currentInstance.performedAt).toLocaleDateString(
-                  "en-US",
+                  'en-US',
                   {
-                    month: "short",
-                    day: "numeric",
-                  },
+                    month: 'short',
+                    day: 'numeric',
+                  }
                 )}
               </div>
               <div className="text-xs text-base-content/70">Date</div>
@@ -1126,8 +1126,8 @@ function SwapExerciseModal({
   currentExercise: Exercise | null;
   recommendedExercises: RecommendedExercise[];
   isLoadingRecommendations: boolean;
-  activeTab: "recommended" | "custom";
-  onTabChange: (tab: "recommended" | "custom") => void;
+  activeTab: 'recommended' | 'custom';
+  onTabChange: (tab: 'recommended' | 'custom') => void;
   customExercise: CustomExercise;
   onCustomExerciseChange: (exercise: CustomExercise) => void;
   onSwapWithRecommended: (exercise: RecommendedExercise) => void;
@@ -1135,13 +1135,13 @@ function SwapExerciseModal({
 }) {
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = "hidden";
+      document.body.style.overflow = 'hidden';
     } else {
-      document.body.style.overflow = "unset";
+      document.body.style.overflow = 'unset';
     }
 
     return () => {
-      document.body.style.overflow = "unset";
+      document.body.style.overflow = 'unset';
     };
   }, [isOpen]);
 
@@ -1149,7 +1149,7 @@ function SwapExerciseModal({
 
   const handleCustomExerciseFieldChange = (
     field: keyof CustomExercise,
-    value: string | number,
+    value: string | number
   ) => {
     onCustomExerciseChange({
       ...customExercise,
@@ -1185,11 +1185,11 @@ function SwapExerciseModal({
         <div className="flex bg-base-200 rounded-xl p-1 m-4 mb-0 gap-1">
           <button
             className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-medium transition-all duration-200 ${
-              activeTab === "recommended"
-                ? "bg-primary text-primary-content shadow-lg"
-                : "text-base-content/70 hover:text-base-content hover:bg-base-300"
+              activeTab === 'recommended'
+                ? 'bg-primary text-primary-content shadow-lg'
+                : 'text-base-content/70 hover:text-base-content hover:bg-base-300'
             }`}
-            onClick={() => onTabChange("recommended")}
+            onClick={() => onTabChange('recommended')}
           >
             <svg
               className="w-5 h-5"
@@ -1208,11 +1208,11 @@ function SwapExerciseModal({
           </button>
           <button
             className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-medium transition-all duration-200 ${
-              activeTab === "custom"
-                ? "bg-secondary text-secondary-content shadow-lg"
-                : "text-base-content/70 hover:text-base-content hover:bg-base-300"
+              activeTab === 'custom'
+                ? 'bg-secondary text-secondary-content shadow-lg'
+                : 'text-base-content/70 hover:text-base-content hover:bg-base-300'
             }`}
-            onClick={() => onTabChange("custom")}
+            onClick={() => onTabChange('custom')}
           >
             <svg
               className="w-5 h-5"
@@ -1233,7 +1233,7 @@ function SwapExerciseModal({
 
         {/* Mobile Content */}
         <div className="flex-1 overflow-y-auto p-4">
-          {activeTab === "recommended" ? (
+          {activeTab === 'recommended' ? (
             <RecommendedExercisesTab
               exercises={recommendedExercises}
               isLoading={isLoadingRecommendations}
@@ -1259,7 +1259,7 @@ function SwapExerciseModal({
             <h2 className="text-xl font-semibold">Swap Exercise</h2>
             {currentExercise && (
               <p className="text-sm text-base-content/70 mt-1">
-                Replacing:{" "}
+                Replacing:{' '}
                 <span className="font-medium">{currentExercise.name}</span>
               </p>
             )}
@@ -1273,11 +1273,11 @@ function SwapExerciseModal({
         <div className="flex bg-base-200 rounded-xl p-1 m-6 mb-0 gap-1">
           <button
             className={`flex-1 flex items-center justify-center gap-3 py-4 px-6 rounded-lg font-medium transition-all duration-200 ${
-              activeTab === "recommended"
-                ? "bg-primary text-primary-content shadow-lg transform scale-[1.02]"
-                : "text-base-content/70 hover:text-base-content hover:bg-base-300 hover:scale-[1.01]"
+              activeTab === 'recommended'
+                ? 'bg-primary text-primary-content shadow-lg transform scale-[1.02]'
+                : 'text-base-content/70 hover:text-base-content hover:bg-base-300 hover:scale-[1.01]'
             }`}
-            onClick={() => onTabChange("recommended")}
+            onClick={() => onTabChange('recommended')}
           >
             <svg
               className="w-6 h-6"
@@ -1296,11 +1296,11 @@ function SwapExerciseModal({
           </button>
           <button
             className={`flex-1 flex items-center justify-center gap-3 py-4 px-6 rounded-lg font-medium transition-all duration-200 ${
-              activeTab === "custom"
-                ? "bg-secondary text-secondary-content shadow-lg transform scale-[1.02]"
-                : "text-base-content/70 hover:text-base-content hover:bg-base-300 hover:scale-[1.01]"
+              activeTab === 'custom'
+                ? 'bg-secondary text-secondary-content shadow-lg transform scale-[1.02]'
+                : 'text-base-content/70 hover:text-base-content hover:bg-base-300 hover:scale-[1.01]'
             }`}
-            onClick={() => onTabChange("custom")}
+            onClick={() => onTabChange('custom')}
           >
             <svg
               className="w-6 h-6"
@@ -1321,7 +1321,7 @@ function SwapExerciseModal({
 
         {/* Desktop Content */}
         <div className="p-6 overflow-y-auto max-h-[60vh]">
-          {activeTab === "recommended" ? (
+          {activeTab === 'recommended' ? (
             <RecommendedExercisesTab
               exercises={recommendedExercises}
               isLoading={isLoadingRecommendations}
@@ -1358,7 +1358,7 @@ function RecommendedExercisesTab({
 
   // Set loading message once when component mounts/loading starts
   const [loadingMessage] = useState(() => {
-    const exerciseName = currentExercise?.name || "this exercise";
+    const exerciseName = currentExercise?.name || 'this exercise';
     const messages = [
       `Thinking about some great alternatives to ${exerciseName}...`,
       `Hold on while I analyze better options than ${exerciseName}...`,
@@ -1530,11 +1530,11 @@ function RecommendedExercisesTab({
               <div className="flex flex-wrap gap-2 mb-3">
                 <div
                   className={`badge ${
-                    exercise.difficulty === "Beginner"
-                      ? "badge-success"
-                      : exercise.difficulty === "Intermediate"
-                        ? "badge-warning"
-                        : "badge-error"
+                    exercise.difficulty === 'Beginner'
+                      ? 'badge-success'
+                      : exercise.difficulty === 'Intermediate'
+                        ? 'badge-warning'
+                        : 'badge-error'
                   }`}
                 >
                   {exercise.difficulty}
@@ -1551,7 +1551,7 @@ function RecommendedExercisesTab({
 
               {exercise.equipment && exercise.equipment.length > 0 && (
                 <div className="text-xs text-base-content/60">
-                  Equipment: {exercise.equipment.join(", ")}
+                  Equipment: {exercise.equipment.join(', ')}
                 </div>
               )}
             </div>
@@ -1586,12 +1586,12 @@ function CustomExerciseTab({
   // Set encouraging message once when component mounts
   const [encouragingMessage] = useState(() => {
     const messages = [
-      "Great choice taking control of your workout!",
-      "I love when you customize your training!",
+      'Great choice taking control of your workout!',
+      'I love when you customize your training!',
       "You know your body best - let's make this work for you!",
-      "Creating your own exercise shows real dedication!",
-      "This is how champions adapt their training!",
-      "Your creativity in training is impressive!",
+      'Creating your own exercise shows real dedication!',
+      'This is how champions adapt their training!',
+      'Your creativity in training is impressive!',
       "Let's build something that challenges you perfectly!",
       "I'm here to support your custom exercise choice!",
     ];
@@ -1642,7 +1642,7 @@ function CustomExerciseTab({
           <input
             type="text"
             value={exercise.name}
-            onChange={(e) => onChange("name", e.target.value)}
+            onChange={(e) => onChange('name', e.target.value)}
             placeholder="Enter exercise name"
             className="input input-bordered w-full"
             required
@@ -1655,7 +1655,7 @@ function CustomExerciseTab({
           </label>
           <textarea
             value={exercise.description}
-            onChange={(e) => onChange("description", e.target.value)}
+            onChange={(e) => onChange('description', e.target.value)}
             placeholder="Describe how to perform this exercise (optional)"
             className="textarea textarea-bordered w-full"
             rows={3}
@@ -1673,7 +1673,7 @@ function CustomExerciseTab({
             type="number"
             value={exercise.sets}
             onChange={(e) =>
-              onChange("sets", e.target.value ? parseInt(e.target.value) : "")
+              onChange('sets', e.target.value ? parseInt(e.target.value) : '')
             }
             placeholder="Number of sets"
             className="input input-bordered w-full"
@@ -1689,7 +1689,7 @@ function CustomExerciseTab({
             type="number"
             value={exercise.reps}
             onChange={(e) =>
-              onChange("reps", e.target.value ? parseInt(e.target.value) : "")
+              onChange('reps', e.target.value ? parseInt(e.target.value) : '')
             }
             placeholder="Reps per set"
             className="input input-bordered w-full"
@@ -1706,8 +1706,8 @@ function CustomExerciseTab({
             value={exercise.weight}
             onChange={(e) =>
               onChange(
-                "weight",
-                e.target.value ? parseFloat(e.target.value) : "",
+                'weight',
+                e.target.value ? parseFloat(e.target.value) : ''
               )
             }
             placeholder="Weight in pounds"
@@ -1726,8 +1726,8 @@ function CustomExerciseTab({
             value={exercise.duration}
             onChange={(e) =>
               onChange(
-                "duration",
-                e.target.value ? parseInt(e.target.value) : "",
+                'duration',
+                e.target.value ? parseInt(e.target.value) : ''
               )
             }
             placeholder="Duration in seconds"
@@ -1744,7 +1744,7 @@ function CustomExerciseTab({
             type="number"
             value={exercise.rest}
             onChange={(e) =>
-              onChange("rest", e.target.value ? parseInt(e.target.value) : "")
+              onChange('rest', e.target.value ? parseInt(e.target.value) : '')
             }
             placeholder="Rest time in seconds"
             className="input input-bordered w-full"
@@ -1795,7 +1795,7 @@ function VerticalProgressIndicator({
     const exercises = section.exercises;
     const total = exercises.length;
     const completed = exercises.filter(
-      (exercise) => (exercise as ExerciseInstance).completed,
+      (exercise) => (exercise as ExerciseInstance).completed
     ).length;
 
     return { completed, total };
@@ -1822,16 +1822,16 @@ function VerticalProgressIndicator({
             <div
               key={index}
               className={`relative group transition-all duration-200 ${
-                isActive ? "scale-125" : "scale-100"
+                isActive ? 'scale-125' : 'scale-100'
               }`}
             >
               <div
                 className={`w-3 h-3 rounded-full border-2 transition-all duration-200 ${
                   isCompleted
-                    ? "bg-success border-success"
+                    ? 'bg-success border-success'
                     : isActive
-                      ? "bg-primary border-primary"
-                      : "bg-base-100 border-base-300"
+                      ? 'bg-primary border-primary'
+                      : 'bg-base-100 border-base-300'
                 }`}
               />
 
@@ -1864,7 +1864,7 @@ const SectionCard = React.forwardRef<
       exerciseId: string,
       sectionIndex: number,
       exerciseIndex: number,
-      currentExercise: Exercise,
+      currentExercise: Exercise
     ) => void;
     disabled?: boolean;
   }
@@ -1878,13 +1878,13 @@ const SectionCard = React.forwardRef<
       onExerciseSwap,
       disabled = false,
     },
-    ref,
+    ref
   ) => {
     const [isExpanded, setIsExpanded] = useState(true);
 
     const exercises = Array.isArray(section.exercises) ? section.exercises : [];
     const completedInSection = exercises.filter(
-      (exercise) => (exercise as ExerciseInstance).completed,
+      (exercise) => (exercise as ExerciseInstance).completed
     ).length;
 
     return (
@@ -1898,11 +1898,11 @@ const SectionCard = React.forwardRef<
         >
           <div>
             <h3 className="text-xl font-bold">
-              {section.name || "Unnamed Section"}
+              {section.name || 'Unnamed Section'}
             </h3>
             <div className="flex gap-2 mt-1">
               <div className="badge badge-outline">
-                {section.type || "Standard"}
+                {section.type || 'Standard'}
               </div>
               {section.rounds && section.rounds > 1 && (
                 <div className="badge badge-primary">
@@ -1915,7 +1915,7 @@ const SectionCard = React.forwardRef<
             </div>
           </div>
           <button className="btn btn-circle btn-sm">
-            {isExpanded ? "−" : "+"}
+            {isExpanded ? '−' : '+'}
           </button>
         </div>
 
@@ -1936,10 +1936,10 @@ const SectionCard = React.forwardRef<
         )}
       </div>
     );
-  },
+  }
 );
 
-SectionCard.displayName = "SectionCard";
+SectionCard.displayName = 'SectionCard';
 
 // Exercise Card Component
 function ExerciseCard({
@@ -1958,13 +1958,13 @@ function ExerciseCard({
     exerciseId: string,
     sectionIndex: number,
     exerciseIndex: number,
-    currentExercise: Exercise,
+    currentExercise: Exercise
   ) => void;
   disabled?: boolean;
 }) {
   const exerciseInstance = exercise as ExerciseInstance;
   const isCompleted = exerciseInstance.completed || false;
-  const notes = exerciseInstance.notes || "";
+  const notes = exerciseInstance.notes || '';
   const analytics = useAnalytics();
 
   // Local state for notes editing
@@ -1974,7 +1974,7 @@ function ExerciseCard({
 
   // Update local notes when exercise notes change
   useEffect(() => {
-    analytics.track("Exercise Notes Updated", {
+    analytics.track('Exercise Notes Updated', {
       exerciseId,
       notes,
       tracked_at: new Date().toISOString(),
@@ -1990,8 +1990,8 @@ function ExerciseCard({
       if (window.innerWidth < 768) {
         setTimeout(() => {
           notesTextareaRef.current?.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
+            behavior: 'smooth',
+            block: 'center',
           });
         }, 100);
       }
@@ -2004,7 +2004,7 @@ function ExerciseCard({
     if (exercise.reps) details.push(`${exercise.reps} reps`);
     if (exercise.weight) details.push(`${exercise.weight} lbs`);
     if (exercise.duration) details.push(`${exercise.duration}s`);
-    return details.join(" × ");
+    return details.join(' × ');
   };
 
   const handleNotesClick = () => {
@@ -2023,10 +2023,10 @@ function ExerciseCard({
   };
 
   const handleNotesKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
+    if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleNotesSave();
-    } else if (e.key === "Escape") {
+    } else if (e.key === 'Escape') {
       e.preventDefault();
       handleNotesCancel();
     }
@@ -2042,8 +2042,8 @@ function ExerciseCard({
       data-exercise-id={exerciseId}
       className={`p-4 rounded-lg border-2 transition-all duration-200 ${
         isCompleted
-          ? "bg-success bg-opacity-10 border-success"
-          : "bg-base-200 border-base-300 hover:border-primary"
+          ? 'bg-success bg-opacity-10 border-success'
+          : 'bg-base-200 border-base-300 hover:border-primary'
       }`}
     >
       <div className="flex items-start justify-between gap-4">
@@ -2119,12 +2119,12 @@ function ExerciseCard({
                 onClick={handleNotesClick}
                 className={`min-h-[44px] p-3 rounded-lg border border-base-300 transition-all duration-200 ${
                   disabled
-                    ? "cursor-default opacity-60"
-                    : "cursor-text hover:border-primary/50 hover:bg-base-100/50"
+                    ? 'cursor-default opacity-60'
+                    : 'cursor-text hover:border-primary/50 hover:bg-base-100/50'
                 } ${
                   notes.trim()
-                    ? "bg-base-100 text-base-content"
-                    : "bg-base-200/50 text-base-content/50"
+                    ? 'bg-base-100 text-base-content'
+                    : 'bg-base-200/50 text-base-content/50'
                 }`}
               >
                 {notes.trim() ? (
@@ -2134,8 +2134,8 @@ function ExerciseCard({
                 ) : (
                   <div className="text-sm italic">
                     {disabled
-                      ? "Notes (read-only)"
-                      : "Tap to add notes about this exercise..."}
+                      ? 'Notes (read-only)'
+                      : 'Tap to add notes about this exercise...'}
                   </div>
                 )}
                 <div className="flex items-center gap-1 mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -2168,7 +2168,7 @@ function ExerciseCard({
             <button
               onClick={() => {
                 const [, sectionIndexStr, , exerciseIndexStr] =
-                  exerciseId.split("-");
+                  exerciseId.split('-');
                 const sectionIndex = parseInt(sectionIndexStr);
                 const exerciseIndex = parseInt(exerciseIndexStr);
                 onSwap(exerciseId, sectionIndex, exerciseIndex, exercise);
@@ -2199,17 +2199,17 @@ function ExerciseCard({
             disabled={disabled}
             className={`btn btn-circle w-12 h-12 transition-all duration-200 ${
               disabled
-                ? "btn-disabled opacity-60 cursor-not-allowed"
+                ? 'btn-disabled opacity-60 cursor-not-allowed'
                 : isCompleted
-                  ? "btn-success shadow-lg"
-                  : "btn-outline btn-primary hover:scale-105"
+                  ? 'btn-success shadow-lg'
+                  : 'btn-outline btn-primary hover:scale-105'
             }`}
             aria-label={
               disabled
-                ? "Exercise completion locked (workout completed)"
+                ? 'Exercise completion locked (workout completed)'
                 : isCompleted
-                  ? "Mark as incomplete"
-                  : "Mark as complete"
+                  ? 'Mark as incomplete'
+                  : 'Mark as complete'
             }
           >
             {isCompleted ? (

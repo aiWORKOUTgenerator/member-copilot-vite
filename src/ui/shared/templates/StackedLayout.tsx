@@ -1,19 +1,19 @@
-"use client";
+'use client';
 
-import { useAttributesLoaded } from "@/hooks/useAttributes";
+import { useAttributesLoaded } from '@/hooks/useAttributes';
 import {
   useAttributeTypesData,
   useAttributeTypesLoaded,
-} from "@/hooks/useAttributeTypes";
-import { useContactData } from "@/hooks/useContact";
-import { usePromptsData, usePromptsLoaded } from "@/hooks/usePrompts";
-import { useTitle } from "@/hooks/useTitle";
-import { ContactUtils } from "@/domain";
-import { useUserAccess } from "@/hooks";
-import { UserButton } from "@clerk/clerk-react";
-import { MenuIcon } from "lucide-react";
-import React, { ReactNode, useMemo } from "react";
-import { Link, useLocation } from "react-router";
+} from '@/hooks/useAttributeTypes';
+import { useContactData } from '@/hooks/useContact';
+import { usePromptsData, usePromptsLoaded } from '@/hooks/usePrompts';
+import { useTitle } from '@/hooks/useTitle';
+import { ContactUtils } from '@/domain';
+import { useUserAccess } from '@/hooks';
+import { UserButton } from '@clerk/clerk-react';
+import { MenuIcon } from 'lucide-react';
+import React, { ReactNode, useMemo } from 'react';
+import { Link, useLocation } from 'react-router';
 
 interface NavigationItem {
   name: string;
@@ -29,19 +29,19 @@ interface StackedLayoutProps {
   title?: string;
   navigation?: NavigationItem[];
   logo?: string;
-  containerStyle?: "default" | "none" | string;
+  containerStyle?: 'default' | 'none' | string;
 }
 
 function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ");
+  return classes.filter(Boolean).join(' ');
 }
 
 export const StackedLayout: React.FC<StackedLayoutProps> = ({
   children,
   title,
-  containerStyle = "default",
+  containerStyle = 'default',
 }) => {
-  const pathname = useLocation().pathname || "";
+  const pathname = useLocation().pathname || '';
   // Get title from context if not provided as prop
   const { title: contextTitle } = useTitle();
   const displayTitle = title || contextTitle;
@@ -63,7 +63,7 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
     if (!basicPriceId || activeLicenses.length === 0) return false;
 
     return activeLicenses.some(
-      (license) => license.policy?.stripe_price_id === basicPriceId,
+      (license) => license.policy?.stripe_price_id === basicPriceId
     );
   }, [activeLicenses]);
 
@@ -80,11 +80,11 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
     const attributeCompletions = ContactUtils.getAttributeCompletionStatus(
       contact,
       attributeTypes,
-      prompts,
+      prompts
     );
 
     return attributeCompletions.filter(
-      (completion) => completion.percentComplete < 100,
+      (completion) => completion.percentComplete < 100
     ).length;
   }, [
     contact,
@@ -98,8 +98,8 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
   // Check if AI Trainer should show NEW badge (for one month from June 16, 2025)
   const showTrainerNewBadge = useMemo(() => {
     const now = new Date();
-    const launchDate = new Date("2025-06-16"); // June 16, 2025
-    const oneMonthAfterLaunch = new Date("2025-07-16"); // One month later
+    const launchDate = new Date('2025-06-16'); // June 16, 2025
+    const oneMonthAfterLaunch = new Date('2025-07-16'); // One month later
 
     return now >= launchDate && now <= oneMonthAfterLaunch;
   }, []);
@@ -107,23 +107,23 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
   // Create navigation with badge for profile if there are incomplete attributes
   const navigation = useMemo(() => {
     return [
-      { name: "Dashboard", href: "/dashboard" },
-      { name: "Workouts", href: "/dashboard/workouts" },
+      { name: 'Dashboard', href: '/dashboard' },
+      { name: 'Workouts', href: '/dashboard/workouts' },
       {
-        name: "Profile",
-        href: "/dashboard/profile",
+        name: 'Profile',
+        href: '/dashboard/profile',
         badgeCount:
           incompleteAttributesCount > 0 ? incompleteAttributesCount : undefined,
       },
       {
-        name: "AI Trainer",
-        href: "/dashboard/trainer",
-        badgeCount: showTrainerNewBadge ? "NEW" : undefined,
-        badgeVariant: "accent",
+        name: 'AI Trainer',
+        href: '/dashboard/trainer',
+        badgeCount: showTrainerNewBadge ? 'NEW' : undefined,
+        badgeVariant: 'accent',
       },
       {
-        name: isOnBasicTier ? "Upgrade Now $10/mo" : "Billing",
-        href: "/dashboard/billing",
+        name: isOnBasicTier ? 'Upgrade Now $10/mo' : 'Billing',
+        href: '/dashboard/billing',
         enhanced: true,
         isUpgrade: isOnBasicTier,
       },
@@ -132,9 +132,9 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
 
   // Determine container class based on containerStyle prop
   const getContainerClass = () => {
-    if (containerStyle === "none") return "";
-    if (containerStyle === "default")
-      return "bg-base-100 shadow-xl border-1 border-base-200  sm:rounded-lg min-h-96 relative";
+    if (containerStyle === 'none') return '';
+    if (containerStyle === 'default')
+      return 'bg-base-100 shadow-xl border-1 border-base-200  sm:rounded-lg min-h-96 relative';
     return containerStyle; // Custom class string
   };
 
@@ -149,36 +149,36 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
                   {navigation.map((item) => {
                     const isCurrentPage =
                       pathname === item.href ||
-                      (item.href !== "/dashboard" &&
+                      (item.href !== '/dashboard' &&
                         pathname.startsWith(item.href));
                     return (
                       <Link
                         key={item.name}
                         to={item.href}
                         className={classNames(
-                          "btn text-white hover:btn-secondary",
+                          'btn text-white hover:btn-secondary',
                           isCurrentPage
-                            ? "btn-active btn-secondary"
-                            : "btn-ghost",
+                            ? 'btn-active btn-secondary'
+                            : 'btn-ghost',
                           item.enhanced && !item.isUpgrade
-                            ? "animate-pulse border border-secondary hover:animate-none"
-                            : "",
+                            ? 'animate-pulse border border-secondary hover:animate-none'
+                            : '',
                           item.isUpgrade
-                            ? "btn-accent font-bold text-accent-content border-2 border-warning animate-pulse hover:animate-none hover:btn-warning hover:scale-105 transition-all duration-200"
-                            : "",
-                          "rounded-md font-medium",
+                            ? 'btn-accent font-bold text-accent-content border-2 border-warning animate-pulse hover:animate-none hover:btn-warning hover:scale-105 transition-all duration-200'
+                            : '',
+                          'rounded-md font-medium'
                         )}
-                        aria-current={isCurrentPage ? "page" : undefined}
+                        aria-current={isCurrentPage ? 'page' : undefined}
                       >
                         {item.name}
                         {item.badgeCount !== undefined &&
-                          (typeof item.badgeCount === "string" ||
+                          (typeof item.badgeCount === 'string' ||
                             item.badgeCount > 0) && (
                             <span
                               className={`badge ${
                                 item.badgeVariant
                                   ? `badge-${item.badgeVariant}`
-                                  : "badge-secondary"
+                                  : 'badge-secondary'
                               } ml-1`}
                             >
                               {item.badgeCount}
@@ -210,7 +210,7 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
                 {navigation.map((item) => {
                   const isCurrentPage =
                     pathname === item.href ||
-                    (item.href !== "/dashboard" &&
+                    (item.href !== '/dashboard' &&
                       pathname.startsWith(item.href));
                   return (
                     <li key={item.name}>
@@ -226,25 +226,25 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
                         }}
                         className={classNames(
                           isCurrentPage
-                            ? "menu-active bg-primary text-white"
-                            : "hover:bg-primary/10",
+                            ? 'menu-active bg-primary text-white'
+                            : 'hover:bg-primary/10',
                           item.enhanced && !item.isUpgrade
-                            ? "border border-secondary"
-                            : "",
+                            ? 'border border-secondary'
+                            : '',
                           item.isUpgrade
-                            ? "bg-accent text-accent-content font-bold border-2 border-warning hover:bg-warning hover:text-warning-content"
-                            : "",
+                            ? 'bg-accent text-accent-content font-bold border-2 border-warning hover:bg-warning hover:text-warning-content'
+                            : ''
                         )}
                       >
                         {item.name}
                         {item.badgeCount !== undefined &&
-                          (typeof item.badgeCount === "string" ||
+                          (typeof item.badgeCount === 'string' ||
                             item.badgeCount > 0) && (
                             <span
                               className={`badge ${
                                 item.badgeVariant
                                   ? `badge-${item.badgeVariant}`
-                                  : "badge-secondary"
+                                  : 'badge-secondary'
                               } ml-1`}
                             >
                               {item.badgeCount}
@@ -277,7 +277,7 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
       <main className="-mt-12 sm:-mt-32">
         <div className="mx-auto max-w-7xl">
           <div className="sm:p-4">
-            {containerStyle === "none" ? (
+            {containerStyle === 'none' ? (
               children
             ) : (
               <div className={getContainerClass()}>{children}</div>

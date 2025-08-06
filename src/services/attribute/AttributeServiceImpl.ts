@@ -3,12 +3,12 @@ import {
   ApiService,
   Attribute,
   AttributeProps,
-} from "@/domain";
+} from '@/domain';
 
 export class AttributeServiceImpl implements AttributeService {
-  readonly serviceName = "AttributeService";
+  readonly serviceName = 'AttributeService';
   private readonly apiService: ApiService;
-  private readonly baseEndpoint = "/members";
+  private readonly baseEndpoint = '/members';
 
   /**
    * Creates a new instance of AttributeServiceImpl
@@ -26,14 +26,14 @@ export class AttributeServiceImpl implements AttributeService {
     try {
       // Get attributes from API
       const attributesData = await this.apiService.get<AttributeProps[]>(
-        `${this.baseEndpoint}/attributes/`,
+        `${this.baseEndpoint}/attributes/`
       );
 
       // Map the API response to domain entities
       return attributesData.map((data) => new Attribute(data));
     } catch (error) {
-      console.error("Error in getAllAttributes:", error);
-      throw new Error("Failed to fetch attributes");
+      console.error('Error in getAllAttributes:', error);
+      throw new Error('Failed to fetch attributes');
     }
   }
 

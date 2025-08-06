@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   Button,
@@ -7,17 +7,17 @@ import {
   FormLoading,
   InfoIcon,
   Input,
-} from "@/ui";
-import { useSignIn } from "@clerk/clerk-react";
-import { isClerkAPIResponseError } from "@clerk/clerk-react/errors";
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router";
+} from '@/ui';
+import { useSignIn } from '@clerk/clerk-react';
+import { isClerkAPIResponseError } from '@clerk/clerk-react/errors';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router';
 
 export default function MagicLinkSignInPage() {
-  const [emailAddress, setEmailAddress] = useState("");
+  const [emailAddress, setEmailAddress] = useState('');
   const [verifying, setVerifying] = useState(false);
-  const [error, setError] = useState("");
-  const [validation, setValidation] = useState<string>("");
+  const [error, setError] = useState('');
+  const [validation, setValidation] = useState<string>('');
   const { signIn, isLoaded } = useSignIn();
 
   // Email validation function
@@ -29,9 +29,9 @@ export default function MagicLinkSignInPage() {
   // Update validation message when email changes
   useEffect(() => {
     if (emailAddress && !validateEmail(emailAddress)) {
-      setValidation("Please enter a valid email address");
+      setValidation('Please enter a valid email address');
     } else {
-      setValidation("");
+      setValidation('');
     }
   }, [emailAddress]);
 
@@ -48,12 +48,12 @@ export default function MagicLinkSignInPage() {
 
     // Don't submit if email is invalid
     if (!validateEmail(emailAddress)) {
-      setValidation("Please enter a valid email address");
+      setValidation('Please enter a valid email address');
       return;
     }
 
     // Reset states in case user resubmits form mid sign-in
-    setError("");
+    setError('');
     setVerifying(true);
 
     try {
@@ -64,11 +64,11 @@ export default function MagicLinkSignInPage() {
 
       // Check if magic link sign-in is supported for this user
       const magicLinkFactor = signInAttempt.supportedFirstFactors?.find(
-        (factor) => factor.strategy === "email_link",
+        (factor) => factor.strategy === 'email_link'
       );
 
       if (!magicLinkFactor) {
-        throw new Error("Magic link sign-in is not available for this account");
+        throw new Error('Magic link sign-in is not available for this account');
       }
 
       // Dynamically set the host domain for dev and prod
@@ -77,11 +77,11 @@ export default function MagicLinkSignInPage() {
 
       // Send the magic link email
       await signIn!.prepareFirstFactor({
-        strategy: "email_link",
+        strategy: 'email_link',
         emailAddressId:
-          magicLinkFactor.strategy === "email_link"
+          magicLinkFactor.strategy === 'email_link'
             ? magicLinkFactor.emailAddressId
-            : "",
+            : '',
         redirectUrl: `${protocol}//${host}/dashboard`,
       });
     } catch (err: unknown) {
@@ -89,17 +89,17 @@ export default function MagicLinkSignInPage() {
 
       if (err instanceof Error) {
         if (isClerkAPIResponseError(err)) {
-          console.log("Clerk error:", err.errors[0]?.longMessage);
+          console.log('Clerk error:', err.errors[0]?.longMessage);
           setError(
             err.errors[0]?.longMessage ||
-              "An error occurred with authentication.",
+              'An error occurred with authentication.'
           );
         } else {
-          console.log("Error:", err);
-          setError(err.message || "An error occurred. Please try again.");
+          console.log('Error:', err);
+          setError(err.message || 'An error occurred. Please try again.');
         }
       } else {
-        setError("An error occurred. Please try again.");
+        setError('An error occurred. Please try again.');
       }
       setVerifying(false);
     }
@@ -108,7 +108,7 @@ export default function MagicLinkSignInPage() {
   function reset(e: React.FormEvent) {
     e.preventDefault();
     setVerifying(false);
-    setEmailAddress("");
+    setEmailAddress('');
   }
 
   if (error) {
@@ -125,7 +125,7 @@ export default function MagicLinkSignInPage() {
           <Button
             variant="primary"
             fullWidth
-            onClick={() => setError("")}
+            onClick={() => setError('')}
             aria-label="Try again"
           >
             Try again
@@ -197,7 +197,7 @@ export default function MagicLinkSignInPage() {
       </form>
 
       <div className="mt-4 text-center text-sm">
-        Don&apos;t have an account?{" "}
+        Don&apos;t have an account?{' '}
         <Link to="/conversion" className="link link-primary font-semibold">
           Sign up
         </Link>

@@ -1,18 +1,18 @@
-import { Announcement } from "@/domain/entities/announcement";
-import { AnnouncementService } from "@/domain/interfaces/services/AnnouncementService";
+import { Announcement } from '@/domain/entities/announcement';
+import { AnnouncementService } from '@/domain/interfaces/services/AnnouncementService';
 
 interface AnnouncementProps {
   id: string;
   title: string;
   short_description: string;
   long_description: string;
-  priority: "high" | "medium" | "low";
+  priority: 'high' | 'medium' | 'low';
   created_at: string;
   is_active: boolean;
 }
 
 export class MockAnnouncementService implements AnnouncementService {
-  readonly serviceName = "MockAnnouncementService";
+  readonly serviceName = 'MockAnnouncementService';
 
   async getAnnouncements(): Promise<Announcement[]> {
     try {
@@ -22,10 +22,10 @@ export class MockAnnouncementService implements AnnouncementService {
       // Mock data - 4 sample announcements with different priorities
       const mockAnnouncementsData: AnnouncementProps[] = [
         {
-          id: "1",
-          title: "🚨 System Maintenance Scheduled",
+          id: '1',
+          title: '🚨 System Maintenance Scheduled',
           short_description:
-            "Planned maintenance window this weekend - expect brief service interruptions.",
+            'Planned maintenance window this weekend - expect brief service interruptions.',
           long_description: `# System Maintenance Notice
 
 We have scheduled system maintenance for this **Saturday, January 20th** from 2:00 AM to 6:00 AM EST.
@@ -41,15 +41,15 @@ We have scheduled system maintenance for this **Saturday, January 20th** from 2:
 - Bug fixes for recent reported issues
 
 We apologize for any inconvenience and appreciate your patience as we work to improve your experience.`,
-          priority: "high" as const,
+          priority: 'high' as const,
           created_at: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(), // 2 hours ago
           is_active: true,
         },
         {
-          id: "2",
-          title: "🎉 New Feature: Workout Analytics",
+          id: '2',
+          title: '🎉 New Feature: Workout Analytics',
           short_description:
-            "Track your progress with detailed analytics and insights about your workouts.",
+            'Track your progress with detailed analytics and insights about your workouts.',
           long_description: `# Introducing Workout Analytics! 📊
 
 We're excited to announce our new **Workout Analytics** feature, now available to all premium members!
@@ -66,15 +66,15 @@ We're excited to announce our new **Workout Analytics** feature, now available t
 3. Explore your personalized fitness insights
 
 Start tracking your progress today and see how far you've come! 💪`,
-          priority: "medium" as const,
+          priority: 'medium' as const,
           created_at: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(), // 1 day ago
           is_active: true,
         },
         {
-          id: "3",
-          title: "💡 Tip: Maximize Your Recovery",
+          id: '3',
+          title: '💡 Tip: Maximize Your Recovery',
           short_description:
-            "Learn the importance of rest days and how to optimize your recovery between workouts.",
+            'Learn the importance of rest days and how to optimize your recovery between workouts.',
           long_description: `# Recovery Tips for Better Performance 🛌
 
 Recovery is just as important as the workout itself! Here are some expert tips to help you maximize your recovery:
@@ -100,17 +100,17 @@ Recovery is just as important as the workout itself! Here are some expert tips t
 - Don't skip rest days!
 
 Remember: **Progress happens during recovery, not just during workouts!**`,
-          priority: "low" as const,
+          priority: 'low' as const,
           created_at: new Date(
-            Date.now() - 1000 * 60 * 60 * 24 * 3,
+            Date.now() - 1000 * 60 * 60 * 24 * 3
           ).toISOString(), // 3 days ago
           is_active: true,
         },
         {
-          id: "4",
-          title: "🏆 Community Challenge: January Fitness Goals",
+          id: '4',
+          title: '🏆 Community Challenge: January Fitness Goals',
           short_description:
-            "Join our community challenge and share your January fitness goals with fellow members.",
+            'Join our community challenge and share your January fitness goals with fellow members.',
           long_description: `# January Fitness Challenge 🎯
 
 New year, new goals! Join our community challenge and let's crush our fitness goals together!
@@ -139,9 +139,9 @@ New year, new goals! Join our community challenge and let's crush our fitness go
 - Celebrate small wins along the way
 
 Let's make this January our strongest month yet! Share your goals and join the challenge today! 🚀`,
-          priority: "medium" as const,
+          priority: 'medium' as const,
           created_at: new Date(
-            Date.now() - 1000 * 60 * 60 * 24 * 5,
+            Date.now() - 1000 * 60 * 60 * 24 * 5
           ).toISOString(), // 5 days ago
           is_active: true,
         },
@@ -151,8 +151,8 @@ Let's make this January our strongest month yet! Share your goals and join the c
         .map((data) => new Announcement(data))
         .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
     } catch (error) {
-      console.error("Error in getAnnouncements:", error);
-      throw new Error("Failed to fetch announcements");
+      console.error('Error in getAnnouncements:', error);
+      throw new Error('Failed to fetch announcements');
     }
   }
 }

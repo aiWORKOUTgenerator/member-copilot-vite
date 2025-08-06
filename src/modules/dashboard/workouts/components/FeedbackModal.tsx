@@ -1,5 +1,5 @@
-import { ReactNode, useEffect, useCallback, useState } from "react";
-import { X } from "lucide-react";
+import { ReactNode, useEffect, useCallback, useState } from 'react';
+import { X } from 'lucide-react';
 
 export interface FeedbackModalProps {
   /** Whether the modal is open */
@@ -19,7 +19,7 @@ export interface FeedbackModalProps {
   /** Whether the modal content has changes that would be lost */
   hasUnsavedChanges?: boolean;
   /** Size of the modal */
-  size?: "sm" | "md" | "lg" | "xl";
+  size?: 'sm' | 'md' | 'lg' | 'xl';
   /** Additional CSS classes */
   className?: string;
 }
@@ -31,10 +31,10 @@ export default function FeedbackModal({
   subtitle,
   children,
   confirmClose = false,
-  confirmMessage = "You have unsaved changes. Are you sure you want to close?",
+  confirmMessage = 'You have unsaved changes. Are you sure you want to close?',
   hasUnsavedChanges = false,
-  size = "lg",
-  className = "",
+  size = 'lg',
+  className = '',
 }: FeedbackModalProps) {
   const [showConfirmation, setShowConfirmation] = useState(false);
 
@@ -49,20 +49,20 @@ export default function FeedbackModal({
   // Handle escape key
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && isOpen) {
+      if (event.key === 'Escape' && isOpen) {
         handleClose();
       }
     };
 
     if (isOpen) {
-      document.addEventListener("keydown", handleEscape);
+      document.addEventListener('keydown', handleEscape);
       // Prevent body scroll when modal is open
-      document.body.style.overflow = "hidden";
+      document.body.style.overflow = 'hidden';
     }
 
     return () => {
-      document.removeEventListener("keydown", handleEscape);
-      document.body.style.overflow = "unset";
+      document.removeEventListener('keydown', handleEscape);
+      document.body.style.overflow = 'unset';
     };
   }, [isOpen, handleClose]);
 
@@ -82,21 +82,21 @@ export default function FeedbackModal({
         handleClose();
       }
     },
-    [handleClose],
+    [handleClose]
   );
 
   const getSizeClass = () => {
     switch (size) {
-      case "sm":
-        return "sm:max-w-sm md:max-w-md";
-      case "md":
-        return "sm:max-w-lg";
-      case "lg":
-        return "sm:max-w-2xl lg:max-w-4xl";
-      case "xl":
-        return "sm:max-w-5xl lg:max-w-6xl";
+      case 'sm':
+        return 'sm:max-w-sm md:max-w-md';
+      case 'md':
+        return 'sm:max-w-lg';
+      case 'lg':
+        return 'sm:max-w-2xl lg:max-w-4xl';
+      case 'xl':
+        return 'sm:max-w-5xl lg:max-w-6xl';
       default:
-        return "sm:max-w-2xl lg:max-w-4xl";
+        return 'sm:max-w-2xl lg:max-w-4xl';
     }
   };
 
@@ -116,7 +116,7 @@ export default function FeedbackModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
-        aria-describedby={subtitle ? "modal-subtitle" : undefined}
+        aria-describedby={subtitle ? 'modal-subtitle' : undefined}
       >
         <div
           className={`

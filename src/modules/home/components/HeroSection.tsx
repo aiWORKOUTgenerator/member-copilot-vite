@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useAuth } from "@/hooks/auth";
-import { Link } from "react-router";
-import { Button } from "@/ui";
-import { HOMEPAGE_CONTENT } from "../constants";
+import { useAuth } from '@/hooks/auth';
+import { Link } from 'react-router';
+import { Button } from '@/ui';
+import { HOMEPAGE_CONTENT } from '../constants';
 
 interface HeroSectionProps {
   onHeroCTAClick: () => void;

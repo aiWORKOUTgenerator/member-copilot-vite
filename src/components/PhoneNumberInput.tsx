@@ -1,10 +1,10 @@
-import { usePhoneVerificationStatus } from "@/hooks";
-import React, { useCallback, useState } from "react";
+import { usePhoneVerificationStatus } from '@/hooks';
+import React, { useCallback, useState } from 'react';
 import PhoneInput, {
   formatPhoneNumber,
   isValidPhoneNumber,
-} from "react-phone-number-input";
-import "react-phone-number-input/style.css";
+} from 'react-phone-number-input';
+import 'react-phone-number-input/style.css';
 
 export interface PhoneNumberInputProps {
   value?: string;
@@ -19,8 +19,8 @@ export interface PhoneNumberInputProps {
   onVerifyClick?: () => void;
   id?: string;
   name?: string;
-  "aria-label"?: string;
-  "aria-describedby"?: string;
+  'aria-label'?: string;
+  'aria-describedby'?: string;
 }
 
 /**
@@ -30,17 +30,17 @@ export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
   value,
   onChange,
   onBlur,
-  placeholder = "Enter phone number",
+  placeholder = 'Enter phone number',
   disabled = false,
   required = false,
   error,
-  className = "",
+  className = '',
   showVerificationStatus = true,
   onVerifyClick,
   id,
   name,
-  "aria-label": ariaLabel,
-  "aria-describedby": ariaDescribedBy,
+  'aria-label': ariaLabel,
+  'aria-describedby': ariaDescribedBy,
 }) => {
   const [isFocused, setIsFocused] = useState(false);
 
@@ -55,7 +55,7 @@ export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
     (phoneValue: string | undefined) => {
       onChange?.(phoneValue);
     },
-    [onChange],
+    [onChange]
   );
 
   // Handle focus states
@@ -70,15 +70,15 @@ export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
 
   // Get verification status styling
   const getVerificationStatusStyles = () => {
-    if (!showVerificationStatus || !value) return "";
+    if (!showVerificationStatus || !value) return '';
 
     switch (status) {
-      case "verified":
-        return "border-green-500 focus:border-green-500";
-      case "pending":
-        return "border-yellow-500 focus:border-yellow-500";
+      case 'verified':
+        return 'border-green-500 focus:border-green-500';
+      case 'pending':
+        return 'border-yellow-500 focus:border-yellow-500';
       default:
-        return "";
+        return '';
     }
   };
 
@@ -87,7 +87,7 @@ export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
     if (!showVerificationStatus || !value) return null;
 
     switch (status) {
-      case "verified":
+      case 'verified':
         return (
           <div className="flex items-center gap-1 text-green-600 text-sm">
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -100,7 +100,7 @@ export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
             <span>Verified</span>
           </div>
         );
-      case "pending":
+      case 'pending':
         return (
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1 text-yellow-600 text-sm">
@@ -146,16 +146,16 @@ export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
               w-full px-3 py-2 border rounded-lg shadow-sm transition-colors duration-200
               ${
                 showError
-                  ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                  ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
                   : getVerificationStatusStyles() ||
-                    "border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                    'border-gray-300 focus:border-blue-500 focus:ring-blue-500'
               }
-              ${disabled ? "bg-gray-50 cursor-not-allowed" : "bg-white"}
+              ${disabled ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'}
               ${className}
             `}
-          aria-label={ariaLabel || "Phone number"}
+          aria-label={ariaLabel || 'Phone number'}
           aria-describedby={ariaDescribedBy}
-          aria-invalid={showError ? "true" : "false"}
+          aria-invalid={showError ? 'true' : 'false'}
           aria-required={required}
           international
           countryCallingCodeEditable
@@ -173,7 +173,7 @@ export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
               clipRule="evenodd"
             />
           </svg>
-          {error || "Please enter a valid phone number"}
+          {error || 'Please enter a valid phone number'}
         </p>
       )}
 
@@ -183,7 +183,7 @@ export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
   );
 };
 
-PhoneNumberInput.displayName = "PhoneNumberInput";
+PhoneNumberInput.displayName = 'PhoneNumberInput';
 
 /**
  * Simple phone number display component with formatting
@@ -198,23 +198,23 @@ export interface PhoneNumberDisplayProps {
 export function PhoneNumberDisplay({
   phoneNumber,
   showVerificationStatus = true,
-  className = "",
+  className = '',
   maskNumber = false,
 }: PhoneNumberDisplayProps) {
   const { status } = usePhoneVerificationStatus();
 
   // Format the phone number
   const formattedNumber = React.useMemo(() => {
-    if (!phoneNumber) return "";
+    if (!phoneNumber) return '';
 
     try {
       if (maskNumber) {
         // Simple masking: show first 3 and last 4 digits
-        const cleaned = phoneNumber.replace(/\D/g, "");
+        const cleaned = phoneNumber.replace(/\D/g, '');
         if (cleaned.length > 7) {
           const start = cleaned.slice(0, 3);
           const end = cleaned.slice(-4);
-          const middle = "*".repeat(cleaned.length - 7);
+          const middle = '*'.repeat(cleaned.length - 7);
           return `+${start}${middle}${end}`;
         }
       }
@@ -236,7 +236,7 @@ export function PhoneNumberDisplay({
     if (!showVerificationStatus) return null;
 
     switch (status) {
-      case "verified":
+      case 'verified':
         return (
           <svg
             className="w-4 h-4 text-green-600"
@@ -250,7 +250,7 @@ export function PhoneNumberDisplay({
             />
           </svg>
         );
-      case "pending":
+      case 'pending':
         return (
           <svg
             className="w-4 h-4 text-yellow-600"
@@ -273,7 +273,7 @@ export function PhoneNumberDisplay({
     <div className={`flex items-center gap-2 ${className}`}>
       <span>{formattedNumber}</span>
       {getStatusIcon()}
-      {showVerificationStatus && status === "verified" && (
+      {showVerificationStatus && status === 'verified' && (
         <span className="text-green-600 text-sm">Verified</span>
       )}
     </div>

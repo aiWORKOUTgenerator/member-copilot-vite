@@ -1,7 +1,7 @@
-import { GeneratedWorkout } from "@/domain/entities/generatedWorkout";
-import { WorkoutParams } from "@/domain/entities/workoutParams";
-import { ApiService } from "@/domain/interfaces/api/ApiService";
-import { GeneratedWorkoutService } from "@/domain/interfaces/services/GeneratedWorkoutService";
+import { GeneratedWorkout } from '@/domain/entities/generatedWorkout';
+import { WorkoutParams } from '@/domain/entities/workoutParams';
+import { ApiService } from '@/domain/interfaces/api/ApiService';
+import { GeneratedWorkoutService } from '@/domain/interfaces/services/GeneratedWorkoutService';
 
 interface GeneratedWorkoutProps {
   id: string;
@@ -13,9 +13,9 @@ interface GeneratedWorkoutProps {
 }
 
 export class GeneratedWorkoutServiceImpl implements GeneratedWorkoutService {
-  readonly serviceName = "GeneratedWorkoutService";
+  readonly serviceName = 'GeneratedWorkoutService';
   private readonly apiService: ApiService;
-  private readonly baseEndpoint = "/members";
+  private readonly baseEndpoint = '/members';
 
   /**
    * Creates a new instance of PromptServiceImpl
@@ -33,8 +33,8 @@ export class GeneratedWorkoutServiceImpl implements GeneratedWorkoutService {
 
       return generatedWorkoutsData.map((data) => new GeneratedWorkout(data));
     } catch (error) {
-      console.error("Error in getGeneratedWorkouts:", error);
-      throw new Error("Failed to fetch generated workouts");
+      console.error('Error in getGeneratedWorkouts:', error);
+      throw new Error('Failed to fetch generated workouts');
     }
   }
 
@@ -48,7 +48,7 @@ export class GeneratedWorkoutServiceImpl implements GeneratedWorkoutService {
   async createGeneratedWorkout(
     configId: string,
     workoutParams: WorkoutParams,
-    prompt: string,
+    prompt: string
   ): Promise<GeneratedWorkout> {
     try {
       interface WorkoutResponse {
@@ -72,8 +72,8 @@ export class GeneratedWorkoutServiceImpl implements GeneratedWorkoutService {
 
       return new GeneratedWorkout(createdWorkout);
     } catch (error) {
-      console.error("Error in createGeneratedWorkout:", error);
-      throw new Error("Failed to create generated workout");
+      console.error('Error in createGeneratedWorkout:', error);
+      throw new Error('Failed to create generated workout');
     }
   }
 }

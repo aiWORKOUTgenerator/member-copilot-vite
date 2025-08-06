@@ -1,4 +1,4 @@
-import { Prompt } from "@/domain/entities";
+import { Prompt } from '@/domain/entities';
 
 /**
  * Interface for PromptService
@@ -11,6 +11,6 @@ export interface PromptService {
     promptValues: Array<{
       prompt_id: string;
       value: string | number;
-    }>,
+    }>
   ): Promise<void>;
 }

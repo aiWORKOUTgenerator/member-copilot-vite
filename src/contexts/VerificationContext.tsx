@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { ReactNode, useMemo } from "react";
-import { useVerificationService } from "@/hooks/useVerificationService";
-import { VerificationContext, VerificationState } from "./verification.types";
+import { ReactNode, useMemo } from 'react';
+import { useVerificationService } from '@/hooks/useVerificationService';
+import { VerificationContext, VerificationState } from './verification.types';
 
 interface VerificationProviderProps {
   children: ReactNode;
@@ -20,7 +20,7 @@ export function VerificationProvider({ children }: VerificationProviderProps) {
       isEmailVerified: verificationService.isEmailVerified(),
       isUserVerified: verificationService.isUserVerified(),
     }),
-    [verificationService],
+    [verificationService]
   );
 
   return (

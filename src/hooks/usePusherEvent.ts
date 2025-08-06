@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { usePusherService } from "@/hooks/useServices";
+import { useEffect } from 'react';
+import { usePusherService } from '@/hooks/useServices';
 
 /**
  * A hook that subscribes to a Pusher channel and event.
@@ -19,7 +19,7 @@ import { usePusherService } from "@/hooks/useServices";
 export function usePusherEvent(
   channel: string,
   event: string,
-  onEvent: (data: unknown) => void,
+  onEvent: (data: unknown) => void
 ): void {
   const pusherService = usePusherService();
 

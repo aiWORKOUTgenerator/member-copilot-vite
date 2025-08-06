@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { Exercise } from "@/domain/entities/generatedWorkout";
-import { formatTime } from "../utils/workouts.func";
+import { Exercise } from '@/domain/entities/generatedWorkout';
+import { formatTime } from '../utils/workouts.func';
 
 // Exercise component to display a single exercise
 export const ExerciseCard = ({ exercise }: { exercise: Exercise }) => {
-  if (!exercise || typeof exercise !== "object") {
+  if (!exercise || typeof exercise !== 'object') {
     return (
       <div className="p-2 bg-error bg-opacity-10 rounded">
         Invalid exercise data
@@ -16,7 +16,7 @@ export const ExerciseCard = ({ exercise }: { exercise: Exercise }) => {
   return (
     <div className="bg-base-200 p-4 rounded-lg mb-3">
       <h4 className="text-lg font-semibold">
-        {exercise.name || "Unnamed Exercise"}
+        {exercise.name || 'Unnamed Exercise'}
       </h4>
       {exercise.description && (
         <p className="text-sm opacity-70 mt-1">{exercise.description}</p>
@@ -38,7 +38,7 @@ export const ExerciseCard = ({ exercise }: { exercise: Exercise }) => {
           <div className="stat-box">
             <span className="text-xs opacity-60">Weight</span>
             <span className="text-lg font-semibold">
-              {exercise.weight > 0 ? `${exercise.weight} lbs` : "Bodyweight"}
+              {exercise.weight > 0 ? `${exercise.weight} lbs` : 'Bodyweight'}
             </span>
           </div>
         )}
@@ -85,7 +85,7 @@ export const InvalidWorkoutCard = ({ title }: { title?: string }) => (
   <div className="card bg-base-100 border border-error">
     <div className="card-body">
       <h2 className="card-title text-error">
-        {title || "Oops! Something went wrong"}
+        {title || 'Oops! Something went wrong'}
       </h2>
       <p>
         We couldn&apos;t display your workout correctly. The workout data might
@@ -105,7 +105,7 @@ export const EmptySectionsCard = ({
 }) => (
   <div className="card bg-base-100 border border-warning">
     <div className="card-body">
-      <h2 className="card-title">{title || "Workout"}</h2>
+      <h2 className="card-title">{title || 'Workout'}</h2>
       {description && <p>{description}</p>}
       <div className="alert alert-warning mt-4">
         <p>No workout sections found. This workout may be incomplete.</p>

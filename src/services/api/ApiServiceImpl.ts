@@ -1,5 +1,5 @@
-import { ApiService } from "@/domain/interfaces/api/ApiService";
-import { TokenProvider } from "@/domain/interfaces/api/TokenProvider";
+import { ApiService } from '@/domain/interfaces/api/ApiService';
+import { TokenProvider } from '@/domain/interfaces/api/TokenProvider';
 
 /**
  * Implementation of the ApiService interface.
@@ -17,11 +17,11 @@ export class ApiServiceImpl implements ApiService {
    * @param tokenProvider Optional provider for authentication tokens
    */
   constructor(
-    baseUrl: string = import.meta.env.VITE_API_URL || "",
+    baseUrl: string = import.meta.env.VITE_API_URL || '',
     headers: HeadersInit = {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
-    tokenProvider?: TokenProvider,
+    tokenProvider?: TokenProvider
   ) {
     this.baseUrl = baseUrl;
     this.defaultHeaders = headers;
@@ -55,10 +55,10 @@ export class ApiServiceImpl implements ApiService {
 
     // Always include the token if available, regardless of endpoint
     if (this.tokenProvider) {
-      console.log("getHeaders", this.tokenProvider);
+      console.log('getHeaders', this.tokenProvider);
       const token = await this.tokenProvider.getToken();
       if (token) {
-        headers["Authorization"] = `Bearer ${token}`;
+        headers['Authorization'] = `Bearer ${token}`;
       }
     }
 
@@ -76,7 +76,7 @@ export class ApiServiceImpl implements ApiService {
     const headers = await this.getHeaders();
 
     const response = await fetch(url, {
-      method: "GET",
+      method: 'GET',
       headers,
     });
 
@@ -95,13 +95,13 @@ export class ApiServiceImpl implements ApiService {
    */
   async post<T, D extends Record<string, unknown>>(
     endpoint: string,
-    data: D,
+    data: D
   ): Promise<T> {
     const url = this.formatUrl(endpoint);
     const headers = await this.getHeaders();
 
     const response = await fetch(url, {
-      method: "POST",
+      method: 'POST',
       headers,
       body: JSON.stringify(data),
     });
@@ -121,13 +121,13 @@ export class ApiServiceImpl implements ApiService {
    */
   async put<T, D extends Record<string, unknown>>(
     endpoint: string,
-    data: D,
+    data: D
   ): Promise<T> {
     const url = this.formatUrl(endpoint);
     const headers = await this.getHeaders();
 
     const response = await fetch(url, {
-      method: "PUT",
+      method: 'PUT',
       headers,
       body: JSON.stringify(data),
     });
@@ -149,7 +149,7 @@ export class ApiServiceImpl implements ApiService {
     const headers = await this.getHeaders();
 
     const response = await fetch(url, {
-      method: "DELETE",
+      method: 'DELETE',
       headers,
     });
 

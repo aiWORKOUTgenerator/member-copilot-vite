@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { Attribute } from "@/domain/entities/attribute";
-import { useAttributeService } from "@/hooks";
-import { useAuth } from "@/hooks/auth";
-import { ReactNode, useCallback, useEffect, useState } from "react";
-import { AttributeContext, AttributeState } from "./attribute.types";
+import { Attribute } from '@/domain/entities/attribute';
+import { useAttributeService } from '@/hooks';
+import { useAuth } from '@/hooks/auth';
+import { ReactNode, useCallback, useEffect, useState } from 'react';
+import { AttributeContext, AttributeState } from './attribute.types';
 
 interface AttributeProviderProps {
   children: ReactNode;
@@ -32,9 +32,9 @@ export function AttributeProvider({ children }: AttributeProviderProps) {
       setIsLoaded(true);
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "Failed to fetch attributes",
+        err instanceof Error ? err.message : 'Failed to fetch attributes'
       );
-      console.error("Error fetching attributes:", err);
+      console.error('Error fetching attributes:', err);
     } finally {
       setIsLoading(false);
     }
@@ -42,7 +42,7 @@ export function AttributeProvider({ children }: AttributeProviderProps) {
 
   // Fetch attribute data when the component mounts
   useEffect(() => {
-    console.log("isSignedIn", isSignedIn);
+    console.log('isSignedIn', isSignedIn);
     if (isSignedIn) {
       fetchAttributes();
     } else {

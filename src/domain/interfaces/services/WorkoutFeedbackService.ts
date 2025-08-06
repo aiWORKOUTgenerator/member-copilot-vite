@@ -1,7 +1,7 @@
 import {
   WorkoutFeedback,
   CreateWorkoutFeedbackRequest,
-} from "@/domain/entities/workoutFeedback";
+} from '@/domain/entities/workoutFeedback';
 
 export interface WorkoutFeedbackService {
   /**
@@ -10,7 +10,7 @@ export interface WorkoutFeedbackService {
    * @returns Promise resolving to the created WorkoutFeedback
    */
   submitFeedback(
-    request: CreateWorkoutFeedbackRequest,
+    request: CreateWorkoutFeedbackRequest
   ): Promise<WorkoutFeedback>;
 
   /**
@@ -34,6 +34,6 @@ export interface WorkoutFeedbackService {
    */
   updateFeedback(
     feedbackId: string,
-    request: CreateWorkoutFeedbackRequest,
+    request: CreateWorkoutFeedbackRequest
   ): Promise<WorkoutFeedback>;
 }

@@ -1,11 +1,11 @@
-import { StripeSubscription } from "@/domain/entities/StripeSubscription";
-import { SubscriptionTier } from "@/domain/entities/subscriptionTier";
+import { StripeSubscription } from '@/domain/entities/StripeSubscription';
+import { SubscriptionTier } from '@/domain/entities/subscriptionTier';
 
 // Define portal configuration types
 export type PortalConfiguration =
-  | "manage_payment_methods"
-  | "view_invoice_history"
-  | "cancel_subscription"; // Add more as needed
+  | 'manage_payment_methods'
+  | 'view_invoice_history'
+  | 'cancel_subscription'; // Add more as needed
 
 export interface SubscriptionService {
   getSubscriptionTiers(): Promise<SubscriptionTier[]>;
@@ -15,6 +15,6 @@ export interface SubscriptionService {
   createCheckoutSession(stripePriceId: string): Promise<{ url: string }>;
   createCustomerPortalSession(
     portalConfiguration: PortalConfiguration,
-    returnPath?: string,
+    returnPath?: string
   ): Promise<{ url: string }>;
 }

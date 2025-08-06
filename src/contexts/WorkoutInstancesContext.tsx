@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { WorkoutInstance } from "@/domain/entities/workoutInstance";
-import { CreateWorkoutInstanceRequest } from "@/domain/interfaces/services/WorkoutInstanceService";
-import { useWorkoutInstanceService } from "@/hooks/useWorkoutInstanceService";
-import { useAuth } from "@/hooks/auth";
-import { ReactNode, useCallback, useEffect, useState } from "react";
+import { WorkoutInstance } from '@/domain/entities/workoutInstance';
+import { CreateWorkoutInstanceRequest } from '@/domain/interfaces/services/WorkoutInstanceService';
+import { useWorkoutInstanceService } from '@/hooks/useWorkoutInstanceService';
+import { useAuth } from '@/hooks/auth';
+import { ReactNode, useCallback, useEffect, useState } from 'react';
 import {
   WorkoutInstancesContext,
   WorkoutInstancesState,
-} from "./workout-instances.types";
+} from './workout-instances.types';
 
 interface WorkoutInstancesProviderProps {
   children: ReactNode;
@@ -35,9 +35,7 @@ export function WorkoutInstancesProvider({
       setInstances(data);
     } catch (err) {
       setError(
-        err instanceof Error
-          ? err.message
-          : "Failed to fetch workout instances",
+        err instanceof Error ? err.message : 'Failed to fetch workout instances'
       );
     } finally {
       setIsLoading(false);
@@ -58,32 +56,32 @@ export function WorkoutInstancesProvider({
         const errorMessage =
           err instanceof Error
             ? err.message
-            : "Failed to create workout instance";
+            : 'Failed to create workout instance';
         setError(errorMessage);
         throw new Error(errorMessage);
       }
     },
-    [workoutInstanceService],
+    [workoutInstanceService]
   );
 
   const updateInstanceInList = useCallback(
     (updatedInstance: WorkoutInstance) => {
       setInstances((prevInstances) =>
         prevInstances.map((instance) =>
-          instance.id === updatedInstance.id ? updatedInstance : instance,
-        ),
+          instance.id === updatedInstance.id ? updatedInstance : instance
+        )
       );
     },
-    [],
+    []
   );
 
   const getInstancesByGeneratedWorkoutId = useCallback(
     (generatedWorkoutId: string) => {
       return instances.filter(
-        (instance) => instance.generatedWorkoutId === generatedWorkoutId,
+        (instance) => instance.generatedWorkoutId === generatedWorkoutId
       );
     },
-    [instances],
+    [instances]
   );
 
   // Reset data when user signs out

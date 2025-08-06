@@ -27,9 +27,9 @@ function MyComponent() {
 
   const handleButtonClick = () => {
     // Track event
-    analytics.track("Button Clicked", {
-      buttonName: "Submit",
-      pageSection: "Form",
+    analytics.track('Button Clicked', {
+      buttonName: 'Submit',
+      pageSection: 'Form',
     });
   };
 

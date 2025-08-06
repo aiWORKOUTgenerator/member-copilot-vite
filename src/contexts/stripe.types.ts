@@ -1,5 +1,5 @@
-import { createContext } from "react";
-import { Stripe } from "@stripe/stripe-js";
+import { createContext } from 'react';
+import { Stripe } from '@stripe/stripe-js';
 
 export interface StripeContextType {
   stripe: Stripe | null;
@@ -8,5 +8,5 @@ export interface StripeContextType {
 }
 
 export const StripeContext = createContext<StripeContextType | undefined>(
-  undefined,
+  undefined
 );

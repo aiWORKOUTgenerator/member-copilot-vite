@@ -1,9 +1,9 @@
-import { useState, useCallback, FormEvent } from "react";
+import { useState, useCallback, FormEvent } from 'react';
 import {
   CreateWorkoutFeedbackRequest,
   validateWorkoutFeedbackRequest,
-} from "@/domain/entities/workoutFeedback";
-import StarRating from "@/ui/shared/molecules/StarRating";
+} from '@/domain/entities/workoutFeedback';
+import StarRating from '@/ui/shared/molecules/StarRating';
 
 export interface WorkoutFeedbackFormProps {
   /** The workout ID to submit feedback for */
@@ -42,9 +42,9 @@ export default function WorkoutFeedbackForm({
     overallRating: initialValues?.overallRating || 0,
     difficultyRating: initialValues?.difficultyRating || 0,
     enjoymentRating: initialValues?.enjoymentRating || 0,
-    whatLiked: initialValues?.whatLiked || "",
-    whatDisliked: initialValues?.whatDisliked || "",
-    improvements: initialValues?.improvements || "",
+    whatLiked: initialValues?.whatLiked || '',
+    whatDisliked: initialValues?.whatDisliked || '',
+    improvements: initialValues?.improvements || '',
     wouldRecommend: initialValues?.wouldRecommend || false,
   });
 
@@ -60,23 +60,23 @@ export default function WorkoutFeedbackForm({
 
       // Clear validation error for this field
       if (validationErrors[field]) {
-        setValidationErrors((prev) => ({ ...prev, [field]: "" }));
+        setValidationErrors((prev) => ({ ...prev, [field]: '' }));
       }
     },
-    [validationErrors],
+    [validationErrors]
   );
 
   const validateForm = useCallback((): boolean => {
     const errors: Record<string, string> = {};
 
     if (formData.overallRating === 0) {
-      errors.overallRating = "Please provide an overall rating";
+      errors.overallRating = 'Please provide an overall rating';
     }
     if (formData.difficultyRating === 0) {
-      errors.difficultyRating = "Please rate the workout difficulty";
+      errors.difficultyRating = 'Please rate the workout difficulty';
     }
     if (formData.enjoymentRating === 0) {
-      errors.enjoymentRating = "Please rate how much you enjoyed the workout";
+      errors.enjoymentRating = 'Please rate how much you enjoyed the workout';
     }
 
     const request: CreateWorkoutFeedbackRequest = {
@@ -125,7 +125,7 @@ export default function WorkoutFeedbackForm({
         // Error handling is done by parent component
       }
     },
-    [formData, workoutId, onSubmit, validateForm],
+    [formData, workoutId, onSubmit, validateForm]
   );
 
   return (
@@ -153,7 +153,7 @@ export default function WorkoutFeedbackForm({
             </label>
             <StarRating
               value={formData.overallRating}
-              onChange={(rating) => updateFormData("overallRating", rating)}
+              onChange={(rating) => updateFormData('overallRating', rating)}
               disabled={isSubmitting}
               showNumber
               label="Overall workout experience"
@@ -173,7 +173,7 @@ export default function WorkoutFeedbackForm({
             </label>
             <StarRating
               value={formData.difficultyRating}
-              onChange={(rating) => updateFormData("difficultyRating", rating)}
+              onChange={(rating) => updateFormData('difficultyRating', rating)}
               disabled={isSubmitting}
               showNumber
               label="Workout difficulty level"
@@ -193,7 +193,7 @@ export default function WorkoutFeedbackForm({
             </label>
             <StarRating
               value={formData.enjoymentRating}
-              onChange={(rating) => updateFormData("enjoymentRating", rating)}
+              onChange={(rating) => updateFormData('enjoymentRating', rating)}
               disabled={isSubmitting}
               showNumber
               label="How much you enjoyed the workout"
@@ -234,7 +234,7 @@ export default function WorkoutFeedbackForm({
               placeholder="What you enjoyed..."
               rows={2}
               value={formData.whatLiked}
-              onChange={(e) => updateFormData("whatLiked", e.target.value)}
+              onChange={(e) => updateFormData('whatLiked', e.target.value)}
               disabled={isSubmitting}
             />
           </div>
@@ -253,7 +253,7 @@ export default function WorkoutFeedbackForm({
               placeholder="Areas for improvement..."
               rows={2}
               value={formData.whatDisliked}
-              onChange={(e) => updateFormData("whatDisliked", e.target.value)}
+              onChange={(e) => updateFormData('whatDisliked', e.target.value)}
               disabled={isSubmitting}
             />
           </div>
@@ -272,7 +272,7 @@ export default function WorkoutFeedbackForm({
               placeholder="Ideas for future workouts..."
               rows={2}
               value={formData.improvements}
-              onChange={(e) => updateFormData("improvements", e.target.value)}
+              onChange={(e) => updateFormData('improvements', e.target.value)}
               disabled={isSubmitting}
             />
           </div>
@@ -287,7 +287,7 @@ export default function WorkoutFeedbackForm({
             type="checkbox"
             className="checkbox checkbox-primary"
             checked={formData.wouldRecommend}
-            onChange={(e) => updateFormData("wouldRecommend", e.target.checked)}
+            onChange={(e) => updateFormData('wouldRecommend', e.target.checked)}
             disabled={isSubmitting}
           />
           <label
@@ -319,7 +319,7 @@ export default function WorkoutFeedbackForm({
           {isSubmitting && (
             <span className="loading loading-spinner loading-xs"></span>
           )}
-          {initialValues ? "Update Feedback" : "Submit Feedback"}
+          {initialValues ? 'Update Feedback' : 'Submit Feedback'}
         </button>
       </div>
     </form>

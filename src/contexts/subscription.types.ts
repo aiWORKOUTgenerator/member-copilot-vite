@@ -1,6 +1,6 @@
-import { StripeSubscription } from "@/domain/entities/StripeSubscription";
-import { PortalConfiguration } from "@/domain/interfaces/services/SubscriptionService";
-import { createContext } from "react";
+import { StripeSubscription } from '@/domain/entities/StripeSubscription';
+import { PortalConfiguration } from '@/domain/interfaces/services/SubscriptionService';
+import { createContext } from 'react';
 
 export interface SubscriptionTier {
   id: string;
@@ -21,7 +21,7 @@ export interface SubscriptionContextType {
   createCheckoutSession: (stripePriceId: string) => Promise<{ url: string }>;
   createCustomerPortalSession: (
     portalConfiguration: PortalConfiguration,
-    returnPath?: string,
+    returnPath?: string
   ) => Promise<{ url: string }>;
   refreshSubscriptionData: () => Promise<void>;
 }

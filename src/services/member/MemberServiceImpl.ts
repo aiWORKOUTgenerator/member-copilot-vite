@@ -1,9 +1,9 @@
-import { Contact } from "@/domain";
-import { ApiService } from "@/domain/interfaces/api/ApiService";
+import { Contact } from '@/domain';
+import { ApiService } from '@/domain/interfaces/api/ApiService';
 import {
   MemberInfo,
   MemberService,
-} from "@/domain/interfaces/services/MemberService";
+} from '@/domain/interfaces/services/MemberService';
 
 /**
  * Implementation of the MemberService interface.
@@ -11,7 +11,7 @@ import {
  */
 export class MemberServiceImpl implements MemberService {
   private readonly apiService: ApiService;
-  private readonly baseEndpoint = "/members";
+  private readonly baseEndpoint = '/members';
 
   /**
    * Creates a new instance of MemberServiceImpl
@@ -36,7 +36,7 @@ export class MemberServiceImpl implements MemberService {
   async getOrCreateContact(): Promise<Contact> {
     return this.apiService.post<Contact, Record<string, unknown>>(
       `${this.baseEndpoint}/contact/`,
-      {},
+      {}
     );
   }
 }

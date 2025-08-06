@@ -1,7 +1,7 @@
-import { ApiService } from "@/domain/interfaces/api/ApiService";
-import { MemberService } from "@/domain/interfaces/services/MemberService";
-import { PusherService } from "@/domain/interfaces/services/PusherService";
-import { createContext } from "react";
+import { ApiService } from '@/domain/interfaces/api/ApiService';
+import { MemberService } from '@/domain/interfaces/services/MemberService';
+import { PusherService } from '@/domain/interfaces/services/PusherService';
+import { createContext } from 'react';
 
 /**
  * ServiceContainer interface defines the shape of our service container.
@@ -19,5 +19,5 @@ export interface ServiceContainer {
  * This forces consumers to use the useServices hook which performs a null check.
  */
 export const ServiceContext = createContext<ServiceContainer | undefined>(
-  undefined,
+  undefined
 );

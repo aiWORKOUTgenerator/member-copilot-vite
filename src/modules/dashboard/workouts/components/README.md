@@ -168,15 +168,15 @@ export default function NewOptionCustomization({
 Add your new customization to the `CUSTOMIZATION_CONFIG` array in `customizations/index.ts`:
 
 ```typescript
-import { Settings } from "lucide-react";
-import NewOptionCustomization from "./NewOptionCustomization";
+import { Settings } from 'lucide-react';
+import NewOptionCustomization from './NewOptionCustomization';
 
 export const CUSTOMIZATION_CONFIG: CustomizationConfig[] = [
   // ... existing configurations
   {
-    key: "customization_new_option",
+    key: 'customization_new_option',
     component: NewOptionCustomization,
-    label: "New Option",
+    label: 'New Option',
     icon: Settings,
   },
 ];
@@ -187,7 +187,7 @@ export const CUSTOMIZATION_CONFIG: CustomizationConfig[] = [
 Add the export to `customizations/index.ts`:
 
 ```typescript
-export { default as NewOptionCustomization } from "./NewOptionCustomization";
+export { default as NewOptionCustomization } from './NewOptionCustomization';
 ```
 
 ### 5. Update Selection Display (Optional)
@@ -207,8 +207,8 @@ Add context description in `WorkoutCustomization.tsx`:
 
 ```typescript
 {
-  config.key === "customization_new_option" &&
-    "Describe what this new option does";
+  config.key === 'customization_new_option' &&
+    'Describe what this new option does';
 }
 ```
 

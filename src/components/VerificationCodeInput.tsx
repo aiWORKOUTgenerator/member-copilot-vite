@@ -1,6 +1,6 @@
-import React, { useCallback, forwardRef } from "react";
-import OtpInput from "react-otp-input";
-import { PHONE_VERIFICATION_CONSTANTS } from "@/domain/entities/phoneVerification";
+import React, { useCallback, forwardRef } from 'react';
+import OtpInput from 'react-otp-input';
+import { PHONE_VERIFICATION_CONSTANTS } from '@/domain/entities/phoneVerification';
 
 export interface VerificationCodeInputProps {
   value: string;
@@ -12,8 +12,8 @@ export interface VerificationCodeInputProps {
   placeholder?: string;
   autoFocus?: boolean;
   id?: string;
-  "aria-label"?: string;
-  "aria-describedby"?: string;
+  'aria-label'?: string;
+  'aria-describedby'?: string;
 }
 
 /**
@@ -30,14 +30,14 @@ export const VerificationCodeInput = forwardRef<
       onComplete,
       disabled = false,
       error,
-      className = "",
-      placeholder = "Enter verification code",
+      className = '',
+      placeholder = 'Enter verification code',
       autoFocus = true,
       id,
-      "aria-label": ariaLabel,
-      "aria-describedby": ariaDescribedBy,
+      'aria-label': ariaLabel,
+      'aria-describedby': ariaDescribedBy,
     },
-    ref,
+    ref
   ) => {
     // Handle value change
     const handleChange = useCallback(
@@ -51,7 +51,7 @@ export const VerificationCodeInput = forwardRef<
           }, 100);
         }
       },
-      [onChange, onComplete],
+      [onChange, onComplete]
     );
 
     return (
@@ -76,33 +76,33 @@ export const VerificationCodeInput = forwardRef<
                 {...props}
                 className="verification-code-input"
                 style={{
-                  width: "clamp(36px, 12vw, 48px)",
-                  height: "clamp(36px, 12vw, 48px)",
-                  fontSize: "clamp(14px, 4vw, 18px)",
-                  fontWeight: "600",
-                  textAlign: "center",
-                  border: error ? "2px solid #ef4444" : "2px solid #d1d5db",
-                  borderRadius: "8px",
-                  backgroundColor: disabled ? "#f9fafb" : "#ffffff",
-                  color: disabled ? "#9ca3af" : "#1f2937",
-                  outline: "none",
-                  transition: "all 0.2s ease-in-out",
-                  maxWidth: "48px",
-                  minWidth: "32px",
+                  width: 'clamp(36px, 12vw, 48px)',
+                  height: 'clamp(36px, 12vw, 48px)',
+                  fontSize: 'clamp(14px, 4vw, 18px)',
+                  fontWeight: '600',
+                  textAlign: 'center',
+                  border: error ? '2px solid #ef4444' : '2px solid #d1d5db',
+                  borderRadius: '8px',
+                  backgroundColor: disabled ? '#f9fafb' : '#ffffff',
+                  color: disabled ? '#9ca3af' : '#1f2937',
+                  outline: 'none',
+                  transition: 'all 0.2s ease-in-out',
+                  maxWidth: '48px',
+                  minWidth: '32px',
                 }}
                 onFocus={(e) => {
                   e.target.style.border = error
-                    ? "2px solid #ef4444"
-                    : "2px solid #3b82f6";
+                    ? '2px solid #ef4444'
+                    : '2px solid #3b82f6';
                   e.target.style.boxShadow = error
-                    ? "0 0 0 3px rgba(239, 68, 68, 0.1)"
-                    : "0 0 0 3px rgba(59, 130, 246, 0.1)";
+                    ? '0 0 0 3px rgba(239, 68, 68, 0.1)'
+                    : '0 0 0 3px rgba(59, 130, 246, 0.1)';
                 }}
                 onBlur={(e) => {
                   e.target.style.border = error
-                    ? "2px solid #ef4444"
-                    : "2px solid #d1d5db";
-                  e.target.style.boxShadow = "none";
+                    ? '2px solid #ef4444'
+                    : '2px solid #d1d5db';
+                  e.target.style.boxShadow = 'none';
                 }}
                 disabled={disabled}
                 placeholder="0"
@@ -114,12 +114,12 @@ export const VerificationCodeInput = forwardRef<
             )}
             shouldAutoFocus={autoFocus}
             containerStyle={{
-              display: "flex",
-              justifyContent: "center",
-              gap: "clamp(4px, 2vw, 8px)",
-              width: "100%",
-              maxWidth: "320px",
-              margin: "0 auto",
+              display: 'flex',
+              justifyContent: 'center',
+              gap: 'clamp(4px, 2vw, 8px)',
+              width: '100%',
+              maxWidth: '320px',
+              margin: '0 auto',
             }}
           />
         </div>
@@ -145,10 +145,10 @@ export const VerificationCodeInput = forwardRef<
         </p>
       </div>
     );
-  },
+  }
 );
 
-VerificationCodeInput.displayName = "VerificationCodeInput";
+VerificationCodeInput.displayName = 'VerificationCodeInput';
 
 /**
  * Simple inline verification code input (single input field)
@@ -163,8 +163,8 @@ export interface SimpleVerificationCodeInputProps {
   placeholder?: string;
   id?: string;
   name?: string;
-  "aria-label"?: string;
-  "aria-describedby"?: string;
+  'aria-label'?: string;
+  'aria-describedby'?: string;
 }
 
 export const SimpleVerificationCodeInput = forwardRef<
@@ -178,18 +178,18 @@ export const SimpleVerificationCodeInput = forwardRef<
       onComplete,
       disabled = false,
       error,
-      className = "",
-      placeholder = "Enter 6-digit code",
+      className = '',
+      placeholder = 'Enter 6-digit code',
       id,
       name,
-      "aria-label": ariaLabel,
-      "aria-describedby": ariaDescribedBy,
+      'aria-label': ariaLabel,
+      'aria-describedby': ariaDescribedBy,
     },
-    ref,
+    ref
   ) => {
     const handleChange = useCallback(
       (e: React.ChangeEvent<HTMLInputElement>) => {
-        const inputValue = e.target.value.replace(/\D/g, ""); // Only allow digits
+        const inputValue = e.target.value.replace(/\D/g, ''); // Only allow digits
 
         // Limit to code length
         if (inputValue.length <= PHONE_VERIFICATION_CONSTANTS.CODE_LENGTH) {
@@ -201,7 +201,7 @@ export const SimpleVerificationCodeInput = forwardRef<
           }
         }
       },
-      [onChange, onComplete],
+      [onChange, onComplete]
     );
 
     return (
@@ -221,16 +221,16 @@ export const SimpleVerificationCodeInput = forwardRef<
             border rounded-lg shadow-sm transition-colors duration-200
             ${
               error
-                ? "border-red-500 focus:border-red-500 focus:ring-red-500"
-                : "border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
+                : 'border-gray-300 focus:border-blue-500 focus:ring-blue-500'
             }
-            ${disabled ? "bg-gray-50 cursor-not-allowed" : "bg-white"}
+            ${disabled ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'}
             focus:ring-2 focus:ring-opacity-50 outline-none
             ${className}
           `}
           aria-label={ariaLabel || placeholder}
           aria-describedby={ariaDescribedBy}
-          aria-invalid={error ? "true" : "false"}
+          aria-invalid={error ? 'true' : 'false'}
           inputMode="numeric"
           pattern="[0-9]*"
           autoComplete="one-time-code"
@@ -250,7 +250,7 @@ export const SimpleVerificationCodeInput = forwardRef<
         )}
       </div>
     );
-  },
+  }
 );
 
-SimpleVerificationCodeInput.displayName = "SimpleVerificationCodeInput";
+SimpleVerificationCodeInput.displayName = 'SimpleVerificationCodeInput';

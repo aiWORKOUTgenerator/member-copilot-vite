@@ -1,8 +1,8 @@
-import { useAuth } from "@clerk/clerk-react";
-import { useMemo } from "react";
-import { ApiServiceImpl } from "@/services/api/ApiServiceImpl";
-import { ClerkTokenProvider } from "@/services/api/ClerkTokenProvider";
-import { ApiService } from "@/domain/interfaces/api/ApiService";
+import { useAuth } from '@clerk/clerk-react';
+import { useMemo } from 'react';
+import { ApiServiceImpl } from '@/services/api/ApiServiceImpl';
+import { ClerkTokenProvider } from '@/services/api/ClerkTokenProvider';
+import { ApiService } from '@/domain/interfaces/api/ApiService';
 
 /**
  * Hook to get an API service instance with authentication configured
@@ -10,7 +10,7 @@ import { ApiService } from "@/domain/interfaces/api/ApiService";
  * @returns An ApiService instance with authentication configured
  */
 export function useApiService(
-  baseUrl: string = import.meta.env.VITE_API_URL || "",
+  baseUrl: string = import.meta.env.VITE_API_URL || ''
 ): ApiService {
   const { getToken } = useAuth();
 
@@ -23,9 +23,9 @@ export function useApiService(
     return new ApiServiceImpl(
       baseUrl,
       {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
-      tokenProvider,
+      tokenProvider
     );
   }, [baseUrl, getToken]);
 

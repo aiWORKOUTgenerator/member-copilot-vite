@@ -1,23 +1,23 @@
-"use client";
+'use client';
 
-import { Button, FormContainer, Input } from "@/ui";
-import { useSignUp } from "@clerk/clerk-react";
-import { isClerkAPIResponseError } from "@clerk/clerk-react/errors";
-import React, { useCallback, useEffect, useState } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router";
+import { Button, FormContainer, Input } from '@/ui';
+import { useSignUp } from '@clerk/clerk-react';
+import { isClerkAPIResponseError } from '@clerk/clerk-react/errors';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router';
 
 export default function EmailOTPSignUpPage() {
   const { isLoaded, signUp, setActive } = useSignUp();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  const [emailAddress, setEmailAddress] = useState("");
-  const [code, setCode] = useState("");
+  const [emailAddress, setEmailAddress] = useState('');
+  const [code, setCode] = useState('');
   const [verifying, setVerifying] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [validationError, setValidationError] = useState("");
-  const [codeValidationError, setCodeValidationError] = useState("");
+  const [error, setError] = useState('');
+  const [validationError, setValidationError] = useState('');
+  const [codeValidationError, setCodeValidationError] = useState('');
   const [success, setSuccess] = useState(false);
   const [hasAutoSubmitted, setHasAutoSubmitted] = useState(false);
 
@@ -30,15 +30,15 @@ export default function EmailOTPSignUpPage() {
   // Update validation message when email changes
   useEffect(() => {
     if (emailAddress && !validateEmail(emailAddress)) {
-      setValidationError("Please enter a valid email address");
+      setValidationError('Please enter a valid email address');
     } else {
-      setValidationError("");
+      setValidationError('');
     }
   }, [emailAddress]);
 
   // Pre-fill email from URL parameters
   useEffect(() => {
-    const emailParam = searchParams?.get("email");
+    const emailParam = searchParams?.get('email');
 
     if (emailParam && validateEmail(emailParam)) {
       setEmailAddress(emailParam);
@@ -48,9 +48,9 @@ export default function EmailOTPSignUpPage() {
   // Code validation
   useEffect(() => {
     if (code && !/^\d{6}$/.test(code)) {
-      setCodeValidationError("Please enter a valid 6-digit code");
+      setCodeValidationError('Please enter a valid 6-digit code');
     } else {
-      setCodeValidationError("");
+      setCodeValidationError('');
     }
   }, [code]);
 
@@ -62,12 +62,12 @@ export default function EmailOTPSignUpPage() {
 
       // Don't submit if email is invalid
       if (!validateEmail(emailAddress)) {
-        setValidationError("Please enter a valid email address");
+        setValidationError('Please enter a valid email address');
         return;
       }
 
       setLoading(true);
-      setError("");
+      setError('');
 
       try {
         // Start the sign-up process using the email method
@@ -77,32 +77,32 @@ export default function EmailOTPSignUpPage() {
 
         // Send the verification code email
         await signUp.prepareEmailAddressVerification({
-          strategy: "email_code",
+          strategy: 'email_code',
         });
 
         // Switch to verification mode to collect the OTP code
         setVerifying(true);
       } catch (err) {
-        console.error("Error:", JSON.stringify(err, null, 2));
+        console.error('Error:', JSON.stringify(err, null, 2));
 
         if (err instanceof Error) {
           if (isClerkAPIResponseError(err)) {
             // Check if the error is due to user already existing
             const identifierExists = err.errors.some(
-              (error) => error.code === "form_identifier_exists",
+              (error) => error.code === 'form_identifier_exists'
             );
 
             if (identifierExists) {
               // If user exists, redirect to the email verification sign-in page with email prefilled
               // This will create a fresh authentication session through the standard sign-in flow
-              console.log("User already exists, redirecting to sign-in...");
+              console.log('User already exists, redirecting to sign-in...');
 
               // Use a short timeout to ensure any pending state updates are complete before navigation
               setTimeout(() => {
                 navigate(
                   `/sign-in/email-otp?email=${encodeURIComponent(
-                    emailAddress,
-                  )}&from=signup`,
+                    emailAddress
+                  )}&from=signup`
                 );
               }, 100);
               return;
@@ -111,27 +111,27 @@ export default function EmailOTPSignUpPage() {
             // For other errors, display the message
             setError(
               err.errors[0]?.longMessage ||
-                "An error occurred sending the verification code.",
+                'An error occurred sending the verification code.'
             );
           } else {
-            setError("An error occurred. Please try again.");
+            setError('An error occurred. Please try again.');
           }
         } else {
-          setError("An error occurred. Please try again.");
+          setError('An error occurred. Please try again.');
         }
       } finally {
         setLoading(false);
       }
     },
-    [isLoaded, signUp, emailAddress, navigate],
+    [isLoaded, signUp, emailAddress, navigate]
   );
 
   // Auto-submit form if auto-submit=1 parameter is present with valid email
   useEffect(() => {
-    const autoSubmitParam = searchParams?.get("auto-submit");
+    const autoSubmitParam = searchParams?.get('auto-submit');
 
     if (
-      autoSubmitParam === "1" &&
+      autoSubmitParam === '1' &&
       emailAddress &&
       validateEmail(emailAddress) &&
       !hasAutoSubmitted &&
@@ -164,12 +164,12 @@ export default function EmailOTPSignUpPage() {
     if (!isLoaded || !signUp) return;
 
     if (!/^\d{6}$/.test(code)) {
-      setCodeValidationError("Please enter a valid 6-digit code");
+      setCodeValidationError('Please enter a valid 6-digit code');
       return;
     }
 
     setLoading(true);
-    setError("");
+    setError('');
 
     try {
       // Attempt to verify with the code provided by the user
@@ -178,7 +178,7 @@ export default function EmailOTPSignUpPage() {
       });
 
       // If verification was completed successfully
-      if (result.status === "complete") {
+      if (result.status === 'complete') {
         setSuccess(true);
 
         // Set the session as active
@@ -186,27 +186,27 @@ export default function EmailOTPSignUpPage() {
 
         // Redirect after a short delay to show success message
         setTimeout(() => {
-          navigate("/dashboard");
+          navigate('/dashboard');
         }, 2000);
       } else {
         // Handle incomplete verification
-        console.log("Verification incomplete:", result);
-        setError("Verification could not be completed. Please try again.");
+        console.log('Verification incomplete:', result);
+        setError('Verification could not be completed. Please try again.');
       }
     } catch (err) {
-      console.error("Error:", JSON.stringify(err, null, 2));
+      console.error('Error:', JSON.stringify(err, null, 2));
 
       if (err instanceof Error) {
         if (isClerkAPIResponseError(err)) {
           setError(
             err.errors[0]?.longMessage ||
-              "Invalid verification code. Please try again.",
+              'Invalid verification code. Please try again.'
           );
         } else {
-          setError("An error occurred. Please try again.");
+          setError('An error occurred. Please try again.');
         }
       } else {
-        setError("An error occurred. Please try again.");
+        setError('An error occurred. Please try again.');
       }
     } finally {
       setLoading(false);
@@ -218,16 +218,16 @@ export default function EmailOTPSignUpPage() {
     if (!isLoaded || !signUp) return;
 
     setLoading(true);
-    setError("");
+    setError('');
 
     try {
       await signUp.prepareEmailAddressVerification({
-        strategy: "email_code",
+        strategy: 'email_code',
       });
-      setError(""); // Clear any previous errors
+      setError(''); // Clear any previous errors
     } catch (err) {
-      console.error("Error resending code:", JSON.stringify(err, null, 2));
-      setError("Failed to resend code. Please try again.");
+      console.error('Error resending code:', JSON.stringify(err, null, 2));
+      setError('Failed to resend code. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -269,7 +269,7 @@ export default function EmailOTPSignUpPage() {
           <Button
             variant="primary"
             fullWidth
-            onClick={() => setError("")}
+            onClick={() => setError('')}
             aria-label="Try again"
           >
             Try again
@@ -312,7 +312,7 @@ export default function EmailOTPSignUpPage() {
   }
 
   if (verifying) {
-    const verificationMessage = searchParams?.get("verification-message");
+    const verificationMessage = searchParams?.get('verification-message');
 
     return (
       <FormContainer
@@ -349,7 +349,7 @@ export default function EmailOTPSignUpPage() {
             label="Verification code"
             value={code}
             onChange={(e) =>
-              setCode(e.target.value.replace(/[^0-9]/g, "").slice(0, 6))
+              setCode(e.target.value.replace(/[^0-9]/g, '').slice(0, 6))
             }
             placeholder="Enter 6-digit code"
             required
@@ -439,7 +439,7 @@ export default function EmailOTPSignUpPage() {
       </form>
 
       <div className="mt-4 text-center text-sm">
-        Already have an account?{" "}
+        Already have an account?{' '}
         <Link to="/sign-in" className="link link-primary font-semibold">
           Sign in
         </Link>

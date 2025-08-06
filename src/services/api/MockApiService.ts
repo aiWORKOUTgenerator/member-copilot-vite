@@ -1,4 +1,4 @@
-import { ApiService } from "@/domain/interfaces/api/ApiService";
+import { ApiService } from '@/domain/interfaces/api/ApiService';
 
 /**
  * Mock implementation of the ApiService interface for testing and development.
@@ -6,9 +6,9 @@ import { ApiService } from "@/domain/interfaces/api/ApiService";
  */
 export class MockApiService implements ApiService {
   private mockData: Record<string, unknown[]> = {
-    "/api/users": [
-      { id: 1, name: "Alice Smith", email: "alice@example.com" },
-      { id: 2, name: "Bob Johnson", email: "bob@example.com" },
+    '/api/users': [
+      { id: 1, name: 'Alice Smith', email: 'alice@example.com' },
+      { id: 2, name: 'Bob Johnson', email: 'bob@example.com' },
     ],
   };
 
@@ -27,8 +27,8 @@ export class MockApiService implements ApiService {
         Object.entries(params).every(
           ([key, value]) =>
             // Check if item has the key and its string value matches
-            key in item && String(item[key]) === value,
-        ),
+            key in item && String(item[key]) === value
+        )
       );
       return filtered as unknown as T;
     }
@@ -43,12 +43,12 @@ export class MockApiService implements ApiService {
 
   async post<T, D extends Record<string, unknown>>(
     endpoint: string,
-    data: D,
+    data: D
   ): Promise<T> {
     await this.delay(500);
 
     // For user creation
-    if (endpoint === "/api/users") {
+    if (endpoint === '/api/users') {
       const users = this.mockData[endpoint] as Record<string, unknown>[];
       const newId =
         users.length > 0
@@ -65,13 +65,13 @@ export class MockApiService implements ApiService {
     }
 
     throw new Error(
-      `Mock API error: POST not implemented for endpoint ${endpoint}`,
+      `Mock API error: POST not implemented for endpoint ${endpoint}`
     );
   }
 
   async put<T, D extends Record<string, unknown>>(
     endpoint: string,
-    data: D,
+    data: D
   ): Promise<T> {
     await this.delay(500);
 
@@ -85,7 +85,7 @@ export class MockApiService implements ApiService {
 
       if (Array.isArray(collection)) {
         const index = collection.findIndex(
-          (item) => (item as Record<string, unknown>).id === id,
+          (item) => (item as Record<string, unknown>).id === id
         );
 
         if (index !== -1) {
@@ -102,7 +102,7 @@ export class MockApiService implements ApiService {
     }
 
     throw new Error(
-      `Mock API error: PUT not implemented for endpoint ${endpoint}`,
+      `Mock API error: PUT not implemented for endpoint ${endpoint}`
     );
   }
 
@@ -120,13 +120,13 @@ export class MockApiService implements ApiService {
 
       if (Array.isArray(collection)) {
         const index = collection.findIndex(
-          (item) => (item as Record<string, unknown>).id === id,
+          (item) => (item as Record<string, unknown>).id === id
         );
 
         if (index !== -1) {
           const deletedItem = collection[index];
           this.mockData[resourcePath] = collection.filter(
-            (item) => (item as Record<string, unknown>).id !== id,
+            (item) => (item as Record<string, unknown>).id !== id
           );
           return deletedItem as unknown as T;
         }
@@ -134,7 +134,7 @@ export class MockApiService implements ApiService {
     }
 
     throw new Error(
-      `Mock API error: DELETE not implemented for endpoint ${endpoint}`,
+      `Mock API error: DELETE not implemented for endpoint ${endpoint}`
     );
   }
 }

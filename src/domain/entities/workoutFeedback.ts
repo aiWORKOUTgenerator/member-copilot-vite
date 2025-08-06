@@ -66,26 +66,26 @@ export function isValidRating(rating: number): boolean {
  * Validation helper for feedback request
  */
 export function validateWorkoutFeedbackRequest(
-  request: CreateWorkoutFeedbackRequest,
+  request: CreateWorkoutFeedbackRequest
 ): string | null {
   if (!request.workoutId) {
-    return "Workout ID is required";
+    return 'Workout ID is required';
   }
 
   if (!isValidRating(request.overallRating)) {
-    return "Overall rating must be between 1 and 5";
+    return 'Overall rating must be between 1 and 5';
   }
 
   if (!isValidRating(request.difficultyRating)) {
-    return "Difficulty rating must be between 1 and 5";
+    return 'Difficulty rating must be between 1 and 5';
   }
 
   if (!isValidRating(request.enjoymentRating)) {
-    return "Enjoyment rating must be between 1 and 5";
+    return 'Enjoyment rating must be between 1 and 5';
   }
 
-  if (typeof request.wouldRecommend !== "boolean") {
-    return "Would recommend must be a boolean value";
+  if (typeof request.wouldRecommend !== 'boolean') {
+    return 'Would recommend must be a boolean value';
   }
 
   return null;

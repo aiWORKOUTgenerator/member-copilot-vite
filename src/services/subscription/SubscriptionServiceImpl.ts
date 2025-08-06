@@ -1,37 +1,37 @@
-import { StripeSubscription } from "@/domain/entities/StripeSubscription";
-import { SubscriptionTier } from "@/domain/entities/subscriptionTier";
-import { ApiService } from "@/domain/interfaces/api/ApiService";
+import { StripeSubscription } from '@/domain/entities/StripeSubscription';
+import { SubscriptionTier } from '@/domain/entities/subscriptionTier';
+import { ApiService } from '@/domain/interfaces/api/ApiService';
 import {
   PortalConfiguration,
   SubscriptionService,
-} from "@/domain/interfaces/services/SubscriptionService";
+} from '@/domain/interfaces/services/SubscriptionService';
 
 // Static data for subscription tiers (will be replaced with API call later)
 const MOCK_SUBSCRIPTION_TIERS: SubscriptionTier[] = [
   {
-    id: "free",
+    id: 'free',
     stripePriceId: import.meta.env.VITE_STRIPE_PRICE_BASIC,
-    name: "Free",
-    description: "Perfect for individuals getting started",
+    name: 'Free',
+    description: 'Perfect for individuals getting started',
     features: [
-      "5 free workouts per month",
-      "Detailed AI workouts",
-      "5 saved workouts",
+      '5 free workouts per month',
+      'Detailed AI workouts',
+      '5 saved workouts',
     ],
-    price: "$0.00",
+    price: '$0.00',
   },
   {
-    id: "premium",
+    id: 'premium',
     stripePriceId: import.meta.env.VITE_STRIPE_PRICE_PREMIUM,
-    name: "Premium",
-    description: "Ideal for serious fitness enthusiasts",
+    name: 'Premium',
+    description: 'Ideal for serious fitness enthusiasts',
     features: [
-      "50% off",
-      "100 workouts per month",
-      "Unlimited saved workouts",
-      "Priority support",
+      '50% off',
+      '100 workouts per month',
+      'Unlimited saved workouts',
+      'Priority support',
     ],
-    price: "$10.00 (50% off)",
+    price: '$10.00 (50% off)',
     isPopular: true,
   },
 ];
@@ -41,9 +41,9 @@ const MOCK_SUBSCRIPTION_TIERS: SubscriptionTier[] = [
  * Handles all subscription-related operations
  */
 export class SubscriptionServiceImpl implements SubscriptionService {
-  readonly serviceName = "SubscriptionService";
+  readonly serviceName = 'SubscriptionService';
   private readonly apiService: ApiService;
-  private readonly baseEndpoint = "/members";
+  private readonly baseEndpoint = '/members';
 
   /**
    * Creates a new instance of SubscriptionServiceImpl
@@ -62,8 +62,8 @@ export class SubscriptionServiceImpl implements SubscriptionService {
       await new Promise((resolve) => setTimeout(resolve, 1));
       return MOCK_SUBSCRIPTION_TIERS;
     } catch (error) {
-      console.error("Error in getSubscriptionTiers:", error);
-      throw new Error("Failed to fetch subscription tiers");
+      console.error('Error in getSubscriptionTiers:', error);
+      throw new Error('Failed to fetch subscription tiers');
     }
   }
 
@@ -75,21 +75,21 @@ export class SubscriptionServiceImpl implements SubscriptionService {
     subscription: StripeSubscription | null;
   }> {
     try {
-      console.log("Fetching current user subscription");
+      console.log('Fetching current user subscription');
       // Assuming the endpoint is /api/members/subscription/
       const response = await this.apiService.get<{
         subscription: StripeSubscription | null;
       }>(`${this.baseEndpoint}/subscription/`);
-      console.log("Fetched subscription:", response);
+      console.log('Fetched subscription:', response);
       return response;
     } catch (error) {
-      console.error("Error in getCurrentUserSubscription:", error);
+      console.error('Error in getCurrentUserSubscription:', error);
       // Handle potential errors, e.g., 404 if no subscription found might be expected
       // Depending on API behavior, might want to return { subscription: null } instead of throwing
       if (error instanceof Error) {
         throw error;
       } else {
-        throw new Error("Failed to fetch current user subscription");
+        throw new Error('Failed to fetch current user subscription');
       }
     }
   }
@@ -100,24 +100,24 @@ export class SubscriptionServiceImpl implements SubscriptionService {
    * @returns Promise that resolves to an object containing the checkout URL
    */
   async createCheckoutSession(stripePriceId: string): Promise<{ url: string }> {
-    console.log("createCheckoutSession for redirect", stripePriceId);
+    console.log('createCheckoutSession for redirect', stripePriceId);
     try {
       // Assuming the backend endpoint now returns { checkoutUrl: "..." }
       return await this.apiService.post<{ url: string }, { price_id: string }>(
         `${this.baseEndpoint}/create-checkout-session/`,
         {
           price_id: stripePriceId,
-        },
+        }
       );
     } catch (error) {
       console.error(
         `Error in createCheckoutSession for price ${stripePriceId}:`,
-        error,
+        error
       );
       if (error instanceof Error) {
         throw error;
       } else {
-        throw new Error("Failed to create checkout session");
+        throw new Error('Failed to create checkout session');
       }
     }
   }
@@ -130,10 +130,10 @@ export class SubscriptionServiceImpl implements SubscriptionService {
    */
   async createCustomerPortalSession(
     portalConfiguration: PortalConfiguration,
-    returnPath?: string,
+    returnPath?: string
   ): Promise<{ url: string }> {
     console.log(
-      `createCustomerPortalSession called, config: ${portalConfiguration}, returnPath: ${returnPath}`,
+      `createCustomerPortalSession called, config: ${portalConfiguration}, returnPath: ${returnPath}`
     );
     try {
       const payload: {
@@ -148,17 +148,17 @@ export class SubscriptionServiceImpl implements SubscriptionService {
 
       return await this.apiService.post<{ url: string }, typeof payload>(
         `${this.baseEndpoint}/create-portal-session/`,
-        payload,
+        payload
       );
     } catch (error) {
       console.error(
         `Error in createCustomerPortalSession (config: ${portalConfiguration}):`,
-        error,
+        error
       );
       if (error instanceof Error) {
         throw error;
       } else {
-        throw new Error("Failed to create customer portal session");
+        throw new Error('Failed to create customer portal session');
       }
     }
   }

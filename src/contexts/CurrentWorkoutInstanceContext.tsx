@@ -1,22 +1,22 @@
-"use client";
+'use client';
 
 import {
   WorkoutInstance,
   WorkoutInstanceStructure,
-} from "@/domain/entities/workoutInstance";
-import { Exercise } from "@/domain/entities/generatedWorkout";
+} from '@/domain/entities/workoutInstance';
+import { Exercise } from '@/domain/entities/generatedWorkout';
 import {
   UpdateWorkoutInstanceRequest,
   RecommendedExercise,
-} from "@/domain/interfaces/services/WorkoutInstanceService";
-import { useWorkoutInstanceService } from "@/hooks/useWorkoutInstanceService";
-import { useAuth } from "@/hooks/auth";
-import { ReactNode, useCallback, useEffect, useState } from "react";
-import { useParams } from "react-router";
+} from '@/domain/interfaces/services/WorkoutInstanceService';
+import { useWorkoutInstanceService } from '@/hooks/useWorkoutInstanceService';
+import { useAuth } from '@/hooks/auth';
+import { ReactNode, useCallback, useEffect, useState } from 'react';
+import { useParams } from 'react-router';
 import {
   CurrentWorkoutInstanceContext,
   CurrentWorkoutInstanceState,
-} from "./current-workout-instance.types";
+} from './current-workout-instance.types';
 
 interface CurrentWorkoutInstanceProviderProps {
   children: ReactNode;
@@ -49,15 +49,13 @@ export function CurrentWorkoutInstanceProvider({
         setHasPendingChanges(false);
       } catch (err) {
         setError(
-          err instanceof Error
-            ? err.message
-            : "Failed to load workout instance",
+          err instanceof Error ? err.message : 'Failed to load workout instance'
         );
       } finally {
         setIsLoading(false);
       }
     },
-    [workoutInstanceService],
+    [workoutInstanceService]
   );
 
   useEffect(() => {
@@ -87,14 +85,14 @@ export function CurrentWorkoutInstanceProvider({
         return updatedInstance;
       });
     },
-    [],
+    []
   );
 
   const updateInstanceJsonFormatOptimistically = useCallback(
     (jsonFormat: WorkoutInstanceStructure) => {
       updateInstanceOptimistically({ jsonFormat });
     },
-    [updateInstanceOptimistically],
+    [updateInstanceOptimistically]
   );
 
   const updateInstance = useCallback(
@@ -103,7 +101,7 @@ export function CurrentWorkoutInstanceProvider({
         const updatedInstance =
           await workoutInstanceService.updateWorkoutInstance(
             instanceId,
-            request,
+            request
           );
 
         // Update current instance if it's the same one
@@ -117,12 +115,12 @@ export function CurrentWorkoutInstanceProvider({
         const errorMessage =
           err instanceof Error
             ? err.message
-            : "Failed to update workout instance";
+            : 'Failed to update workout instance';
         setError(errorMessage);
         throw new Error(errorMessage);
       }
     },
-    [workoutInstanceService, currentInstance],
+    [workoutInstanceService, currentInstance]
   );
 
   const deleteInstance = useCallback(
@@ -138,12 +136,12 @@ export function CurrentWorkoutInstanceProvider({
         const errorMessage =
           err instanceof Error
             ? err.message
-            : "Failed to delete workout instance";
+            : 'Failed to delete workout instance';
         setError(errorMessage);
         throw new Error(errorMessage);
       }
     },
-    [workoutInstanceService, currentInstance, clearInstance],
+    [workoutInstanceService, currentInstance, clearInstance]
   );
 
   const syncToServer = useCallback(async () => {
@@ -161,13 +159,13 @@ export function CurrentWorkoutInstanceProvider({
       const updatedInstance =
         await workoutInstanceService.updateWorkoutInstance(
           currentInstance.id,
-          updateRequest,
+          updateRequest
         );
 
       setCurrentInstance(updatedInstance);
       setHasPendingChanges(false);
     } catch (err) {
-      console.error("Failed to sync instance to server:", err);
+      console.error('Failed to sync instance to server:', err);
       throw err;
     }
   }, [currentInstance, hasPendingChanges, workoutInstanceService]);
@@ -176,7 +174,7 @@ export function CurrentWorkoutInstanceProvider({
     async (currentExercise: Exercise): Promise<RecommendedExercise[]> => {
       if (!currentInstance) {
         console.error(
-          "No current instance available for exercise recommendations",
+          'No current instance available for exercise recommendations'
         );
         return [];
       }
@@ -186,14 +184,14 @@ export function CurrentWorkoutInstanceProvider({
           currentInstance.id,
           currentExercise.name,
           undefined, // reason - could be added as parameter later
-          undefined, // preferences - could be added as parameter later
+          undefined // preferences - could be added as parameter later
         );
       } catch (error) {
-        console.error("Error loading recommendations:", error);
+        console.error('Error loading recommendations:', error);
         return [];
       }
     },
-    [workoutInstanceService, currentInstance],
+    [workoutInstanceService, currentInstance]
   );
 
   // Auto-sync to server after a delay (debounced sync)
@@ -202,7 +200,7 @@ export function CurrentWorkoutInstanceProvider({
 
     const timeoutId = setTimeout(() => {
       syncToServer().catch((err) => {
-        console.warn("Auto-sync failed:", err);
+        console.warn('Auto-sync failed:', err);
       });
     }, 2000);
 

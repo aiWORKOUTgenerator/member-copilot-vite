@@ -1,13 +1,13 @@
 import {
   WorkoutInstance,
   WorkoutInstanceStructure,
-} from "@/domain/entities/workoutInstance";
+} from '@/domain/entities/workoutInstance';
 import {
   CreateWorkoutInstanceRequest,
   UpdateWorkoutInstanceRequest,
   WorkoutInstanceService,
   RecommendedExercise,
-} from "@/domain/interfaces/services/WorkoutInstanceService";
+} from '@/domain/interfaces/services/WorkoutInstanceService';
 
 /**
  * Mock implementation of the WorkoutInstanceService interface for testing and development.
@@ -47,11 +47,11 @@ interface MockWorkoutInstanceData {
 }
 
 export class MockWorkoutInstanceService implements WorkoutInstanceService {
-  readonly serviceName = "MockWorkoutInstanceService";
+  readonly serviceName = 'MockWorkoutInstanceService';
   private instanceStore: Map<string, MockWorkoutInstanceData> = new Map();
   private nextId = 1;
-  private readonly STORAGE_KEY = "mock_workout_instances";
-  private readonly NEXT_ID_KEY = "mock_workout_instances_next_id";
+  private readonly STORAGE_KEY = 'mock_workout_instances';
+  private readonly NEXT_ID_KEY = 'mock_workout_instances_next_id';
 
   constructor() {
     // Load data from localStorage
@@ -73,18 +73,18 @@ export class MockWorkoutInstanceService implements WorkoutInstanceService {
         });
 
         console.log(
-          `MockWorkoutInstanceService: Loaded ${instances.length} instances from localStorage`,
+          `MockWorkoutInstanceService: Loaded ${instances.length} instances from localStorage`
         );
       } else {
         // No stored data, start with empty storage
         console.log(
-          "MockWorkoutInstanceService: No existing data found, starting with empty storage",
+          'MockWorkoutInstanceService: No existing data found, starting with empty storage'
         );
       }
     } catch (error) {
       console.warn(
-        "MockWorkoutInstanceService: Error loading from localStorage, starting with empty storage",
-        error,
+        'MockWorkoutInstanceService: Error loading from localStorage, starting with empty storage',
+        error
       );
     }
   }
@@ -96,8 +96,8 @@ export class MockWorkoutInstanceService implements WorkoutInstanceService {
       localStorage.setItem(this.NEXT_ID_KEY, this.nextId.toString());
     } catch (error) {
       console.warn(
-        "MockWorkoutInstanceService: Error saving to localStorage",
-        error,
+        'MockWorkoutInstanceService: Error saving to localStorage',
+        error
       );
     }
   }
@@ -114,18 +114,18 @@ export class MockWorkoutInstanceService implements WorkoutInstanceService {
     await this.delay(300); // Simulate network delay
 
     const instances = Array.from(this.instanceStore.values()).map(
-      (data) => new WorkoutInstance(data),
+      (data) => new WorkoutInstance(data)
     );
 
     // Sort by performed_at date (most recent first)
     return instances.sort(
       (a, b) =>
-        new Date(b.performedAt).getTime() - new Date(a.performedAt).getTime(),
+        new Date(b.performedAt).getTime() - new Date(a.performedAt).getTime()
     );
   }
 
   async getWorkoutInstancesByGeneratedWorkoutId(
-    generatedWorkoutId: string,
+    generatedWorkoutId: string
   ): Promise<WorkoutInstance[]> {
     await this.delay(200);
 
@@ -136,12 +136,12 @@ export class MockWorkoutInstanceService implements WorkoutInstanceService {
     // Sort by performed_at date (most recent first)
     return instances.sort(
       (a, b) =>
-        new Date(b.performedAt).getTime() - new Date(a.performedAt).getTime(),
+        new Date(b.performedAt).getTime() - new Date(a.performedAt).getTime()
     );
   }
 
   async getWorkoutInstance(
-    instanceId: string,
+    instanceId: string
   ): Promise<WorkoutInstance | null> {
     await this.delay(150);
 
@@ -150,7 +150,7 @@ export class MockWorkoutInstanceService implements WorkoutInstanceService {
   }
 
   async createWorkoutInstance(
-    request: CreateWorkoutInstanceRequest,
+    request: CreateWorkoutInstanceRequest
   ): Promise<WorkoutInstance> {
     await this.delay(400); // Simulate longer creation time
 
@@ -179,7 +179,7 @@ export class MockWorkoutInstanceService implements WorkoutInstanceService {
 
   async updateWorkoutInstance(
     instanceId: string,
-    request: UpdateWorkoutInstanceRequest,
+    request: UpdateWorkoutInstanceRequest
   ): Promise<WorkoutInstance> {
     await this.delay(250);
 
@@ -218,7 +218,7 @@ export class MockWorkoutInstanceService implements WorkoutInstanceService {
 
   async getExerciseRecommendations(
     instanceId: string,
-    exerciseName: string,
+    exerciseName: string
   ): Promise<RecommendedExercise[]> {
     await this.delay(300); // Simulate network delay
 
@@ -226,35 +226,35 @@ export class MockWorkoutInstanceService implements WorkoutInstanceService {
     return [
       {
         id: `mock-alt-1-${instanceId}`,
-        name: "Push-ups",
+        name: 'Push-ups',
         description:
-          "Classic bodyweight chest exercise that targets the same muscles as " +
+          'Classic bodyweight chest exercise that targets the same muscles as ' +
           exerciseName,
         sets: 3,
         reps: 15,
-        targetMuscles: ["Chest", "Triceps", "Shoulders"],
-        difficulty: "Beginner",
+        targetMuscles: ['Chest', 'Triceps', 'Shoulders'],
+        difficulty: 'Beginner',
         rest: 60,
       },
       {
         id: `mock-alt-2-${instanceId}`,
-        name: "Modified Version",
+        name: 'Modified Version',
         description: `A modified version of ${exerciseName} with adjusted parameters`,
         sets: 2,
         reps: 8,
         weight: 5,
-        targetMuscles: ["Full Body"],
-        difficulty: "Beginner",
+        targetMuscles: ['Full Body'],
+        difficulty: 'Beginner',
         rest: 60,
       },
       {
         id: `mock-alt-3-${instanceId}`,
-        name: "Bodyweight Alternative",
+        name: 'Bodyweight Alternative',
         description: `A bodyweight alternative to ${exerciseName}`,
         sets: 3,
         reps: 12,
-        targetMuscles: ["Core", "Upper Body"],
-        difficulty: "Intermediate",
+        targetMuscles: ['Core', 'Upper Body'],
+        difficulty: 'Intermediate',
         rest: 45,
       },
     ];

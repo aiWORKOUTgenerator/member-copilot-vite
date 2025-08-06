@@ -1,5 +1,5 @@
-import { PusherBeamsService } from "@/domain/interfaces/services/PusherBeamsService";
-import * as PusherPushNotifications from "@pusher/push-notifications-web";
+import { PusherBeamsService } from '@/domain/interfaces/services/PusherBeamsService';
+import * as PusherPushNotifications from '@pusher/push-notifications-web';
 
 export class PusherBeamsServiceImpl implements PusherBeamsService {
   constructor(private beamsClient: PusherPushNotifications.Client) {
@@ -17,7 +17,7 @@ export class PusherBeamsServiceImpl implements PusherBeamsService {
     }
 
     if (!this.beamsClient) {
-      throw new Error("Pusher Beams client not initialized");
+      throw new Error('Pusher Beams client not initialized');
     }
 
     return this.beamsClient.addDeviceInterest(interest);
@@ -25,7 +25,7 @@ export class PusherBeamsServiceImpl implements PusherBeamsService {
 
   async removeDeviceInterest(interest: string): Promise<void> {
     if (!this.beamsClient) {
-      throw new Error("Pusher Beams client not initialized");
+      throw new Error('Pusher Beams client not initialized');
     }
 
     return this.beamsClient.removeDeviceInterest(interest);
@@ -33,7 +33,7 @@ export class PusherBeamsServiceImpl implements PusherBeamsService {
 
   async getDeviceInterests(): Promise<string[]> {
     if (!this.beamsClient) {
-      throw new Error("Pusher Beams client not initialized");
+      throw new Error('Pusher Beams client not initialized');
     }
 
     return this.beamsClient.getDeviceInterests();
@@ -41,7 +41,7 @@ export class PusherBeamsServiceImpl implements PusherBeamsService {
 
   async clearDeviceInterests(): Promise<void> {
     if (!this.beamsClient) {
-      throw new Error("Pusher Beams client not initialized");
+      throw new Error('Pusher Beams client not initialized');
     }
 
     return this.beamsClient.clearDeviceInterests();

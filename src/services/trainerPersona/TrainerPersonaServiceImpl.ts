@@ -1,6 +1,6 @@
-import { TrainerPersona } from "@/domain";
-import { ApiService } from "@/domain/interfaces/api/ApiService";
-import { TrainerPersonaService } from "@/domain/interfaces/services/TrainerPersonaService";
+import { TrainerPersona } from '@/domain';
+import { ApiService } from '@/domain/interfaces/api/ApiService';
+import { TrainerPersonaService } from '@/domain/interfaces/services/TrainerPersonaService';
 
 /**
  * Implementation of the TrainerPersonaService interface.
@@ -8,7 +8,7 @@ import { TrainerPersonaService } from "@/domain/interfaces/services/TrainerPerso
  */
 export class TrainerPersonaServiceImpl implements TrainerPersonaService {
   private readonly apiService: ApiService;
-  private readonly baseEndpoint = "/members/trainer-persona";
+  private readonly baseEndpoint = '/members/trainer-persona';
 
   /**
    * Creates a new instance of TrainerPersonaServiceImpl
@@ -33,7 +33,7 @@ export class TrainerPersonaServiceImpl implements TrainerPersonaService {
   async generateTrainerPersona(): Promise<void> {
     return this.apiService.post<void, Record<string, unknown>>(
       `${this.baseEndpoint}/`,
-      {},
+      {}
     );
   }
 }

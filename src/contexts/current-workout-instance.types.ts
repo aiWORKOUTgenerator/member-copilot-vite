@@ -1,13 +1,13 @@
-import { createContext } from "react";
+import { createContext } from 'react';
 import {
   WorkoutInstance,
   WorkoutInstanceStructure,
-} from "@/domain/entities/workoutInstance";
-import { Exercise } from "@/domain/entities/generatedWorkout";
+} from '@/domain/entities/workoutInstance';
+import { Exercise } from '@/domain/entities/generatedWorkout';
 import {
   UpdateWorkoutInstanceRequest,
   RecommendedExercise,
-} from "@/domain/interfaces/services/WorkoutInstanceService";
+} from '@/domain/interfaces/services/WorkoutInstanceService';
 
 /**
  * CurrentWorkoutInstanceState interface for managing a single workout instance
@@ -20,17 +20,17 @@ export interface CurrentWorkoutInstanceState {
   clearInstance: () => void;
   updateInstance: (
     instanceId: string,
-    request: UpdateWorkoutInstanceRequest,
+    request: UpdateWorkoutInstanceRequest
   ) => Promise<WorkoutInstance>;
   deleteInstance: (instanceId: string) => Promise<void>;
   updateInstanceOptimistically: (updates: Partial<WorkoutInstance>) => void;
   updateInstanceJsonFormatOptimistically: (
-    jsonFormat: WorkoutInstanceStructure,
+    jsonFormat: WorkoutInstanceStructure
   ) => void;
   syncToServer: () => Promise<void>;
   hasPendingChanges: boolean;
   getExerciseRecommendations: (
-    currentExercise: Exercise,
+    currentExercise: Exercise
   ) => Promise<RecommendedExercise[]>;
 }
 

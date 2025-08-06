@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import { StripeSubscription } from "@/domain/entities/StripeSubscription";
-import { PortalConfiguration } from "@/domain/interfaces/services/SubscriptionService";
-import { useAuth } from "@/hooks/auth";
-import { useSubscriptionService } from "@/hooks/useSubscriptionService";
-import { ReactNode, useEffect, useState, useCallback } from "react";
-import { SubscriptionContext, SubscriptionTier } from "./subscription.types";
+import { StripeSubscription } from '@/domain/entities/StripeSubscription';
+import { PortalConfiguration } from '@/domain/interfaces/services/SubscriptionService';
+import { useAuth } from '@/hooks/auth';
+import { useSubscriptionService } from '@/hooks/useSubscriptionService';
+import { ReactNode, useEffect, useState, useCallback } from 'react';
+import { SubscriptionContext, SubscriptionTier } from './subscription.types';
 
 export const SubscriptionProvider = ({ children }: { children: ReactNode }) => {
   const [tiers, setTiers] = useState<SubscriptionTier[]>([]);
   const subscriptionService = useSubscriptionService();
   const [selectedTier, setSelectedTier] = useState<SubscriptionTier | null>(
-    null,
+    null
   );
   const [isLoadingTiers, setIsLoadingTiers] = useState<boolean>(true);
   const [currentUserSubscription, setCurrentUserSubscription] =
@@ -44,14 +44,14 @@ export const SubscriptionProvider = ({ children }: { children: ReactNode }) => {
 
       if (subscriptionTiers.length > 0) {
         const tier = subscriptionTiers.find(
-          (tier) => tier.stripePriceId === subscription?.items.data[0].price.id,
+          (tier) => tier.stripePriceId === subscription?.items.data[0].price.id
         );
         if (tier) {
           setSelectedTier(tier);
         }
       }
     } catch (error) {
-      console.error("Failed to fetch subscription data:", error);
+      console.error('Failed to fetch subscription data:', error);
       setTiers([]);
       setSelectedTier(null);
       setCurrentUserSubscription(null);
@@ -71,11 +71,11 @@ export const SubscriptionProvider = ({ children }: { children: ReactNode }) => {
 
   const createCustomerPortalSession = async (
     portalConfiguration: PortalConfiguration,
-    returnPath?: string,
+    returnPath?: string
   ) => {
     return await subscriptionService.createCustomerPortalSession(
       portalConfiguration,
-      returnPath,
+      returnPath
     );
   };
 

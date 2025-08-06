@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import React from "react";
-import { Link } from "react-router";
-import { Button } from "../atoms";
+import React from 'react';
+import { Link } from 'react-router';
+import { Button } from '../atoms';
 
 interface AuthMethodCardProps {
   title: string;
   description: string;
   buttonLabel: string;
-  buttonVariant: "primary" | "secondary";
+  buttonVariant: 'primary' | 'secondary';
   href: string;
   ariaLabel: string;
 }

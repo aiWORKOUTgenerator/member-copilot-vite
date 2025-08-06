@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useSubscription } from "@/hooks/useSubscription";
-import { useAnalytics } from "@/hooks/useAnalytics";
-import { useBillingContext } from "@/hooks/useBillingContext";
-import PricingComponent from "@/ui/shared/organisms/PricingComponent";
-import { useEffect, useState } from "react";
+import { useSubscription } from '@/hooks/useSubscription';
+import { useAnalytics } from '@/hooks/useAnalytics';
+import { useBillingContext } from '@/hooks/useBillingContext';
+import PricingComponent from '@/ui/shared/organisms/PricingComponent';
+import { useEffect, useState } from 'react';
 
 export default function SubscriptionPage() {
   const { tiers, selectedTier, isLoadingTiers, createCheckoutSession } =
@@ -15,7 +15,7 @@ export default function SubscriptionPage() {
 
   // Track billing page views
   useEffect(() => {
-    analytics.track("Billing Page Viewed", {
+    analytics.track('Billing Page Viewed', {
       tracked_at: new Date().toISOString(),
     });
   }, [analytics]);
@@ -25,11 +25,11 @@ export default function SubscriptionPage() {
 
     // Find the selected tier for analytics
     const selectedPlan = tiers.find(
-      (tier) => tier.stripePriceId === stripePriceId,
+      (tier) => tier.stripePriceId === stripePriceId
     );
 
     // Track upgrade start
-    analytics.track("Subscription Upgrade Started", {
+    analytics.track('Subscription Upgrade Started', {
       planId: selectedPlan?.id,
       planName: selectedPlan?.name,
       planPrice: selectedPlan?.price,
@@ -38,8 +38,8 @@ export default function SubscriptionPage() {
     });
 
     setIsProcessing(true);
-    setSuccessMessage("");
-    setErrorMessage("");
+    setSuccessMessage('');
+    setErrorMessage('');
 
     try {
       console.log(`Attempting to create checkout session for ${stripePriceId}`);
@@ -48,7 +48,7 @@ export default function SubscriptionPage() {
 
       if (url) {
         // Track successful checkout session creation
-        analytics.track("Checkout Session Created", {
+        analytics.track('Checkout Session Created', {
           planId: selectedPlan?.id,
           planName: selectedPlan?.name,
           stripePriceId,
@@ -58,17 +58,17 @@ export default function SubscriptionPage() {
         // Redirect the user to the Stripe Checkout page
         window.location.href = url;
       } else {
-        throw new Error("Checkout URL not received from the server.");
+        throw new Error('Checkout URL not received from the server.');
       }
     } catch (error) {
-      console.error("Failed to change subscription:", error);
+      console.error('Failed to change subscription:', error);
 
       // Track upgrade failure
-      analytics.track("Subscription Upgrade Failed", {
+      analytics.track('Subscription Upgrade Failed', {
         planId: selectedPlan?.id,
         planName: selectedPlan?.name,
         stripePriceId,
-        error: error instanceof Error ? error.message : "Unknown error",
+        error: error instanceof Error ? error.message : 'Unknown error',
         tracked_at: new Date().toISOString(),
       });
 
@@ -77,7 +77,7 @@ export default function SubscriptionPage() {
         setErrorMessage(error.message);
       } else {
         setErrorMessage(
-          "Failed to process subscription change. Please try again later.",
+          'Failed to process subscription change. Please try again later.'
         );
       }
     } finally {

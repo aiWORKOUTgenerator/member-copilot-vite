@@ -1,18 +1,18 @@
-import { License, LicenseStatus } from "@/domain/entities";
-import type { ApiService } from "@/domain/interfaces/api/ApiService";
-import type { LicenseService as ILicenseService } from "@/domain/interfaces/license/LicenseService"; // Aliasing for clarity
-import { LicensePolicyService } from "./LicensePolicyService";
+import { License, LicenseStatus } from '@/domain/entities';
+import type { ApiService } from '@/domain/interfaces/api/ApiService';
+import type { LicenseService as ILicenseService } from '@/domain/interfaces/license/LicenseService'; // Aliasing for clarity
+import { LicensePolicyService } from './LicensePolicyService';
 
 /**
  * Service implementation for license management and usage tracking.
  * Assumes user context is handled by the backend.
  */
 export class LicenseServiceImpl implements ILicenseService {
-  private readonly baseEndpoint = "/members/licenses/";
+  private readonly baseEndpoint = '/members/licenses/';
 
   constructor(
     private apiService: ApiService,
-    private policyService: LicensePolicyService,
+    private policyService: LicensePolicyService
   ) {}
 
   /**
@@ -23,14 +23,14 @@ export class LicenseServiceImpl implements ILicenseService {
     try {
       // Endpoint assumes backend resolves user context (e.g., via session/token)
       const licenses = await this.apiService.get<License[]>(
-        `${this.baseEndpoint}`,
+        `${this.baseEndpoint}`
       );
 
       if (!licenses || licenses.length === 0) return [];
 
       return licenses;
     } catch (error) {
-      console.error("Error fetching active licenses:", error);
+      console.error('Error fetching active licenses:', error);
       return []; // Return empty array on error
     }
   }
@@ -47,11 +47,11 @@ export class LicenseServiceImpl implements ILicenseService {
   async getContactLicenses(contactId: string): Promise<License[]> {
     try {
       const response = await this.apiService.get<License[]>(
-        `/api/licenses/contact/${contactId}`, // This endpoint would still need contactId
+        `/api/licenses/contact/${contactId}` // This endpoint would still need contactId
       );
       return response || [];
     } catch (error) {
-      console.error("Error fetching contact licenses for", contactId, error);
+      console.error('Error fetching contact licenses for', contactId, error);
       return [];
     }
   }
@@ -86,7 +86,7 @@ export class LicenseServiceImpl implements ILicenseService {
     }
 
     return activeLicenses.some(
-      (license) => license.policy?.features[feature] === true,
+      (license) => license.policy?.features[feature] === true
     );
   }
 
@@ -117,7 +117,7 @@ export class LicenseServiceImpl implements ILicenseService {
     return licensesToCheck.some(
       (license) =>
         license.status === LicenseStatus.ACTIVE &&
-        license.policy?.features[feature] === true, // Placeholder for actual limit check
+        license.policy?.features[feature] === true // Placeholder for actual limit check
     );
   }
 }

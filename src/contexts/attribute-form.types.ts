@@ -1,6 +1,6 @@
-import { createContext } from "react";
-import { Contact } from "@/domain/entities/contact";
-import { Prompt } from "@/domain";
+import { createContext } from 'react';
+import { Contact } from '@/domain/entities/contact';
+import { Prompt } from '@/domain';
 
 // Interface for attribute form values
 export interface AttributeFormValues {
@@ -12,7 +12,7 @@ export interface AttributeFormContextType {
   formValues: AttributeFormValues;
   updateFormValue: (
     key: string,
-    value: string | number | string[] | null,
+    value: string | number | string[] | null
   ) => void;
   resetForm: () => void;
   initFormValues: (contact?: Contact | null, prompts?: Prompt[]) => void;

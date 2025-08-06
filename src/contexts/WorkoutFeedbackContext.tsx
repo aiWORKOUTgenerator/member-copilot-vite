@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
 import {
   WorkoutFeedback,
   CreateWorkoutFeedbackRequest,
-} from "@/domain/entities/workoutFeedback";
-import { useWorkoutFeedbackService } from "@/hooks/useWorkoutFeedbackService";
-import { useAuth } from "@/hooks/auth";
-import { ReactNode, useCallback, useEffect, useState } from "react";
+} from '@/domain/entities/workoutFeedback';
+import { useWorkoutFeedbackService } from '@/hooks/useWorkoutFeedbackService';
+import { useAuth } from '@/hooks/auth';
+import { ReactNode, useCallback, useEffect, useState } from 'react';
 import {
   WorkoutFeedbackContext,
   WorkoutFeedbackState,
-} from "./workout-feedback.types";
+} from './workout-feedback.types';
 
 interface WorkoutFeedbackProviderProps {
   children: ReactNode;
@@ -43,7 +43,7 @@ export function WorkoutFeedbackProvider({
       setUserFeedback(data);
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "Failed to fetch user feedback",
+        err instanceof Error ? err.message : 'Failed to fetch user feedback'
       );
     } finally {
       setIsLoading(false);
@@ -65,14 +65,14 @@ export function WorkoutFeedbackProvider({
         return newFeedback;
       } catch (err) {
         const errorMessage =
-          err instanceof Error ? err.message : "Failed to submit feedback";
+          err instanceof Error ? err.message : 'Failed to submit feedback';
         setError(errorMessage);
         throw new Error(errorMessage);
       } finally {
         setIsSubmitting(false);
       }
     },
-    [workoutFeedbackService],
+    [workoutFeedbackService]
   );
 
   const getFeedbackForWorkout = useCallback(
@@ -83,12 +83,12 @@ export function WorkoutFeedbackProvider({
         const errorMessage =
           err instanceof Error
             ? err.message
-            : "Failed to fetch workout feedback";
+            : 'Failed to fetch workout feedback';
         setError(errorMessage);
         throw new Error(errorMessage);
       }
     },
-    [workoutFeedbackService],
+    [workoutFeedbackService]
   );
 
   const updateFeedback = useCallback(
@@ -99,27 +99,27 @@ export function WorkoutFeedbackProvider({
       try {
         const updatedFeedback = await workoutFeedbackService.updateFeedback(
           feedbackId,
-          request,
+          request
         );
 
         // Update state with the updated feedback
         setUserFeedback((prevFeedback) =>
           prevFeedback.map((feedback) =>
-            feedback.id === feedbackId ? updatedFeedback : feedback,
-          ),
+            feedback.id === feedbackId ? updatedFeedback : feedback
+          )
         );
 
         return updatedFeedback;
       } catch (err) {
         const errorMessage =
-          err instanceof Error ? err.message : "Failed to update feedback";
+          err instanceof Error ? err.message : 'Failed to update feedback';
         setError(errorMessage);
         throw new Error(errorMessage);
       } finally {
         setIsSubmitting(false);
       }
     },
-    [workoutFeedbackService],
+    [workoutFeedbackService]
   );
 
   // Fetch user feedback when the component mounts

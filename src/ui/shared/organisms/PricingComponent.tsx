@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { SubscriptionTier } from "@/domain/entities/subscriptionTier";
+import { SubscriptionTier } from '@/domain/entities/subscriptionTier';
 
 interface PricingComponentProps {
   tiers: SubscriptionTier[];
@@ -10,7 +10,7 @@ interface PricingComponentProps {
 }
 
 function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ");
+  return classes.filter(Boolean).join(' ');
 }
 
 export default function PricingComponent({
@@ -29,7 +29,7 @@ export default function PricingComponent({
       description: tier.description,
       features: tier.features,
       featured: tier.isPopular || false,
-      cta: selectedTier?.id === tier.id ? "Current Plan" : "Switch Plan",
+      cta: selectedTier?.id === tier.id ? 'Current Plan' : 'Switch Plan',
     };
   };
 
@@ -44,15 +44,15 @@ export default function PricingComponent({
             <div
               key={tier.id}
               className={classNames(
-                tier.featured ? "bg-primary ring-primary" : "ring-base-300",
-                "rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 ring-1",
+                tier.featured ? 'bg-primary ring-primary' : 'ring-base-300',
+                'rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 ring-1'
               )}
             >
               <h3
                 id={tier.id}
                 className={classNames(
-                  tier.featured ? "text-primary-content" : "text-base-content",
-                  "text-base sm:text-lg font-semibold",
+                  tier.featured ? 'text-primary-content' : 'text-base-content',
+                  'text-base sm:text-lg font-semibold'
                 )}
               >
                 {tier.name}
@@ -60,9 +60,9 @@ export default function PricingComponent({
               <p
                 className={classNames(
                   tier.featured
-                    ? "text-primary-content/80"
-                    : "text-base-content/70",
-                  "mt-2 sm:mt-4 text-xs sm:text-sm",
+                    ? 'text-primary-content/80'
+                    : 'text-base-content/70',
+                  'mt-2 sm:mt-4 text-xs sm:text-sm'
                 )}
               >
                 {tier.description}
@@ -71,9 +71,9 @@ export default function PricingComponent({
                 <span
                   className={classNames(
                     tier.featured
-                      ? "text-primary-content"
-                      : "text-base-content",
-                    "text-2xl sm:text-3xl lg:text-4xl font-semibold tracking-tight",
+                      ? 'text-primary-content'
+                      : 'text-base-content',
+                    'text-2xl sm:text-3xl lg:text-4xl font-semibold tracking-tight'
                   )}
                 >
                   {tier.price}
@@ -81,9 +81,9 @@ export default function PricingComponent({
                 <span
                   className={classNames(
                     tier.featured
-                      ? "text-primary-content/80"
-                      : "text-base-content/70",
-                    "text-xs sm:text-sm font-semibold",
+                      ? 'text-primary-content/80'
+                      : 'text-base-content/70',
+                    'text-xs sm:text-sm font-semibold'
                   )}
                 >
                   /month
@@ -95,35 +95,35 @@ export default function PricingComponent({
                 aria-describedby={tier.id}
                 className={classNames(
                   tier.featured
-                    ? "btn btn-secondary text-secondary-content"
-                    : "btn btn-primary",
-                  "mt-4 sm:mt-6 w-full text-sm sm:text-base",
+                    ? 'btn btn-secondary text-secondary-content'
+                    : 'btn btn-primary',
+                  'mt-4 sm:mt-6 w-full text-sm sm:text-base',
                   selectedTier?.id === tier.id || isProcessing
-                    ? "btn-disabled"
-                    : "",
+                    ? 'btn-disabled'
+                    : ''
                 )}
               >
                 {selectedTier?.id === tier.id
-                  ? "Current Plan"
+                  ? 'Current Plan'
                   : isProcessing
-                    ? "Processing..."
+                    ? 'Processing...'
                     : tier.cta}
               </button>
               <ul
                 role="list"
                 className={classNames(
                   tier.featured
-                    ? "text-primary-content/80"
-                    : "text-base-content/70",
-                  "mt-6 sm:mt-8 space-y-2 sm:space-y-3 text-xs sm:text-sm",
+                    ? 'text-primary-content/80'
+                    : 'text-base-content/70',
+                  'mt-6 sm:mt-8 space-y-2 sm:space-y-3 text-xs sm:text-sm'
                 )}
               >
                 {tier.features.map((feature) => (
                   <li key={feature} className="flex gap-x-2 sm:gap-x-3">
                     <svg
                       className={classNames(
-                        tier.featured ? "text-primary-content" : "text-primary",
-                        "h-4 w-4 sm:h-5 sm:w-6 flex-none",
+                        tier.featured ? 'text-primary-content' : 'text-primary',
+                        'h-4 w-4 sm:h-5 sm:w-6 flex-none'
                       )}
                       viewBox="0 0 20 20"
                       fill="currentColor"

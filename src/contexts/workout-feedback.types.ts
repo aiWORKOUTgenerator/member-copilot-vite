@@ -1,8 +1,8 @@
-import { createContext } from "react";
+import { createContext } from 'react';
 import {
   WorkoutFeedback,
   CreateWorkoutFeedbackRequest,
-} from "@/domain/entities/workoutFeedback";
+} from '@/domain/entities/workoutFeedback';
 
 /**
  * WorkoutFeedbackState interface defines the shape of our workout feedback context value.
@@ -14,12 +14,12 @@ export interface WorkoutFeedbackState {
   error: string | null;
   refetch: () => Promise<void>;
   submitFeedback: (
-    request: CreateWorkoutFeedbackRequest,
+    request: CreateWorkoutFeedbackRequest
   ) => Promise<WorkoutFeedback>;
   getFeedbackForWorkout: (workoutId: string) => Promise<WorkoutFeedback | null>;
   updateFeedback: (
     feedbackId: string,
-    request: CreateWorkoutFeedbackRequest,
+    request: CreateWorkoutFeedbackRequest
   ) => Promise<WorkoutFeedback>;
   clearError: () => void;
 }

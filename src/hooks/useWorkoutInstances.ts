@@ -1,9 +1,9 @@
-import { useContext } from "react";
-import { WorkoutInstance } from "@/domain/entities/workoutInstance";
+import { useContext } from 'react';
+import { WorkoutInstance } from '@/domain/entities/workoutInstance';
 import {
   WorkoutInstancesContext,
   WorkoutInstancesState,
-} from "@/contexts/workout-instances.types";
+} from '@/contexts/workout-instances.types';
 
 /**
  * Hook to access the workout instances list
@@ -13,7 +13,7 @@ export function useWorkoutInstances(): WorkoutInstancesState {
 
   if (context === undefined) {
     throw new Error(
-      "useWorkoutInstances must be used within a WorkoutInstancesProvider",
+      'useWorkoutInstances must be used within a WorkoutInstancesProvider'
     );
   }
 
@@ -39,7 +39,7 @@ export function useWorkoutInstancesError(): string | null {
 }
 
 export function useWorkoutInstancesByGeneratedWorkoutId(
-  generatedWorkoutId: string,
+  generatedWorkoutId: string
 ): WorkoutInstance[] {
   const { getInstancesByGeneratedWorkoutId } = useWorkoutInstances();
   return getInstancesByGeneratedWorkoutId(generatedWorkoutId);

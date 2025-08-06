@@ -1,9 +1,9 @@
-import { useContext } from "react";
-import { AttributeType } from "@/domain/entities/attributeType";
+import { useContext } from 'react';
+import { AttributeType } from '@/domain/entities/attributeType';
 import {
   AttributeTypeContext,
   AttributeTypeState,
-} from "@/contexts/attribute-type.types";
+} from '@/contexts/attribute-type.types';
 
 /**
  * Custom hook to access the attribute type data from the AttributeTypeContext.
@@ -14,7 +14,7 @@ export function useAttributeTypes(): AttributeTypeState {
 
   if (context === undefined) {
     throw new Error(
-      "useAttributeTypes must be used within an AttributeTypeProvider",
+      'useAttributeTypes must be used within an AttributeTypeProvider'
     );
   }
 

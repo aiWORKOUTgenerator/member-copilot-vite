@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { Section, WorkoutStructure } from "@/domain/entities/generatedWorkout";
-import { useState } from "react";
+import { Section, WorkoutStructure } from '@/domain/entities/generatedWorkout';
+import { useState } from 'react';
 import {
   ExerciseCard,
   InvalidWorkoutCard,
   EmptySectionsCard,
-} from "./WorkoutComponents";
-import { formatTime } from "../utils/workouts.func";
+} from './WorkoutComponents';
+import { formatTime } from '../utils/workouts.func';
 
 // Section component to display a group of exercises
 const SectionCard = ({
@@ -19,7 +19,7 @@ const SectionCard = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(true);
 
-  if (!section || typeof section !== "object") {
+  if (!section || typeof section !== 'object') {
     return (
       <div className="p-4 bg-error bg-opacity-10 rounded-lg mb-6">
         Invalid section data
@@ -36,8 +36,8 @@ const SectionCard = ({
     : [];
 
   // Calculate indentation based on depth
-  const indentClass = depth > 0 ? `ml-${Math.min(depth * 4, 16)}` : "";
-  const cardBgClass = depth > 0 ? "bg-base-200" : "bg-base-100";
+  const indentClass = depth > 0 ? `ml-${Math.min(depth * 4, 16)}` : '';
+  const cardBgClass = depth > 0 ? 'bg-base-200' : 'bg-base-100';
 
   return (
     <div className={`${cardBgClass} rounded-lg shadow-sm mb-6 ${indentClass}`}>
@@ -48,14 +48,14 @@ const SectionCard = ({
         <div>
           <h3
             className={`${
-              depth === 0 ? "text-xl" : depth === 1 ? "text-lg" : "text-base"
+              depth === 0 ? 'text-xl' : depth === 1 ? 'text-lg' : 'text-base'
             } font-bold`}
           >
-            {depth > 0 && "└ "}
-            {section.name || "Unnamed Section"}
+            {depth > 0 && '└ '}
+            {section.name || 'Unnamed Section'}
           </h3>
           <div className="badge badge-outline mt-1">
-            {section.type || "Unknown"}
+            {section.type || 'Unknown'}
           </div>
           {section.rounds && section.rounds > 1 && (
             <div className="badge badge-primary ml-2">
@@ -64,12 +64,12 @@ const SectionCard = ({
           )}
           {subSections.length > 0 && (
             <div className="badge badge-secondary ml-2">
-              {subSections.length} subsection{subSections.length > 1 ? "s" : ""}
+              {subSections.length} subsection{subSections.length > 1 ? 's' : ''}
             </div>
           )}
         </div>
         <button className="btn btn-circle btn-sm">
-          {isExpanded ? "−" : "+"}
+          {isExpanded ? '−' : '+'}
         </button>
       </div>
 
@@ -110,9 +110,9 @@ const SectionCard = ({
                                 Boolean(section.rest_between_exercises) &&
                                 (section.rest_between_exercises ?? 0) > 0 && (
                                   <div className="text-center text-sm opacity-60 my-2">
-                                    Rest{" "}
+                                    Rest{' '}
                                     {formatTime(
-                                      section.rest_between_exercises!,
+                                      section.rest_between_exercises!
                                     )}
                                   </div>
                                 )}
@@ -127,14 +127,14 @@ const SectionCard = ({
                                 <div className="flex items-center justify-center gap-2">
                                   <span>🕒</span>
                                   <span>
-                                    Rest{" "}
-                                    {formatTime(section.rest_between_rounds!)}{" "}
+                                    Rest{' '}
+                                    {formatTime(section.rest_between_rounds!)}{' '}
                                     before Round {round + 1}
                                   </span>
                                 </div>
                               </div>
                             )}
-                        </div>,
+                        </div>
                       );
                     }
 
@@ -153,7 +153,7 @@ const SectionCard = ({
                         Boolean(section.rest_between_exercises) &&
                         (section.rest_between_exercises ?? 0) > 0 && (
                           <div className="text-center text-sm opacity-60 my-2">
-                            Rest {formatTime(section.rest_between_exercises!)}{" "}
+                            Rest {formatTime(section.rest_between_exercises!)}{' '}
                             between subsections
                           </div>
                         )}
@@ -190,7 +190,7 @@ const StructuredWorkoutViewer = ({
   // Handle potentially malformed workout structure
   const isValidWorkout =
     workout &&
-    typeof workout === "object" &&
+    typeof workout === 'object' &&
     workout.title &&
     workout.description;
 

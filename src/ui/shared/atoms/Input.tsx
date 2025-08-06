@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { forwardRef, InputHTMLAttributes } from "react";
+import { forwardRef, InputHTMLAttributes } from 'react';
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -13,7 +13,7 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 export const Input = forwardRef<HTMLInputElement, InputProps>(
   (
     {
-      className = "",
+      className = '',
       label,
       error,
       helperText,
@@ -23,7 +23,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       id,
       ...props
     },
-    ref,
+    ref
   ) => {
     // Generate a unique ID if one isn't provided
     const inputId = id || `input-${Math.random().toString(36).substring(2, 9)}`;
@@ -31,7 +31,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const isDisabled = disabled || isLoading;
 
     return (
-      <div className={`form-control ${fullWidth ? "w-full" : ""} ${className}`}>
+      <div className={`form-control ${fullWidth ? 'w-full' : ''} ${className}`}>
         {label && (
           <label htmlFor={inputId} className="label">
             <span className="label-text font-medium">{label}</span>
@@ -49,8 +49,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             disabled={isDisabled}
             className={`
               input input-bordered w-full 
-              ${hasError ? "input-error" : ""} 
-              ${isLoading ? "pr-10" : ""}
+              ${hasError ? 'input-error' : ''} 
+              ${isLoading ? 'pr-10' : ''}
             `}
             aria-invalid={hasError}
             aria-describedby={
@@ -86,7 +86,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         )}
       </div>
     );
-  },
+  }
 );
 
-Input.displayName = "Input";
+Input.displayName = 'Input';

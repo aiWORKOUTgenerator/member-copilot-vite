@@ -1,20 +1,20 @@
-"use client";
+'use client';
 
 import {
   useGeneratedWorkouts,
   useGeneratedWorkoutsLoading,
-} from "@/hooks/useGeneratedWorkouts";
-import { GeneratedWorkout } from "@/domain/entities/generatedWorkout";
-import { useUserAccess } from "@/hooks";
-import { MeteredFeature } from "@/domain/entities/meteredFeatures";
-import LoadingState from "@/ui/shared/atoms/LoadingState";
-import AccessAwareComponent from "@/ui/shared/molecules/AccessAwareComponent";
-import EmptyStateBasic from "@/ui/shared/molecules/EmptyState";
-import { Plus, AlertTriangle, History } from "lucide-react";
-import { useNavigate } from "react-router";
-import WorkoutList from "./components/WorkoutList";
-import { useAnalytics } from "@/hooks/useAnalytics";
-import { useEffect } from "react";
+} from '@/hooks/useGeneratedWorkouts';
+import { GeneratedWorkout } from '@/domain/entities/generatedWorkout';
+import { useUserAccess } from '@/hooks';
+import { MeteredFeature } from '@/domain/entities/meteredFeatures';
+import LoadingState from '@/ui/shared/atoms/LoadingState';
+import AccessAwareComponent from '@/ui/shared/molecules/AccessAwareComponent';
+import EmptyStateBasic from '@/ui/shared/molecules/EmptyState';
+import { Plus, AlertTriangle, History } from 'lucide-react';
+import { useNavigate } from 'react-router';
+import WorkoutList from './components/WorkoutList';
+import { useAnalytics } from '@/hooks/useAnalytics';
+import { useEffect } from 'react';
 
 export default function AIWorkouts() {
   const { workouts } = useGeneratedWorkouts();
@@ -25,7 +25,7 @@ export default function AIWorkouts() {
     useUserAccess();
 
   const isWorkoutGenerationLimitReached = isMeterLimitReached(
-    MeteredFeature.WORKOUTS_GENERATED,
+    MeteredFeature.WORKOUTS_GENERATED
   );
 
   const isLoading = isLoadingGeneratedWorkouts || isLoadingMeteredUsage;
@@ -34,7 +34,7 @@ export default function AIWorkouts() {
 
   // Track workouts page views
   useEffect(() => {
-    analytics.track("Workouts Library Viewed", {
+    analytics.track('Workouts Library Viewed', {
       workoutCount: workouts?.length || 0,
       tracked_at: new Date().toISOString(),
     });
@@ -46,9 +46,9 @@ export default function AIWorkouts() {
 
   // Track workout selection
   const handleWorkoutClick = (workout: GeneratedWorkout) => {
-    analytics.track("Workout Selected", {
+    analytics.track('Workout Selected', {
       workoutId: workout.id,
-      location: "workouts_library",
+      location: 'workouts_library',
       tracked_at: new Date().toISOString(),
     });
     navigate(`/dashboard/workouts/${workout.id}`);
@@ -56,8 +56,8 @@ export default function AIWorkouts() {
 
   // Track navigation to generation
   const handleGenerateNewClick = () => {
-    analytics.track("Generate New Workout CTA Clicked", {
-      location: "workouts_library",
+    analytics.track('Generate New Workout CTA Clicked', {
+      location: 'workouts_library',
       existingWorkoutCount: workouts?.length || 0,
       tracked_at: new Date().toISOString(),
     });
@@ -65,24 +65,24 @@ export default function AIWorkouts() {
 
   const navigateToGeneratePage = () => {
     handleGenerateNewClick();
-    navigate("/dashboard/workouts/generate");
+    navigate('/dashboard/workouts/generate');
   };
 
   const navigateToBillingPage = () => {
-    analytics.track("Upgrade Plan CTA Clicked", {
-      location: "workouts_library",
-      reason: "workout_generation_limit_reached",
+    analytics.track('Upgrade Plan CTA Clicked', {
+      location: 'workouts_library',
+      reason: 'workout_generation_limit_reached',
       tracked_at: new Date().toISOString(),
     });
-    navigate("/dashboard/billing");
+    navigate('/dashboard/billing');
   };
 
   const navigateToHistory = () => {
-    analytics.track("Workout History CTA Clicked", {
-      location: "workouts_library",
+    analytics.track('Workout History CTA Clicked', {
+      location: 'workouts_library',
       tracked_at: new Date().toISOString(),
     });
-    navigate("/dashboard/workouts/history");
+    navigate('/dashboard/workouts/history');
   };
 
   if (workouts.length === 0) {
@@ -92,13 +92,13 @@ export default function AIWorkouts() {
           title="No workouts found yet"
           description={
             isWorkoutGenerationLimitReached
-              ? "You have reached your workout generation limit for this period."
-              : "Generate your first workout to get started"
+              ? 'You have reached your workout generation limit for this period.'
+              : 'Generate your first workout to get started'
           }
           actionLabel={
             isWorkoutGenerationLimitReached
-              ? "Upgrade Plan"
-              : "Generate Workout"
+              ? 'Upgrade Plan'
+              : 'Generate Workout'
           }
           onAction={
             isWorkoutGenerationLimitReached
@@ -156,18 +156,18 @@ export default function AIWorkouts() {
                 disabled={false}
                 title={
                   isWorkoutGenerationLimitReached
-                    ? "You have reached your workout generation limit. Click to upgrade your plan."
-                    : "Generate a new workout"
+                    ? 'You have reached your workout generation limit. Click to upgrade your plan.'
+                    : 'Generate a new workout'
                 }
               >
                 <Plus className="w-4 h-4 sm:mr-2" />
                 <span className="hidden sm:inline">
                   {isWorkoutGenerationLimitReached
-                    ? "Upgrade Plan"
-                    : "Generate Workout"}
+                    ? 'Upgrade Plan'
+                    : 'Generate Workout'}
                 </span>
                 <span className="sm:hidden">
-                  {isWorkoutGenerationLimitReached ? "Upgrade" : "Generate"}
+                  {isWorkoutGenerationLimitReached ? 'Upgrade' : 'Generate'}
                 </span>
               </button>
             </AccessAwareComponent>

@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { GeneratedWorkout } from "@/domain/entities/generatedWorkout";
-import { WorkoutParams } from "@/domain/entities/workoutParams";
-import { useGeneratedWorkoutService } from "@/hooks/useGeneratedWorkoutService";
-import { useAuth } from "@/hooks/auth";
-import { ReactNode, useCallback, useEffect, useState } from "react";
+import { GeneratedWorkout } from '@/domain/entities/generatedWorkout';
+import { WorkoutParams } from '@/domain/entities/workoutParams';
+import { useGeneratedWorkoutService } from '@/hooks/useGeneratedWorkoutService';
+import { useAuth } from '@/hooks/auth';
+import { ReactNode, useCallback, useEffect, useState } from 'react';
 import {
   GeneratedWorkoutContext,
   GeneratedWorkoutState,
-} from "./generated-workout.types";
+} from './generated-workout.types';
 
 interface GeneratedWorkoutProviderProps {
   children: ReactNode;
@@ -38,7 +38,7 @@ export function GeneratedWorkoutProvider({
       setError(
         err instanceof Error
           ? err.message
-          : "Failed to fetch generated workouts",
+          : 'Failed to fetch generated workouts'
       );
     } finally {
       setIsLoading(false);
@@ -54,7 +54,7 @@ export function GeneratedWorkoutProvider({
         const newWorkout = await generatedWorkoutService.createGeneratedWorkout(
           configId,
           workoutParams,
-          prompt,
+          prompt
         );
 
         // Update state with the new workout
@@ -63,14 +63,14 @@ export function GeneratedWorkoutProvider({
         return newWorkout;
       } catch (err) {
         const errorMessage =
-          err instanceof Error ? err.message : "Failed to create workout";
+          err instanceof Error ? err.message : 'Failed to create workout';
         setError(errorMessage);
         throw new Error(errorMessage);
       } finally {
         setIsLoading(false);
       }
     },
-    [generatedWorkoutService],
+    [generatedWorkoutService]
   );
 
   // Fetch workout data when the component mounts

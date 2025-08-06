@@ -1,5 +1,5 @@
-import { Announcement } from "@/domain/entities/announcement";
-import { createContext } from "react";
+import { Announcement } from '@/domain/entities/announcement';
+import { createContext } from 'react';
 
 /**
  * AnnouncementState interface defines the shape of our announcement context value.
@@ -16,5 +16,5 @@ export interface AnnouncementState {
  * This forces consumers to use the useAnnouncements hook which performs a null check.
  */
 export const AnnouncementContext = createContext<AnnouncementState | undefined>(
-  undefined,
+  undefined
 );
