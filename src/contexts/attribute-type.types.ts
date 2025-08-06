@@ -1,5 +1,5 @@
-import { AttributeType } from "@/domain/entities/attributeType";
-import { createContext } from "react";
+import { AttributeType } from '@/domain/entities/attributeType';
+import { createContext } from 'react';
 
 /**
  * AttributeTypeState interface defines the shape of our attribute type context value.

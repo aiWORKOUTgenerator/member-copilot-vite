@@ -1,4 +1,4 @@
-import { createContext } from "react";
+import { createContext } from 'react';
 
 /**
  * VerificationState interface defines the shape of our verification context value.

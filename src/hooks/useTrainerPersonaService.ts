@@ -1,7 +1,7 @@
-import { useMemo } from "react";
-import { useApiService } from "./useApiService";
-import { TrainerPersonaService } from "../domain/interfaces/services/TrainerPersonaService";
-import { TrainerPersonaServiceImpl } from "../services/trainerPersona/TrainerPersonaServiceImpl";
+import { useMemo } from 'react';
+import { useApiService } from './useApiService';
+import { TrainerPersonaService } from '../domain/interfaces/services/TrainerPersonaService';
+import { TrainerPersonaServiceImpl } from '../services/trainerPersona/TrainerPersonaServiceImpl';
 
 /**
  * Hook to get a TrainerPersonaService instance with authentication configured

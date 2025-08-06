@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { AuthRequired, PageLoading } from "@/ui";
-import { useAuth } from "@clerk/clerk-react";
-import { useEffect } from "react";
-import { Route, Routes, useNavigate } from "react-router";
-import DashboardHomePage from "./DashboardHomePage";
+import { AuthRequired, PageLoading } from '@/ui';
+import { useAuth } from '@clerk/clerk-react';
+import { useEffect } from 'react';
+import { Route, Routes, useNavigate } from 'react-router';
+import DashboardHomePage from './DashboardHomePage';
 
 export default function DashboardLayout() {
   const { isLoaded, isSignedIn } = useAuth();
@@ -13,7 +13,7 @@ export default function DashboardLayout() {
   // Redirect to sign-in if not authenticated after loading
   useEffect(() => {
     if (isLoaded && !isSignedIn) {
-      navigate("/sign-in");
+      navigate('/sign-in');
     }
   }, [isLoaded, isSignedIn, navigate]);
 

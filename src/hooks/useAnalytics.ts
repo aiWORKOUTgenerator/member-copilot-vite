@@ -1,5 +1,5 @@
-import { getAnalytics } from "@/services/analytics";
-import type { AnalyticsService } from "@/services/analytics";
+import { getAnalytics } from '@/services/analytics';
+import type { AnalyticsService } from '@/services/analytics';
 
 /**
  * Custom hook to access the analytics service

@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import React from "react";
+import React from 'react';
 
 interface DateInputProps {
   id: string;
@@ -29,7 +29,7 @@ export const DateInput: React.FC<DateInputProps> = ({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         className={`input input-bordered w-full ${
-          !isValid ? "input-error" : ""
+          !isValid ? 'input-error' : ''
         }`}
         disabled={disabled}
         min={min}

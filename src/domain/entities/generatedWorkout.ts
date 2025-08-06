@@ -28,7 +28,7 @@ export class GeneratedWorkout {
           try {
             return JSON.parse(props.json_format as string);
           } catch (error) {
-            console.log("Error parsing JSON format:", error);
+            console.log('Error parsing JSON format:', error);
             return null;
           }
         })()
@@ -40,11 +40,11 @@ export class GeneratedWorkout {
 
 // Enum for exercise types
 export enum ExerciseType {
-  Standard = "Standard",
-  Interval = "Interval",
-  Circuit = "Circuit",
-  AMRAP = "AMRAP",
-  EMOM = "EMOM",
+  Standard = 'Standard',
+  Interval = 'Interval',
+  Circuit = 'Circuit',
+  AMRAP = 'AMRAP',
+  EMOM = 'EMOM',
 }
 
 // Types based on the Pydantic models

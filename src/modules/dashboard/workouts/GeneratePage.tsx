@@ -1,41 +1,41 @@
-import { useGeneratedWorkouts } from "@/hooks/useGeneratedWorkouts";
-import { ArrowBigLeft } from "lucide-react";
-import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router";
-import WorkoutCustomization from "./components/WorkoutCustomization";
-import { PerWorkoutOptions } from "./components/types";
-import { useAnalytics } from "@/hooks/useAnalytics";
+import { useGeneratedWorkouts } from '@/hooks/useGeneratedWorkouts';
+import { ArrowBigLeft } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router';
+import WorkoutCustomization from './components/WorkoutCustomization';
+import { PerWorkoutOptions } from './components/types';
+import { useAnalytics } from '@/hooks/useAnalytics';
 
 // 15 workout prompt examples
 const WORKOUT_PROMPTS = [
-  "30 minute HIIT workout for fat loss",
-  "Strength training for beginners with dumbbells only",
-  "Recovery yoga routine after leg day",
-  "20-minute HIIT workout with no equipment",
-  "Strength training routine for building leg muscles",
-  "Full body workout with dumbbells only",
-  "Low impact cardio for beginners",
-  "Upper body workout focusing on arms and shoulders",
-  "Quick morning yoga routine for flexibility",
-  "Core strengthening workout for abs",
-  "Endurance training plan for marathon preparation",
-  "Bodyweight exercises for hotel room travel workouts",
-  "Kettlebell circuit for full body conditioning",
-  "Back pain relief stretching routine",
-  "Powerlifting workout for strength gains",
-  "Post-workout recovery stretching routine",
-  "15-minute desk-based workout for office breaks",
-  "Workout for improving running speed and endurance",
-  "Senior-friendly gentle exercise routine",
-  "Mobility workout for improving joint health",
+  '30 minute HIIT workout for fat loss',
+  'Strength training for beginners with dumbbells only',
+  'Recovery yoga routine after leg day',
+  '20-minute HIIT workout with no equipment',
+  'Strength training routine for building leg muscles',
+  'Full body workout with dumbbells only',
+  'Low impact cardio for beginners',
+  'Upper body workout focusing on arms and shoulders',
+  'Quick morning yoga routine for flexibility',
+  'Core strengthening workout for abs',
+  'Endurance training plan for marathon preparation',
+  'Bodyweight exercises for hotel room travel workouts',
+  'Kettlebell circuit for full body conditioning',
+  'Back pain relief stretching routine',
+  'Powerlifting workout for strength gains',
+  'Post-workout recovery stretching routine',
+  '15-minute desk-based workout for office breaks',
+  'Workout for improving running speed and endurance',
+  'Senior-friendly gentle exercise routine',
+  'Mobility workout for improving joint health',
 ];
 
 export default function GenerateWorkoutPage() {
-  const [activeTab, setActiveTab] = useState<"quick" | "detailed">("quick");
+  const [activeTab, setActiveTab] = useState<'quick' | 'detailed'>('quick');
   const [activeQuickStep, setActiveQuickStep] = useState<
-    "focus-energy" | "duration-equipment"
-  >("focus-energy");
-  const [prompt, setPrompt] = useState("");
+    'focus-energy' | 'duration-equipment'
+  >('focus-energy');
+  const [prompt, setPrompt] = useState('');
   const [perWorkoutOptions, setPerWorkoutOptions] = useState<PerWorkoutOptions>(
     {}
   );
@@ -43,7 +43,7 @@ export default function GenerateWorkoutPage() {
     {}
   );
 
-  const prevStepRef = useRef<"focus-energy" | "duration-equipment">(
+  const prevStepRef = useRef<'focus-energy' | 'duration-equipment'>(
     activeQuickStep
   );
   const [isGenerating, setIsGenerating] = useState(false);
@@ -55,7 +55,7 @@ export default function GenerateWorkoutPage() {
 
   // Track workout generation page views
   useEffect(() => {
-    analytics.track("Workout Generation Page Viewed", {
+    analytics.track('Workout Generation Page Viewed', {
       tracked_at: new Date().toISOString(),
     });
   }, [analytics]);
@@ -78,7 +78,7 @@ export default function GenerateWorkoutPage() {
         if (Array.isArray(value)) {
           // Convert arrays to comma-separated strings
           if (value.length > 0) {
-            stringOptions[key] = value.join(", ");
+            stringOptions[key] = value.join(', ');
           }
         } else {
           // Convert numbers and strings to strings
@@ -89,7 +89,7 @@ export default function GenerateWorkoutPage() {
 
     // Log the conversion for debugging (only in development)
     if (import.meta.env.DEV) {
-      console.log("Converting workout options to strings:", {
+      console.log('Converting workout options to strings:', {
         original: options,
         converted: stringOptions,
         mode: activeTab,
@@ -107,10 +107,10 @@ export default function GenerateWorkoutPage() {
     e.preventDefault();
 
     // For quick workout, handle step navigation
-    if (activeTab === "quick") {
-      if (activeQuickStep === "focus-energy") {
+    if (activeTab === 'quick') {
+      if (activeQuickStep === 'focus-energy') {
         // Simply advance to next step without validation
-        setActiveQuickStep("duration-equipment");
+        setActiveQuickStep('duration-equipment');
         return;
       } else {
         // Proceed with workout generation without validation
@@ -128,11 +128,11 @@ export default function GenerateWorkoutPage() {
           const response = await createWorkout(
             import.meta.env.VITE_GENERATED_WORKOUT_CONFIGURATION_ID,
             combinedParams,
-            "" // No prompt for quick workout
+            '' // No prompt for quick workout
           );
 
-          console.log("Generated workout:", response);
-          console.log("Submitted customization options:", stringOptions);
+          console.log('Generated workout:', response);
+          console.log('Submitted customization options:', stringOptions);
 
           // Redirect to the generated workout page
           navigate(`/dashboard/workouts/${response.id}`);
@@ -140,7 +140,7 @@ export default function GenerateWorkoutPage() {
           // Track successful workout generation
           handleGenerationSuccess(response.id);
         } catch (error) {
-          console.error("Failed to generate workout:", error);
+          console.error('Failed to generate workout:', error);
           setIsGenerating(false);
 
           // Track generation failures
@@ -169,8 +169,8 @@ export default function GenerateWorkoutPage() {
           workoutPrompt
         );
 
-        console.log("Generated workout:", response);
-        console.log("Submitted customization options:", stringOptions);
+        console.log('Generated workout:', response);
+        console.log('Submitted customization options:', stringOptions);
 
         // Redirect to the generated workout page
         navigate(`/dashboard/workouts/${response.id}`);
@@ -178,7 +178,7 @@ export default function GenerateWorkoutPage() {
         // Track successful workout generation
         handleGenerationSuccess(response.id);
       } catch (error) {
-        console.error("Failed to generate workout:", error);
+        console.error('Failed to generate workout:', error);
         setIsGenerating(false);
 
         // Track generation failures
@@ -211,7 +211,7 @@ export default function GenerateWorkoutPage() {
 
   // Track successful workout generation
   const handleGenerationSuccess = (workoutId: string) => {
-    analytics.track("Workout Generated Successfully", {
+    analytics.track('Workout Generated Successfully', {
       workoutId,
       mode: activeTab,
       hasGoal: !!perWorkoutOptions.customization_goal,
@@ -228,7 +228,7 @@ export default function GenerateWorkoutPage() {
 
   // Track generation failures
   const handleGenerationError = (error: string) => {
-    analytics.track("Workout Generation Failed", {
+    analytics.track('Workout Generation Failed', {
       error,
       mode: activeTab,
       hasGoal: !!perWorkoutOptions.customization_goal,
@@ -241,7 +241,7 @@ export default function GenerateWorkoutPage() {
 
   // Track preference changes
   const handlePreferenceChange = (preferenceType: string, value: unknown) => {
-    analytics.track("Workout Preference Changed", {
+    analytics.track('Workout Preference Changed', {
       preferenceType,
       value,
       mode: activeTab,
@@ -274,30 +274,30 @@ export default function GenerateWorkoutPage() {
     hasCurrentStepErrors: false,
     currentStepErrorCount: 0,
     canProceed:
-      activeQuickStep === "focus-energy"
+      activeQuickStep === 'focus-energy'
         ? hasFocusEnergySelections
         : hasDurationEquipmentSelections,
   };
 
   // Get button state based on active tab
   const getButtonState = () => {
-    if (activeTab === "detailed") {
+    if (activeTab === 'detailed') {
       const hasErrors = Object.keys(errors).length > 0;
       return {
-        className: "btn btn-primary",
+        className: 'btn btn-primary',
         disabled: hasErrors,
-        text: "Generate Workout",
+        text: 'Generate Workout',
       };
     }
 
     // Quick mode - simple button state
     const canProceed = errorSummary.canProceed;
-    const isFocusEnergyStep = activeQuickStep === "focus-energy";
+    const isFocusEnergyStep = activeQuickStep === 'focus-energy';
 
     return {
-      className: canProceed ? "btn btn-primary" : "btn btn-disabled",
+      className: canProceed ? 'btn btn-primary' : 'btn btn-disabled',
       disabled: !canProceed,
-      text: isFocusEnergyStep ? "Next" : "Generate Quick Workout",
+      text: isFocusEnergyStep ? 'Next' : 'Generate Quick Workout',
     };
   };
 
@@ -322,25 +322,25 @@ export default function GenerateWorkoutPage() {
             <button
               type="button"
               className={`btn join-item ${
-                activeTab === "quick" ? "btn-primary" : "btn-outline"
+                activeTab === 'quick' ? 'btn-primary' : 'btn-outline'
               }`}
-              onClick={() => setActiveTab("quick")}
+              onClick={() => setActiveTab('quick')}
             >
               Quick Workout Setup
             </button>
             <button
               type="button"
               className={`btn join-item ${
-                activeTab === "detailed" ? "btn-primary" : "btn-outline"
+                activeTab === 'detailed' ? 'btn-primary' : 'btn-outline'
               }`}
-              onClick={() => setActiveTab("detailed")}
+              onClick={() => setActiveTab('detailed')}
             >
               Detailed Workout Setup
             </button>
           </div>
 
           <form onSubmit={handleSubmit}>
-            {activeTab === "quick" ? (
+            {activeTab === 'quick' ? (
               <>
                 <p className="text-sm text-base-content/70 mb-6">
                   Set up a quick workout based on your profile and preferences
@@ -377,7 +377,7 @@ export default function GenerateWorkoutPage() {
                 <div className="mb-6">
                   <label className="block mb-2 font-medium flex justify-between items-center">
                     <span>
-                      Additional Requirements{" "}
+                      Additional Requirements{' '}
                       <span className="text-sm font-normal text-base-content/70">
                         (optional)
                       </span>
@@ -420,10 +420,10 @@ export default function GenerateWorkoutPage() {
                         data-prefix=">"
                         className={`text-${
                           index === 0
-                            ? "success"
+                            ? 'success'
                             : index === 1
-                            ? "info"
-                            : "warning"
+                              ? 'info'
+                              : 'warning'
                         } cursor-pointer hover:bg-base-300`}
                         onClick={() => setExamplePrompt(example)}
                       >
@@ -445,20 +445,20 @@ export default function GenerateWorkoutPage() {
 
             <div className="card-actions justify-end">
               {/* Simple progress indicator for quick mode */}
-              {activeTab === "quick" && (
+              {activeTab === 'quick' && (
                 <div className="flex items-center gap-3 text-sm text-base-content/60 mr-auto">
                   <div className="flex items-center gap-2">
                     <div
                       className={`w-2 h-2 rounded-full transition-colors duration-200 ${
                         errorSummary.canProceed
-                          ? "bg-success"
-                          : "bg-base-content/40"
+                          ? 'bg-success'
+                          : 'bg-base-content/40'
                       }`}
                     ></div>
                     <span className="transition-opacity duration-200">
                       {errorSummary.canProceed
-                        ? "Ready to proceed"
-                        : "Complete current step"}
+                        ? 'Ready to proceed'
+                        : 'Complete current step'}
                     </span>
                   </div>
                 </div>

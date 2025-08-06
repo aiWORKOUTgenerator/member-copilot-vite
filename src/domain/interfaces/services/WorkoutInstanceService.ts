@@ -1,7 +1,7 @@
 import {
   WorkoutInstance,
   WorkoutInstanceStructure,
-} from "@/domain/entities/workoutInstance";
+} from '@/domain/entities/workoutInstance';
 
 export interface RecommendedExercise {
   id: string;

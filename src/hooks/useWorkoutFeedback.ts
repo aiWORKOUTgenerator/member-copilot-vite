@@ -1,9 +1,9 @@
-import { useContext } from "react";
-import { WorkoutFeedback } from "@/domain/entities/workoutFeedback";
+import { useContext } from 'react';
+import { WorkoutFeedback } from '@/domain/entities/workoutFeedback';
 import {
   WorkoutFeedbackContext,
   WorkoutFeedbackState,
-} from "@/contexts/workout-feedback.types";
+} from '@/contexts/workout-feedback.types';
 
 /**
  * Custom hook to access the workout feedback data from the WorkoutFeedbackContext.
@@ -14,7 +14,7 @@ export function useWorkoutFeedback(): WorkoutFeedbackState {
 
   if (context === undefined) {
     throw new Error(
-      "useWorkoutFeedback must be used within a WorkoutFeedbackProvider"
+      'useWorkoutFeedback must be used within a WorkoutFeedbackProvider'
     );
   }
 

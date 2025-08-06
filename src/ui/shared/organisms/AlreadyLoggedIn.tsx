@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useNavigate } from "react-router";
-import { Button } from "../atoms";
-import { FormContainer } from "./FormContainer";
+import { useNavigate } from 'react-router';
+import { Button } from '../atoms';
+import { FormContainer } from './FormContainer';
 
 export const AlreadyLoggedIn = () => {
   const navigate = useNavigate();
@@ -36,7 +36,7 @@ export const AlreadyLoggedIn = () => {
         <Button
           variant="primary"
           fullWidth
-          onClick={() => navigate("/dashboard")}
+          onClick={() => navigate('/dashboard')}
           aria-label="Go to dashboard"
         >
           Go to Dashboard
@@ -45,7 +45,7 @@ export const AlreadyLoggedIn = () => {
         <Button
           variant="secondary"
           fullWidth
-          onClick={() => navigate("/api/auth/signout")}
+          onClick={() => navigate('/api/auth/signout')}
           aria-label="Sign out"
         >
           Sign out

@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   Button,
@@ -7,17 +7,17 @@ import {
   InfoIcon,
   SuccessIcon,
   WarningIcon,
-} from "@/ui";
-import { useClerk } from "@clerk/clerk-react";
+} from '@/ui';
+import { useClerk } from '@clerk/clerk-react';
 import {
   EmailLinkErrorCodeStatus,
   isEmailLinkError,
-} from "@clerk/clerk-react/errors";
-import { useCallback, useEffect, useState } from "react";
-import { Link } from "react-router";
+} from '@clerk/clerk-react/errors';
+import { useCallback, useEffect, useState } from 'react';
+import { Link } from 'react-router';
 
 export default function VerifyEmailLink() {
-  const [verificationStatus, setVerificationStatus] = useState("loading");
+  const [verificationStatus, setVerificationStatus] = useState('loading');
   const { handleEmailLinkVerification, loaded } = useClerk();
 
   const verify = useCallback(async () => {
@@ -33,19 +33,19 @@ export default function VerifyEmailLink() {
 
       // If not redirected at this point,
       // the flow has completed
-      setVerificationStatus("verified");
+      setVerificationStatus('verified');
     } catch (err) {
-      let status = "failed";
+      let status = 'failed';
 
       if (err instanceof Error && isEmailLinkError(err)) {
         // If link expired, set status to expired
         if (err.code === EmailLinkErrorCodeStatus.Expired) {
-          status = "expired";
+          status = 'expired';
         } else if (err.code === EmailLinkErrorCodeStatus.ClientMismatch) {
           // This check is only required if you have
           // the 'Require the same device and browser' setting
           // enabled in the Clerk Dashboard
-          status = "client_mismatch";
+          status = 'client_mismatch';
         }
       }
 
@@ -58,7 +58,7 @@ export default function VerifyEmailLink() {
     verify();
   }, [loaded, verify]);
 
-  if (verificationStatus === "loading") {
+  if (verificationStatus === 'loading') {
     return (
       <FormContainer title="Verifying your email">
         <div className="flex flex-col items-center justify-center space-y-4">
@@ -71,7 +71,7 @@ export default function VerifyEmailLink() {
     );
   }
 
-  if (verificationStatus === "failed") {
+  if (verificationStatus === 'failed') {
     return (
       <FormContainer
         title="Verification failed"
@@ -90,7 +90,7 @@ export default function VerifyEmailLink() {
     );
   }
 
-  if (verificationStatus === "expired") {
+  if (verificationStatus === 'expired') {
     return (
       <FormContainer
         title="Link expired"
@@ -112,7 +112,7 @@ export default function VerifyEmailLink() {
   // This check is only required if you have
   // the 'Require the same device and browser' setting
   // enabled in the Clerk Dashboard
-  if (verificationStatus === "client_mismatch") {
+  if (verificationStatus === 'client_mismatch') {
     return (
       <FormContainer
         title="Device mismatch"

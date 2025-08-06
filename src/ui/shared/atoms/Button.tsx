@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import React, { ButtonHTMLAttributes, ReactNode } from "react";
+import React, { ButtonHTMLAttributes, ReactNode } from 'react';
 
 export type ButtonVariant =
-  | "primary"
-  | "secondary"
-  | "accent"
-  | "info"
-  | "success"
-  | "warning"
-  | "error"
-  | "ghost"
-  | "link";
-export type ButtonSize = "xs" | "sm" | "md" | "lg" | "xl";
+  | 'primary'
+  | 'secondary'
+  | 'accent'
+  | 'info'
+  | 'success'
+  | 'warning'
+  | 'error'
+  | 'ghost'
+  | 'link';
+export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
@@ -24,10 +24,10 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 export const Button: React.FC<ButtonProps> = ({
-  variant = "primary",
-  size = "md",
+  variant = 'primary',
+  size = 'md',
   children,
-  className = "",
+  className = '',
   fullWidth = false,
   isLoading = false,
   outline = false,
@@ -35,27 +35,27 @@ export const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   // DaisyUI classes
-  const baseClasses = "btn";
+  const baseClasses = 'btn';
 
   // Variant classes
   const variantClass =
-    variant !== "ghost" && variant !== "link"
+    variant !== 'ghost' && variant !== 'link'
       ? `btn-${variant}`
-      : variant === "ghost"
-      ? "btn-ghost"
-      : "btn-link";
+      : variant === 'ghost'
+        ? 'btn-ghost'
+        : 'btn-link';
 
   // Size classes
-  const sizeClass = size !== "md" ? `btn-${size}` : "";
+  const sizeClass = size !== 'md' ? `btn-${size}` : '';
 
   // Width classes
-  const widthClass = fullWidth ? "w-full" : "";
+  const widthClass = fullWidth ? 'w-full' : '';
 
   // Outline class
-  const outlineClass = outline ? "btn-outline" : "";
+  const outlineClass = outline ? 'btn-outline' : '';
 
   // Loading state
-  const loadingClass = isLoading ? "loading" : "";
+  const loadingClass = isLoading ? 'loading' : '';
 
   return (
     <button

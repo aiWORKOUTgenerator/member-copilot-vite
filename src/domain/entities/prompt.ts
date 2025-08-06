@@ -1,4 +1,4 @@
-import { AttributeType } from "./attributeType";
+import { AttributeType } from './attributeType';
 
 /**
  * Represents a choice option for a prompt
@@ -17,9 +17,9 @@ export class Choice {
  * Enum for different prompt types
  */
 export enum PromptType {
-  LIST = "list",
-  NUMBER = "number",
-  TEXT = "text",
+  LIST = 'list',
+  NUMBER = 'number',
+  TEXT = 'text',
 }
 
 /**
