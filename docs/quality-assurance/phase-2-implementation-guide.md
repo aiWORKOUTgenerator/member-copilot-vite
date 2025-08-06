@@ -4,6 +4,8 @@
 **Estimated Time:** 3-4 days  
 **Impact:** High - Will catch 90% of issues and provide confidence in refactoring
 
+> **📝 Documentation Improvement Note:** The large heredoc blocks in this guide are being refactored into separate template files for better maintainability. For now, these inline examples work but will be replaced with script generators in the next iteration.
+
 ## Overview
 
 Phase 2 builds on the solid foundation established in Phase 1, focusing on comprehensive testing to catch the remaining 20% of issues. This phase implements unit tests, integration tests, and improves test coverage to reach our 80% threshold.
@@ -1024,12 +1026,43 @@ npm run test:ui  # Show visual test runner
 - Review [Vitest Documentation](https://vitest.dev/)
 - Contact the development team
 
+## Documentation Improvements (Future)
+
+### Heredoc Refactoring Plan
+
+The large heredoc blocks in this guide will be refactored for better maintainability:
+
+#### Phase 2.1: Template Files (Next Sprint)
+```bash
+# Create template directory structure
+mkdir -p docs/templates/{tests,scripts,configs}
+
+# Move heredoc content to separate files
+docs/templates/tests/hook-test-template.ts
+docs/templates/tests/component-test-template.tsx
+docs/templates/scripts/setup-test-infrastructure.sh
+```
+
+#### Phase 2.2: Script Generators (Future)
+```bash
+# Generate test files from templates
+npm run generate:test -- --type=hook --name=useTrainerPersona
+npm run generate:test -- --type=component --name=GeneratingTrainerPage
+```
+
+#### Benefits
+- ✅ **Easier Maintenance**: Edit templates instead of large heredocs
+- ✅ **Error Prevention**: Reduced risk of syntax errors
+- ✅ **Better Developer Experience**: Copy-paste friendly
+- ✅ **Version Control**: Track template changes separately
+
 ## Next Steps
 
 1. **Run the full test suite**: `npm run test:coverage`
 2. **Review coverage report**: Identify uncovered critical paths
 3. **Add more tests**: Focus on business logic and error handling
 4. **Plan Phase 3**: E2E testing and performance monitoring
+5. **Plan Documentation Improvements**: Refactor heredoc blocks into templates
 
 ---
 
