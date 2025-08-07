@@ -46,15 +46,15 @@ describe('ValidationLogic', () => {
 #### 1. Form Flow Tests
 
 ```typescript
-describe("Form Validation Flow", () => {
-  it("progresses through steps correctly", () => {
+describe('Form Validation Flow', () => {
+  it('progresses through steps correctly', () => {
     render(<WorkoutCustomization {...defaultProps} />);
 
     // Step 1: Focus & Energy
-    userEvent.click(getByText("Energizing Boost"));
+    userEvent.click(getByText('Energizing Boost'));
     expect(screen.getByText(VALIDATION_MESSAGES.ENERGY_REQUIRED)).toBeInTheDocument();
 
-    userEvent.click(getByText("High Energy"));
+    userEvent.click(getByText('High Energy'));
     expect(screen.queryByText(VALIDATION_MESSAGES.ENERGY_REQUIRED)).not.toBeInTheDocument();
   });
 });
