@@ -1,25 +1,25 @@
-import { vi } from "vitest";
+import { vi } from 'vitest';
 
 // Mock data factories for consistent test data
 export const createMockUser = (overrides = {}) => ({
-  id: "user-123",
-  email: "test@example.com",
-  firstName: "Test",
-  lastName: "User",
+  id: 'user-123',
+  email: 'test@example.com',
+  firstName: 'Test',
+  lastName: 'User',
   ...overrides,
 });
 
 export const createMockTrainerPersona = (overrides = {}) => ({
-  id: "persona-123",
-  name: "Test Trainer",
-  personality: "Motivational",
-  specialties: ["Strength Training"],
+  id: 'persona-123',
+  name: 'Test Trainer',
+  personality: 'Motivational',
+  specialties: ['Strength Training'],
   ...overrides,
 });
 
 export const createMockWorkout = (overrides = {}) => ({
-  id: "workout-123",
-  title: "Test Workout",
+  id: 'workout-123',
+  title: 'Test Workout',
   duration: 30,
   exercises: [],
   ...overrides,
@@ -50,7 +50,7 @@ export const createHookTestCases = (hookName: string) => ({
     mockReturn: {
       isLoading: false,
       isLoaded: true,
-      error: new Error("Test error"),
+      error: new Error('Test error'),
     },
   },
   success: {

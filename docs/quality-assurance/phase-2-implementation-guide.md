@@ -918,7 +918,7 @@ After implementation, you should see:
 ```typescript
 // Instead of vi.mock() in every test file
 // Create __mocks__/hooks.ts for common hooks
-vi.mock("@/hooks/useAuth"); // Auto-mocked
+vi.mock('@/hooks/useAuth'); // Auto-mocked
 ```
 
 #### 2. Data-Driven Tests for Similar Patterns
@@ -926,10 +926,10 @@ vi.mock("@/hooks/useAuth"); // Auto-mocked
 ```typescript
 // Use it.each for similar test cases
 it.each([
-  ["loading", { isLoading: true, isLoaded: false }],
-  ["error", { isLoading: false, error: new Error("Test") }],
-  ["success", { isLoading: false, data: mockData }],
-])("should handle %s state", (state, mockReturn) => {
+  ['loading', { isLoading: true, isLoaded: false }],
+  ['error', { isLoading: false, error: new Error('Test') }],
+  ['success', { isLoading: false, data: mockData }],
+])('should handle %s state', (state, mockReturn) => {
   // Test implementation
 });
 ```
@@ -938,7 +938,7 @@ it.each([
 
 ```typescript
 // Only mock external dependencies
-vi.mock("@/services/api/ApiServiceImpl"); // External API
+vi.mock('@/services/api/ApiServiceImpl'); // External API
 // Let hooks run real logic against real components
 ```
 
@@ -946,11 +946,11 @@ vi.mock("@/services/api/ApiServiceImpl"); // External API
 
 ```typescript
 // Test boundary conditions
-it("should handle zero duration", () => {
+it('should handle zero duration', () => {
   expect(validateDuration(0)).toBe(false);
 });
 
-it("should handle maximum equipment", () => {
+it('should handle maximum equipment', () => {
   expect(validateEquipment(maxEquipment)).toBe(true);
 });
 ```

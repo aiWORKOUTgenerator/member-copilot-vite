@@ -1,10 +1,10 @@
-import { renderHook } from "@testing-library/react";
-import { describe, it, expect, vi } from "vitest";
-import { useTrainerPersona } from "@/hooks/useTrainerPersona";
+import { renderHook } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
+import { useTrainerPersona } from '@/hooks/useTrainerPersona';
 
 // Mock the TrainerPersonaContext to return our mock context value
 // The context is exported from the types file in this project's architecture
-vi.mock("@/contexts/trainer-persona.types", () => ({
+vi.mock('@/contexts/trainer-persona.types', () => ({
   TrainerPersonaContext: {
     _currentValue: {
       trainerPersona: null,
@@ -18,8 +18,8 @@ vi.mock("@/contexts/trainer-persona.types", () => ({
   },
 }));
 
-describe("useTrainerPersona", () => {
-  it("should return trainer persona state", () => {
+describe('useTrainerPersona', () => {
+  it('should return trainer persona state', () => {
     const { result } = renderHook(() => useTrainerPersona());
 
     expect(result.current).toBeDefined();
@@ -30,7 +30,7 @@ describe("useTrainerPersona", () => {
     expect(result.current.hasNoPersona).toBe(false);
   });
 
-  it("should have all required properties", () => {
+  it('should have all required properties', () => {
     const { result } = renderHook(() => useTrainerPersona());
 
     expect(result.current.refetch).toBeDefined();

@@ -1,15 +1,15 @@
-import { renderHook } from "@testing-library/react";
-import { describe, it, expect, vi } from "vitest";
-import { usePhoneVerification } from "@/hooks/usePhoneVerification";
+import { renderHook } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
+import { usePhoneVerification } from '@/hooks/usePhoneVerification';
 
 // Mock the dependencies
-vi.mock("@/hooks/useContact", () => ({
+vi.mock('@/hooks/useContact', () => ({
   useContact: () => ({
     refetch: vi.fn(),
   }),
 }));
 
-vi.mock("@/hooks/usePhoneVerificationService", () => ({
+vi.mock('@/hooks/usePhoneVerificationService', () => ({
   usePhoneVerificationService: () => ({
     sendVerificationCode: vi.fn(),
     verifyCode: vi.fn(),
@@ -17,8 +17,8 @@ vi.mock("@/hooks/usePhoneVerificationService", () => ({
   }),
 }));
 
-describe("usePhoneVerification", () => {
-  it("should return verification state", () => {
+describe('usePhoneVerification', () => {
+  it('should return verification state', () => {
     const { result } = renderHook(() => usePhoneVerification());
 
     expect(result.current).toBeDefined();
@@ -27,7 +27,7 @@ describe("usePhoneVerification", () => {
     expect(result.current.actions).toBeDefined();
   });
 
-  it("should have all required actions", () => {
+  it('should have all required actions', () => {
     const { result } = renderHook(() => usePhoneVerification());
 
     expect(result.current.actions.sendCode).toBeDefined();
@@ -38,7 +38,7 @@ describe("usePhoneVerification", () => {
     expect(result.current.actions.startNewVerification).toBeDefined();
   });
 
-  it("should have proper initial state", () => {
+  it('should have proper initial state', () => {
     const { result } = renderHook(() => usePhoneVerification());
 
     expect(result.current.isSending).toBe(false);
