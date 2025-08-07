@@ -28,14 +28,25 @@ export function ConfigurationProvider({
   const [error, setError] = useState<string | null>(null);
 
   /**
-   * Get the current domain from window.location
+   * Get the current domain with schema and port from window.location
+   * Returns format: https://example.com:3000 or http://localhost:5174
    */
   const getCurrentDomain = useCallback((): string => {
-    return window.location.hostname;
+    const { protocol, hostname, port } = window.location;
+
+    // For standard ports (80 for HTTP, 443 for HTTPS), don't include port
+    const isStandardPort =
+      (protocol === 'https:' && port === '443') ||
+      (protocol === 'http:' && port === '80') ||
+      port === '';
+
+    return isStandardPort
+      ? `${protocol}//${hostname}`
+      : `${protocol}//${hostname}:${port}`;
   }, []);
 
   /**
-   * Fetch configuration for the current domain
+   * Fetch configuration for the current domain (including schema and port)
    */
   const fetchConfiguration = useCallback(async () => {
     setIsLoading(true);

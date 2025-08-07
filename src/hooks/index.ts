@@ -1,5 +1,6 @@
 export { useAnalytics } from './useAnalytics';
 export * from './useAnnouncements';
+export * from './useConfiguration';
 export { useConfigurationService } from './useConfigurationService';
 export { useMeteredUsageService } from './useMeteredUsageService';
 export { useLicenseService } from './useLicenseService';

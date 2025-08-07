@@ -19,7 +19,7 @@ export class ConfigurationServiceImpl implements ConfigurationService {
 
   /**
    * Fetch configuration for the specified domain
-   * @param domain - The domain to fetch configuration for
+   * @param domain - The domain with schema and port to fetch configuration for
    * @returns Promise resolving to AppConfiguration entity
    */
   async getConfiguration(domain: string): Promise<AppConfiguration> {
