@@ -177,7 +177,7 @@ vi.mock('@/services/validation', () => ({
 ### Component Mocks
 
 ```typescript
-vi.mock("@/components/ValidationMessage", () => ({
+vi.mock('@/components/ValidationMessage', () => ({
   ValidationMessage: ({ message }: { message: string }) => (
     <div data-testid="validation-message">{message}</div>
   ),
