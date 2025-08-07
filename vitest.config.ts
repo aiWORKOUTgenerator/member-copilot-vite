@@ -32,7 +32,7 @@ export default defineConfig({
         },
       },
       exclude: [
-        "src/test/setup.ts",
+        "./src/test/setup.ts",
         "src/__tests__/**",
         "src/**/*.d.ts",
         "src/**/*.config.*",
