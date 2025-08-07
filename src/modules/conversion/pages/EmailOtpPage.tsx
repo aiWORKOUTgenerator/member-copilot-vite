@@ -356,7 +356,6 @@ export default function EmailOTPSignUpPage() {
             autoComplete="one-time-code"
             error={codeValidationError}
             fullWidth
-            autoFocus
             isLoading={loading}
             inputMode="numeric"
             pattern="[0-9]*"
@@ -420,7 +419,6 @@ export default function EmailOTPSignUpPage() {
           autoComplete="email"
           error={validationError}
           fullWidth
-          autoFocus
           isLoading={loading}
           aria-label="Email address"
           aria-required="true"
