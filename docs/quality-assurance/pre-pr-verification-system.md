@@ -15,10 +15,11 @@ This document outlines the comprehensive pre-PR verification system designed to 
 - ✅ **ESLint**: Configured with TypeScript and React rules
 - ✅ **TypeScript**: Strict configuration with modern patterns
 - ✅ **Husky**: Basic pre-commit and pre-push hooks
-- ✅ **Vitest (Test Runner)**: Configured with React Testing Library
-- ✅ **Security Audit**: npm audit configured and passing (0 vulnerabilities)
-- ✅ **Prettier**: Code formatting configured and enforced
-- ✅ **Coverage**: Test coverage thresholds configured
+- ✅ **Vitest**: Test framework configured but no tests exist
+- ⚠️ **Security**: Basic npm audit (3 low-severity vulnerabilities found)
+- ❌ **Testing**: No unit, integration, or E2E tests
+- ❌ **Formatting**: No Prettier configuration
+- ❌ **Coverage**: No test coverage enforcement
 - ❌ **Accessibility**: No automated a11y checks
 - ❌ **Performance**: No performance monitoring
 
@@ -26,32 +27,33 @@ This document outlines the comprehensive pre-PR verification system designed to 
 
 - ✅ TypeScript interval type errors (caught by ESLint + TypeScript)
 - ✅ Build failures (caught by build verification)
-- ✅ Context-to-hooks migration issues (caught by unit tests)
-- ✅ Runtime errors (caught by unit tests and build verification)
-- ✅ Security vulnerabilities (caught by npm audit)
-- ✅ Code formatting issues (caught by Prettier)
-- ✅ Test coverage gaps (caught by coverage thresholds)
+- ❌ Context-to-hooks migration issues (would need tests)
+- ❌ Runtime errors (would need E2E tests)
 
-## Implementation Status
+## Implementation Phases
 
-### Phase 1: Critical Foundation ✅ COMPLETED
+### Phase 1: Critical Foundation (Immediate - 1 Sprint)
 
-#### 1.1 Prettier for Code Formatting ✅ IMPLEMENTED
+#### 1.1 Add Prettier for Code Formatting
 
-**Current Configuration** (`prettier.config.js`):
+```bash
+npm install --save-dev prettier
+```
+
+**Configuration** (`prettier.config.js`):
 
 ```javascript
 export default {
   semi: true,
-  trailingComma: 'es5',
-  singleQuote: true,
+  trailingComma: "es5",
+  singleQuote: false,
   printWidth: 80,
   tabWidth: 2,
   useTabs: false,
 };
 ```
 
-**Current Package.json Scripts**:
+**Package.json Scripts**:
 
 ```json
 {
@@ -62,21 +64,22 @@ export default {
 }
 ```
 
-#### 1.2 Unit Tests ✅ IMPLEMENTED
+#### 1.2 Create Basic Unit Tests
 
-**Current Test Coverage**:
-- 30 tests passing across 5 test files
-- Coverage thresholds configured and enforced
-- React Testing Library integration complete
+**Priority Components to Test**:
+
+- `GeneratingTrainerPage.tsx` - Critical user flow
+- `useTrainerPersona.ts` - Core business logic
+- `usePhoneVerification.ts` - Authentication flow
 
 **Test Setup** (`src/test/setup.ts`):
 
 ```typescript
-import '@testing-library/jest-dom';
-import { vi } from 'vitest';
+import "@testing-library/jest-dom";
+import { vi } from "vitest";
 
-// Mock authentication
-vi.mock('@/hooks/auth', () => ({
+// Mock environment variables
+vi.mock("@/hooks/auth", () => ({
   useAuth: () => ({
     isSignedIn: true,
     isLoaded: true,
@@ -84,7 +87,7 @@ vi.mock('@/hooks/auth', () => ({
 }));
 
 // Mock API services
-vi.mock('@/hooks/useApiService', () => ({
+vi.mock("@/hooks/useApiService", () => ({
   useApiService: () => ({
     get: vi.fn(),
     post: vi.fn(),
@@ -94,33 +97,26 @@ vi.mock('@/hooks/useApiService', () => ({
 }));
 ```
 
-#### 1.3 Coverage Thresholds ✅ IMPLEMENTED
+#### 1.3 Implement Coverage Thresholds
 
-**Current Vitest Configuration**:
+**Vitest Configuration Update**:
 
 ```typescript
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   test: {
-    environment: 'jsdom',
-    setupFiles: ['./src/test/setup.ts'],
+    environment: "jsdom",
+    setupFiles: ["./src/test/setup.ts"],
     globals: true,
     coverage: {
-      provider: 'v8',
-      reporter: ['text', 'json', 'html'],
+      provider: "v8",
+      reporter: ["text", "json", "html"],
       thresholds: {
         global: {
-          branches: 1, // Start at 1%, increase to 80% in next sprint
-          functions: 1,
-          lines: 1,
-          statements: 1,
-        },
-        // Critical components have higher thresholds
-        './src/modules/dashboard/trainer/': {
-          branches: 1, // Start at 1%, increase to 90% in next sprint
-          functions: 1,
-          lines: 1,
-          statements: 1,
+          branches: 80,
+          functions: 80,
+          lines: 80,
+          statements: 80,
         },
       },
     },
@@ -128,19 +124,15 @@ export default defineConfig({
 });
 ```
 
-#### 1.4 Verify Scripts ✅ IMPLEMENTED
+#### 1.4 Create Verify Script
 
-**Current Package.json Scripts**:
+**Package.json Scripts**:
 
 ```json
 {
   "scripts": {
     "verify": "npm run lint && npm run format:check && tsc --noEmit && npm run test:run && npm run build",
-    "verify:quick": "npm run lint && tsc --noEmit && npm run test:run -- --passWithNoTests && npm run build",
-    "test:run": "vitest run",
-    "test:coverage": "vitest run --coverage"
-  }
-}
+    "verify:quick": "npm run lint && tsc --noEmit && npm run build"
   }
 }
 ```
@@ -166,6 +158,12 @@ src/
 **Example Test** (`src/__tests__/hooks/useTrainerPersona.test.ts`):
 
 ```typescript
+import { renderHook, waitFor } from "@testing-library/react";
+import { describe, it, expect, vi } from "vitest";
+import { useTrainerPersona } from "@/hooks/useTrainerPersona";
+
+describe("useTrainerPersona", () => {
+  it("should fetch trainer persona on mount", async () => {
     const { result } = renderHook(() => useTrainerPersona());
 
     await waitFor(() => {
@@ -208,10 +206,28 @@ npm install --save-dev @playwright/test
 **Configuration** (`playwright.config.ts`):
 
 ```typescript
+import { defineConfig, devices } from "@playwright/test";
+
+export default defineConfig({
+  testDir: "./e2e",
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
+  reporter: "html",
+  use: {
+    baseURL: "http://localhost:5173",
+    trace: "on-first-retry",
+  },
+  projects: [
+    {
+      name: "chromium",
+      use: { ...devices["Desktop Chrome"] },
+    },
+  ],
+  webServer: {
+    command: "npm run dev",
+    url: "http://localhost:5173",
     reuseExistingServer: !process.env.CI,
   },
 });
@@ -295,8 +311,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-          cache: 'npm'
+          node-version: "18"
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci

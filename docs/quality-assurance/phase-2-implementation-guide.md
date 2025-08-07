@@ -4,8 +4,6 @@
 **Estimated Time:** 3-4 days  
 **Impact:** High - Will catch 90% of issues and provide confidence in refactoring
 
-> **📝 Documentation Improvement Note:** The large heredoc blocks in this guide are being refactored into separate template files for better maintainability. For now, these inline examples work but will be replaced with script generators in the next iteration.
-
 ## Overview
 
 Phase 2 builds on the solid foundation established in Phase 1, focusing on comprehensive testing to catch the remaining 20% of issues. This phase implements unit tests, integration tests, and improves test coverage to reach our 80% threshold.
@@ -770,69 +768,70 @@ EOF
 
 ### Step 7: Update Coverage Thresholds with Staggered Approach (15 minutes)
 
+```bash
+# Update vitest.config.ts with staggered thresholds and retry logic
 cat > vitest.config.ts << 'EOF'
 import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
-plugins: [react(), tailwindcss()],
-test: {
-environment: "jsdom",
-setupFiles: ["./src/setupTests.ts"],
-globals: true,
-// Retry flaky tests (especially integration tests)
-retry: process.env.CI ? 2 : 0,
-// Parallelize tests for faster execution
-pool: 'forks',
-poolOptions: {
-forks: {
-singleFork: true,
-},
-},
-coverage: {
-provider: "v8",
-reporter: ["text", "json", "html"],
-thresholds: {
-// Start with lower thresholds, increase gradually
-global: {
-branches: 60, // Start at 60%, increase to 80% in next sprint
-functions: 60,
-lines: 60,
-statements: 60,
-},
-// Critical components should have higher coverage
-"./src/modules/dashboard/trainer/": {
-branches: 80, // Start at 80%, increase to 90% in next sprint
-functions: 80,
-lines: 80,
-statements: 80,
-},
-"./src/hooks/": {
-branches: 70, // Start at 70%, increase to 85% in next sprint
-functions: 70,
-lines: 70,
-statements: 70,
-},
-},
-exclude: [
-"src/setupTests.ts",
-"src/__tests__/**",
-"src/**/*.d.ts",
-"src/**/*.config.*",
-"src/**/*.test.*",
-"src/**/*.spec.*",
-"src/__mocks__/**",
-],
-},
-},
-resolve: {
-alias: [{ find: "@", replacement: "/src" }],
-},
+  plugins: [react(), tailwindcss()],
+  test: {
+    environment: "jsdom",
+    setupFiles: ["./src/setupTests.ts"],
+    globals: true,
+    // Retry flaky tests (especially integration tests)
+    retry: process.env.CI ? 2 : 0,
+    // Parallelize tests for faster execution
+    pool: 'forks',
+    poolOptions: {
+      forks: {
+        singleFork: true,
+      },
+    },
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "json", "html"],
+      thresholds: {
+        // Start with lower thresholds, increase gradually
+        global: {
+          branches: 60, // Start at 60%, increase to 80% in next sprint
+          functions: 60,
+          lines: 60,
+          statements: 60,
+        },
+        // Critical components should have higher coverage
+        "./src/modules/dashboard/trainer/": {
+          branches: 80, // Start at 80%, increase to 90% in next sprint
+          functions: 80,
+          lines: 80,
+          statements: 80,
+        },
+        "./src/hooks/": {
+          branches: 70, // Start at 70%, increase to 85% in next sprint
+          functions: 70,
+          lines: 70,
+          statements: 70,
+        },
+      },
+      exclude: [
+        "src/setupTests.ts",
+        "src/__tests__/**",
+        "src/**/*.d.ts",
+        "src/**/*.config.*",
+        "src/**/*.test.*",
+        "src/**/*.spec.*",
+        "src/__mocks__/**",
+      ],
+    },
+  },
+  resolve: {
+    alias: [{ find: "@", replacement: "/src" }],
+  },
 });
 EOF
-
-````
+```
 
 ### Step 8: Create Test Scripts with Parallel Execution (15 minutes)
 
@@ -846,7 +845,7 @@ npm pkg set scripts.test:slow="vitest run src/__tests__/integration/"
 npm pkg set scripts.test:unit="vitest run src/__tests__/{hooks,components,services}/"
 npm pkg set scripts.test:integration="vitest run src/__tests__/integration/"
 npm pkg set scripts.test:ci="npm run test:fast && npm run test:coverage"
-````
+```
 
 ## Verification Steps
 
@@ -919,6 +918,7 @@ After implementation, you should see:
 ```typescript
 // Instead of vi.mock() in every test file
 // Create __mocks__/hooks.ts for common hooks
+vi.mock("@/hooks/useAuth"); // Auto-mocked
 ```
 
 #### 2. Data-Driven Tests for Similar Patterns
@@ -926,6 +926,10 @@ After implementation, you should see:
 ```typescript
 // Use it.each for similar test cases
 it.each([
+  ["loading", { isLoading: true, isLoaded: false }],
+  ["error", { isLoading: false, error: new Error("Test") }],
+  ["success", { isLoading: false, data: mockData }],
+])("should handle %s state", (state, mockReturn) => {
   // Test implementation
 });
 ```
@@ -934,6 +938,7 @@ it.each([
 
 ```typescript
 // Only mock external dependencies
+vi.mock("@/services/api/ApiServiceImpl"); // External API
 // Let hooks run real logic against real components
 ```
 
@@ -941,6 +946,11 @@ it.each([
 
 ```typescript
 // Test boundary conditions
+it("should handle zero duration", () => {
+  expect(validateDuration(0)).toBe(false);
+});
+
+it("should handle maximum equipment", () => {
   expect(validateEquipment(maxEquipment)).toBe(true);
 });
 ```
