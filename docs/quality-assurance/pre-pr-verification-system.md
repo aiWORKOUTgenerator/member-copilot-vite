@@ -43,7 +43,8 @@ This document outlines the comprehensive pre-PR verification system designed to 
 ```javascript
 export default {
   semi: true,
-  singleQuote: false,
+  trailingComma: 'es5',
+  singleQuote: true,
   printWidth: 80,
   tabWidth: 2,
   useTabs: false,
