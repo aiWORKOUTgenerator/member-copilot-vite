@@ -141,7 +141,7 @@ export default defineConfig({
 {
   "scripts": {
     "verify": "npm run lint && npm run format:check && tsc --noEmit && npm run test:run && npm run build",
-    "verify:quick": "npm run lint && tsc --noEmit && npm run build"
+    "verify:quick": "npm run lint && tsc --noEmit && npm run test:run && npm run build"
   }
 }
 ```
