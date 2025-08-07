@@ -7,6 +7,22 @@ import { AnalyticsProvider } from './contexts/AnalyticsContext.tsx';
 import { ServiceProvider } from './contexts/ServiceContext.tsx';
 import { VerificationProvider } from './contexts/VerificationContext.tsx';
 
+// Load dynamic theme CSS
+const currentDomain = window.location.hostname;
+const apiUrl = import.meta.env.VITE_PRIMARY_URL;
+
+if (apiUrl) {
+  const cssLink = document.createElement('link');
+  cssLink.rel = 'stylesheet';
+  cssLink.href = `${apiUrl}/theme.css?domain=${currentDomain}`;
+  cssLink.id = 'dynamic-theme-css';
+
+  // Check if already loaded to avoid duplicates
+  if (!document.getElementById('dynamic-theme-css')) {
+    document.head.appendChild(cssLink);
+  }
+}
+
 // Import your Publishable Key
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 

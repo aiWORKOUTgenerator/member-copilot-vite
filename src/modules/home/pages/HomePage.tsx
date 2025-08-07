@@ -4,8 +4,8 @@ import { useAuth } from '@/hooks/auth';
 import { useAnalytics } from '@/hooks/useAnalytics';
 import { ErrorBoundary } from '@/ui';
 import { useEffect } from 'react';
-import { HomeNavbar, HeroSection } from '../components';
 import { ANALYTICS_EVENTS } from '../constants';
+import { HomeNavbar, HeroSection } from '../components';
 
 export default function HomePage() {
   const { isSignedIn, isLoaded } = useAuth();
@@ -57,7 +57,7 @@ export default function HomePage() {
 
   return (
     <ErrorBoundary>
-      <div className="min-h-full flex flex-col bg-gradient-to-br from-primary/10 via-base-100 to-secondary/10">
+      <div className="min-h-full w-full max-w-full flex flex-col bg-gradient-to-br from-primary/10 via-base-100 to-secondary/10 overflow-x-hidden">
         <HomeNavbar
           onSignInClick={handleSignInClick}
           onDashboardClick={handleDashboardClick}
@@ -65,7 +65,7 @@ export default function HomePage() {
           onLogoClick={handleLogoClick}
         />
 
-        <main>
+        <main className="flex-1 w-full">
           <HeroSection onHeroCTAClick={handleHeroCTAClick} />
         </main>
       </div>

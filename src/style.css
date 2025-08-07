@@ -31,3 +31,39 @@
   --spacing-label-md: 0.75rem; /* 12px */
   --spacing-label-lg: 1rem; /* 16px */
 }
+
+/* Mobile-specific base styles */
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Prevent horizontal scroll on mobile */
+body {
+  position: relative;
+  margin: 0;
+  padding: 0;
+}
+
+/* Ensure full-width elements don't cause overflow */
+/* Using a more specific class name to avoid overriding Tailwind utilities */
+.mobile-safe-full-width {
+  max-width: 100%;
+}
+
+/* Mobile-safe viewport units */
+@supports (-webkit-touch-callout: none) {
+  .h-full {
+    height: -webkit-fill-available;
+  }
+  .min-h-full {
+    min-height: -webkit-fill-available;
+  }
+}
