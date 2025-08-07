@@ -53,7 +53,8 @@ body {
 }
 
 /* Ensure full-width elements don't cause overflow */
-.w-full {
+/* Using a more specific class name to avoid overriding Tailwind utilities */
+.mobile-safe-full-width {
   max-width: 100%;
 }
 
