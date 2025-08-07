@@ -205,7 +205,7 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
               </label>
               <ul
                 tabIndex={0}
-                className="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-64 mt-4 max-w-[calc(100vw-2rem)]"
+                className="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-64 mt-4 w-[96vw] max-w-full"
               >
                 {navigation.map((item) => {
                   const isCurrentPage =
