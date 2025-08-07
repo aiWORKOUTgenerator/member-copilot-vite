@@ -39,3 +39,4 @@ Thumbs.db
 # Legacy config files (replaced by eslint.config.js and prettier.config.js)
 .eslintignore
 .prettierignore
+.env
