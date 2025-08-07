@@ -2,12 +2,10 @@ import { renderHook } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { useTrainerPersona } from "@/hooks/useTrainerPersona";
 
-// Mock React's useContext to return our mock context
-vi.mock("react", async () => {
-  const actual = await vi.importActual("react");
-  return {
-    ...actual,
-    useContext: vi.fn(() => ({
+// Mock only the specific context that the hook depends on
+vi.mock("@/contexts/trainer-persona.types", () => ({
+  TrainerPersonaContext: {
+    _currentValue: {
       trainerPersona: null,
       isLoading: false,
       error: null,
@@ -15,9 +13,9 @@ vi.mock("react", async () => {
       hasNoPersona: false,
       refetch: vi.fn(),
       generateTrainerPersona: vi.fn(),
-    })),
-  };
-});
+    },
+  },
+}));
 
 describe("useTrainerPersona", () => {
   it("should return trainer persona state", () => {
