@@ -10,12 +10,14 @@
 
 Updated `vitest.config.ts` with progressive coverage targets:
 
-#### **Global Thresholds (Starting Point)**
+#### **Global Thresholds (Current Configuration)**
 
-- **Branches:** 60% (target: 80% in next sprint)
-- **Functions:** 60% (target: 80% in next sprint)
-- **Lines:** 60% (target: 80% in next sprint)
-- **Statements:** 60% (target: 80% in next sprint)
+- **Branches:** 1% (current, as set in `vitest.config.ts`)
+- **Functions:** 1% (current, as set in `vitest.config.ts`)
+- **Lines:** 1% (current, as set in `vitest.config.ts`)
+- **Statements:** 1% (current, as set in `vitest.config.ts`)
+
+> **Note:** The intended targets are 60% for this phase (and 80% in the next sprint), but the configuration currently enforces only 1%. Update the configuration to match targets as coverage improves.
 
 #### **Directory-Specific Thresholds**
 
