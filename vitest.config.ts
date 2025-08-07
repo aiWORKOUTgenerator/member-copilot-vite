@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   test: {
     environment: "jsdom",
-    setupFiles: ["./src/setupTests.ts"],
+    setupFiles: ["./src/test/setup.ts"],
     globals: true,
     // Retry flaky tests (especially integration tests)
     retry: process.env.CI ? 2 : 0,
@@ -32,7 +32,7 @@ export default defineConfig({
         },
       },
       exclude: [
-        "src/setupTests.ts",
+        "src/test/setup.ts",
         "src/__tests__/**",
         "src/**/*.d.ts",
         "src/**/*.config.*",
