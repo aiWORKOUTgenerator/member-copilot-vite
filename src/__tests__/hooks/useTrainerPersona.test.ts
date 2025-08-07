@@ -2,7 +2,8 @@ import { renderHook } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { useTrainerPersona } from "@/hooks/useTrainerPersona";
 
-// Mock only the specific context that the hook depends on
+// Mock the TrainerPersonaContext to return our mock context value
+// The context is exported from the types file in this project's architecture
 vi.mock("@/contexts/trainer-persona.types", () => ({
   TrainerPersonaContext: {
     _currentValue: {
