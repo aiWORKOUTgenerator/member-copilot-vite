@@ -21,8 +21,10 @@ const shouldUseMocks = (): boolean => {
 export function useConfigurationService(): ConfigurationService {
   return useMemo(() => {
     const useMocks = shouldUseMocks();
-    return useMocks
+    const service = useMocks
       ? new MockConfigurationService()
       : new ConfigurationServiceImpl();
+    console.log('useConfigurationService - created new instance:', service);
+    return service;
   }, []);
 }

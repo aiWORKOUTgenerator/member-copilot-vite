@@ -2,7 +2,7 @@
 
 import { AppConfiguration } from '@/domain/entities/appConfiguration';
 import { useConfigurationService } from '@/hooks/useConfigurationService';
-import { ReactNode, useCallback, useEffect, useState } from 'react';
+import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ConfigurationContext,
   ConfigurationState,
@@ -19,6 +19,7 @@ interface ConfigurationProviderProps {
 export function ConfigurationProvider({
   children,
 }: ConfigurationProviderProps) {
+  console.log('ConfigurationProvider');
   const configurationService = useConfigurationService();
   const [configuration, setConfiguration] = useState<AppConfiguration | null>(
     null
@@ -73,13 +74,16 @@ export function ConfigurationProvider({
   }, [fetchConfiguration]);
 
   // Memoized context value
-  const contextValue: ConfigurationState = {
-    configuration,
-    isLoading,
-    isLoaded,
-    error,
-    refetch: fetchConfiguration,
-  };
+  const contextValue: ConfigurationState = useMemo(
+    () => ({
+      configuration,
+      isLoading,
+      isLoaded,
+      error,
+      refetch: fetchConfiguration,
+    }),
+    [configuration, isLoading, isLoaded, error, fetchConfiguration]
+  );
 
   return (
     <ConfigurationContext.Provider value={contextValue}>

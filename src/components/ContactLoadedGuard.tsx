@@ -18,13 +18,8 @@ export function ContactLoadedGuard({
   const { isLoaded, isLoading } = useContact();
   const { isSignedIn } = useAuth();
 
-  // If not signed in, render children immediately
-  if (!isSignedIn) {
-    return <>{children}</>;
-  }
-
   // If signed in but contact isn't loaded yet, show loading state
-  if (!isLoaded && isLoading) {
+  if (!isSignedIn && !isLoaded && isLoading) {
     return fallback ? (
       <>{fallback}</>
     ) : (

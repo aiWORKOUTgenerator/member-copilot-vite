@@ -55,7 +55,6 @@ export class ApiServiceImpl implements ApiService {
 
     // Always include the token if available, regardless of endpoint
     if (this.tokenProvider) {
-      console.log('getHeaders', this.tokenProvider);
       const token = await this.tokenProvider.getToken();
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
