@@ -15,9 +15,6 @@ This document outlines the comprehensive pre-PR verification system designed to 
 - ✅ **ESLint**: Configured with TypeScript and React rules
 - ✅ **TypeScript**: Strict configuration with modern patterns
 - ✅ **Husky**: Basic pre-commit and pre-push hooks
-- ✅ **Vitest**: Test framework configured with 25 passing tests
-- ⚠️ **Security**: Basic npm audit (3 low-severity vulnerabilities found)
-- ❌ **Testing**: Limited unit tests, no integration or E2E tests
 - ❌ **Formatting**: No Prettier configuration
 - ❌ **Coverage**: No test coverage enforcement
 - ❌ **Accessibility**: No automated a11y checks
@@ -45,7 +42,6 @@ npm install --save-dev prettier
 ```javascript
 export default {
   semi: true,
-  trailingComma: 'es5',
   singleQuote: false,
   printWidth: 80,
   tabWidth: 2,
@@ -75,11 +71,6 @@ export default {
 **Test Setup** (`src/test/setup.ts`):
 
 ```typescript
-import '@testing-library/jest-dom';
-import { vi } from 'vitest';
-
-// Mock environment variables
-vi.mock('@/hooks/auth', () => ({
   useAuth: () => ({
     isSignedIn: true,
     isLoaded: true,
@@ -87,7 +78,6 @@ vi.mock('@/hooks/auth', () => ({
 }));
 
 // Mock API services
-vi.mock('@/hooks/useApiService', () => ({
   useApiService: () => ({
     get: vi.fn(),
     post: vi.fn(),
@@ -105,12 +95,6 @@ vi.mock('@/hooks/useApiService', () => ({
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   test: {
-    environment: 'jsdom',
-    setupFiles: ['./src/test/setup.ts'],
-    globals: true,
-    coverage: {
-      provider: 'v8',
-      reporter: ['text', 'json', 'html'],
       thresholds: {
         global: {
           branches: 80,
@@ -158,12 +142,6 @@ src/
 **Example Test** (`src/__tests__/hooks/useTrainerPersona.test.ts`):
 
 ```typescript
-import { renderHook, waitFor } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
-import { useTrainerPersona } from '@/hooks/useTrainerPersona';
-
-describe('useTrainerPersona', () => {
-  it('should fetch trainer persona on mount', async () => {
     const { result } = renderHook(() => useTrainerPersona());
 
     await waitFor(() => {
@@ -206,28 +184,10 @@ npm install --save-dev @playwright/test
 **Configuration** (`playwright.config.ts`):
 
 ```typescript
-import { defineConfig, devices } from '@playwright/test';
-
-export default defineConfig({
-  testDir: './e2e',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: 'html',
-  use: {
-    baseURL: 'http://localhost:5173',
-    trace: 'on-first-retry',
-  },
-  projects: [
-    {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
-    },
-  ],
-  webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:5173',
     reuseExistingServer: !process.env.CI,
   },
 });
@@ -311,8 +271,6 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
