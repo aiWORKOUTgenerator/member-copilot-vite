@@ -3,6 +3,7 @@
 import { useAuth } from '@/hooks/auth';
 import { Link } from 'react-router';
 import { Button } from '@/ui';
+import { HOMEPAGE_CONTENT } from '../constants';
 
 interface HeroSectionProps {
   onHeroCTAClick: () => void;
@@ -16,12 +17,10 @@ export function HeroSection({ onHeroCTAClick }: HeroSectionProps) {
       <div className="hero-content text-center w-full max-w-none px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl mx-auto">
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight">
-            Your Personal AI Workout Generator
+            {HOMEPAGE_CONTENT.hero.title}
           </h1>
           <p className="py-4 sm:py-6 text-base sm:text-lg leading-relaxed">
-            Get customized workout plans tailored to your fitness level, goals,
-            and available equipment. Powered by advanced AI to optimize your
-            training and results.
+            {HOMEPAGE_CONTENT.hero.description}
           </p>
 
           {isLoaded && !isSignedIn && (
@@ -32,7 +31,7 @@ export function HeroSection({ onHeroCTAClick }: HeroSectionProps) {
                   size="lg"
                   className="w-full sm:w-auto"
                 >
-                  Generate Your First Workout
+                  {HOMEPAGE_CONTENT.hero.ctaButton}
                 </Button>
               </Link>
             </div>

@@ -3,6 +3,7 @@
 import { useAuth } from '@/hooks/auth';
 import { Link } from 'react-router';
 import { Button, DashboardIcon } from '@/ui';
+import { HOMEPAGE_CONTENT } from '../constants';
 
 interface HomeNavbarProps {
   onSignInClick: () => void;
@@ -27,7 +28,9 @@ export function HomeNavbar({
           className="btn btn-ghost text-base sm:text-xl truncate"
           onClick={onLogoClick}
         >
-          <span className="hidden sm:inline">AI Workout Generator</span>
+          <span className="hidden sm:inline">
+            {HOMEPAGE_CONTENT.navbar.logo}
+          </span>
           <span className="sm:hidden">AI Workout</span>
         </Link>
       </div>
@@ -38,7 +41,9 @@ export function HomeNavbar({
             <Link to="/dashboard" onClick={onDashboardClick}>
               <Button variant="primary" size="sm">
                 <DashboardIcon size="sm" className="mr-1 sm:mr-2" />
-                <span className="hidden sm:inline">My Workouts</span>
+                <span className="hidden sm:inline">
+                  {HOMEPAGE_CONTENT.navbar.myWorkouts}
+                </span>
                 <span className="sm:hidden">Workouts</span>
               </Button>
             </Link>
@@ -49,11 +54,13 @@ export function HomeNavbar({
                 className="btn btn-ghost btn-sm sm:btn-md"
                 onClick={onSignInClick}
               >
-                Sign In
+                {HOMEPAGE_CONTENT.navbar.signIn}
               </Link>
               <Link to="/conversion" onClick={onCreateAccountClick}>
                 <Button variant="primary" size="sm">
-                  <span className="hidden sm:inline">Create Account</span>
+                  <span className="hidden sm:inline">
+                    {HOMEPAGE_CONTENT.navbar.createAccount}
+                  </span>
                   <span className="sm:hidden">Sign Up</span>
                 </Button>
               </Link>
