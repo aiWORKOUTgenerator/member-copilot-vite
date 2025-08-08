@@ -257,10 +257,10 @@ export class ButtonStateLogic {
 
     if (currentStepSelections.isPartial) {
       return {
-        className: 'btn btn-outline btn-primary',
-        disabled: false,
-        text: 'Continue',
-        state: 'partial',
+        className: 'btn btn-disabled',
+        disabled: true,
+        text: 'Complete current step',
+        state: 'disabled',
         visualFeedback: {
           indicatorColor: 'blue',
           message: `${currentStepSelections.total} of ${currentStepSelections.required} selections made`,
