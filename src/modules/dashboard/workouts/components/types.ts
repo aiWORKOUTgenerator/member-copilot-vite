@@ -1,3 +1,13 @@
+// Unified interface for category-based customizations with rating scales
+export interface CategoryRatingData {
+  [categoryKey: string]: {
+    selected: boolean;
+    rating?: number; // 1-5 scale
+    label: string; // Human-readable category name
+    description?: string; // Category description
+  };
+}
+
 export interface PerWorkoutOptions {
   customization_duration?: number;
   customization_equipment?: string[];
