@@ -290,6 +290,9 @@ export default function GenerateWorkoutPage() {
     };
   };
 
+  // Store button state to avoid multiple function calls
+  const buttonState = getButtonState();
+
   return (
     <div className="p-2 sm:p-4">
       <div className="mb-2 sm:mb-4">
@@ -439,20 +442,18 @@ export default function GenerateWorkoutPage() {
                   <div className="flex items-center gap-2">
                     <div
                       className={`w-2 h-2 rounded-full transition-colors duration-200 ${
-                        getButtonState().visualFeedback?.indicatorColor ===
-                        'green'
+                        buttonState.visualFeedback?.indicatorColor === 'green'
                           ? 'bg-success'
-                          : getButtonState().visualFeedback?.indicatorColor ===
-                              'red'
+                          : buttonState.visualFeedback?.indicatorColor === 'red'
                             ? 'bg-error'
-                            : getButtonState().visualFeedback
-                                  ?.indicatorColor === 'blue'
+                            : buttonState.visualFeedback?.indicatorColor ===
+                                'blue'
                               ? 'bg-primary'
                               : 'bg-base-content/40'
                       }`}
                     ></div>
                     <span className="transition-opacity duration-200">
-                      {getButtonState().visualFeedback?.message ||
+                      {buttonState.visualFeedback?.message ||
                         'Complete current step'}
                     </span>
                   </div>
@@ -462,13 +463,9 @@ export default function GenerateWorkoutPage() {
               {/* Enhanced submit button */}
               <button
                 type="submit"
-                className={`${
-                  getButtonState().className
-                } transition-all duration-200`}
-                disabled={getButtonState().disabled}
-                title={
-                  getButtonState().disabled ? getButtonState().text : undefined
-                }
+                className={`${buttonState.className} transition-all duration-200`}
+                disabled={buttonState.disabled}
+                title={buttonState.disabled ? buttonState.text : undefined}
               >
                 {isGenerating ? (
                   <>
@@ -476,7 +473,7 @@ export default function GenerateWorkoutPage() {
                     Generating...
                   </>
                 ) : (
-                  getButtonState().text
+                  buttonState.text
                 )}
               </button>
             </div>
