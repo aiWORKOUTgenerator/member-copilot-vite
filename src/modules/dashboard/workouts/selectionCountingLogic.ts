@@ -1,6 +1,7 @@
 import { PerWorkoutOptions } from './components/types';
 import { VALIDATION_MESSAGES } from './constants/validationMessages';
 import { CUSTOMIZATION_FIELD_KEYS } from './constants/fieldKeys';
+import { VALID_EQUIPMENT_IDS } from './constants';
 
 // Core interfaces for selection counting
 export interface StepSelections {
@@ -186,9 +187,7 @@ export class SelectionCounter {
           isValid:
             Array.isArray(value) &&
             value.length > 0 &&
-            value.every((item) =>
-              ['bodyweight', 'available_equipment', 'full_gym'].includes(item)
-            ),
+            value.every((item) => VALID_EQUIPMENT_IDS.includes(item)),
         };
 
       default:
