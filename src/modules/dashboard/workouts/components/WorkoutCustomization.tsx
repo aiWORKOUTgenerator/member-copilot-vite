@@ -1,373 +1,91 @@
-import { Target, Battery, Clock, Dumbbell } from 'lucide-react';
+import { Target } from 'lucide-react';
 import { WorkoutCustomizationProps } from './types';
 import { CUSTOMIZATION_CONFIG } from './customizations';
-import { useState } from 'react';
-import { StepIndicator, DetailedSelector } from '@/ui/shared/molecules';
-import { LevelDots } from '@/ui/shared/atoms';
+import { formatWorkoutSelection } from './utils/selectionFormatter';
+import { useState, useMemo, useCallback, memo } from 'react';
 
-import {
-  QUICK_WORKOUT_FOCUS_OPTIONS,
-  ENERGY_LEVEL_OPTIONS,
-  QUICK_WORKOUT_DURATION_OPTIONS,
-  QUICK_WORKOUT_EQUIPMENT_OPTIONS,
-} from '../constants';
-
-// Focus options with intensity indicators
-const FOCUS_OPTIONS_WITH_INTENSITY = QUICK_WORKOUT_FOCUS_OPTIONS.map(
-  (option) => {
-    // Assign intensity levels based on workout type
-    let intensityLevel: number;
-    switch (option.id) {
-      case 'gentle_recovery':
-      case 'stress_reduction':
-        intensityLevel = 2; // Low intensity
-        break;
-      case 'improve_posture':
-      case 'core_abs':
-        intensityLevel = 4; // Medium intensity
-        break;
-      case 'energizing_boost':
-      case 'quick_sweat':
-        intensityLevel = 6; // High intensity
-        break;
-      default:
-        intensityLevel = 3; // Default medium
-    }
-
-    return {
-      ...option,
-      tertiary: (
-        <LevelDots count={6} activeIndex={intensityLevel - 1} size="sm" />
-      ),
-    };
-  }
-);
-
-// Energy options with LevelDots indicators
-const ENERGY_OPTIONS_WITH_DOTS = ENERGY_LEVEL_OPTIONS.map((option) => ({
-  ...option,
-  tertiary: (
-    <LevelDots count={6} activeIndex={parseInt(option.id) - 1} size="sm" />
-  ),
-}));
-
-// Duration options with subtitle as tertiary content
-const DURATION_OPTIONS_WITH_SUBTITLE = QUICK_WORKOUT_DURATION_OPTIONS.map(
-  (option) => ({
-    id: option.id,
-    title: option.title,
-    description: option.description,
-    tertiary: option.subtitle,
-  })
-);
-
-// Equipment options (no tertiary content needed)
-const EQUIPMENT_OPTIONS = QUICK_WORKOUT_EQUIPMENT_OPTIONS.map((option) => ({
-  id: option.id,
-  title: option.title,
-  description: option.description,
-}));
-
-export default function WorkoutCustomization({
+// ✅ CRITICAL FIX: Memoize WorkoutCustomization to prevent unnecessary re-renders
+const WorkoutCustomization = memo(function WorkoutCustomization({
   options,
   onChange,
   errors,
   disabled = false,
-  mode = 'quick',
-  activeQuickStep,
-  onQuickStepChange,
-}: WorkoutCustomizationProps & {
-  activeQuickStep?: 'focus-energy' | 'duration-equipment';
-  onQuickStepChange?: (step: 'focus-energy' | 'duration-equipment') => void;
-}) {
+  mode = 'custom',
+}: WorkoutCustomizationProps) {
   const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
-  const [internalActiveQuickStep, setInternalActiveQuickStep] = useState<
-    'focus-energy' | 'duration-equipment'
-  >('focus-energy');
 
-  // Use external step state if provided, otherwise use internal state
-  const currentStep = activeQuickStep || internalActiveQuickStep;
-  const setCurrentStep = onQuickStepChange || setInternalActiveQuickStep;
-
-  // Simple step click handler without validation
-  const handleStepClick = (stepId: string) => {
-    if (stepId === 'focus-energy' || stepId === 'duration-equipment') {
-      const newStep = stepId as 'focus-energy' | 'duration-equipment';
-      const currentStepIndex = currentStep === 'focus-energy' ? 0 : 1;
-      const newStepIndex = newStep === 'focus-energy' ? 0 : 1;
-
-      // Only allow jumping backwards
-      if (newStepIndex < currentStepIndex) {
-        setCurrentStep(newStep);
-      }
-    }
-  };
-
-  const handleChange = (
-    key: keyof WorkoutCustomizationProps['options'],
-    value: unknown
-  ) => {
-    onChange(key, value);
-  };
-
-  // Helper function to format the current selection for display
-  const formatCurrentSelection = (
-    config: (typeof CUSTOMIZATION_CONFIG)[0],
-    value: unknown
-  ) => {
-    if (!value) return null;
-
-    switch (config.key) {
-      case 'customization_duration': {
-        const duration = value as number;
-        if (duration >= 60) {
-          const hours = Math.floor(duration / 60);
-          const minutes = duration % 60;
-          if (minutes === 0) {
-            return `${hours} hour${hours > 1 ? 's' : ''}`;
-          } else {
-            return `${hours}h ${minutes}m`;
-          }
+  // Group configurations by category (must be before any early returns)
+  const groupedConfigs = useMemo(() => {
+    return CUSTOMIZATION_CONFIG.reduce(
+      (acc, config) => {
+        const category = config.category || 'Other';
+        if (!acc[category]) {
+          acc[category] = [];
         }
-        return `${duration} min`;
-      }
-
-      case 'customization_areas': {
-        const areas = value as string[];
-        if (areas.length === 0) return null;
-        if (areas.length === 1) {
-          return areas[0]
-            .replace(/_/g, ' ')
-            .replace(/\b\w/g, (l) => l.toUpperCase());
-        }
-        return `${areas.length} areas`;
-      }
-
-      case 'customization_equipment': {
-        const equipment = value as string[];
-        if (equipment.length === 0) return null;
-        if (equipment.length === 1) {
-          const formatted = equipment[0]
-            .replace(/_/g, ' ')
-            .replace(/\b\w/g, (l) => l.toUpperCase());
-          return formatted === 'Bodyweight Only'
-            ? 'Bodyweight Only'
-            : formatted;
-        }
-        return `${equipment.length} items`;
-      }
-
-      case 'customization_soreness': {
-        const soreAreas = value as string[];
-        if (soreAreas.length === 0) return null;
-        if (soreAreas.length === 1) {
-          return soreAreas[0]
-            .replace(/_/g, ' ')
-            .replace(/\b\w/g, (l) => l.toUpperCase());
-        }
-        return `${soreAreas.length} areas`;
-      }
-
-      case 'customization_focus': {
-        const focus = value as string;
-        return focus
-          .replace(/_/g, ' ')
-          .replace(/\b\w/g, (l) => l.toUpperCase());
-      }
-
-      case 'customization_include': {
-        const exercises = value as string;
-        const exerciseList = exercises
-          .split(',')
-          .map((e) => e.trim())
-          .filter((e) => e.length > 0);
-        if (exerciseList.length === 0) return null;
-        if (exerciseList.length === 1) {
-          return exerciseList[0];
-        }
-        return `${exerciseList.length} exercises`;
-      }
-
-      case 'customization_exclude': {
-        const exercises = value as string;
-        const exerciseList = exercises
-          .split(',')
-          .map((e) => e.trim())
-          .filter((e) => e.length > 0);
-        if (exerciseList.length === 0) return null;
-        if (exerciseList.length === 1) {
-          return exerciseList[0];
-        }
-        return `${exerciseList.length} exercises`;
-      }
-
-      case 'customization_sleep': {
-        const rating = value as number;
-        const labels = ['', 'Very Poor', 'Poor', 'Fair', 'Good', 'Excellent'];
-        return `${labels[rating]} (${rating}/5)`;
-      }
-
-      case 'customization_energy': {
-        const rating = value as number;
-        const labels = ['', 'Very Low', 'Low', 'Moderate', 'High', 'Very High'];
-        return `${labels[rating]} (${rating}/5)`;
-      }
-
-      case 'customization_stress': {
-        const rating = value as number;
-        const labels = ['', 'Very Low', 'Low', 'Moderate', 'High', 'Very High'];
-        return `${labels[rating]} (${rating}/5)`;
-      }
-
-      default:
-        return String(value);
-    }
-  };
-
-  // For quick mode, show step indicator with 2 segments
-  if (mode === 'quick') {
-    return (
-      <div className="mb-6">
-        <h3 className="text-lg font-semibold mb-4 flex items-center flex-wrap gap-2">
-          <Target className="w-5 h-5" />
-          <span>Quick Workout Setup</span>
-          <span className="text-sm font-normal text-base-content/70">
-            (all required)
-          </span>
-        </h3>
-
-        {/* Step Indicator / Linear Stepper */}
-        <StepIndicator
-          steps={[
-            {
-              id: 'focus-energy',
-              label: 'Focus & Energy',
-              disabled: false, // First step is always enabled
-              hasErrors: false, // No validation errors
-            },
-            {
-              id: 'duration-equipment',
-              label: 'Duration & Equipment',
-              disabled: false, // Always enabled
-              hasErrors: false, // No validation errors
-            },
-          ]}
-          currentStep={currentStep}
-          onStepClick={handleStepClick}
-          disabled={disabled}
-          showConnectors={true}
-          size="md"
-        />
-
-        {/* Step content */}
-        {currentStep === 'focus-energy' && (
-          <div className="space-y-6">
-            <DetailedSelector
-              icon={Target}
-              options={FOCUS_OPTIONS_WITH_INTENSITY}
-              selectedValue={options.customization_goal || undefined}
-              onChange={(focus) => handleChange('customization_goal', focus)}
-              question="What's your main goal for this workout?"
-              description="Choose the primary focus that best matches your current needs and goals"
-              disabled={disabled}
-              error={undefined}
-              gridCols={3}
-              colorScheme="primary"
-              required={false}
-            />
-
-            <DetailedSelector
-              icon={Battery}
-              options={ENERGY_OPTIONS_WITH_DOTS}
-              selectedValue={options.customization_energy || undefined}
-              onChange={(energy) =>
-                handleChange('customization_energy', energy)
-              }
-              disabled={disabled}
-              error={undefined}
-              question="How energetic are you feeling today?"
-              description="This helps us tailor the workout intensity to your current energy level."
-              gridCols={3}
-              colorScheme="primary"
-              required={false}
-            />
-          </div>
-        )}
-
-        {currentStep === 'duration-equipment' && (
-          <div className="space-y-6">
-            <DetailedSelector
-              icon={Clock}
-              options={DURATION_OPTIONS_WITH_SUBTITLE}
-              selectedValue={
-                options.customization_duration?.toString() || undefined
-              }
-              onChange={(duration: string | string[]) => {
-                // DetailedSelector returns the ID string for single selection
-                const durationId = Array.isArray(duration)
-                  ? duration[0]
-                  : duration;
-                const durationValue = parseInt(durationId, 10);
-                if (isNaN(durationValue)) {
-                  console.error('Invalid duration value:', duration);
-                  return;
-                }
-                handleChange('customization_duration', durationValue);
-              }}
-              question="How long do you want your workout to be?"
-              description="Choose the duration that fits your schedule and energy level"
-              disabled={disabled}
-              error={undefined}
-              gridCols={3}
-              colorScheme="accent"
-              required={true}
-            />
-
-            <DetailedSelector
-              icon={Dumbbell}
-              options={EQUIPMENT_OPTIONS}
-              selectedValue={options.customization_equipment?.[0] || undefined}
-              onChange={(equipment: string | string[]) => {
-                // DetailedSelector returns the ID string for single selection
-                const equipmentId = Array.isArray(equipment)
-                  ? equipment[0]
-                  : equipment;
-                handleChange('customization_equipment', [equipmentId]);
-              }}
-              question="What equipment do you have available?"
-              description="Choose the equipment you have available for your workout"
-              disabled={disabled}
-              error={undefined}
-              gridCols={3}
-              colorScheme="primary"
-              required={true}
-            />
-          </div>
-        )}
-      </div>
+        acc[category].push(config);
+        return acc;
+      },
+      {} as Record<string, typeof CUSTOMIZATION_CONFIG>
     );
-  }
+  }, []);
 
-  // Group configurations by category
-  const groupedConfigs = CUSTOMIZATION_CONFIG.reduce(
-    (acc, config) => {
-      const category = config.category || 'Other';
-      if (!acc[category]) {
-        acc[category] = [];
-      }
-      acc[category].push(config);
-      return acc;
+  // ✅ CRITICAL FIX: Memoize handleChange to prevent recreation
+  const handleChange = useCallback(
+    (key: keyof WorkoutCustomizationProps['options'], value: unknown) => {
+      onChange(key, value);
     },
-    {} as Record<string, typeof CUSTOMIZATION_CONFIG>
+    [onChange]
   );
 
-  const toggleCategory = (category: string) => {
+  // ✅ CRITICAL FIX: Memoize toggleCategory to prevent recreation
+  const toggleCategory = useCallback((category: string) => {
     setExpandedCategories((prev) =>
       prev.includes(category)
         ? prev.filter((c) => c !== category)
         : [...prev, category]
     );
-  };
+  }, []);
+
+  // For quick mode, only show duration
+  if (mode === 'quick') {
+    const durationConfig = CUSTOMIZATION_CONFIG.find(
+      (config) => config.key === 'customization_duration'
+    );
+
+    if (!durationConfig) return null;
+
+    const IconComponent = durationConfig.icon;
+    const CustomizationComponent = durationConfig.component;
+    const value = options[durationConfig.key];
+    const error = errors[durationConfig.key];
+
+    return (
+      <div className="mb-6">
+        <div className="relative">
+          <div className={`border border-base-300 rounded-lg p-4`}>
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center">
+                <IconComponent className="w-5 h-5 mr-3" />
+                <span className="font-medium">{durationConfig.label}</span>
+              </div>
+            </div>
+
+            <p className="text-sm text-base-content/70 mb-3">
+              Choose how long you want your workout to be
+            </p>
+            <CustomizationComponent
+              value={value}
+              onChange={(newValue) =>
+                handleChange(durationConfig.key, newValue)
+              }
+              disabled={disabled}
+              error={error}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="mb-6">
@@ -408,13 +126,13 @@ export default function WorkoutCustomization({
 
               {expandedCategories.includes(category) && (
                 <div className="border-t border-base-300 p-4 space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-4">
                     {configs.map((config) => {
                       const IconComponent = config.icon;
                       const CustomizationComponent = config.component;
                       const value = options[config.key];
                       const error = errors[config.key];
-                      const currentSelection = formatCurrentSelection(
+                      const currentSelection = formatWorkoutSelection(
                         config,
                         value
                       );
@@ -463,9 +181,9 @@ export default function WorkoutCustomization({
                                 {config.key === 'customization_sleep' &&
                                   'How well did you sleep last night?'}
                                 {config.key === 'customization_energy' &&
-                                  'How energetic are you feeling today?'}
+                                  'How energetic are you feeling today? (Optional)'}
                                 {config.key === 'customization_stress' &&
-                                  "What's your current stress level?"}
+                                  "What's your current stress level? (Optional)"}
                                 {config.key === 'customization_soreness' &&
                                   'Are you experiencing any soreness?'}
                               </p>
@@ -496,4 +214,6 @@ export default function WorkoutCustomization({
       </div>
     </div>
   );
-}
+});
+
+export default WorkoutCustomization;

@@ -79,7 +79,9 @@ export class SelectionCounter {
     const hasDuration = !!options.customization_duration;
     const hasEquipment = !!(
       options.customization_equipment &&
-      options.customization_equipment.length > 0
+      (Array.isArray(options.customization_equipment)
+        ? options.customization_equipment.length > 0
+        : (options.customization_equipment.specificEquipment?.length ?? 0) > 0)
     );
     const total = (hasDuration ? 1 : 0) + (hasEquipment ? 1 : 0);
     const required = 2;

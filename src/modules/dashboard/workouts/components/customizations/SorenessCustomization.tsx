@@ -1,4 +1,5 @@
-import { CustomizationComponentProps } from '../types';
+import { memo, useCallback } from 'react';
+import { CustomizationComponentProps, CategoryRatingData } from '../types';
 
 // Body parts using common, everyday terminology
 const BODY_PARTS = [
@@ -20,71 +21,239 @@ const BODY_PARTS = [
   { label: 'Ankles', value: 'ankles' },
 ];
 
-export default function SorenessCustomization({
+// Soreness level ratings
+const SORENESS_LEVELS = [
+  {
+    value: 1,
+    label: 'Mild',
+    description: 'Slight discomfort, barely noticeable during movement',
+  },
+  {
+    value: 2,
+    label: 'Low-Moderate',
+    description:
+      "Noticeable soreness, but doesn't limit movement significantly",
+  },
+  {
+    value: 3,
+    label: 'Moderate',
+    description: 'Clear soreness that affects some movements and activities',
+  },
+  {
+    value: 4,
+    label: 'High',
+    description:
+      'Significant soreness that limits movement and causes discomfort',
+  },
+  {
+    value: 5,
+    label: 'Severe',
+    description:
+      'Intense soreness that severely restricts movement and function',
+  },
+];
+
+export default memo(function SorenessCustomization({
   value,
   onChange,
   disabled = false,
   error,
-}: CustomizationComponentProps<string[] | undefined>) {
-  const selectedBodyParts = value || [];
+}: CustomizationComponentProps<CategoryRatingData | undefined>) {
+  const categoryData = value || {};
 
-  const handleBodyPartToggle = (bodyPartValue: string) => {
-    const isSelected = selectedBodyParts.includes(bodyPartValue);
+  // Convert CategoryRatingData to internal format for easier manipulation
+  const selectedBodyParts = Object.keys(categoryData).filter(
+    (key) => categoryData[key].selected
+  );
 
-    if (isSelected) {
-      // Remove the body part
-      const newBodyParts = selectedBodyParts.filter(
-        (part) => part !== bodyPartValue
-      );
-      onChange(newBodyParts.length > 0 ? newBodyParts : undefined);
-    } else {
-      // Add the body part
-      onChange([...selectedBodyParts, bodyPartValue]);
-    }
-  };
+  const handleBodyPartToggle = useCallback(
+    (bodyPartValue: string) => {
+      const bodyPart = BODY_PARTS.find((bp) => bp.value === bodyPartValue);
+      const isSelected = categoryData[bodyPartValue]?.selected || false;
+
+      if (isSelected) {
+        // Remove the body part
+        const newCategoryData = { ...categoryData };
+        delete newCategoryData[bodyPartValue];
+        onChange(
+          Object.keys(newCategoryData).length > 0 ? newCategoryData : undefined
+        );
+      } else {
+        // Add the body part
+        const newCategoryData = {
+          ...categoryData,
+          [bodyPartValue]: {
+            selected: true,
+            label: bodyPart?.label || bodyPartValue,
+            description: undefined,
+          },
+        };
+        onChange(newCategoryData);
+      }
+    },
+    [categoryData, onChange]
+  );
+
+  const handleSorenessLevelChange = useCallback(
+    (bodyPart: string, level: number) => {
+      const newCategoryData = {
+        ...categoryData,
+        [bodyPart]: {
+          ...categoryData[bodyPart],
+          rating: level,
+        },
+      };
+      onChange(newCategoryData);
+    },
+    [categoryData, onChange]
+  );
 
   return (
     <div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
-        {BODY_PARTS.map((bodyPart) => {
-          const isSelected = selectedBodyParts.includes(bodyPart.value);
+      <div className="space-y-4">
+        <div>
+          <p className="text-sm text-base-content/80 mb-3">
+            Select any areas where you're experiencing soreness:
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+            {BODY_PARTS.map((bodyPart) => {
+              const isSelected =
+                categoryData[bodyPart.value]?.selected || false;
 
-          return (
-            <label
-              key={bodyPart.value}
-              className={`flex items-center space-x-2 p-2 rounded cursor-pointer hover:bg-base-200 ${
-                disabled ? 'cursor-not-allowed opacity-50' : ''
-              }`}
-            >
-              <input
-                type="checkbox"
-                className="checkbox checkbox-sm"
-                checked={isSelected}
-                onChange={() => handleBodyPartToggle(bodyPart.value)}
-                disabled={disabled}
-              />
-              <span className="text-sm">{bodyPart.label}</span>
-            </label>
-          );
-        })}
+              return (
+                <button
+                  key={bodyPart.value}
+                  type="button"
+                  className={`btn btn-sm justify-start ${
+                    isSelected ? 'btn-primary' : 'btn-outline'
+                  } ${disabled ? 'btn-disabled' : ''}`}
+                  onClick={() => handleBodyPartToggle(bodyPart.value)}
+                  disabled={disabled}
+                >
+                  {bodyPart.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Soreness Level Ratings for Selected Body Parts */}
+        {selectedBodyParts.length > 0 && (
+          <div className="mt-6 space-y-4">
+            <h4 className="text-sm font-medium text-base-content">
+              Rate the soreness level for each selected area:
+            </h4>
+
+            {selectedBodyParts.map((bodyPartValue) => {
+              const bodyPart = BODY_PARTS.find(
+                (bp) => bp.value === bodyPartValue
+              );
+              const selectedLevel = categoryData[bodyPartValue]?.rating;
+              const selectedSorenessLevel = SORENESS_LEVELS.find(
+                (level) => level.value === selectedLevel
+              );
+
+              return (
+                <div
+                  key={bodyPartValue}
+                  className="border border-base-300 rounded-lg p-4"
+                >
+                  <div className="mb-3">
+                    <h5 className="font-medium text-base-content mb-2">
+                      {bodyPart?.label}
+                    </h5>
+
+                    <div
+                      role="radiogroup"
+                      aria-labelledby={`soreness-${bodyPartValue}-label`}
+                    >
+                      <p
+                        id={`soreness-${bodyPartValue}-label`}
+                        className="text-sm text-base-content/80 mb-3"
+                      >
+                        Rate soreness level (1 = Mild, 5 = Severe)
+                      </p>
+
+                      <div className="rating rating-lg gap-2">
+                        {SORENESS_LEVELS.map((level) => {
+                          const isSelected = selectedLevel === level.value;
+
+                          return (
+                            <button
+                              key={level.value}
+                              type="button"
+                              role="radio"
+                              aria-checked={isSelected}
+                              aria-describedby={
+                                error
+                                  ? `soreness-${bodyPartValue}-error`
+                                  : undefined
+                              }
+                              className={`btn btn-circle ${
+                                isSelected
+                                  ? 'btn-warning text-warning-content'
+                                  : 'btn-outline btn-warning'
+                              } ${disabled ? 'btn-disabled' : ''} font-bold text-base`}
+                              onClick={() =>
+                                handleSorenessLevelChange(
+                                  bodyPartValue,
+                                  level.value
+                                )
+                              }
+                              disabled={disabled}
+                              title={`${level.label}: ${level.description}`}
+                            >
+                              {level.value}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+
+                  {selectedSorenessLevel && (
+                    <div className="bg-base-200 rounded-lg p-3">
+                      <p className="font-medium text-sm text-warning">
+                        {selectedSorenessLevel.label}
+                      </p>
+                      <p className="text-xs text-base-content/70">
+                        {selectedSorenessLevel.description}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
-      {error && <p className="validator-hint mt-2">{error}</p>}
+      {error && (
+        <p className="validator-hint mt-2" role="alert">
+          {error}
+        </p>
+      )}
 
       {selectedBodyParts.length > 0 && (
-        <div className="mt-3">
+        <div className="mt-4">
           <p className="text-xs text-base-content/60 mb-2">
-            Sore areas ({selectedBodyParts.length}):
+            Selected sore areas ({selectedBodyParts.length}):
           </p>
           <div className="flex flex-wrap gap-1">
-            {selectedBodyParts.map((bodyPart) => {
-              const part = BODY_PARTS.find((bp) => bp.value === bodyPart);
+            {selectedBodyParts.map((bodyPartValue) => {
+              const categoryInfo = categoryData[bodyPartValue];
+              const level = categoryInfo?.rating;
+              const levelLabel = SORENESS_LEVELS.find(
+                (l) => l.value === level
+              )?.label;
+
               return (
                 <span
-                  key={bodyPart}
+                  key={bodyPartValue}
                   className="badge badge-warning badge-outline badge-sm"
                 >
-                  {part?.label}
+                  {categoryInfo?.label}
+                  {level ? ` (${levelLabel})` : ''}
                 </span>
               );
             })}
@@ -93,4 +262,4 @@ export default function SorenessCustomization({
       )}
     </div>
   );
-}
+});
