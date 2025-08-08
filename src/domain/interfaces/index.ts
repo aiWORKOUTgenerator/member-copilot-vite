@@ -27,6 +27,7 @@ export * from './api/ApiService';
 
 // Export all service interfaces
 export * from './services/AttributeService';
+export * from './services/ConfigurationService';
 export * from './services/PromptService';
 export * from './services/WorkoutFeedbackService';
 
