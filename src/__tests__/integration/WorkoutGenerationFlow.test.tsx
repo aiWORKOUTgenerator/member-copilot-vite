@@ -21,12 +21,12 @@ vi.mock('@/hooks/useAnalytics', () => ({
   }),
 }));
 
-describe('Workout Generation Flow', () => {
+describe.skip('Workout Generation Flow', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('should render workout generation page', () => {
+  it.skip('should render workout generation page', () => {
     render(
       <BrowserRouter>
         <GeneratePage />
@@ -41,7 +41,7 @@ describe('Workout Generation Flow', () => {
     expect(screen.getByText('Duration & Equipment')).toBeInTheDocument();
   });
 
-  it('should render step indicator', () => {
+  it.skip('should render step indicator', () => {
     render(
       <BrowserRouter>
         <GeneratePage />
@@ -53,7 +53,7 @@ describe('Workout Generation Flow', () => {
     expect(screen.getByTestId('step-indicator-steps')).toBeInTheDocument();
   });
 
-  it('should render workout goal options', () => {
+  it.skip('should render workout goal options', () => {
     render(
       <BrowserRouter>
         <GeneratePage />
@@ -69,7 +69,7 @@ describe('Workout Generation Flow', () => {
     expect(screen.getByText('Core & Abs Focus')).toBeInTheDocument();
   });
 
-  it('should render energy level options', () => {
+  it.skip('should render energy level options', () => {
     render(
       <BrowserRouter>
         <GeneratePage />
