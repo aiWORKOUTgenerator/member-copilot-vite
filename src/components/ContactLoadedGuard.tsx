@@ -19,7 +19,7 @@ export function ContactLoadedGuard({
   const { isSignedIn } = useAuth();
 
   // If signed in but contact isn't loaded yet, show loading state
-  if (!isSignedIn && !isLoaded && isLoading) {
+  if (isSignedIn && !isLoaded && isLoading) {
     return fallback ? (
       <>{fallback}</>
     ) : (
