@@ -1,7 +1,7 @@
 import { Target, Battery, Clock, Dumbbell } from 'lucide-react';
 import { WorkoutCustomizationProps } from './types';
 import { CUSTOMIZATION_CONFIG } from './customizations';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { StepIndicator, DetailedSelector } from '@/ui/shared/molecules';
 import { LevelDots } from '@/ui/shared/atoms';
 import { ValidationMessage } from '@/ui/shared/atoms/ValidationMessage';
@@ -90,10 +90,13 @@ export default function WorkoutCustomization({
   const currentStep = activeQuickStep || internalActiveQuickStep;
   const setCurrentStep = onQuickStepChange || setInternalActiveQuickStep;
 
+  // Ref for the component container
+  const containerRef = useRef<HTMLDivElement>(null);
+
   // Auto-scroll to top when step changes
   useEffect(() => {
     // Scroll to top of the component when step changes
-    const element = document.querySelector('.workout-customization-container');
+    const element = containerRef.current;
     if (element && typeof element.scrollIntoView === 'function') {
       element.scrollIntoView({
         behavior: 'smooth',
@@ -481,7 +484,7 @@ export default function WorkoutCustomization({
   };
 
   return (
-    <div className="mb-6">
+    <div ref={containerRef} className="mb-6">
       <h3 className="text-lg font-semibold mb-4 flex items-center flex-wrap gap-2">
         <Target className="w-5 h-5" />
         <span>Workout Customization</span>
