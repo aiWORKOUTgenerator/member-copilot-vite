@@ -224,12 +224,12 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
 
             {/* Mobile menu dropdown */}
             <div className="dropdown dropdown-end lg:hidden">
-              <label tabIndex={0} className="btn btn-ghost text-white">
+              <label tabIndex={0} className="btn text-white">
                 <MenuIcon className="h-6 w-6" />
               </label>
               <ul
                 tabIndex={0}
-                className="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box mt-4 w-[96vw] max-w-full"
+                className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
               >
                 {navigation.map((item) => {
                   const isCurrentPage =
