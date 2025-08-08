@@ -121,6 +121,11 @@ export const QUICK_WORKOUT_EQUIPMENT_OPTIONS: WorkoutEquipmentOption[] = [
   { id: 'full_gym', title: 'Full Gym', description: 'All equipment available' },
 ];
 
+// Valid equipment IDs for validation
+export const VALID_EQUIPMENT_IDS = QUICK_WORKOUT_EQUIPMENT_OPTIONS.map(
+  (option) => option.id
+) as readonly string[];
+
 // Energy level options for quick workout setup
 export const ENERGY_LEVEL_OPTIONS: EnergyLevelOption[] = [
   {

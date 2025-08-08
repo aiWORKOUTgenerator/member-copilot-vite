@@ -1,4 +1,7 @@
 import { PerWorkoutOptions } from './components/types';
+import { VALIDATION_MESSAGES } from './constants/validationMessages';
+import { CUSTOMIZATION_FIELD_KEYS } from './constants/fieldKeys';
+import { VALID_EQUIPMENT_IDS } from './constants';
 
 // Core interfaces for selection counting
 export interface StepSelections {
@@ -50,9 +53,9 @@ export interface ProgressIndicator {
 export class SelectionCounter {
   // Focus & Energy step counting (Step 0)
   static getFocusEnergySelections(options: PerWorkoutOptions): StepSelections {
-    const hasGoal = !!options.customization_goal;
+    const hasFocus = !!options.customization_focus;
     const hasEnergy = !!options.customization_energy;
-    const total = (hasGoal ? 1 : 0) + (hasEnergy ? 1 : 0);
+    const total = (hasFocus ? 1 : 0) + (hasEnergy ? 1 : 0);
     const required = 2;
 
     return {
@@ -66,8 +69,8 @@ export class SelectionCounter {
       errorCount: 0, // Will be set by validation logic
       canProceed: total === required,
       details: {
-        customization_goal: hasGoal,
-        customization_energy: hasEnergy,
+        [CUSTOMIZATION_FIELD_KEYS.FOCUS]: hasFocus,
+        [CUSTOMIZATION_FIELD_KEYS.ENERGY]: hasEnergy,
       },
     };
   }
@@ -95,8 +98,8 @@ export class SelectionCounter {
       errorCount: 0, // Will be set by validation logic
       canProceed: total === required,
       details: {
-        customization_duration: hasDuration,
-        customization_equipment: hasEquipment,
+        [CUSTOMIZATION_FIELD_KEYS.DURATION]: hasDuration,
+        [CUSTOMIZATION_FIELD_KEYS.EQUIPMENT]: hasEquipment,
       },
     };
   }
@@ -133,7 +136,7 @@ export class SelectionCounter {
     errorMessage?: string;
   } {
     switch (fieldKey) {
-      case 'customization_goal':
+      case CUSTOMIZATION_FIELD_KEYS.FOCUS:
         return {
           hasValue:
             !!value && typeof value === 'string' && value.trim().length > 0,
@@ -141,7 +144,7 @@ export class SelectionCounter {
             !!value && typeof value === 'string' && value.trim().length > 0,
         };
 
-      case 'customization_energy': {
+      case CUSTOMIZATION_FIELD_KEYS.ENERGY: {
         const energy = Number(value);
         const energyHasValue =
           value !== undefined &&
@@ -157,12 +160,12 @@ export class SelectionCounter {
             value !== null &&
             !isNaN(energy) &&
             (energy < 1 || energy > 6)
-              ? 'Energy level must be between 1 and 6'
+              ? VALIDATION_MESSAGES.ENERGY_RANGE
               : undefined,
         };
       }
 
-      case 'customization_duration': {
+      case CUSTOMIZATION_FIELD_KEYS.DURATION: {
         const duration = Number(value);
         const durationHasValue =
           value !== undefined && value !== null && !isNaN(duration);
@@ -173,18 +176,18 @@ export class SelectionCounter {
           isValid: durationIsValid,
           errorMessage:
             durationHasValue && !durationIsValid
-              ? 'Duration must be between 5 and 300 minutes'
+              ? VALIDATION_MESSAGES.DURATION_RANGE
               : undefined,
         };
       }
 
-      case 'customization_equipment':
+      case CUSTOMIZATION_FIELD_KEYS.EQUIPMENT:
         return {
           hasValue: Array.isArray(value) && value.length > 0,
           isValid:
             Array.isArray(value) &&
             value.length > 0 &&
-            value.every((item) => !!item && typeof item === 'string'),
+            value.every((item) => VALID_EQUIPMENT_IDS.includes(item)),
         };
 
       default:
@@ -254,10 +257,10 @@ export class ButtonStateLogic {
 
     if (currentStepSelections.isPartial) {
       return {
-        className: 'btn btn-outline btn-primary',
-        disabled: false,
-        text: 'Continue',
-        state: 'partial',
+        className: 'btn btn-disabled',
+        disabled: true,
+        text: 'Complete current step',
+        state: 'disabled',
         visualFeedback: {
           indicatorColor: 'blue',
           message: `${currentStepSelections.total} of ${currentStepSelections.required} selections made`,
@@ -363,11 +366,10 @@ export function useStepSelections(
 
   // Get field states for enhanced feedback - include all possible fields
   const allFields: (keyof PerWorkoutOptions)[] = [
-    'customization_goal',
+    'customization_focus',
     'customization_energy',
     'customization_duration',
     'customization_equipment',
-    'customization_focus',
     'customization_areas',
     'customization_soreness',
     'customization_stress',

@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router';
 import WorkoutCustomization from './components/WorkoutCustomization';
 import { PerWorkoutOptions } from './components/types';
 import { useAnalytics } from '@/hooks/useAnalytics';
+import { ButtonStateLogic } from './selectionCountingLogic';
 
 // 15 workout prompt examples
 const WORKOUT_PROMPTS = [
@@ -260,24 +261,7 @@ export default function GenerateWorkoutPage() {
 
   // No longer using complex selection counting for quick workout
 
-  // Simple selection check for quick workout
-  const hasFocusEnergySelections = !!(
-    perWorkoutOptions.customization_goal &&
-    perWorkoutOptions.customization_energy
-  );
-  const hasDurationEquipmentSelections = !!(
-    perWorkoutOptions.customization_duration &&
-    perWorkoutOptions.customization_equipment?.length
-  );
-
-  const errorSummary = {
-    hasCurrentStepErrors: false,
-    currentStepErrorCount: 0,
-    canProceed:
-      activeQuickStep === 'focus-energy'
-        ? hasFocusEnergySelections
-        : hasDurationEquipmentSelections,
-  };
+  // Selection checking is now handled by ButtonStateLogic
 
   // Get button state based on active tab
   const getButtonState = () => {
@@ -290,16 +274,24 @@ export default function GenerateWorkoutPage() {
       };
     }
 
-    // Quick mode - simple button state
-    const canProceed = errorSummary.canProceed;
-    const isFocusEnergyStep = activeQuickStep === 'focus-energy';
+    // Quick mode - use sophisticated button state logic
+    const buttonState = ButtonStateLogic.getHybridButtonState(
+      activeQuickStep,
+      perWorkoutOptions,
+      errors,
+      isGenerating
+    );
 
     return {
-      className: canProceed ? 'btn btn-primary' : 'btn btn-disabled',
-      disabled: !canProceed,
-      text: isFocusEnergyStep ? 'Next' : 'Generate Quick Workout',
+      className: buttonState.className,
+      disabled: buttonState.disabled,
+      text: buttonState.text,
+      visualFeedback: buttonState.visualFeedback,
     };
   };
+
+  // Store button state to avoid multiple function calls
+  const buttonState = getButtonState();
 
   return (
     <div className="p-2 sm:p-4">
@@ -444,21 +436,25 @@ export default function GenerateWorkoutPage() {
             )}
 
             <div className="card-actions justify-end">
-              {/* Simple progress indicator for quick mode */}
+              {/* Enhanced progress indicator for quick mode */}
               {activeTab === 'quick' && (
                 <div className="flex items-center gap-3 text-sm text-base-content/60 mr-auto">
                   <div className="flex items-center gap-2">
                     <div
                       className={`w-2 h-2 rounded-full transition-colors duration-200 ${
-                        errorSummary.canProceed
+                        buttonState.visualFeedback?.indicatorColor === 'green'
                           ? 'bg-success'
-                          : 'bg-base-content/40'
+                          : buttonState.visualFeedback?.indicatorColor === 'red'
+                            ? 'bg-error'
+                            : buttonState.visualFeedback?.indicatorColor ===
+                                'blue'
+                              ? 'bg-primary'
+                              : 'bg-base-content/40'
                       }`}
                     ></div>
                     <span className="transition-opacity duration-200">
-                      {errorSummary.canProceed
-                        ? 'Ready to proceed'
-                        : 'Complete current step'}
+                      {buttonState.visualFeedback?.message ||
+                        'Complete current step'}
                     </span>
                   </div>
                 </div>
@@ -467,13 +463,9 @@ export default function GenerateWorkoutPage() {
               {/* Enhanced submit button */}
               <button
                 type="submit"
-                className={`${
-                  getButtonState().className
-                } transition-all duration-200`}
-                disabled={getButtonState().disabled}
-                title={
-                  getButtonState().disabled ? getButtonState().text : undefined
-                }
+                className={`${buttonState.className} transition-all duration-200`}
+                disabled={buttonState.disabled}
+                title={buttonState.disabled ? buttonState.text : undefined}
               >
                 {isGenerating ? (
                   <>
@@ -481,7 +473,7 @@ export default function GenerateWorkoutPage() {
                     Generating...
                   </>
                 ) : (
-                  getButtonState().text
+                  buttonState.text
                 )}
               </button>
             </div>

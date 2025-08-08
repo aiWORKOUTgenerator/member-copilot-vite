@@ -1,9 +1,10 @@
 import { Target, Battery, Clock, Dumbbell } from 'lucide-react';
 import { WorkoutCustomizationProps } from './types';
 import { CUSTOMIZATION_CONFIG } from './customizations';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { StepIndicator, DetailedSelector } from '@/ui/shared/molecules';
 import { LevelDots } from '@/ui/shared/atoms';
+import { FieldValidationMessage } from './FieldValidationMessage';
 
 import {
   QUICK_WORKOUT_FOCUS_OPTIONS,
@@ -11,6 +12,7 @@ import {
   QUICK_WORKOUT_DURATION_OPTIONS,
   QUICK_WORKOUT_EQUIPMENT_OPTIONS,
 } from '../constants';
+import { CUSTOMIZATION_FIELD_KEYS } from '../constants/fieldKeys';
 
 // Focus options with intensity indicators
 const FOCUS_OPTIONS_WITH_INTENSITY = QUICK_WORKOUT_FOCUS_OPTIONS.map(
@@ -89,6 +91,87 @@ export default function WorkoutCustomization({
   const currentStep = activeQuickStep || internalActiveQuickStep;
   const setCurrentStep = onQuickStepChange || setInternalActiveQuickStep;
 
+  // Ref for the component container
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll to top when step changes
+  useEffect(() => {
+    // Scroll to top of the component when step changes
+    const element = containerRef.current;
+    if (element && typeof element.scrollIntoView === 'function') {
+      element.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    }
+  }, [currentStep]);
+
+  // Basic validation logic for individual fields
+  const getFieldValidationError = (
+    fieldKey: keyof WorkoutCustomizationProps['options']
+  ) => {
+    if (fieldKey === CUSTOMIZATION_FIELD_KEYS.FOCUS) {
+      const hasFocus = !!options.customization_focus;
+      const hasEnergy = !!options.customization_energy;
+
+      // Show error on focus field if energy is selected but focus is not
+      if (hasEnergy && !hasFocus) {
+        return 'Complete this section';
+      }
+    } else if (fieldKey === CUSTOMIZATION_FIELD_KEYS.ENERGY) {
+      const hasFocus = !!options.customization_focus;
+      const hasEnergy = !!options.customization_energy;
+
+      // Show error on energy field if focus is selected but energy is not
+      if (hasFocus && !hasEnergy) {
+        return 'Complete this section';
+      }
+    } else if (fieldKey === CUSTOMIZATION_FIELD_KEYS.DURATION) {
+      const hasDuration = !!options.customization_duration;
+      const hasEquipment = !!(
+        options.customization_equipment &&
+        Array.isArray(options.customization_equipment) &&
+        options.customization_equipment.length > 0
+      );
+
+      // Show error on duration field if equipment is selected but duration is not
+      if (hasEquipment && !hasDuration) {
+        return 'Complete this section';
+      }
+    } else if (fieldKey === CUSTOMIZATION_FIELD_KEYS.EQUIPMENT) {
+      const hasDuration = !!options.customization_duration;
+      const hasEquipment = !!(
+        options.customization_equipment &&
+        Array.isArray(options.customization_equipment) &&
+        options.customization_equipment.length > 0
+      );
+
+      // Show error on equipment field if duration is selected but equipment is not
+      if (hasDuration && !hasEquipment) {
+        return 'Complete this section';
+      }
+    }
+    return undefined;
+  };
+
+  // Check if step has any validation errors for step indicator
+  const getStepValidationError = (
+    step: 'focus-energy' | 'duration-equipment'
+  ) => {
+    if (step === 'focus-energy') {
+      return (
+        getFieldValidationError(CUSTOMIZATION_FIELD_KEYS.FOCUS) ||
+        getFieldValidationError(CUSTOMIZATION_FIELD_KEYS.ENERGY)
+      );
+    } else if (step === 'duration-equipment') {
+      return (
+        getFieldValidationError(CUSTOMIZATION_FIELD_KEYS.DURATION) ||
+        getFieldValidationError(CUSTOMIZATION_FIELD_KEYS.EQUIPMENT)
+      );
+    }
+    return undefined;
+  };
+
   // Simple step click handler without validation
   const handleStepClick = (stepId: string) => {
     if (stepId === 'focus-energy' || stepId === 'duration-equipment') {
@@ -118,7 +201,7 @@ export default function WorkoutCustomization({
     if (!value) return null;
 
     switch (config.key) {
-      case 'customization_duration': {
+      case CUSTOMIZATION_FIELD_KEYS.DURATION: {
         const duration = value as number;
         if (duration >= 60) {
           const hours = Math.floor(duration / 60);
@@ -132,7 +215,7 @@ export default function WorkoutCustomization({
         return `${duration} min`;
       }
 
-      case 'customization_areas': {
+      case CUSTOMIZATION_FIELD_KEYS.AREAS: {
         const areas = value as string[];
         if (areas.length === 0) return null;
         if (areas.length === 1) {
@@ -143,7 +226,7 @@ export default function WorkoutCustomization({
         return `${areas.length} areas`;
       }
 
-      case 'customization_equipment': {
+      case CUSTOMIZATION_FIELD_KEYS.EQUIPMENT: {
         const equipment = value as string[];
         if (equipment.length === 0) return null;
         if (equipment.length === 1) {
@@ -157,7 +240,7 @@ export default function WorkoutCustomization({
         return `${equipment.length} items`;
       }
 
-      case 'customization_soreness': {
+      case CUSTOMIZATION_FIELD_KEYS.SORENESS: {
         const soreAreas = value as string[];
         if (soreAreas.length === 0) return null;
         if (soreAreas.length === 1) {
@@ -168,14 +251,14 @@ export default function WorkoutCustomization({
         return `${soreAreas.length} areas`;
       }
 
-      case 'customization_focus': {
+      case CUSTOMIZATION_FIELD_KEYS.FOCUS: {
         const focus = value as string;
         return focus
           .replace(/_/g, ' ')
           .replace(/\b\w/g, (l) => l.toUpperCase());
       }
 
-      case 'customization_include': {
+      case CUSTOMIZATION_FIELD_KEYS.INCLUDE: {
         const exercises = value as string;
         const exerciseList = exercises
           .split(',')
@@ -188,7 +271,7 @@ export default function WorkoutCustomization({
         return `${exerciseList.length} exercises`;
       }
 
-      case 'customization_exclude': {
+      case CUSTOMIZATION_FIELD_KEYS.EXCLUDE: {
         const exercises = value as string;
         const exerciseList = exercises
           .split(',')
@@ -201,19 +284,19 @@ export default function WorkoutCustomization({
         return `${exerciseList.length} exercises`;
       }
 
-      case 'customization_sleep': {
+      case CUSTOMIZATION_FIELD_KEYS.SLEEP: {
         const rating = value as number;
         const labels = ['', 'Very Poor', 'Poor', 'Fair', 'Good', 'Excellent'];
         return `${labels[rating]} (${rating}/5)`;
       }
 
-      case 'customization_energy': {
+      case CUSTOMIZATION_FIELD_KEYS.ENERGY: {
         const rating = value as number;
         const labels = ['', 'Very Low', 'Low', 'Moderate', 'High', 'Very High'];
         return `${labels[rating]} (${rating}/5)`;
       }
 
-      case 'customization_stress': {
+      case CUSTOMIZATION_FIELD_KEYS.STRESS: {
         const rating = value as number;
         const labels = ['', 'Very Low', 'Low', 'Moderate', 'High', 'Very High'];
         return `${labels[rating]} (${rating}/5)`;
@@ -227,7 +310,7 @@ export default function WorkoutCustomization({
   // For quick mode, show step indicator with 2 segments
   if (mode === 'quick') {
     return (
-      <div className="mb-6">
+      <div className="mb-6 workout-customization-container">
         <h3 className="text-lg font-semibold mb-4 flex items-center flex-wrap gap-2">
           <Target className="w-5 h-5" />
           <span>Quick Workout Setup</span>
@@ -243,13 +326,13 @@ export default function WorkoutCustomization({
               id: 'focus-energy',
               label: 'Focus & Energy',
               disabled: false, // First step is always enabled
-              hasErrors: false, // No validation errors
+              hasErrors: !!getStepValidationError('focus-energy'),
             },
             {
               id: 'duration-equipment',
               label: 'Duration & Equipment',
               disabled: false, // Always enabled
-              hasErrors: false, // No validation errors
+              hasErrors: !!getStepValidationError('duration-equipment'),
             },
           ]}
           currentStep={currentStep}
@@ -261,12 +344,14 @@ export default function WorkoutCustomization({
 
         {/* Step content */}
         {currentStep === 'focus-energy' && (
-          <div className="space-y-6">
+          <div className="space-y-8">
             <DetailedSelector
               icon={Target}
               options={FOCUS_OPTIONS_WITH_INTENSITY}
-              selectedValue={options.customization_goal || undefined}
-              onChange={(focus) => handleChange('customization_goal', focus)}
+              selectedValue={options.customization_focus || undefined}
+              onChange={(focus) =>
+                handleChange(CUSTOMIZATION_FIELD_KEYS.FOCUS, focus)
+              }
               question="What's your main goal for this workout?"
               description="Choose the primary focus that best matches your current needs and goals"
               disabled={disabled}
@@ -276,12 +361,18 @@ export default function WorkoutCustomization({
               required={false}
             />
 
+            {/* Validation message for focus field */}
+            <FieldValidationMessage
+              field={CUSTOMIZATION_FIELD_KEYS.FOCUS}
+              getFieldValidationError={getFieldValidationError}
+            />
+
             <DetailedSelector
               icon={Battery}
               options={ENERGY_OPTIONS_WITH_DOTS}
               selectedValue={options.customization_energy || undefined}
               onChange={(energy) =>
-                handleChange('customization_energy', energy)
+                handleChange(CUSTOMIZATION_FIELD_KEYS.ENERGY, energy)
               }
               disabled={disabled}
               error={undefined}
@@ -291,11 +382,17 @@ export default function WorkoutCustomization({
               colorScheme="primary"
               required={false}
             />
+
+            {/* Validation message for energy field */}
+            <FieldValidationMessage
+              field={CUSTOMIZATION_FIELD_KEYS.ENERGY}
+              getFieldValidationError={getFieldValidationError}
+            />
           </div>
         )}
 
         {currentStep === 'duration-equipment' && (
-          <div className="space-y-6">
+          <div className="space-y-8">
             <DetailedSelector
               icon={Clock}
               options={DURATION_OPTIONS_WITH_SUBTITLE}
@@ -312,7 +409,7 @@ export default function WorkoutCustomization({
                   console.error('Invalid duration value:', duration);
                   return;
                 }
-                handleChange('customization_duration', durationValue);
+                handleChange(CUSTOMIZATION_FIELD_KEYS.DURATION, durationValue);
               }}
               question="How long do you want your workout to be?"
               description="Choose the duration that fits your schedule and energy level"
@@ -321,6 +418,12 @@ export default function WorkoutCustomization({
               gridCols={3}
               colorScheme="accent"
               required={true}
+            />
+
+            {/* Validation message for duration field */}
+            <FieldValidationMessage
+              field={CUSTOMIZATION_FIELD_KEYS.DURATION}
+              getFieldValidationError={getFieldValidationError}
             />
 
             <DetailedSelector
@@ -332,7 +435,7 @@ export default function WorkoutCustomization({
                 const equipmentId = Array.isArray(equipment)
                   ? equipment[0]
                   : equipment;
-                handleChange('customization_equipment', [equipmentId]);
+                handleChange(CUSTOMIZATION_FIELD_KEYS.EQUIPMENT, [equipmentId]);
               }}
               question="What equipment do you have available?"
               description="Choose the equipment you have available for your workout"
@@ -341,6 +444,12 @@ export default function WorkoutCustomization({
               gridCols={3}
               colorScheme="primary"
               required={true}
+            />
+
+            {/* Validation message for equipment field */}
+            <FieldValidationMessage
+              field={CUSTOMIZATION_FIELD_KEYS.EQUIPMENT}
+              getFieldValidationError={getFieldValidationError}
             />
           </div>
         )}
@@ -370,7 +479,7 @@ export default function WorkoutCustomization({
   };
 
   return (
-    <div className="mb-6">
+    <div ref={containerRef} className="mb-6">
       <h3 className="text-lg font-semibold mb-4 flex items-center flex-wrap gap-2">
         <Target className="w-5 h-5" />
         <span>Workout Customization</span>

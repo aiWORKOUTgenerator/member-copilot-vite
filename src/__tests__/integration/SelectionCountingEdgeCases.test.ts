@@ -39,7 +39,7 @@ describe('Selection Counting Edge Cases', () => {
   });
 
   it('should handle valid equipment selections', () => {
-    const equipment = ['dumbbells', 'bench'];
+    const equipment = ['bodyweight', 'available_equipment'];
     const result = SelectionCounter.getFieldSelectionState(
       'customization_equipment',
       equipment
