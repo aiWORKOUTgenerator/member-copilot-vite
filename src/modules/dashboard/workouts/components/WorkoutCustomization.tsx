@@ -4,7 +4,7 @@ import { CUSTOMIZATION_CONFIG } from './customizations';
 import { useState, useEffect, useRef } from 'react';
 import { StepIndicator, DetailedSelector } from '@/ui/shared/molecules';
 import { LevelDots } from '@/ui/shared/atoms';
-import { ValidationMessage } from '@/ui/shared/atoms/ValidationMessage';
+import { FieldValidationMessage } from './FieldValidationMessage';
 
 import {
   QUICK_WORKOUT_FOCUS_OPTIONS,
@@ -359,12 +359,10 @@ export default function WorkoutCustomization({
             />
 
             {/* Validation message for focus field */}
-            <div className="mb-4">
-              <ValidationMessage
-                message={getFieldValidationError('customization_focus')}
-                isValid={!getFieldValidationError('customization_focus')}
-              />
-            </div>
+            <FieldValidationMessage
+              field="customization_focus"
+              getFieldValidationError={getFieldValidationError}
+            />
 
             <DetailedSelector
               icon={Battery}
@@ -383,12 +381,10 @@ export default function WorkoutCustomization({
             />
 
             {/* Validation message for energy field */}
-            <div className="mb-4">
-              <ValidationMessage
-                message={getFieldValidationError('customization_energy')}
-                isValid={!getFieldValidationError('customization_energy')}
-              />
-            </div>
+            <FieldValidationMessage
+              field="customization_energy"
+              getFieldValidationError={getFieldValidationError}
+            />
           </div>
         )}
 
@@ -422,12 +418,10 @@ export default function WorkoutCustomization({
             />
 
             {/* Validation message for duration field */}
-            <div className="mb-4">
-              <ValidationMessage
-                message={getFieldValidationError('customization_duration')}
-                isValid={!getFieldValidationError('customization_duration')}
-              />
-            </div>
+            <FieldValidationMessage
+              field="customization_duration"
+              getFieldValidationError={getFieldValidationError}
+            />
 
             <DetailedSelector
               icon={Dumbbell}
@@ -450,12 +444,10 @@ export default function WorkoutCustomization({
             />
 
             {/* Validation message for equipment field */}
-            <div className="mb-4">
-              <ValidationMessage
-                message={getFieldValidationError('customization_equipment')}
-                isValid={!getFieldValidationError('customization_equipment')}
-              />
-            </div>
+            <FieldValidationMessage
+              field="customization_equipment"
+              getFieldValidationError={getFieldValidationError}
+            />
           </div>
         )}
       </div>
