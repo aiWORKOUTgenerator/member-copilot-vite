@@ -1,5 +1,6 @@
 import { PerWorkoutOptions } from './components/types';
 import { VALIDATION_MESSAGES } from './constants/validationMessages';
+import { CUSTOMIZATION_FIELD_KEYS } from './constants/fieldKeys';
 
 // Core interfaces for selection counting
 export interface StepSelections {
@@ -67,8 +68,8 @@ export class SelectionCounter {
       errorCount: 0, // Will be set by validation logic
       canProceed: total === required,
       details: {
-        customization_focus: hasFocus,
-        customization_energy: hasEnergy,
+        [CUSTOMIZATION_FIELD_KEYS.FOCUS]: hasFocus,
+        [CUSTOMIZATION_FIELD_KEYS.ENERGY]: hasEnergy,
       },
     };
   }
@@ -96,8 +97,8 @@ export class SelectionCounter {
       errorCount: 0, // Will be set by validation logic
       canProceed: total === required,
       details: {
-        customization_duration: hasDuration,
-        customization_equipment: hasEquipment,
+        [CUSTOMIZATION_FIELD_KEYS.DURATION]: hasDuration,
+        [CUSTOMIZATION_FIELD_KEYS.EQUIPMENT]: hasEquipment,
       },
     };
   }
@@ -134,7 +135,7 @@ export class SelectionCounter {
     errorMessage?: string;
   } {
     switch (fieldKey) {
-      case 'customization_focus':
+      case CUSTOMIZATION_FIELD_KEYS.FOCUS:
         return {
           hasValue:
             !!value && typeof value === 'string' && value.trim().length > 0,
@@ -142,7 +143,7 @@ export class SelectionCounter {
             !!value && typeof value === 'string' && value.trim().length > 0,
         };
 
-      case 'customization_energy': {
+      case CUSTOMIZATION_FIELD_KEYS.ENERGY: {
         const energy = Number(value);
         const energyHasValue =
           value !== undefined &&
@@ -163,12 +164,12 @@ export class SelectionCounter {
         };
       }
 
-      case 'customization_duration': {
+      case CUSTOMIZATION_FIELD_KEYS.DURATION: {
         const duration = Number(value);
         const durationHasValue =
           value !== undefined && value !== null && !isNaN(duration);
         const durationIsValid =
-          durationHasValue && duration >= 5 && duration <= 45;
+          durationHasValue && duration >= 5 && duration <= 300;
         return {
           hasValue: durationHasValue,
           isValid: durationIsValid,
@@ -179,7 +180,7 @@ export class SelectionCounter {
         };
       }
 
-      case 'customization_equipment':
+      case CUSTOMIZATION_FIELD_KEYS.EQUIPMENT:
         return {
           hasValue: Array.isArray(value) && value.length > 0,
           isValid:

@@ -26,7 +26,6 @@ export const VALIDATION_MESSAGES = {
   // Duration validation
   DURATION_TOO_SHORT: 'Workout duration is too short',
   DURATION_TOO_LONG: 'Workout duration is too long',
-  DURATION_REQUIRED: 'Please select a workout duration',
 
   // Goal validation
   GOAL_REQUIRED: 'Please select a workout goal',
@@ -39,5 +38,5 @@ export const VALIDATION_MESSAGES = {
   ENERGY_RANGE: 'Energy level must be between 1 and 6',
 
   // Duration validation
-  DURATION_RANGE: 'Duration must be between 10 and 45 minutes',
+  DURATION_RANGE: 'Duration must be between 5 and 300 minutes',
 } as const;
