@@ -14,6 +14,7 @@ import { UserButton } from '@clerk/clerk-react';
 import { MenuIcon } from 'lucide-react';
 import React, { ReactNode, useMemo } from 'react';
 import { Link, useLocation } from 'react-router';
+import { useAppConfig } from '@/hooks/useConfiguration';
 
 interface NavigationItem {
   name: string;
@@ -39,12 +40,29 @@ function classNames(...classes: string[]) {
 export const StackedLayout: React.FC<StackedLayoutProps> = ({
   children,
   title,
+  logo,
   containerStyle = 'default',
 }) => {
   const pathname = useLocation().pathname || '';
   // Get title from context if not provided as prop
   const { title: contextTitle } = useTitle();
   const displayTitle = title || contextTitle;
+
+  // App config (for logoUrl)
+  const appConfig = useAppConfig();
+  const logoSrc = useMemo(() => {
+    const candidates: Array<string | null | undefined> = [
+      logo,
+      appConfig?.logoUrl,
+      appConfig?.logo,
+    ];
+    for (const candidate of candidates) {
+      if (typeof candidate === 'string' && candidate.trim().length > 0) {
+        return candidate;
+      }
+    }
+    return '';
+  }, [logo, appConfig?.logoUrl, appConfig?.logo]);
 
   // Get necessary data for calculating incomplete attributes
   const contact = useContactData();
@@ -144,6 +162,12 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
         <div className="navbar border-b border-secondary-focus/25 bg-primary w-full">
           <div className="navbar-start">
             <div className="flex items-center">
+              {/* Mobile logo */}
+              {logoSrc ? (
+                <Link to="/dashboard" className="lg:hidden ml-2">
+                  <img src={logoSrc} alt="App logo" className="h-8 w-auto" />
+                </Link>
+              ) : null}
               <div className="hidden lg:ml-10 lg:block">
                 <div className="flex space-x-2 border-secondary-focus/50 pb-1">
                   {navigation.map((item) => {
@@ -266,10 +290,16 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
         </div>
 
         <header className="py-2 sm:py-10 w-full">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full flex items-center justify-between">
             <h1 className="text-xl sm:text-3xl font-bold tracking-tight text-white break-words">
               {displayTitle}
             </h1>
+            {/* Desktop logo */}
+            {logoSrc ? (
+              <div className="hidden lg:block">
+                <img src={logoSrc} alt="App logo" className="h-12 w-auto" />
+              </div>
+            ) : null}
           </div>
         </header>
       </div>
