@@ -1,5 +1,6 @@
 import React from 'react';
 import { CUSTOMIZATION_CONFIG } from '../customizations';
+import { CUSTOMIZATION_FIELD_KEYS } from '../../constants/fieldKeys';
 import type { PerWorkoutOptions } from '../types';
 
 export interface CurrentStateStepProps {
@@ -18,10 +19,10 @@ export const CurrentStateStep: React.FC<CurrentStateStepProps> = ({
   // Get components for this step
   const stepConfigs = CUSTOMIZATION_CONFIG.filter((config) =>
     [
-      'customization_energy',
-      'customization_stress',
-      'customization_sleep',
-      'customization_soreness',
+      CUSTOMIZATION_FIELD_KEYS.ENERGY,
+      CUSTOMIZATION_FIELD_KEYS.STRESS,
+      CUSTOMIZATION_FIELD_KEYS.SLEEP,
+      CUSTOMIZATION_FIELD_KEYS.SORENESS,
     ].includes(config.key)
   );
 

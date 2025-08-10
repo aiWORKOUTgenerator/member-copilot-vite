@@ -1,5 +1,6 @@
 import React from 'react';
 import { CUSTOMIZATION_CONFIG } from '../customizations';
+import { CUSTOMIZATION_FIELD_KEYS } from '../../constants/fieldKeys';
 import type { PerWorkoutOptions } from '../types';
 
 export interface EquipmentPreferencesStepProps {
@@ -15,9 +16,9 @@ export const EquipmentPreferencesStep: React.FC<
   // Get components for this step
   const stepConfigs = CUSTOMIZATION_CONFIG.filter((config) =>
     [
-      'customization_equipment',
-      'customization_include',
-      'customization_exclude',
+      CUSTOMIZATION_FIELD_KEYS.EQUIPMENT,
+      CUSTOMIZATION_FIELD_KEYS.INCLUDE,
+      CUSTOMIZATION_FIELD_KEYS.EXCLUDE,
     ].includes(config.key)
   );
 

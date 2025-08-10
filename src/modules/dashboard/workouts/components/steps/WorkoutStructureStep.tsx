@@ -1,5 +1,6 @@
 import React from 'react';
 import { CUSTOMIZATION_CONFIG } from '../customizations';
+import { CUSTOMIZATION_FIELD_KEYS } from '../../constants/fieldKeys';
 import type { PerWorkoutOptions } from '../types';
 
 export interface WorkoutStructureStepProps {
@@ -18,9 +19,9 @@ export const WorkoutStructureStep: React.FC<WorkoutStructureStepProps> = ({
   // Get components for this step - matching Quick mode pattern
   const stepConfigs = CUSTOMIZATION_CONFIG.filter((config) =>
     [
-      'customization_duration',
-      'customization_focus',
-      'customization_areas',
+      CUSTOMIZATION_FIELD_KEYS.DURATION,
+      CUSTOMIZATION_FIELD_KEYS.FOCUS,
+      CUSTOMIZATION_FIELD_KEYS.AREAS,
     ].includes(config.key)
   );
 
@@ -31,7 +32,7 @@ export const WorkoutStructureStep: React.FC<WorkoutStructureStepProps> = ({
     if (!value) return null;
 
     switch (config.key) {
-      case 'customization_duration': {
+      case CUSTOMIZATION_FIELD_KEYS.DURATION: {
         const duration = value as number;
         if (duration >= 60) {
           const hours = Math.floor(duration / 60);
@@ -45,7 +46,7 @@ export const WorkoutStructureStep: React.FC<WorkoutStructureStepProps> = ({
         return `${duration} min`;
       }
 
-      case 'customization_areas': {
+      case CUSTOMIZATION_FIELD_KEYS.AREAS: {
         const areas = value as string[];
         if (areas.length === 0) return null;
         if (areas.length === 1) {
@@ -56,7 +57,7 @@ export const WorkoutStructureStep: React.FC<WorkoutStructureStepProps> = ({
         return `${areas.length} areas`;
       }
 
-      case 'customization_focus': {
+      case CUSTOMIZATION_FIELD_KEYS.FOCUS: {
         const focus = value as string;
         return focus
           .replace(/_/g, ' ')
@@ -100,11 +101,11 @@ export const WorkoutStructureStep: React.FC<WorkoutStructureStepProps> = ({
                     {config.label}
                   </h4>
                   <p className="text-sm text-base-content/70">
-                    {config.key === 'customization_duration' &&
+                    {config.key === CUSTOMIZATION_FIELD_KEYS.DURATION &&
                       'Choose how long you want your workout to be'}
-                    {config.key === 'customization_areas' &&
+                    {config.key === CUSTOMIZATION_FIELD_KEYS.AREAS &&
                       'Select the body parts or workout types you want to focus on'}
-                    {config.key === 'customization_focus' &&
+                    {config.key === CUSTOMIZATION_FIELD_KEYS.FOCUS &&
                       "What's your main goal for this workout?"}
                   </p>
                 </div>

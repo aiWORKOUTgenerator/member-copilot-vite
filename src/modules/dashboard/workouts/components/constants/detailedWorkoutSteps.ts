@@ -1,6 +1,7 @@
 import { Target, Activity, Heart } from 'lucide-react';
 import type { PerWorkoutOptions } from '../types';
 import type { ComponentType } from 'react';
+import { CUSTOMIZATION_FIELD_KEYS } from '../../constants/fieldKeys';
 
 export interface DetailedWorkoutStep {
   id: string;
@@ -23,16 +24,16 @@ export const DETAILED_WORKOUT_STEPS: DetailedWorkoutStep[] = [
     description: 'Duration, focus, and target areas',
     category: 'Workout Goals & Structure',
     fields: [
-      'customization_duration',
-      'customization_focus',
-      'customization_areas',
+      CUSTOMIZATION_FIELD_KEYS.DURATION,
+      CUSTOMIZATION_FIELD_KEYS.FOCUS,
+      CUSTOMIZATION_FIELD_KEYS.AREAS,
     ],
     icon: Target,
     validation: (options) => {
       const fields = [
-        'customization_duration',
-        'customization_focus',
-        'customization_areas',
+        CUSTOMIZATION_FIELD_KEYS.DURATION,
+        CUSTOMIZATION_FIELD_KEYS.FOCUS,
+        CUSTOMIZATION_FIELD_KEYS.AREAS,
       ] as const;
       const filledFields = fields.filter((field) => {
         const value = options[field];
@@ -64,16 +65,16 @@ export const DETAILED_WORKOUT_STEPS: DetailedWorkoutStep[] = [
     description: 'Available equipment and exercise preferences',
     category: 'Physical Focus & Equipment',
     fields: [
-      'customization_equipment',
-      'customization_include',
-      'customization_exclude',
+      CUSTOMIZATION_FIELD_KEYS.EQUIPMENT,
+      CUSTOMIZATION_FIELD_KEYS.INCLUDE,
+      CUSTOMIZATION_FIELD_KEYS.EXCLUDE,
     ],
     icon: Activity,
     validation: (options) => {
       const fields = [
-        'customization_equipment',
-        'customization_include',
-        'customization_exclude',
+        CUSTOMIZATION_FIELD_KEYS.EQUIPMENT,
+        CUSTOMIZATION_FIELD_KEYS.INCLUDE,
+        CUSTOMIZATION_FIELD_KEYS.EXCLUDE,
       ] as const;
       const filledFields = fields.filter((field) => {
         const value = options[field];
@@ -99,18 +100,18 @@ export const DETAILED_WORKOUT_STEPS: DetailedWorkoutStep[] = [
     description: 'Energy, stress, sleep, and recovery status',
     category: 'Current State & Wellness',
     fields: [
-      'customization_energy',
-      'customization_stress',
-      'customization_sleep',
-      'customization_soreness',
+      CUSTOMIZATION_FIELD_KEYS.ENERGY,
+      CUSTOMIZATION_FIELD_KEYS.STRESS,
+      CUSTOMIZATION_FIELD_KEYS.SLEEP,
+      CUSTOMIZATION_FIELD_KEYS.SORENESS,
     ],
     icon: Heart,
     validation: (options) => {
       const fields = [
-        'customization_energy',
-        'customization_stress',
-        'customization_sleep',
-        'customization_soreness',
+        CUSTOMIZATION_FIELD_KEYS.ENERGY,
+        CUSTOMIZATION_FIELD_KEYS.STRESS,
+        CUSTOMIZATION_FIELD_KEYS.SLEEP,
+        CUSTOMIZATION_FIELD_KEYS.SORENESS,
       ] as const;
       const filledFields = fields.filter((field) => {
         const value = options[field];
