@@ -15,11 +15,13 @@ export const EquipmentPreferencesStep: React.FC<
 > = ({ options, onChange, errors, disabled = false }) => {
   // Get components for this step
   const stepConfigs = CUSTOMIZATION_CONFIG.filter((config) =>
-    [
-      CUSTOMIZATION_FIELD_KEYS.EQUIPMENT,
-      CUSTOMIZATION_FIELD_KEYS.INCLUDE,
-      CUSTOMIZATION_FIELD_KEYS.EXCLUDE,
-    ].includes(config.key)
+    (
+      [
+        CUSTOMIZATION_FIELD_KEYS.EQUIPMENT,
+        CUSTOMIZATION_FIELD_KEYS.INCLUDE,
+        CUSTOMIZATION_FIELD_KEYS.EXCLUDE,
+      ] as string[]
+    ).includes(config.key)
   );
 
   const formatCurrentSelection = (

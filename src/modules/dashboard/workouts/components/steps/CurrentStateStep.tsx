@@ -18,12 +18,14 @@ export const CurrentStateStep: React.FC<CurrentStateStepProps> = ({
 }) => {
   // Get components for this step
   const stepConfigs = CUSTOMIZATION_CONFIG.filter((config) =>
-    [
-      CUSTOMIZATION_FIELD_KEYS.ENERGY,
-      CUSTOMIZATION_FIELD_KEYS.STRESS,
-      CUSTOMIZATION_FIELD_KEYS.SLEEP,
-      CUSTOMIZATION_FIELD_KEYS.SORENESS,
-    ].includes(config.key)
+    (
+      [
+        CUSTOMIZATION_FIELD_KEYS.ENERGY,
+        CUSTOMIZATION_FIELD_KEYS.STRESS,
+        CUSTOMIZATION_FIELD_KEYS.SLEEP,
+        CUSTOMIZATION_FIELD_KEYS.SORENESS,
+      ] as string[]
+    ).includes(config.key)
   );
 
   const formatCurrentSelection = (

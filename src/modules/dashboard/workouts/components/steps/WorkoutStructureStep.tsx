@@ -18,11 +18,13 @@ export const WorkoutStructureStep: React.FC<WorkoutStructureStepProps> = ({
 }) => {
   // Get components for this step - matching Quick mode pattern
   const stepConfigs = CUSTOMIZATION_CONFIG.filter((config) =>
-    [
-      CUSTOMIZATION_FIELD_KEYS.DURATION,
-      CUSTOMIZATION_FIELD_KEYS.FOCUS,
-      CUSTOMIZATION_FIELD_KEYS.AREAS,
-    ].includes(config.key)
+    (
+      [
+        CUSTOMIZATION_FIELD_KEYS.DURATION,
+        CUSTOMIZATION_FIELD_KEYS.FOCUS,
+        CUSTOMIZATION_FIELD_KEYS.AREAS,
+      ] as string[]
+    ).includes(config.key)
   );
 
   const formatCurrentSelection = (
