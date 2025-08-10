@@ -101,13 +101,13 @@ export const CurrentStateStep: React.FC<CurrentStateStepProps> = ({
                     {config.label}
                   </h4>
                   <p className="text-sm text-base-content/70">
-                    {config.key === 'customization_sleep' &&
+                    {config.key === CUSTOMIZATION_FIELD_KEYS.SLEEP &&
                       'How well did you sleep last night?'}
-                    {config.key === 'customization_energy' &&
+                    {config.key === CUSTOMIZATION_FIELD_KEYS.ENERGY &&
                       'How energetic are you feeling today?'}
-                    {config.key === 'customization_stress' &&
+                    {config.key === CUSTOMIZATION_FIELD_KEYS.STRESS &&
                       "What's your current stress level?"}
-                    {config.key === 'customization_soreness' &&
+                    {config.key === CUSTOMIZATION_FIELD_KEYS.SORENESS &&
                       'Are you experiencing any soreness?'}
                   </p>
                 </div>

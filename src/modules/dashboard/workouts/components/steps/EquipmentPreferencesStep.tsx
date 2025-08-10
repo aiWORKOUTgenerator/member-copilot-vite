@@ -108,11 +108,11 @@ export const EquipmentPreferencesStep: React.FC<
                     {config.label}
                   </h4>
                   <p className="text-sm text-base-content/70">
-                    {config.key === 'customization_equipment' &&
+                    {config.key === CUSTOMIZATION_FIELD_KEYS.EQUIPMENT &&
                       'Tell us what equipment you have available'}
-                    {config.key === 'customization_include' &&
+                    {config.key === CUSTOMIZATION_FIELD_KEYS.INCLUDE &&
                       'Specify exercises you definitely want in your workout'}
-                    {config.key === 'customization_exclude' &&
+                    {config.key === CUSTOMIZATION_FIELD_KEYS.EXCLUDE &&
                       'Specify exercises you want to avoid'}
                   </p>
                 </div>
