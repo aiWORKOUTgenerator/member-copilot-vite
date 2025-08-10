@@ -53,7 +53,7 @@ export const useDetailedWorkoutSteps = (
     (stepId: string) => {
       const step = getStepById(stepId);
       if (!step || !step.validation) {
-        return { isValid: true, completionPercentage: 0, missingFields: [] };
+        return { isValid: false, completionPercentage: 0, missingFields: [] };
       }
       return step.validation(options);
     },
