@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import {
   DETAILED_WORKOUT_STEPS,
   getStepById,
@@ -67,16 +67,6 @@ export const useDetailedWorkoutSteps = (
     }, 0);
     return Math.round(totalCompletion / DETAILED_WORKOUT_STEPS.length);
   }, [getStepValidation]);
-
-  // Auto-scroll to top when step changes
-  useEffect(() => {
-    const element = document.querySelector(
-      '[data-testid="detailed-workout-container"]'
-    );
-    if (element && typeof element.scrollIntoView === 'function') {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  }, [currentStep]);
 
   return {
     currentStep,

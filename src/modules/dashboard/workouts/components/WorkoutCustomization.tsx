@@ -118,7 +118,7 @@ export default function WorkoutCustomization({
         block: 'start',
       });
     }
-  }, [currentStep]);
+  }, [currentStep, detailedSteps.currentStep]);
 
   // Basic validation logic for individual fields
   const getFieldValidationError = (
