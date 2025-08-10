@@ -9,6 +9,12 @@ import {
 } from '@/ui/shared/molecules';
 import { LevelDots } from '@/ui/shared/atoms';
 import { FieldValidationMessage } from './FieldValidationMessage';
+import { useDetailedWorkoutSteps } from './hooks/useDetailedWorkoutSteps';
+import {
+  WorkoutStructureStep,
+  EquipmentPreferencesStep,
+  CurrentStateStep,
+} from './steps';
 
 import {
   QUICK_WORKOUT_FOCUS_OPTIONS,
@@ -96,6 +102,9 @@ export default function WorkoutCustomization({
   const currentStep = activeQuickStep || internalActiveQuickStep;
   const setCurrentStep = onQuickStepChange || setInternalActiveQuickStep;
 
+  // Detailed mode step management
+  const detailedSteps = useDetailedWorkoutSteps(options, 'workout-structure');
+
   // Ref for the component container
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -109,7 +118,7 @@ export default function WorkoutCustomization({
         block: 'start',
       });
     }
-  }, [currentStep]);
+  }, [currentStep, detailedSteps.currentStep]);
 
   // Basic validation logic for individual fields
   const getFieldValidationError = (
@@ -476,7 +485,131 @@ export default function WorkoutCustomization({
     );
   }
 
-  // Group configurations by category
+  // For detailed mode, show step-based interface
+  if (mode === 'detailed') {
+    return (
+      <div
+        ref={containerRef}
+        className="mb-6"
+        data-testid="detailed-workout-container"
+      >
+        <div className="mb-6">
+          <h3 className="text-lg font-semibold mb-4 flex items-center flex-wrap gap-2">
+            <Target className="w-5 h-5" />
+            <span>Detailed Workout Setup</span>
+            <span className="text-sm font-normal text-base-content/70">
+              (all optional)
+            </span>
+          </h3>
+
+          {/* View Mode Toggle - matching Quick mode pattern */}
+          <div className="mb-4 flex justify-end">
+            <SimpleDetailedViewSelector
+              value={viewMode}
+              onChange={setViewMode}
+              size="sm"
+              labels={{ simple: 'Simple', detailed: 'Detailed' }}
+            />
+          </div>
+
+          {/* Overall Progress */}
+          <div className="mb-4">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-sm font-medium">Overall Progress</span>
+              <span className="text-sm text-base-content/70">
+                {detailedSteps.getOverallProgress()}% Complete
+              </span>
+            </div>
+            <div className="w-full bg-base-200 rounded-full h-2">
+              <div
+                className="bg-primary h-2 rounded-full transition-all duration-300"
+                style={{ width: `${detailedSteps.getOverallProgress()}%` }}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Step Indicator */}
+        <StepIndicator
+          steps={detailedSteps.steps.map((step) => {
+            const validation = detailedSteps.getStepValidation(step.id);
+            return {
+              id: step.id,
+              label: step.label,
+              description: `${validation.completionPercentage}% complete`,
+              disabled: false,
+              hasErrors: false, // All optional, so no errors
+            };
+          })}
+          currentStep={detailedSteps.currentStep}
+          onStepClick={detailedSteps.setCurrentStep}
+          disabled={disabled}
+          showConnectors={true}
+          size="md"
+        />
+
+        {/* Step Content */}
+        <div className="mt-8">
+          {detailedSteps.currentStep === 'workout-structure' && (
+            <WorkoutStructureStep
+              options={options}
+              onChange={onChange}
+              errors={errors}
+              disabled={disabled}
+            />
+          )}
+
+          {detailedSteps.currentStep === 'equipment-preferences' && (
+            <EquipmentPreferencesStep
+              options={options}
+              onChange={onChange}
+              errors={errors}
+              disabled={disabled}
+            />
+          )}
+
+          {detailedSteps.currentStep === 'current-state' && (
+            <CurrentStateStep
+              options={options}
+              onChange={onChange}
+              errors={errors}
+              disabled={disabled}
+            />
+          )}
+        </div>
+
+        {/* Navigation */}
+        <div className="flex justify-between mt-8 pt-6 border-t border-base-200">
+          <button
+            type="button"
+            className="btn btn-outline"
+            onClick={detailedSteps.goToPreviousStep}
+            disabled={!detailedSteps.canGoPrevious || disabled}
+          >
+            Previous
+          </button>
+
+          <div className="text-center">
+            <span className="text-sm text-base-content/70">
+              Step {detailedSteps.currentStepIndex + 1} of{' '}
+              {detailedSteps.totalSteps}
+            </span>
+          </div>
+
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={detailedSteps.goToNextStep}
+            disabled={!detailedSteps.canGoNext || disabled}
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Group configurations by category (fallback accordion mode)
   const groupedConfigs = CUSTOMIZATION_CONFIG.reduce(
     (acc, config) => {
       const category = config.category || 'Other';
@@ -497,6 +630,7 @@ export default function WorkoutCustomization({
     );
   };
 
+  // Fallback accordion mode (for backward compatibility)
   return (
     <div ref={containerRef} className="mb-6">
       <h3 className="text-lg font-semibold mb-4 flex items-center flex-wrap gap-2">
