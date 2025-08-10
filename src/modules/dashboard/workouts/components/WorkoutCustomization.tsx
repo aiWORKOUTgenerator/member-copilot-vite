@@ -2,7 +2,11 @@ import { Target, Battery, Clock, Dumbbell } from 'lucide-react';
 import { WorkoutCustomizationProps } from './types';
 import { CUSTOMIZATION_CONFIG } from './customizations';
 import { useState, useEffect, useRef } from 'react';
-import { StepIndicator, DetailedSelector } from '@/ui/shared/molecules';
+import {
+  StepIndicator,
+  DetailedSelector,
+  SimpleDetailedViewSelector,
+} from '@/ui/shared/molecules';
 import { LevelDots } from '@/ui/shared/atoms';
 import { FieldValidationMessage } from './FieldValidationMessage';
 
@@ -86,6 +90,7 @@ export default function WorkoutCustomization({
   const [internalActiveQuickStep, setInternalActiveQuickStep] = useState<
     'focus-energy' | 'duration-equipment'
   >('focus-energy');
+  const [viewMode, setViewMode] = useState<'simple' | 'detailed'>('detailed');
 
   // Use external step state if provided, otherwise use internal state
   const currentStep = activeQuickStep || internalActiveQuickStep;
@@ -319,6 +324,16 @@ export default function WorkoutCustomization({
           </span>
         </h3>
 
+        {/* View Mode Toggle */}
+        <div className="mb-4 flex justify-end">
+          <SimpleDetailedViewSelector
+            value={viewMode}
+            onChange={setViewMode}
+            size="sm"
+            labels={{ simple: 'Simple', detailed: 'Detailed' }}
+          />
+        </div>
+
         {/* Step Indicator / Linear Stepper */}
         <StepIndicator
           steps={[
@@ -359,6 +374,7 @@ export default function WorkoutCustomization({
               gridCols={3}
               colorScheme="primary"
               required={false}
+              variant={viewMode}
             />
 
             {/* Validation message for focus field */}
@@ -381,6 +397,7 @@ export default function WorkoutCustomization({
               gridCols={3}
               colorScheme="primary"
               required={false}
+              variant={viewMode}
             />
 
             {/* Validation message for energy field */}
@@ -418,6 +435,7 @@ export default function WorkoutCustomization({
               gridCols={3}
               colorScheme="accent"
               required={true}
+              variant={viewMode}
             />
 
             {/* Validation message for duration field */}
@@ -444,6 +462,7 @@ export default function WorkoutCustomization({
               gridCols={3}
               colorScheme="primary"
               required={true}
+              variant={viewMode}
             />
 
             {/* Validation message for equipment field */}
