@@ -31,7 +31,7 @@ export const EquipmentPreferencesStep: React.FC<
     if (!value) return null;
 
     switch (config.key) {
-      case 'customization_equipment': {
+      case CUSTOMIZATION_FIELD_KEYS.EQUIPMENT: {
         const equipment = value as string[];
         if (equipment.length === 0) return null;
         if (equipment.length === 1) {
@@ -45,7 +45,7 @@ export const EquipmentPreferencesStep: React.FC<
         return `${equipment.length} items`;
       }
 
-      case 'customization_include': {
+      case CUSTOMIZATION_FIELD_KEYS.INCLUDE: {
         const exercises = value as string;
         const exerciseList = exercises
           .split(',')
@@ -58,7 +58,7 @@ export const EquipmentPreferencesStep: React.FC<
         return `${exerciseList.length} exercises`;
       }
 
-      case 'customization_exclude': {
+      case CUSTOMIZATION_FIELD_KEYS.EXCLUDE: {
         const exercises = value as string;
         const exerciseList = exercises
           .split(',')

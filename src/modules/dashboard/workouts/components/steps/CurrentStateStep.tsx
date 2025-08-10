@@ -35,7 +35,7 @@ export const CurrentStateStep: React.FC<CurrentStateStepProps> = ({
     if (!value) return null;
 
     switch (config.key) {
-      case 'customization_soreness': {
+      case CUSTOMIZATION_FIELD_KEYS.SORENESS: {
         const soreAreas = value as string[];
         if (soreAreas.length === 0) return null;
         if (soreAreas.length === 1) {
@@ -46,19 +46,19 @@ export const CurrentStateStep: React.FC<CurrentStateStepProps> = ({
         return `${soreAreas.length} areas`;
       }
 
-      case 'customization_sleep': {
+      case CUSTOMIZATION_FIELD_KEYS.SLEEP: {
         const rating = value as number;
         const labels = ['', 'Very Poor', 'Poor', 'Fair', 'Good', 'Excellent'];
         return `${labels[rating]} (${rating}/5)`;
       }
 
-      case 'customization_energy': {
+      case CUSTOMIZATION_FIELD_KEYS.ENERGY: {
         const rating = value as number;
         const labels = ['', 'Very Low', 'Low', 'Moderate', 'High', 'Very High'];
         return `${labels[rating]} (${rating}/5)`;
       }
 
-      case 'customization_stress': {
+      case CUSTOMIZATION_FIELD_KEYS.STRESS: {
         const rating = value as number;
         const labels = ['', 'Very Low', 'Low', 'Moderate', 'High', 'Very High'];
         return `${labels[rating]} (${rating}/5)`;
