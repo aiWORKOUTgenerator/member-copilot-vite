@@ -25,8 +25,50 @@ interface RadioGroupOfCardsProps<T extends SelectableItem> {
     | 'warning'
     | 'info'
     | 'error';
+  /** Control description visibility in cards */
+  showDescription?: boolean;
+  /** Control tertiary content visibility in cards */
+  showTertiary?: boolean;
 }
 
+/**
+ * RadioGroupOfCards - A card-based selection component with visibility control
+ *
+ * This component renders a grid of selectable cards with support for controlling
+ * the visibility of descriptions and tertiary content. It handles both controlled
+ * and uncontrolled state, and supports single and multiple selection modes.
+ *
+ * @example
+ * // Basic usage with all content visible
+ * <RadioGroupOfCards
+ *   items={options}
+ *   onChange={handleSelection}
+ *   legend="Choose an option"
+ * />
+ *
+ * @example
+ * // Hide descriptions, show tertiary content
+ * <RadioGroupOfCards
+ *   items={options}
+ *   onChange={handleSelection}
+ *   showDescription={false}
+ *   showTertiary={true}
+ * />
+ *
+ * @example
+ * // Multiple selection with custom styling
+ * <RadioGroupOfCards
+ *   items={options}
+ *   onChange={handleSelection}
+ *   multiple={true}
+ *   gridCols={2}
+ *   colorScheme="accent"
+ * />
+ *
+ * @template T - The type extending SelectableItem
+ * @param props - Component props
+ * @returns A grid of selectable cards
+ */
 export function RadioGroupOfCards<T extends SelectableItem>({
   items,
   onChange,
@@ -36,6 +78,8 @@ export function RadioGroupOfCards<T extends SelectableItem>({
   multiple = false,
   gridCols = 3,
   colorScheme = 'primary',
+  showDescription = true,
+  showTertiary = true,
 }: RadioGroupOfCardsProps<T>) {
   // Initialize internal state based on whether it's controlled or uncontrolled
   const [internalSelected, setInternalSelected] = useState<T | T[] | undefined>(
@@ -112,12 +156,14 @@ export function RadioGroupOfCards<T extends SelectableItem>({
               <div className="card-body p-4 flex flex-col">
                 <div className="flex-grow">
                   <h3 className="card-title text-base">{item.title}</h3>
-                  <p className="text-sm text-base-content/70">
-                    {item.description}
-                  </p>
+                  {showDescription && item.description && (
+                    <p className="text-sm text-base-content/70">
+                      {item.description}
+                    </p>
+                  )}
                 </div>
 
-                {item.tertiary && (
+                {showTertiary && item.tertiary && (
                   <div className="mt-3 text-sm font-medium">
                     {item.tertiary}
                   </div>

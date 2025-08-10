@@ -7,3 +7,5 @@ export { default as FeedbackModal } from '../../../modules/dashboard/workouts/co
 // Quick Workout Components
 export * from './StepIndicator';
 export * from './DetailedSelector';
+export * from './SimpleSelector';
+export * from './SimpleDetailedViewSelector';
