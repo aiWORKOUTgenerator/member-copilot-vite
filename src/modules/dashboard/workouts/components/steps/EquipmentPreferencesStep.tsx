@@ -2,6 +2,7 @@ import React from 'react';
 import { CUSTOMIZATION_CONFIG } from '../customizations';
 import { CUSTOMIZATION_FIELD_KEYS } from '../../constants/fieldKeys';
 import type { PerWorkoutOptions } from '../types';
+import { SelectionBadge } from '@/ui/shared/atoms';
 
 export interface EquipmentPreferencesStepProps {
   options: PerWorkoutOptions;
@@ -116,11 +117,7 @@ export const EquipmentPreferencesStep: React.FC<
                       'Specify exercises you want to avoid'}
                   </p>
                 </div>
-                {currentSelection && (
-                  <span className="badge badge-primary badge-sm ml-auto">
-                    {currentSelection}
-                  </span>
-                )}
+                <SelectionBadge value={currentSelection} size="sm" />
               </div>
 
               {/* Customization Component */}

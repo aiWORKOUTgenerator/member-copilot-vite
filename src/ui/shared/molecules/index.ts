@@ -9,3 +9,4 @@ export * from './StepIndicator';
 export * from './DetailedSelector';
 export * from './SimpleSelector';
 export * from './SimpleDetailedViewSelector';
+export * from './SelectionSummary';

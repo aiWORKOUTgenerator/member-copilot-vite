@@ -13,3 +13,4 @@ export * from './Button';
 export * from './Input';
 export * from './Icons';
 export * from './LevelDots';
+export * from './SelectionBadge';

@@ -2,6 +2,7 @@ import React from 'react';
 import { CUSTOMIZATION_CONFIG } from '../customizations';
 import { CUSTOMIZATION_FIELD_KEYS } from '../../constants/fieldKeys';
 import type { PerWorkoutOptions } from '../types';
+import { SelectionBadge } from '@/ui/shared/atoms';
 
 export interface CurrentStateStepProps {
   options: PerWorkoutOptions;
@@ -111,11 +112,7 @@ export const CurrentStateStep: React.FC<CurrentStateStepProps> = ({
                       'Are you experiencing any soreness?'}
                   </p>
                 </div>
-                {currentSelection && (
-                  <span className="badge badge-primary badge-sm ml-auto">
-                    {currentSelection}
-                  </span>
-                )}
+                <SelectionBadge value={currentSelection} size="sm" />
               </div>
 
               {/* Customization Component */}

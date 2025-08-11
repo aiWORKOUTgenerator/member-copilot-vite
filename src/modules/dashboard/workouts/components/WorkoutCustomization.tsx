@@ -7,7 +7,7 @@ import {
   DetailedSelector,
   SimpleDetailedViewSelector,
 } from '@/ui/shared/molecules';
-import { LevelDots } from '@/ui/shared/atoms';
+import { LevelDots, SelectionBadge } from '@/ui/shared/atoms';
 import { FieldValidationMessage } from './FieldValidationMessage';
 import { useDetailedWorkoutSteps } from './hooks/useDetailedWorkoutSteps';
 import {
@@ -700,10 +700,11 @@ export default function WorkoutCustomization({
                                 </span>
                               )}
                             </div>
-                            {currentSelection && !config.comingSoon && (
-                              <span className="badge badge-primary badge-xs">
-                                {currentSelection}
-                              </span>
+                            {!config.comingSoon && (
+                              <SelectionBadge
+                                value={currentSelection}
+                                size="xs"
+                              />
                             )}
                           </div>
 
