@@ -459,7 +459,10 @@ export default function WorkoutCustomization({
         // No step after duration-equipment
       },
       stepScroll: () => {
-        if (shouldAdvance && durationSectionRef.current) {
+        if (
+          currentStep === 'duration-equipment' &&
+          durationSectionRef.current
+        ) {
           durationSectionRef.current.scrollIntoView({
             behavior: 'smooth',
             block: 'start',
