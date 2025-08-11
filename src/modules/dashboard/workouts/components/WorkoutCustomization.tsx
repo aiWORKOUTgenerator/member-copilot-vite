@@ -127,7 +127,9 @@ export default function WorkoutCustomization({
     trackingContext: 'WorkoutCustomization',
     // No validation needed for intra-step scrolling - we want to scroll immediately after selection
     onAfterScroll: () => {
-      console.debug('Auto-scroll completed for step:', currentStep);
+      if (import.meta.env.DEV) {
+        console.debug('Auto-scroll completed for step:', currentStep);
+      }
     },
   });
 
@@ -401,22 +403,28 @@ export default function WorkoutCustomization({
 
     // Check if we should auto-scroll to next section after a brief delay
     setTimeout(() => {
-      console.debug('Auto-scroll check:', { autoScrollEnabled, key });
+      if (import.meta.env.DEV) {
+        console.debug('Auto-scroll check:', { autoScrollEnabled, key });
+      }
       if (autoScrollEnabled) {
         const updatedOptions = { ...options, [key]: value };
         const nextSectionRef = getNextSectionRef(key);
 
         if (nextSectionRef?.current) {
           // Intra-step scroll to next section
-          console.debug('Auto-scrolling to next section for field:', key);
+          if (import.meta.env.DEV) {
+            console.debug('Auto-scrolling to next section for field:', key);
+          }
           triggerAutoScroll(nextSectionRef.current);
         } else {
           // Check if step is complete and should auto-advance
           if (isStepComplete(currentStep, updatedOptions)) {
-            console.debug(
-              'Step complete, auto-advancing to next step:',
-              currentStep
-            );
+            if (import.meta.env.DEV) {
+              console.debug(
+                'Step complete, auto-advancing to next step:',
+                currentStep
+              );
+            }
 
             // Auto-advance to next step with same delay
             setTimeout(() => {
@@ -436,11 +444,15 @@ export default function WorkoutCustomization({
               // No step after duration-equipment
             }, AUTO_SCROLL_CONFIG.timing.stepAdvanceDelay); // Step advancement delay (different from intra-step scroll delay)
           } else {
-            console.debug('Step not complete, no auto-advance');
+            if (import.meta.env.DEV) {
+              console.debug('Step not complete, no auto-advance');
+            }
           }
         }
       } else {
-        console.debug('Auto-scroll disabled');
+        if (import.meta.env.DEV) {
+          console.debug('Auto-scroll disabled');
+        }
       }
     }, AUTO_SCROLL_CONFIG.timing.initialDelay);
   };
