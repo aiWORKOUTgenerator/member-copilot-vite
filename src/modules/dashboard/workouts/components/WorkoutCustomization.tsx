@@ -10,8 +10,12 @@ import {
 import { LevelDots, SelectionBadge } from '@/ui/shared/atoms';
 import { FieldValidationMessage } from './FieldValidationMessage';
 import { useDetailedWorkoutSteps } from './hooks/useDetailedWorkoutSteps';
-import { useAutoScroll, useToast, useAutoScrollPreferences } from '@/hooks';
-import { AUTO_SCROLL_CONFIG } from '@/config/autoScroll';
+import {
+  useAutoScroll,
+  useToast,
+  useAutoScrollPreferences,
+  useAutoScrollTiming,
+} from '@/hooks';
 import {
   WorkoutStructureStep,
   EquipmentPreferencesStep,
@@ -131,6 +135,11 @@ export default function WorkoutCustomization({
         console.debug('Auto-scroll completed for step:', currentStep);
       }
     },
+  });
+
+  // Initialize timing management for auto-scroll sequences
+  const { scheduleAutoScrollSequence } = useAutoScrollTiming({
+    enabled: autoScrollEnabled,
   });
 
   // Ref for the component container
@@ -401,12 +410,20 @@ export default function WorkoutCustomization({
       }
     }
 
-    // Check if we should auto-scroll to next section after a brief delay
-    setTimeout(() => {
-      if (import.meta.env.DEV) {
-        console.debug('Auto-scroll check:', { autoScrollEnabled, key });
-      }
-      if (autoScrollEnabled) {
+    // Use structured timing system for auto-scroll sequence
+    scheduleAutoScrollSequence({
+      initial: () => {
+        if (import.meta.env.DEV) {
+          console.debug('Auto-scroll check:', { autoScrollEnabled, key });
+        }
+
+        if (!autoScrollEnabled) {
+          if (import.meta.env.DEV) {
+            console.debug('Auto-scroll disabled');
+          }
+          return;
+        }
+
         const updatedOptions = { ...options, [key]: value };
         const nextSectionRef = getNextSectionRef(key);
 
@@ -425,36 +442,31 @@ export default function WorkoutCustomization({
                 currentStep
               );
             }
-
-            // Auto-advance to next step with same delay
-            setTimeout(() => {
-              if (currentStep === 'focus-energy') {
-                setCurrentStep('duration-equipment');
-
-                // Scroll to the duration question after step change
-                setTimeout(() => {
-                  if (durationSectionRef.current) {
-                    durationSectionRef.current.scrollIntoView({
-                      behavior: 'smooth',
-                      block: 'start',
-                    });
-                  }
-                }, AUTO_SCROLL_CONFIG.timing.stepScrollDelay);
-              }
-              // No step after duration-equipment
-            }, AUTO_SCROLL_CONFIG.timing.stepAdvanceDelay); // Step advancement delay (different from intra-step scroll delay)
           } else {
             if (import.meta.env.DEV) {
               console.debug('Step not complete, no auto-advance');
             }
           }
         }
-      } else {
-        if (import.meta.env.DEV) {
-          console.debug('Auto-scroll disabled');
+      },
+      stepAdvance: () => {
+        if (currentStep === 'focus-energy') {
+          setCurrentStep('duration-equipment');
         }
-      }
-    }, AUTO_SCROLL_CONFIG.timing.initialDelay);
+        // No step after duration-equipment
+      },
+      stepScroll: () => {
+        if (
+          currentStep === 'duration-equipment' &&
+          durationSectionRef.current
+        ) {
+          durationSectionRef.current.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+          });
+        }
+      },
+    });
   };
 
   // For quick mode, show step indicator with 2 segments
