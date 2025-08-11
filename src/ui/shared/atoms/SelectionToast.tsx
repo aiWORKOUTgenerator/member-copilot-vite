@@ -54,6 +54,8 @@ export const SelectionToast: React.FC<SelectionToastProps> = ({
     <div className="toast toast-top toast-center z-50">
       <div
         className={`${alertClass} animate-in slide-in-from-top-2 duration-300`}
+        role="status"
+        aria-live="polite"
       >
         <Icon className="w-4 h-4" />
         <span className="text-sm">{message}</span>
