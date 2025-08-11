@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import { createRoot } from 'react-dom/client';
 import { SelectionToast } from '@/ui/shared/atoms/SelectionToast';
 

@@ -41,7 +41,10 @@ export function AttributeForm({
   });
 
   // Enhanced form value handler with auto-scroll
-  const handleFormValueChange = (promptId: string, value: unknown) => {
+  const handleFormValueChange = (
+    promptId: string,
+    value: string | number | string[] | null
+  ) => {
     // Update the form value
     updateFormValue(promptId, value);
 
@@ -49,7 +52,7 @@ export function AttributeForm({
     if (autoScrollEnabled) {
       const prompt = attributePrompts.find((p) => p.id === promptId);
       if (prompt) {
-        showSelectionToast(`${prompt.title} updated`);
+        showSelectionToast(`${prompt.text || promptId} updated`);
 
         // Find next incomplete prompt and scroll to it
         setTimeout(() => {
