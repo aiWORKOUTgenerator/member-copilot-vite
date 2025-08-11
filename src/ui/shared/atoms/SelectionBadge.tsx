@@ -9,7 +9,8 @@ interface SelectionBadgeProps {
 
 /**
  * A simple badge component for showing selected values in workout setup.
- * Always uses primary styling and right alignment to match existing patterns.
+ * Uses subtle outline styling with DaisyUI semantic colors for consistency.
+ * Includes right alignment (ml-auto) to match existing patterns.
  */
 export const SelectionBadge: React.FC<SelectionBadgeProps> = ({
   value,
