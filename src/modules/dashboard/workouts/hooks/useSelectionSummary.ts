@@ -4,6 +4,14 @@ import type { PerWorkoutOptions } from '../components/types';
 import { SelectionCounter } from '../selectionCountingLogic';
 import { CUSTOMIZATION_FIELD_KEYS } from '../constants/fieldKeys';
 
+/**
+ * Helper function to format focus or equipment values by replacing underscores
+ * with spaces and capitalizing each word.
+ */
+const formatFocusOrEquipmentValue = (value: string): string => {
+  return value.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
+};
+
 export interface SelectionSummaryItem {
   key: string;
   label: string;
@@ -41,9 +49,7 @@ export const useSelectionSummary = (
       if (focusFieldState.hasValue) {
         const value = formatters?.focus
           ? formatters.focus(options.customization_focus)
-          : options.customization_focus
-              .replace(/_/g, ' ')
-              .replace(/\b\w/g, (l) => l.toUpperCase());
+          : formatFocusOrEquipmentValue(options.customization_focus);
 
         if (value) {
           selections.push({
@@ -137,9 +143,7 @@ export const useSelectionSummary = (
           value = formatters.equipment(equipment) || '';
         } else {
           if (equipment.length === 1) {
-            const formatted = equipment[0]
-              .replace(/_/g, ' ')
-              .replace(/\b\w/g, (l) => l.toUpperCase());
+            const formatted = formatFocusOrEquipmentValue(equipment[0]);
             value =
               formatted === 'Bodyweight Only' ? 'Bodyweight Only' : formatted;
           } else {
