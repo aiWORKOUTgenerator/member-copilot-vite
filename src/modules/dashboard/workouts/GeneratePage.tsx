@@ -6,6 +6,8 @@ import WorkoutCustomization from './components/WorkoutCustomization';
 import { PerWorkoutOptions } from './components/types';
 import { useAnalytics } from '@/hooks/useAnalytics';
 import { ButtonStateLogic } from './selectionCountingLogic';
+import { useSelectionSummary } from './hooks/useSelectionSummary';
+import { SelectionSummary } from '@/ui/shared/molecules';
 
 // 15 workout prompt examples
 const WORKOUT_PROMPTS = [
@@ -53,6 +55,9 @@ export default function GenerateWorkoutPage() {
   const { createWorkout } = useGeneratedWorkouts();
   const navigate = useNavigate();
   const analytics = useAnalytics();
+
+  // Selection summary for Quick Workout Setup
+  const { selections, hasSelections } = useSelectionSummary(perWorkoutOptions);
 
   // Track workout generation page views
   useEffect(() => {
@@ -263,6 +268,20 @@ export default function GenerateWorkoutPage() {
 
   // Selection checking is now handled by ButtonStateLogic
 
+  // Helper function to get indicator color class
+  const getIndicatorColorClass = (color?: string): string => {
+    switch (color) {
+      case 'green':
+        return 'bg-success';
+      case 'red':
+        return 'bg-error';
+      case 'blue':
+        return 'bg-primary';
+      default:
+        return 'bg-base-content/40';
+    }
+  };
+
   // Get button state based on active tab
   const getButtonState = () => {
     if (activeTab === 'detailed') {
@@ -435,47 +454,53 @@ export default function GenerateWorkoutPage() {
               </>
             )}
 
-            <div className="card-actions justify-end">
-              {/* Enhanced progress indicator for quick mode */}
-              {activeTab === 'quick' && (
-                <div className="flex items-center gap-3 text-sm text-base-content/60 mr-auto">
-                  <div className="flex items-center gap-2">
-                    <div
-                      className={`w-2 h-2 rounded-full transition-colors duration-200 ${
-                        buttonState.visualFeedback?.indicatorColor === 'green'
-                          ? 'bg-success'
-                          : buttonState.visualFeedback?.indicatorColor === 'red'
-                            ? 'bg-error'
-                            : buttonState.visualFeedback?.indicatorColor ===
-                                'blue'
-                              ? 'bg-primary'
-                              : 'bg-base-content/40'
-                      }`}
-                    ></div>
-                    <span className="transition-opacity duration-200">
-                      {buttonState.visualFeedback?.message ||
-                        'Complete current step'}
-                    </span>
+            <div className="card-actions">
+              {/* Responsive layout container */}
+              <div className="flex flex-col sm:flex-row items-end sm:items-center gap-3 w-full">
+                {/* Progress indicator - left side on desktop */}
+                {activeTab === 'quick' && (
+                  <div className="flex items-center gap-3 text-sm text-base-content/60 sm:mr-auto order-2 sm:order-1">
+                    <div className="flex items-center gap-2">
+                      <div
+                        className={`w-2 h-2 rounded-full transition-colors duration-200 ${getIndicatorColorClass(
+                          buttonState.visualFeedback?.indicatorColor
+                        )}`}
+                      ></div>
+                      <span className="transition-opacity duration-200">
+                        {buttonState.visualFeedback?.message ||
+                          'Complete current step'}
+                      </span>
+                    </div>
                   </div>
-                </div>
-              )}
-
-              {/* Enhanced submit button */}
-              <button
-                type="submit"
-                className={`${buttonState.className} transition-all duration-200`}
-                disabled={buttonState.disabled}
-                title={buttonState.disabled ? buttonState.text : undefined}
-              >
-                {isGenerating ? (
-                  <>
-                    <span className="loading loading-spinner"></span>
-                    Generating...
-                  </>
-                ) : (
-                  buttonState.text
                 )}
-              </button>
+
+                {/* Selection Summary - center/above on mobile, center on desktop */}
+                {activeTab === 'quick' && (
+                  <SelectionSummary
+                    selections={selections}
+                    isVisible={hasSelections}
+                    variant="compact"
+                    className="order-1 sm:order-2 w-full sm:w-auto justify-center sm:justify-start"
+                  />
+                )}
+
+                {/* Generate button - right side */}
+                <button
+                  type="submit"
+                  className={`${buttonState.className} transition-all duration-200 order-3`}
+                  disabled={buttonState.disabled}
+                  title={buttonState.disabled ? buttonState.text : undefined}
+                >
+                  {isGenerating ? (
+                    <>
+                      <span className="loading loading-spinner"></span>
+                      Generating...
+                    </>
+                  ) : (
+                    buttonState.text
+                  )}
+                </button>
+              </div>
             </div>
           </form>
         </div>

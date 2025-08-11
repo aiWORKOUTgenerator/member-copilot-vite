@@ -1,0 +1,206 @@
+## 📋 **Simplified Action Plan: SelectionBadge Component Creation**
+
+Based on analysis of existing badge implementations, here's a **streamlined approach** to create a reusable `SelectionBadge` component that focuses on the core need without over-engineering:
+
+## 🎯 **Phase 1: Analysis & Requirements** (15 minutes)
+
+### **1.1 Current Implementation Audit** ✅
+- **Identified 4 hardcoded implementations** across:
+  - `WorkoutCustomization.tsx` (accordion mode) - `badge-xs`
+  - `WorkoutStructureStep.tsx` (step mode) - `badge-sm ml-auto`  
+  - `EquipmentPreferencesStep.tsx` (step mode) - `badge-sm ml-auto`
+  - `CurrentStateStep.tsx` (step mode) - `badge-sm ml-auto`
+
+### **1.2 Pattern Analysis**
+```typescript
+// Only 2 actual patterns in use:
+<span className="badge badge-primary badge-xs">{currentSelection}</span>         // Accordion
+<span className="badge badge-primary badge-sm ml-auto">{currentSelection}</span> // Steps
+```
+
+### **1.3 Simplified Requirements**
+- **Consistent styling**: Always `badge-primary` (only variant used)
+- **Two sizes**: `xs` (accordion) and `sm` (steps) 
+- **Auto-positioning**: Always `ml-auto` for right alignment
+- **Conditional rendering**: Hide when no value
+
+---
+
+## ⚡ **Phase 2: Simplified Implementation** (30 minutes)
+
+### **2.1 Minimal Component Interface**
+```typescript
+interface SelectionBadgeProps {
+  /** The selected value to display */
+  value?: string | null;
+  /** Size variant - matches current usage */
+  size?: 'xs' | 'sm';
+  /** Additional CSS classes */
+  className?: string;
+}
+```
+
+### **2.2 Create SelectionBadge Component**
+**Location**: `src/ui/shared/atoms/SelectionBadge.tsx`
+
+```typescript
+interface SelectionBadgeProps {
+  /** The selected value to display */
+  value?: string | null;
+  /** Size variant - matches DaisyUI badge sizes */
+  size?: 'xs' | 'sm';
+  /** Additional CSS classes */
+  className?: string;
+}
+
+/**
+ * A simple badge component for showing selected values in workout setup.
+ * Always uses primary styling and right alignment to match existing patterns.
+ */
+export const SelectionBadge: React.FC<SelectionBadgeProps> = ({
+  value,
+  size = 'sm',
+  className = '',
+}) => {
+  if (!value) return null;
+  
+  return (
+    <span className={`badge badge-primary badge-${size} ml-auto ${className}`}>
+      {value}
+    </span>
+  );
+};
+```
+
+### **2.3 Update Atoms Index**
+**Location**: `src/ui/shared/atoms/index.ts`
+```typescript
+export { SelectionBadge } from './SelectionBadge';
+```
+
+---
+
+## 🧪 **Phase 3: Basic Testing** (30 minutes)
+
+### **3.1 Essential Tests Only**
+**Location**: `src/ui/shared/atoms/__tests__/SelectionBadge.test.tsx`
+
+```typescript
+import { render, screen } from '@testing-library/react';
+import { SelectionBadge } from '../SelectionBadge';
+
+describe('SelectionBadge', () => {
+  it('renders with value', () => {
+    render(<SelectionBadge value="30 min" />);
+    expect(screen.getByText('30 min')).toBeInTheDocument();
+  });
+
+  it('returns null when value is empty', () => {
+    const { container } = render(<SelectionBadge value="" />);
+    expect(container.firstChild).toBeNull();
+  });
+
+  it('applies correct size classes', () => {
+    render(<SelectionBadge value="Test" size="xs" />);
+    const badge = screen.getByText('Test');
+    expect(badge).toHaveClass('badge-xs');
+  });
+
+  it('always includes primary and ml-auto classes', () => {
+    render(<SelectionBadge value="Test" />);
+    const badge = screen.getByText('Test');
+    expect(badge).toHaveClass('badge-primary', 'ml-auto');
+  });
+});
+```
+
+---
+
+## 🔄 **Phase 4: Quick Migration** (30 minutes)
+
+### **4.1 Step Components First** (Lower Risk)
+
+#### **WorkoutStructureStep.tsx, EquipmentPreferencesStep.tsx, CurrentStateStep.tsx**
+```typescript
+// Import at top
+import { SelectionBadge } from '../../../../ui/shared/atoms';
+
+// Replace lines ~115-117:
+// OLD:
+{currentSelection && (
+  <span className="badge badge-primary badge-sm ml-auto">
+    {currentSelection}
+  </span>
+)}
+
+// NEW:
+<SelectionBadge value={currentSelection} size="sm" />
+```
+
+### **4.2 Main Component Migration** (15 minutes)
+
+#### **WorkoutCustomization.tsx**
+```typescript
+// Import at top
+import { SelectionBadge } from '../../../ui/shared/atoms';
+
+// Replace lines ~703-707:
+// OLD:
+{currentSelection && !config.comingSoon && (
+  <span className="badge badge-primary badge-xs">
+    {currentSelection}
+  </span>
+)}
+
+// NEW:
+{!config.comingSoon && (
+  <SelectionBadge value={currentSelection} size="xs" />
+)}
+```
+
+---
+
+## ✅ **Phase 5: Quick Verification** (15 minutes)
+
+### **5.1 Essential Checks**
+- [ ] **Tests pass**: `npm run test SelectionBadge`
+- [ ] **No lint errors**: `npm run lint`
+- [ ] **Build succeeds**: `npm run build`
+- [ ] **Visual check**: Badges still appear correctly in workout setup
+
+---
+
+## 🚀 **Streamlined Timeline**
+
+| Phase | Time | Task |
+|-------|------|------|
+| **Phase 1** | 15 min | Analysis (already done) |
+| **Phase 2** | 30 min | Create component |
+| **Phase 3** | 30 min | Add basic tests |
+| **Phase 4** | 30 min | Migrate step components |
+| **Phase 4.2** | 15 min | Migrate main component |
+| **Phase 5** | 15 min | Verification |
+
+**Total Time**: ~2 hours (not 5.5 hours)
+
+---
+
+## 🎯 **Key Simplifications Made**
+
+1. **Removed unnecessary props**: No variant, alignment, ariaLabel, or children props
+2. **Hardcoded common patterns**: Always `badge-primary` and `ml-auto`
+3. **Only essential sizes**: Just `xs` and `sm` (what's actually used)
+4. **Skipped Storybook**: Not needed for such a simple component
+5. **Minimal testing**: Focus on core functionality only
+6. **No documentation**: Component is self-explanatory
+
+---
+
+## ⚠️ **Risk Mitigation**
+
+- **Low risk approach**: Simple 1:1 replacement of existing patterns
+- **Incremental migration**: Step components first, then main component
+- **Easy rollback**: Keep git commits small and focused
+- **No breaking changes**: Maintains exact same visual appearance
+
+This simplified approach delivers the same value with 60% less time investment while maintaining code quality and reliability.
