@@ -35,10 +35,10 @@ describe('SelectionBadge', () => {
     expect(badge).toHaveClass('badge-sm');
   });
 
-  it('always includes primary and ml-auto classes', () => {
+  it('always includes outline and ml-auto classes', () => {
     render(<SelectionBadge value="Test" />);
     const badge = screen.getByText('Test');
-    expect(badge).toHaveClass('badge-primary', 'ml-auto');
+    expect(badge).toHaveClass('badge-outline', 'ml-auto');
   });
 
   it('applies additional className', () => {

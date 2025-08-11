@@ -19,7 +19,9 @@ export const SelectionBadge: React.FC<SelectionBadgeProps> = ({
   if (!value) return null;
 
   return (
-    <span className={`badge badge-primary badge-${size} ml-auto ${className}`}>
+    <span
+      className={`badge badge-outline badge-${size} ml-auto bg-base-100 text-base-content border-base-300 ${className}`}
+    >
       {value}
     </span>
   );
