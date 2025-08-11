@@ -101,8 +101,11 @@ export default function WorkoutCustomization({
   const [viewMode, setViewMode] = useState<'simple' | 'detailed'>('detailed');
 
   // Use global auto-scroll preferences
-  const { enabled: autoScrollEnabled, setEnabled: setAutoScrollEnabled } =
-    useAutoScrollPreferences();
+  const {
+    enabled: autoScrollEnabled,
+    delay: userDelay,
+    setEnabled: setAutoScrollEnabled,
+  } = useAutoScrollPreferences();
 
   // Use external step state if provided, otherwise use internal state
   const currentStep = activeQuickStep || internalActiveQuickStep;
@@ -120,7 +123,7 @@ export default function WorkoutCustomization({
   const { showSelectionToast } = useToast();
   const { triggerAutoScroll } = useAutoScroll({
     enabled: autoScrollEnabled,
-    delay: 800, // Reduced delay for better responsiveness
+    delay: userDelay, // Use user's configured delay for intra-step scrolling
     trackingContext: 'WorkoutCustomization',
     // No validation needed for intra-step scrolling - we want to scroll immediately after selection
     onAfterScroll: () => {
@@ -431,7 +434,7 @@ export default function WorkoutCustomization({
                 }, AUTO_SCROLL_CONFIG.timing.stepScrollDelay);
               }
               // No step after duration-equipment
-            }, AUTO_SCROLL_CONFIG.timing.stepAdvanceDelay);
+            }, AUTO_SCROLL_CONFIG.timing.stepAdvanceDelay); // Step advancement delay (different from intra-step scroll delay)
           } else {
             console.debug('Step not complete, no auto-advance');
           }
