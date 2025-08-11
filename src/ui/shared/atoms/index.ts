@@ -14,3 +14,4 @@ export * from './Input';
 export * from './Icons';
 export * from './LevelDots';
 export * from './SelectionBadge';
+export { SelectionToast } from './SelectionToast';

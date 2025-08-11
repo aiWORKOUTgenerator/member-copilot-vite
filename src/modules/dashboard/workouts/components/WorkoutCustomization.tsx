@@ -10,6 +10,7 @@ import {
 import { LevelDots, SelectionBadge } from '@/ui/shared/atoms';
 import { FieldValidationMessage } from './FieldValidationMessage';
 import { useDetailedWorkoutSteps } from './hooks/useDetailedWorkoutSteps';
+import { useAutoScroll, useToast, useAutoScrollPreferences } from '@/hooks';
 import {
   WorkoutStructureStep,
   EquipmentPreferencesStep,
@@ -98,12 +99,33 @@ export default function WorkoutCustomization({
   >('focus-energy');
   const [viewMode, setViewMode] = useState<'simple' | 'detailed'>('detailed');
 
+  // Use global auto-scroll preferences
+  const { enabled: autoScrollEnabled, setEnabled: setAutoScrollEnabled } =
+    useAutoScrollPreferences();
+
   // Use external step state if provided, otherwise use internal state
   const currentStep = activeQuickStep || internalActiveQuickStep;
   const setCurrentStep = onQuickStepChange || setInternalActiveQuickStep;
 
   // Detailed mode step management
   const detailedSteps = useDetailedWorkoutSteps(options, 'workout-structure');
+
+  // Add refs for scroll targets - individual sections within steps
+  const energySectionRef = useRef<HTMLDivElement>(null);
+  const durationSectionRef = useRef<HTMLDivElement>(null);
+  const equipmentSectionRef = useRef<HTMLDivElement>(null);
+
+  // Initialize auto-scroll hooks
+  const { showSelectionToast } = useToast();
+  const { triggerAutoScroll } = useAutoScroll({
+    enabled: autoScrollEnabled,
+    delay: 800, // Reduced delay for better responsiveness
+    trackingContext: 'WorkoutCustomization',
+    // No validation needed for intra-step scrolling - we want to scroll immediately after selection
+    onAfterScroll: () => {
+      console.debug('Auto-scroll completed for step:', currentStep);
+    },
+  });
 
   // Ref for the component container
   const containerRef = useRef<HTMLDivElement>(null);
@@ -321,6 +343,104 @@ export default function WorkoutCustomization({
     }
   };
 
+  // Helper functions for auto-scroll - get next section within current step
+  const getNextSectionRef = (fieldKey: string) => {
+    // Map field keys to their next section targets
+    switch (fieldKey) {
+      case CUSTOMIZATION_FIELD_KEYS.FOCUS:
+        return energySectionRef; // Focus -> Energy (same step)
+      case CUSTOMIZATION_FIELD_KEYS.ENERGY:
+        return null; // Energy is last in focus-energy step
+      case CUSTOMIZATION_FIELD_KEYS.DURATION:
+        return equipmentSectionRef; // Duration -> Equipment (same step)
+      case CUSTOMIZATION_FIELD_KEYS.EQUIPMENT:
+        return null; // Equipment is last in duration-equipment step
+      default:
+        return null;
+    }
+  };
+
+  // Check if current step is complete
+  const isStepComplete = (
+    step: 'focus-energy' | 'duration-equipment',
+    updatedOptions: WorkoutCustomizationProps['options']
+  ) => {
+    if (step === 'focus-energy') {
+      return !!(
+        updatedOptions.customization_focus &&
+        updatedOptions.customization_energy
+      );
+    } else if (step === 'duration-equipment') {
+      return !!(
+        updatedOptions.customization_duration &&
+        updatedOptions.customization_equipment?.length
+      );
+    }
+    return false;
+  };
+
+  const handleSelectionWithAutoScroll = (
+    key: keyof WorkoutCustomizationProps['options'],
+    value: unknown
+  ) => {
+    // Update the selection
+    handleChange(key, value);
+
+    // Show selection feedback
+    const mockConfig = CUSTOMIZATION_CONFIG.find((c) => c.key === key);
+    if (mockConfig) {
+      const formattedSelection = formatCurrentSelection(mockConfig, value);
+      if (formattedSelection) {
+        showSelectionToast(formattedSelection);
+      }
+    }
+
+    // Check if we should auto-scroll to next section after a brief delay
+    setTimeout(() => {
+      console.debug('Auto-scroll check:', { autoScrollEnabled, key });
+      if (autoScrollEnabled) {
+        const updatedOptions = { ...options, [key]: value };
+        const nextSectionRef = getNextSectionRef(key);
+
+        if (nextSectionRef?.current) {
+          // Intra-step scroll to next section
+          console.debug('Auto-scrolling to next section for field:', key);
+          triggerAutoScroll(nextSectionRef.current);
+        } else {
+          // Check if step is complete and should auto-advance
+          if (isStepComplete(currentStep, updatedOptions)) {
+            console.debug(
+              'Step complete, auto-advancing to next step:',
+              currentStep
+            );
+
+            // Auto-advance to next step with same delay
+            setTimeout(() => {
+              if (currentStep === 'focus-energy') {
+                setCurrentStep('duration-equipment');
+
+                // Scroll to the duration question after step change
+                setTimeout(() => {
+                  if (durationSectionRef.current) {
+                    durationSectionRef.current.scrollIntoView({
+                      behavior: 'smooth',
+                      block: 'start',
+                    });
+                  }
+                }, 100);
+              }
+              // No step after duration-equipment
+            }, 800); // Same delay as intra-step scroll
+          } else {
+            console.debug('Step not complete, no auto-advance');
+          }
+        }
+      } else {
+        console.debug('Auto-scroll disabled');
+      }
+    }, 100);
+  };
+
   // For quick mode, show step indicator with 2 segments
   if (mode === 'quick') {
     return (
@@ -333,8 +453,24 @@ export default function WorkoutCustomization({
           </span>
         </h3>
 
-        {/* View Mode Toggle */}
-        <div className="mb-4 flex justify-end">
+        {/* Controls */}
+        <div className="mb-4 flex justify-between items-center">
+          <div className="flex items-center gap-4">
+            {/* Auto-scroll toggle */}
+            <div className="form-control">
+              <label className="label cursor-pointer justify-start gap-3 py-2">
+                <input
+                  type="checkbox"
+                  className="toggle toggle-primary toggle-sm"
+                  checked={autoScrollEnabled}
+                  onChange={(e) => setAutoScrollEnabled(e.target.checked)}
+                />
+                <span className="label-text text-sm">Auto-advance</span>
+              </label>
+            </div>
+          </div>
+
+          {/* View mode toggle */}
           <SimpleDetailedViewSelector
             value={viewMode}
             onChange={setViewMode}
@@ -374,7 +510,10 @@ export default function WorkoutCustomization({
               options={FOCUS_OPTIONS_WITH_INTENSITY}
               selectedValue={options.customization_focus || undefined}
               onChange={(focus) =>
-                handleChange(CUSTOMIZATION_FIELD_KEYS.FOCUS, focus)
+                handleSelectionWithAutoScroll(
+                  CUSTOMIZATION_FIELD_KEYS.FOCUS,
+                  focus
+                )
               }
               question="What's your main goal for this workout?"
               description="Choose the primary focus that best matches your current needs and goals"
@@ -392,22 +531,27 @@ export default function WorkoutCustomization({
               getFieldValidationError={getFieldValidationError}
             />
 
-            <DetailedSelector
-              icon={Battery}
-              options={ENERGY_OPTIONS_WITH_DOTS}
-              selectedValue={options.customization_energy || undefined}
-              onChange={(energy) =>
-                handleChange(CUSTOMIZATION_FIELD_KEYS.ENERGY, energy)
-              }
-              disabled={disabled}
-              error={undefined}
-              question="How energetic are you feeling today?"
-              description="This helps us tailor the workout intensity to your current energy level."
-              gridCols={3}
-              colorScheme="primary"
-              required={false}
-              variant={viewMode}
-            />
+            <div ref={energySectionRef} className="scroll-mt-4">
+              <DetailedSelector
+                icon={Battery}
+                options={ENERGY_OPTIONS_WITH_DOTS}
+                selectedValue={options.customization_energy || undefined}
+                onChange={(energy) =>
+                  handleSelectionWithAutoScroll(
+                    CUSTOMIZATION_FIELD_KEYS.ENERGY,
+                    energy
+                  )
+                }
+                disabled={disabled}
+                error={undefined}
+                question="How energetic are you feeling today?"
+                description="This helps us tailor the workout intensity to your current energy level."
+                gridCols={3}
+                colorScheme="primary"
+                required={false}
+                variant={viewMode}
+              />
+            </div>
 
             {/* Validation message for energy field */}
             <FieldValidationMessage
@@ -419,33 +563,38 @@ export default function WorkoutCustomization({
 
         {currentStep === 'duration-equipment' && (
           <div className="space-y-8">
-            <DetailedSelector
-              icon={Clock}
-              options={DURATION_OPTIONS_WITH_SUBTITLE}
-              selectedValue={
-                options.customization_duration?.toString() || undefined
-              }
-              onChange={(duration: string | string[]) => {
-                // DetailedSelector returns the ID string for single selection
-                const durationId = Array.isArray(duration)
-                  ? duration[0]
-                  : duration;
-                const durationValue = parseInt(durationId, 10);
-                if (isNaN(durationValue)) {
-                  console.error('Invalid duration value:', duration);
-                  return;
+            <div ref={durationSectionRef} className="scroll-mt-4">
+              <DetailedSelector
+                icon={Clock}
+                options={DURATION_OPTIONS_WITH_SUBTITLE}
+                selectedValue={
+                  options.customization_duration?.toString() || undefined
                 }
-                handleChange(CUSTOMIZATION_FIELD_KEYS.DURATION, durationValue);
-              }}
-              question="How long do you want your workout to be?"
-              description="Choose the duration that fits your schedule and energy level"
-              disabled={disabled}
-              error={undefined}
-              gridCols={3}
-              colorScheme="accent"
-              required={true}
-              variant={viewMode}
-            />
+                onChange={(duration: string | string[]) => {
+                  // DetailedSelector returns the ID string for single selection
+                  const durationId = Array.isArray(duration)
+                    ? duration[0]
+                    : duration;
+                  const durationValue = parseInt(durationId, 10);
+                  if (isNaN(durationValue)) {
+                    console.error('Invalid duration value:', duration);
+                    return;
+                  }
+                  handleSelectionWithAutoScroll(
+                    CUSTOMIZATION_FIELD_KEYS.DURATION,
+                    durationValue
+                  );
+                }}
+                question="How long do you want your workout to be?"
+                description="Choose the duration that fits your schedule and energy level"
+                disabled={disabled}
+                error={undefined}
+                gridCols={3}
+                colorScheme="accent"
+                required={true}
+                variant={viewMode}
+              />
+            </div>
 
             {/* Validation message for duration field */}
             <FieldValidationMessage
@@ -453,26 +602,33 @@ export default function WorkoutCustomization({
               getFieldValidationError={getFieldValidationError}
             />
 
-            <DetailedSelector
-              icon={Dumbbell}
-              options={EQUIPMENT_OPTIONS}
-              selectedValue={options.customization_equipment?.[0] || undefined}
-              onChange={(equipment: string | string[]) => {
-                // DetailedSelector returns the ID string for single selection
-                const equipmentId = Array.isArray(equipment)
-                  ? equipment[0]
-                  : equipment;
-                handleChange(CUSTOMIZATION_FIELD_KEYS.EQUIPMENT, [equipmentId]);
-              }}
-              question="What equipment do you have available?"
-              description="Choose the equipment you have available for your workout"
-              disabled={disabled}
-              error={undefined}
-              gridCols={3}
-              colorScheme="primary"
-              required={true}
-              variant={viewMode}
-            />
+            <div ref={equipmentSectionRef} className="scroll-mt-4">
+              <DetailedSelector
+                icon={Dumbbell}
+                options={EQUIPMENT_OPTIONS}
+                selectedValue={
+                  options.customization_equipment?.[0] || undefined
+                }
+                onChange={(equipment: string | string[]) => {
+                  // DetailedSelector returns the ID string for single selection
+                  const equipmentId = Array.isArray(equipment)
+                    ? equipment[0]
+                    : equipment;
+                  handleSelectionWithAutoScroll(
+                    CUSTOMIZATION_FIELD_KEYS.EQUIPMENT,
+                    [equipmentId]
+                  );
+                }}
+                question="What equipment do you have available?"
+                description="Choose the equipment you have available for your workout"
+                disabled={disabled}
+                error={undefined}
+                gridCols={3}
+                colorScheme="primary"
+                required={true}
+                variant={viewMode}
+              />
+            </div>
 
             {/* Validation message for equipment field */}
             <FieldValidationMessage

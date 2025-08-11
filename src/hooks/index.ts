@@ -32,3 +32,6 @@ export * from './useWorkoutFeedback';
 export * from './useTrainerPersona';
 export * from './useGeneratedWorkouts';
 export * from './useCurrentWorkoutInstance';
+export { useAutoScroll } from './useAutoScroll';
+export { useToast } from './useToast';
+export { useAutoScrollPreferences } from './useAutoScrollPreferences';
