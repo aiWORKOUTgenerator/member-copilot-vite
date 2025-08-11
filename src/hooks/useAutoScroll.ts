@@ -38,7 +38,9 @@ export const useAutoScroll = ({
 
       // Run validation if provided
       if (onValidate && !onValidate()) {
-        console.debug('Auto-scroll prevented by validation');
+        if (import.meta.env.DEV) {
+          console.debug('Auto-scroll prevented by validation');
+        }
         analytics.track('Auto Scroll Prevented', {
           context: trackingContext,
           reason: 'validation_failed',
