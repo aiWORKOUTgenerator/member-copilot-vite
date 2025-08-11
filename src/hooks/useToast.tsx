@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useRef, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { SelectionToast } from '@/ui/shared/atoms/SelectionToast';
 
@@ -15,6 +15,18 @@ interface ToastOptions {
  * Creates and manages toast lifecycle
  */
 export const useToast = () => {
+  const timeoutsRef = useRef<number[]>([]);
+
+  // Cleanup timeouts on unmount
+  useEffect(() => {
+    return () => {
+      timeoutsRef.current.forEach((timeoutId) => {
+        window.clearTimeout(timeoutId);
+      });
+      timeoutsRef.current = [];
+    };
+  }, []);
+
   const showToast = useCallback(
     (message: string, options: ToastOptions = {}) => {
       const toastContainer = document.createElement('div');
@@ -46,7 +58,11 @@ export const useToast = () => {
       );
 
       // Cleanup after duration + animation time
-      setTimeout(cleanup, (options.duration || 2000) + TOAST_ANIMATION_TIME_MS);
+      const timeoutId = window.setTimeout(
+        cleanup,
+        (options.duration || 2000) + TOAST_ANIMATION_TIME_MS
+      );
+      timeoutsRef.current.push(timeoutId);
     },
     []
   );
