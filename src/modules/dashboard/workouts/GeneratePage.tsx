@@ -268,6 +268,20 @@ export default function GenerateWorkoutPage() {
 
   // Selection checking is now handled by ButtonStateLogic
 
+  // Helper function to get indicator color class
+  const getIndicatorColorClass = (color?: string): string => {
+    switch (color) {
+      case 'green':
+        return 'bg-success';
+      case 'red':
+        return 'bg-error';
+      case 'blue':
+        return 'bg-primary';
+      default:
+        return 'bg-base-content/40';
+    }
+  };
+
   // Get button state based on active tab
   const getButtonState = () => {
     if (activeTab === 'detailed') {
@@ -448,17 +462,9 @@ export default function GenerateWorkoutPage() {
                   <div className="flex items-center gap-3 text-sm text-base-content/60 sm:mr-auto order-2 sm:order-1">
                     <div className="flex items-center gap-2">
                       <div
-                        className={`w-2 h-2 rounded-full transition-colors duration-200 ${
-                          buttonState.visualFeedback?.indicatorColor === 'green'
-                            ? 'bg-success'
-                            : buttonState.visualFeedback?.indicatorColor ===
-                                'red'
-                              ? 'bg-error'
-                              : buttonState.visualFeedback?.indicatorColor ===
-                                  'blue'
-                                ? 'bg-primary'
-                                : 'bg-base-content/40'
-                        }`}
+                        className={`w-2 h-2 rounded-full transition-colors duration-200 ${getIndicatorColorClass(
+                          buttonState.visualFeedback?.indicatorColor
+                        )}`}
                       ></div>
                       <span className="transition-opacity duration-200">
                         {buttonState.visualFeedback?.message ||

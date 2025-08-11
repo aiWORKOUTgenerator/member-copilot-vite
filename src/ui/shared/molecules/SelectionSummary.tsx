@@ -66,7 +66,7 @@ export const SelectionSummary: React.FC<SelectionSummaryProps> = ({
           <SelectionBadge
             value={selection.value}
             size="xs"
-            className="!ml-0 !bg-transparent !text-base-content !border-none"
+            className="ml-0 bg-transparent text-base-content border-none"
           />
         </div>
       ))}
