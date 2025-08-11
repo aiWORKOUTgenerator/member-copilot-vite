@@ -1,4 +1,3 @@
-import { SelectionBadge } from '@/ui/shared/atoms';
 import type { SelectionSummaryItem } from '@/modules/dashboard/workouts/hooks/useSelectionSummary';
 
 export interface SelectionSummaryProps {
@@ -62,12 +61,10 @@ export const SelectionSummary: React.FC<SelectionSummaryProps> = ({
             </span>
           )}
 
-          {/* Value using SelectionBadge */}
-          <SelectionBadge
-            value={selection.value}
-            size="xs"
-            className="ml-0 bg-transparent text-base-content border-none"
-          />
+          {/* Value */}
+          <span className="font-semibold text-base-content">
+            {selection.value}
+          </span>
         </div>
       ))}
     </div>
