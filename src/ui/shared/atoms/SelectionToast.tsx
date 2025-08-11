@@ -25,12 +25,17 @@ export const SelectionToast: React.FC<SelectionToastProps> = ({
   const [isVisible, setIsVisible] = React.useState(true);
 
   React.useEffect(() => {
+    let timer: ReturnType<typeof setTimeout> | undefined;
     if (duration > 0) {
-      const timer = setTimeout(() => {
+      timer = setTimeout(() => {
         setIsVisible(false);
       }, duration);
-      return () => clearTimeout(timer);
     }
+    return () => {
+      if (timer !== undefined) {
+        clearTimeout(timer);
+      }
+    };
   }, [duration]);
 
   if (!isVisible) return null;
