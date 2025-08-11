@@ -23,9 +23,17 @@ export const useToast = () => {
       const root = createRoot(toastContainer);
 
       const cleanup = () => {
-        root.unmount();
-        if (document.body.contains(toastContainer)) {
-          document.body.removeChild(toastContainer);
+        try {
+          root.unmount();
+        } catch (e) {
+          // Log error in development, ignore in production
+          if (import.meta.env.DEV) {
+            console.warn('Toast unmount error:', e);
+          }
+        } finally {
+          if (document.body.contains(toastContainer)) {
+            document.body.removeChild(toastContainer);
+          }
         }
       };
 
