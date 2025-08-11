@@ -1,6 +1,8 @@
 import { useCallback } from 'react';
 import { Target, Battery, Clock, Dumbbell } from 'lucide-react';
 import type { PerWorkoutOptions } from '../components/types';
+import { SelectionCounter } from '../selectionCountingLogic';
+import { CUSTOMIZATION_FIELD_KEYS } from '../constants/fieldKeys';
 
 export interface SelectionSummaryItem {
   key: string;
@@ -15,7 +17,8 @@ export interface UseSelectionSummaryReturn {
 }
 
 /**
- * Reusable hook for tracking and formatting form selections across steps
+ * Reusable hook for tracking and formatting form selections across steps.
+ * Uses existing validation logic from SelectionCounter to ensure data integrity.
  *
  * @param options - The current form options/data
  * @param formatters - Custom formatters for each field type
@@ -30,96 +33,128 @@ export const useSelectionSummary = (
 
     // Focus selection
     if (options.customization_focus) {
-      const value = formatters?.focus
-        ? formatters.focus(options.customization_focus)
-        : options.customization_focus
-            .replace(/_/g, ' ')
-            .replace(/\b\w/g, (l) => l.toUpperCase());
+      const focusFieldState = SelectionCounter.getFieldSelectionState(
+        CUSTOMIZATION_FIELD_KEYS.FOCUS,
+        options.customization_focus
+      );
 
-      if (value) {
-        selections.push({
-          key: 'focus',
-          label: 'Focus',
-          value,
-          icon: Target,
-        });
+      if (focusFieldState.hasValue) {
+        const value = formatters?.focus
+          ? formatters.focus(options.customization_focus)
+          : options.customization_focus
+              .replace(/_/g, ' ')
+              .replace(/\b\w/g, (l) => l.toUpperCase());
+
+        if (value) {
+          selections.push({
+            key: 'focus',
+            label: 'Focus',
+            value,
+            icon: Target,
+          });
+        }
       }
     }
 
     // Energy selection
     if (options.customization_energy) {
-      const labels = ['', 'Very Low', 'Low', 'Moderate', 'High', 'Very High'];
-      const value = formatters?.energy
-        ? formatters.energy(options.customization_energy)
-        : `${labels[options.customization_energy]} (${options.customization_energy}/5)`;
+      const energyFieldState = SelectionCounter.getFieldSelectionState(
+        CUSTOMIZATION_FIELD_KEYS.ENERGY,
+        options.customization_energy
+      );
 
-      if (value) {
-        selections.push({
-          key: 'energy',
-          label: 'Energy',
-          value,
-          icon: Battery,
-        });
+      if (energyFieldState.hasValue) {
+        const labels = ['', 'Very Low', 'Low', 'Moderate', 'High', 'Very High'];
+        const energy = Number(options.customization_energy);
+
+        const value = formatters?.energy
+          ? formatters.energy(options.customization_energy)
+          : energyFieldState.isValid && energy >= 1 && energy <= 5
+            ? `${labels[energy]} (${energy}/5)`
+            : `Energy Level ${energy}`;
+
+        if (value) {
+          selections.push({
+            key: 'energy',
+            label: 'Energy',
+            value,
+            icon: Battery,
+          });
+        }
       }
     }
 
     // Duration selection
     if (options.customization_duration) {
-      const duration = options.customization_duration;
-      let value: string;
+      const durationFieldState = SelectionCounter.getFieldSelectionState(
+        CUSTOMIZATION_FIELD_KEYS.DURATION,
+        options.customization_duration
+      );
 
-      if (formatters?.duration) {
-        value = formatters.duration(duration) || '';
-      } else {
-        if (duration >= 60) {
-          const hours = Math.floor(duration / 60);
-          const minutes = duration % 60;
-          if (minutes === 0) {
-            value = `${hours} hour${hours > 1 ? 's' : ''}`;
-          } else {
-            value = `${hours}h ${minutes}m`;
-          }
+      if (durationFieldState.hasValue) {
+        const duration = Number(options.customization_duration);
+        let value: string;
+
+        if (formatters?.duration) {
+          value = formatters.duration(duration) || '';
         } else {
-          value = `${duration} min`;
+          if (duration >= 60) {
+            const hours = Math.floor(duration / 60);
+            const minutes = duration % 60;
+            if (minutes === 0) {
+              value = `${hours} hour${hours > 1 ? 's' : ''}`;
+            } else {
+              value = `${hours}h ${minutes}m`;
+            }
+          } else {
+            value = `${duration} min`;
+          }
         }
-      }
 
-      if (value) {
-        selections.push({
-          key: 'duration',
-          label: 'Duration',
-          value,
-          icon: Clock,
-        });
+        if (value) {
+          selections.push({
+            key: 'duration',
+            label: 'Duration',
+            value,
+            icon: Clock,
+          });
+        }
       }
     }
 
     // Equipment selection
     if (options.customization_equipment?.length) {
-      const equipment = options.customization_equipment;
-      let value: string;
+      const equipmentFieldState = SelectionCounter.getFieldSelectionState(
+        CUSTOMIZATION_FIELD_KEYS.EQUIPMENT,
+        options.customization_equipment
+      );
 
-      if (formatters?.equipment) {
-        value = formatters.equipment(equipment) || '';
-      } else {
-        if (equipment.length === 1) {
-          const formatted = equipment[0]
-            .replace(/_/g, ' ')
-            .replace(/\b\w/g, (l) => l.toUpperCase());
-          value =
-            formatted === 'Bodyweight Only' ? 'Bodyweight Only' : formatted;
+      if (equipmentFieldState.hasValue) {
+        const equipment = options.customization_equipment;
+        let value: string;
+
+        if (formatters?.equipment) {
+          value = formatters.equipment(equipment) || '';
         } else {
-          value = `${equipment.length} items`;
+          if (equipment.length === 1) {
+            const formatted = equipment[0]
+              .replace(/_/g, ' ')
+              .replace(/\b\w/g, (l) => l.toUpperCase());
+            value =
+              formatted === 'Bodyweight Only' ? 'Bodyweight Only' : formatted;
+          } else {
+            value = `${equipment.length} items`;
+          }
         }
-      }
 
-      if (value) {
-        selections.push({
-          key: 'equipment',
-          label: 'Equipment',
-          value,
-          icon: Dumbbell,
-        });
+        if (value) {
+          selections.push({
+            key: 'equipment',
+            label: 'Equipment',
+            value,
+            icon: Dumbbell,
+          });
+        }
       }
     }
 

@@ -42,6 +42,21 @@ describe('useSelectionSummary', () => {
     });
   });
 
+  it('handles invalid energy values safely', () => {
+    const options: PerWorkoutOptions = {
+      customization_energy: 10, // Invalid value outside 1-5 range
+    };
+
+    const { result } = renderHook(() => useSelectionSummary(options));
+
+    expect(result.current.selections).toHaveLength(1);
+    expect(result.current.selections[0]).toMatchObject({
+      key: 'energy',
+      label: 'Energy',
+      value: 'Energy Level 10', // Fallback for invalid values
+    });
+  });
+
   it('formats duration selection correctly', () => {
     const options: PerWorkoutOptions = {
       customization_duration: 30,
