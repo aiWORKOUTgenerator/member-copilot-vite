@@ -475,7 +475,7 @@ export default function GenerateWorkoutPage() {
                 )}
 
                 {/* Selection Summary - center/above on mobile, center on desktop */}
-                {activeTab === 'quick' && hasSelections && (
+                {activeTab === 'quick' && (
                   <SelectionSummary
                     selections={selections}
                     isVisible={hasSelections}
