@@ -11,6 +11,7 @@ import { LevelDots, SelectionBadge } from '@/ui/shared/atoms';
 import { FieldValidationMessage } from './FieldValidationMessage';
 import { useDetailedWorkoutSteps } from './hooks/useDetailedWorkoutSteps';
 import { useAutoScroll, useToast, useAutoScrollPreferences } from '@/hooks';
+import { AUTO_SCROLL_CONFIG } from '@/config/autoScroll';
 import {
   WorkoutStructureStep,
   EquipmentPreferencesStep,
@@ -427,10 +428,10 @@ export default function WorkoutCustomization({
                       block: 'start',
                     });
                   }
-                }, 100);
+                }, AUTO_SCROLL_CONFIG.timing.stepScrollDelay);
               }
               // No step after duration-equipment
-            }, 800); // Same delay as intra-step scroll
+            }, AUTO_SCROLL_CONFIG.timing.stepAdvanceDelay);
           } else {
             console.debug('Step not complete, no auto-advance');
           }
@@ -438,7 +439,7 @@ export default function WorkoutCustomization({
       } else {
         console.debug('Auto-scroll disabled');
       }
-    }, 100);
+    }, AUTO_SCROLL_CONFIG.timing.initialDelay);
   };
 
   // For quick mode, show step indicator with 2 segments

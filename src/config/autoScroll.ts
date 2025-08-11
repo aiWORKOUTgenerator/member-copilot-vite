@@ -12,6 +12,15 @@ export const AUTO_SCROLL_CONFIG = {
   enabledByDefault: true,
   /** Local storage key for user preferences */
   storageKey: 'auto-scroll-preferences',
+  /** Timing constants for auto-scroll operations */
+  timing: {
+    /** Initial delay before auto-scroll check (ms) */
+    initialDelay: 100,
+    /** Step-to-step advancement delay (ms) */
+    stepAdvanceDelay: 800,
+    /** Delay before scrolling to new step content (ms) */
+    stepScrollDelay: 100,
+  },
 } as const;
 
 /**

@@ -2,6 +2,9 @@ import { useCallback } from 'react';
 import { createRoot } from 'react-dom/client';
 import { SelectionToast } from '@/ui/shared/atoms/SelectionToast';
 
+// Toast timing constants
+const TOAST_ANIMATION_TIME_MS = 500;
+
 interface ToastOptions {
   type?: 'success' | 'info' | 'warning';
   duration?: number;
@@ -35,7 +38,7 @@ export const useToast = () => {
       );
 
       // Cleanup after duration + animation time
-      setTimeout(cleanup, (options.duration || 2000) + 500);
+      setTimeout(cleanup, (options.duration || 2000) + TOAST_ANIMATION_TIME_MS);
     },
     []
   );

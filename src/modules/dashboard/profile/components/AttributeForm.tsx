@@ -52,7 +52,7 @@ export function AttributeForm({
     if (autoScrollEnabled) {
       const prompt = attributePrompts.find((p) => p.id === promptId);
       if (prompt) {
-        showSelectionToast(`${prompt.text || promptId} updated`);
+        showSelectionToast(`${prompt.text || 'Selection'} updated`);
 
         // Find next incomplete prompt and scroll to it
         setTimeout(() => {
