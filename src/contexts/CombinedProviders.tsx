@@ -8,6 +8,7 @@ import { PromptProvider } from './PromptContext';
 import { SubscriptionProvider } from './SubscriptionContext';
 import { WorkoutFeedbackProvider } from './WorkoutFeedbackContext';
 import { AnnouncementProvider } from './AnnouncementContext';
+import { AutoScrollProvider } from './AutoScrollContext';
 
 interface CombinedProvidersProps {
   children: ReactNode;
@@ -20,18 +21,20 @@ interface CombinedProvidersProps {
  */
 export function CombinedProviders({ children }: CombinedProvidersProps) {
   return (
-    <AttributeTypeProvider>
-      <PromptProvider>
-        <GeneratedWorkoutProvider>
-          <WorkoutFeedbackProvider>
-            <SubscriptionProvider>
-              <AnnouncementProvider>
-                <AttributeProvider>{children}</AttributeProvider>
-              </AnnouncementProvider>
-            </SubscriptionProvider>
-          </WorkoutFeedbackProvider>
-        </GeneratedWorkoutProvider>
-      </PromptProvider>
-    </AttributeTypeProvider>
+    <AutoScrollProvider>
+      <AttributeTypeProvider>
+        <PromptProvider>
+          <GeneratedWorkoutProvider>
+            <WorkoutFeedbackProvider>
+              <SubscriptionProvider>
+                <AnnouncementProvider>
+                  <AttributeProvider>{children}</AttributeProvider>
+                </AnnouncementProvider>
+              </SubscriptionProvider>
+            </WorkoutFeedbackProvider>
+          </GeneratedWorkoutProvider>
+        </PromptProvider>
+      </AttributeTypeProvider>
+    </AutoScrollProvider>
   );
 }

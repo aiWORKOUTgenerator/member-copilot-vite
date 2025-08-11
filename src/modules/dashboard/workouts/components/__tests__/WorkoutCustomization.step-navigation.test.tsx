@@ -2,12 +2,18 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import WorkoutCustomization from '../WorkoutCustomization';
 import type { PerWorkoutOptions } from '../types';
+import { AutoScrollProvider } from '@/contexts/AutoScrollContext';
 
 // Mock scrollIntoView for test environment
 Object.defineProperty(Element.prototype, 'scrollIntoView', {
   value: vi.fn(),
   writable: true,
 });
+
+// Test wrapper with AutoScrollProvider
+const TestWrapper = ({ children }: { children: React.ReactNode }) => (
+  <AutoScrollProvider>{children}</AutoScrollProvider>
+);
 
 // Mock the step components
 vi.mock('../steps', () => ({
@@ -46,7 +52,11 @@ describe('WorkoutCustomization - Step Navigation', () => {
 
   describe('Step Indicator Integration', () => {
     it('renders step indicator in detailed mode', () => {
-      render(<WorkoutCustomization {...defaultProps} />);
+      render(
+        <TestWrapper>
+          <WorkoutCustomization {...defaultProps} />
+        </TestWrapper>
+      );
 
       expect(
         screen.getByTestId('step-indicator-container')
@@ -57,7 +67,11 @@ describe('WorkoutCustomization - Step Navigation', () => {
     });
 
     it('starts with workout structure step', () => {
-      render(<WorkoutCustomization {...defaultProps} />);
+      render(
+        <TestWrapper>
+          <WorkoutCustomization {...defaultProps} />
+        </TestWrapper>
+      );
 
       expect(screen.getByTestId('workout-structure-step')).toBeInTheDocument();
       expect(
@@ -69,7 +83,11 @@ describe('WorkoutCustomization - Step Navigation', () => {
     });
 
     it('navigates to next step when clicking step indicator', () => {
-      render(<WorkoutCustomization {...defaultProps} />);
+      render(
+        <TestWrapper>
+          <WorkoutCustomization {...defaultProps} />
+        </TestWrapper>
+      );
 
       // Click on the actual step button (step 2)
       const step2Button = screen.getByLabelText(
@@ -86,7 +104,11 @@ describe('WorkoutCustomization - Step Navigation', () => {
     });
 
     it('navigates to current state step when clicked', () => {
-      render(<WorkoutCustomization {...defaultProps} />);
+      render(
+        <TestWrapper>
+          <WorkoutCustomization {...defaultProps} />
+        </TestWrapper>
+      );
 
       // Click on the actual step button (step 3)
       const step3Button = screen.getByLabelText('Step 3: Current State');
@@ -101,7 +123,11 @@ describe('WorkoutCustomization - Step Navigation', () => {
 
   describe('Progress Tracking', () => {
     it('shows 0% progress initially', () => {
-      render(<WorkoutCustomization {...defaultProps} />);
+      render(
+        <TestWrapper>
+          <WorkoutCustomization {...defaultProps} />
+        </TestWrapper>
+      );
 
       expect(screen.getByText('0% Complete')).toBeInTheDocument();
     });
@@ -113,7 +139,9 @@ describe('WorkoutCustomization - Step Navigation', () => {
       };
 
       render(
-        <WorkoutCustomization {...defaultProps} options={optionsWithData} />
+        <TestWrapper>
+          <WorkoutCustomization {...defaultProps} options={optionsWithData} />
+        </TestWrapper>
       );
 
       // Should show some progress (exact percentage depends on implementation)
@@ -127,7 +155,9 @@ describe('WorkoutCustomization - Step Navigation', () => {
       };
 
       render(
-        <WorkoutCustomization {...defaultProps} options={optionsWithData} />
+        <TestWrapper>
+          <WorkoutCustomization {...defaultProps} options={optionsWithData} />
+        </TestWrapper>
       );
 
       // Should show completion percentages for individual steps (use getAllByText for multiple matches)
@@ -138,21 +168,33 @@ describe('WorkoutCustomization - Step Navigation', () => {
 
   describe('Navigation Controls', () => {
     it('disables previous button on first step', () => {
-      render(<WorkoutCustomization {...defaultProps} />);
+      render(
+        <TestWrapper>
+          <WorkoutCustomization {...defaultProps} />
+        </TestWrapper>
+      );
 
       const previousButton = screen.getByText('Previous');
       expect(previousButton).toBeDisabled();
     });
 
     it('enables next button when not on last step', () => {
-      render(<WorkoutCustomization {...defaultProps} />);
+      render(
+        <TestWrapper>
+          <WorkoutCustomization {...defaultProps} />
+        </TestWrapper>
+      );
 
       const nextButton = screen.getByText('Next');
       expect(nextButton).not.toBeDisabled();
     });
 
     it('navigates to next step when clicking next button', () => {
-      render(<WorkoutCustomization {...defaultProps} />);
+      render(
+        <TestWrapper>
+          <WorkoutCustomization {...defaultProps} />
+        </TestWrapper>
+      );
 
       fireEvent.click(screen.getByText('Next'));
 
@@ -162,7 +204,11 @@ describe('WorkoutCustomization - Step Navigation', () => {
     });
 
     it('navigates to previous step when clicking previous button', () => {
-      render(<WorkoutCustomization {...defaultProps} />);
+      render(
+        <TestWrapper>
+          <WorkoutCustomization {...defaultProps} />
+        </TestWrapper>
+      );
 
       // Go to second step first
       fireEvent.click(screen.getByText('Next'));
@@ -176,7 +222,11 @@ describe('WorkoutCustomization - Step Navigation', () => {
     });
 
     it('disables next button on last step', () => {
-      render(<WorkoutCustomization {...defaultProps} />);
+      render(
+        <TestWrapper>
+          <WorkoutCustomization {...defaultProps} />
+        </TestWrapper>
+      );
 
       // Navigate to last step using the step button
       const step3Button = screen.getByLabelText('Step 3: Current State');
@@ -190,7 +240,11 @@ describe('WorkoutCustomization - Step Navigation', () => {
     });
 
     it('shows correct step counter', () => {
-      render(<WorkoutCustomization {...defaultProps} />);
+      render(
+        <TestWrapper>
+          <WorkoutCustomization {...defaultProps} />
+        </TestWrapper>
+      );
 
       expect(screen.getByText('Step 1 of 3')).toBeInTheDocument();
 
@@ -201,13 +255,21 @@ describe('WorkoutCustomization - Step Navigation', () => {
 
   describe('Step Content', () => {
     it('renders workout structure step content', () => {
-      render(<WorkoutCustomization {...defaultProps} />);
+      render(
+        <TestWrapper>
+          <WorkoutCustomization {...defaultProps} />
+        </TestWrapper>
+      );
 
       expect(screen.getByTestId('workout-structure-step')).toBeInTheDocument();
     });
 
     it('renders equipment preferences step content when navigated', () => {
-      render(<WorkoutCustomization {...defaultProps} />);
+      render(
+        <TestWrapper>
+          <WorkoutCustomization {...defaultProps} />
+        </TestWrapper>
+      );
 
       const step2Button = screen.getByLabelText(
         'Step 2: Equipment & Preferences'
@@ -220,7 +282,11 @@ describe('WorkoutCustomization - Step Navigation', () => {
     });
 
     it('renders current state step content when navigated', () => {
-      render(<WorkoutCustomization {...defaultProps} />);
+      render(
+        <TestWrapper>
+          <WorkoutCustomization {...defaultProps} />
+        </TestWrapper>
+      );
 
       const step3Button = screen.getByLabelText('Step 3: Current State');
       fireEvent.click(step3Button);
@@ -238,7 +304,9 @@ describe('WorkoutCustomization - Step Navigation', () => {
       };
 
       render(
-        <WorkoutCustomization {...defaultProps} options={optionsWithData} />
+        <TestWrapper>
+          <WorkoutCustomization {...defaultProps} options={optionsWithData} />
+        </TestWrapper>
       );
 
       // Navigate to second step
@@ -258,7 +326,11 @@ describe('WorkoutCustomization - Step Navigation', () => {
 
   describe('Accessibility', () => {
     it('provides proper ARIA labels for step navigation', () => {
-      render(<WorkoutCustomization {...defaultProps} />);
+      render(
+        <TestWrapper>
+          <WorkoutCustomization {...defaultProps} />
+        </TestWrapper>
+      );
 
       const stepIndicator = screen.getByTestId('step-indicator-container');
       expect(stepIndicator).toBeInTheDocument();
@@ -273,7 +345,11 @@ describe('WorkoutCustomization - Step Navigation', () => {
     });
 
     it('supports keyboard navigation', () => {
-      render(<WorkoutCustomization {...defaultProps} />);
+      render(
+        <TestWrapper>
+          <WorkoutCustomization {...defaultProps} />
+        </TestWrapper>
+      );
 
       const stepButtons = screen.getAllByRole('button');
       const firstStepButton = stepButtons.find((button) =>
@@ -298,7 +374,11 @@ describe('WorkoutCustomization - Step Navigation', () => {
 
   describe('Disabled State', () => {
     it('disables all navigation when disabled prop is true', () => {
-      render(<WorkoutCustomization {...defaultProps} disabled={true} />);
+      render(
+        <TestWrapper>
+          <WorkoutCustomization {...defaultProps} disabled={true} />
+        </TestWrapper>
+      );
 
       const nextButton = screen.getByText('Next');
       const previousButton = screen.getByText('Previous');
