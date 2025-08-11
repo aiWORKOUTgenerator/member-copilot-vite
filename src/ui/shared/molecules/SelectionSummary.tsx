@@ -49,11 +49,6 @@ export const SelectionSummary: React.FC<SelectionSummaryProps> = ({
             ${variant === 'detailed' ? 'px-4 py-2' : ''}
           `}
         >
-          {/* Icon */}
-          {selection.icon && (
-            <selection.icon className="w-3 h-3 text-base-content/70 flex-shrink-0" />
-          )}
-
           {/* Label (only in detailed variant) */}
           {variant === 'detailed' && (
             <span className="text-xs text-base-content/70 font-medium">
