@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { BrowserRouter } from 'react-router';
 import GeneratePage from '@/modules/dashboard/workouts/GeneratePage';
+import { AutoScrollProvider } from '@/contexts/AutoScrollContext';
 
 // Mock the useGeneratedWorkouts hook directly
 vi.mock('@/hooks/useGeneratedWorkouts', () => ({
@@ -29,7 +30,9 @@ describe('Workout Generation Flow', () => {
   it('should render workout generation page', () => {
     render(
       <BrowserRouter>
-        <GeneratePage />
+        <AutoScrollProvider>
+          <GeneratePage />
+        </AutoScrollProvider>
       </BrowserRouter>
     );
 
@@ -44,7 +47,9 @@ describe('Workout Generation Flow', () => {
   it('should render step indicator', () => {
     render(
       <BrowserRouter>
-        <GeneratePage />
+        <AutoScrollProvider>
+          <GeneratePage />
+        </AutoScrollProvider>
       </BrowserRouter>
     );
 
@@ -56,7 +61,9 @@ describe('Workout Generation Flow', () => {
   it('should render workout goal options', () => {
     render(
       <BrowserRouter>
-        <GeneratePage />
+        <AutoScrollProvider>
+          <GeneratePage />
+        </AutoScrollProvider>
       </BrowserRouter>
     );
 
@@ -72,7 +79,9 @@ describe('Workout Generation Flow', () => {
   it('should render energy level options', () => {
     render(
       <BrowserRouter>
-        <GeneratePage />
+        <AutoScrollProvider>
+          <GeneratePage />
+        </AutoScrollProvider>
       </BrowserRouter>
     );
 

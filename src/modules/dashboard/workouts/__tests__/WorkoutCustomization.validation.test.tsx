@@ -3,6 +3,12 @@ import { render, screen } from '@testing-library/react';
 import WorkoutCustomization from '../components/WorkoutCustomization';
 import { VALIDATION_MESSAGES } from '../constants/validationMessages';
 import { PerWorkoutOptions } from '../components/types';
+import { AutoScrollProvider } from '@/contexts/AutoScrollContext';
+
+// Test wrapper with AutoScrollProvider
+const TestWrapper = ({ children }: { children: React.ReactNode }) => (
+  <AutoScrollProvider>{children}</AutoScrollProvider>
+);
 
 describe('WorkoutCustomization Validation', () => {
   const defaultProps = {
@@ -21,7 +27,11 @@ describe('WorkoutCustomization Validation', () => {
 
   describe('Focus & Energy Step', () => {
     it('shows no errors initially with empty selections', () => {
-      render(<WorkoutCustomization {...defaultProps} />);
+      render(
+        <TestWrapper>
+          <WorkoutCustomization {...defaultProps} />
+        </TestWrapper>
+      );
 
       // Should not show any validation messages
       const energyError = screen.queryByText(
@@ -38,7 +48,11 @@ describe('WorkoutCustomization Validation', () => {
         customization_focus: 'energizing_boost',
       };
 
-      render(<WorkoutCustomization {...defaultProps} options={options} />);
+      render(
+        <TestWrapper>
+          <WorkoutCustomization {...defaultProps} options={options} />
+        </TestWrapper>
+      );
 
       const energyError = screen.getByText('Complete this section');
       expect(energyError).toBeInTheDocument();
@@ -50,7 +64,11 @@ describe('WorkoutCustomization Validation', () => {
         customization_focus: undefined,
       };
 
-      render(<WorkoutCustomization {...defaultProps} options={options} />);
+      render(
+        <TestWrapper>
+          <WorkoutCustomization {...defaultProps} options={options} />
+        </TestWrapper>
+      );
 
       const focusError = screen.getByText('Complete this section');
       expect(focusError).toBeInTheDocument();
@@ -62,7 +80,11 @@ describe('WorkoutCustomization Validation', () => {
         customization_energy: 4,
       };
 
-      render(<WorkoutCustomization {...defaultProps} options={options} />);
+      render(
+        <TestWrapper>
+          <WorkoutCustomization {...defaultProps} options={options} />
+        </TestWrapper>
+      );
 
       const energyError = screen.queryByText('Complete this section');
       const focusError = screen.queryByText('Complete this section');
@@ -77,7 +99,11 @@ describe('WorkoutCustomization Validation', () => {
         customization_energy: undefined,
       };
 
-      render(<WorkoutCustomization {...defaultProps} options={options} />);
+      render(
+        <TestWrapper>
+          <WorkoutCustomization {...defaultProps} options={options} />
+        </TestWrapper>
+      );
 
       const energyError = screen.getByText('Complete this section');
       expect(energyError).toBeInTheDocument();
@@ -89,7 +115,11 @@ describe('WorkoutCustomization Validation', () => {
         customization_energy: 4,
       };
 
-      render(<WorkoutCustomization {...defaultProps} options={options} />);
+      render(
+        <TestWrapper>
+          <WorkoutCustomization {...defaultProps} options={options} />
+        </TestWrapper>
+      );
 
       const focusError = screen.getByText('Complete this section');
       expect(focusError).toBeInTheDocument();
@@ -103,7 +133,11 @@ describe('WorkoutCustomization Validation', () => {
     };
 
     it('shows no errors initially with empty selections', () => {
-      render(<WorkoutCustomization {...durationEquipmentProps} />);
+      render(
+        <TestWrapper>
+          <WorkoutCustomization {...durationEquipmentProps} />
+        </TestWrapper>
+      );
 
       const durationError = screen.queryByText(
         VALIDATION_MESSAGES.INVALID_DURATION
@@ -122,7 +156,9 @@ describe('WorkoutCustomization Validation', () => {
       };
 
       render(
-        <WorkoutCustomization {...durationEquipmentProps} options={options} />
+        <TestWrapper>
+          <WorkoutCustomization {...durationEquipmentProps} options={options} />
+        </TestWrapper>
       );
 
       const equipmentError = screen.getByText('Complete this section');
@@ -135,7 +171,9 @@ describe('WorkoutCustomization Validation', () => {
       };
 
       render(
-        <WorkoutCustomization {...durationEquipmentProps} options={options} />
+        <TestWrapper>
+          <WorkoutCustomization {...durationEquipmentProps} options={options} />
+        </TestWrapper>
       );
 
       const durationError = screen.getByText('Complete this section');
@@ -149,7 +187,9 @@ describe('WorkoutCustomization Validation', () => {
       };
 
       render(
-        <WorkoutCustomization {...durationEquipmentProps} options={options} />
+        <TestWrapper>
+          <WorkoutCustomization {...durationEquipmentProps} options={options} />
+        </TestWrapper>
       );
 
       const durationError = screen.queryByText('Complete this section');
@@ -166,7 +206,9 @@ describe('WorkoutCustomization Validation', () => {
       };
 
       render(
-        <WorkoutCustomization {...durationEquipmentProps} options={options} />
+        <TestWrapper>
+          <WorkoutCustomization {...durationEquipmentProps} options={options} />
+        </TestWrapper>
       );
 
       const equipmentError = screen.getByText('Complete this section');
@@ -180,7 +222,9 @@ describe('WorkoutCustomization Validation', () => {
       };
 
       render(
-        <WorkoutCustomization {...durationEquipmentProps} options={options} />
+        <TestWrapper>
+          <WorkoutCustomization {...durationEquipmentProps} options={options} />
+        </TestWrapper>
       );
 
       const durationError = screen.getByText('Complete this section');
@@ -195,13 +239,15 @@ describe('WorkoutCustomization Validation', () => {
       };
 
       render(
-        <WorkoutCustomization
-          {...defaultProps}
-          options={options}
-          errors={{
-            customization_energy: VALIDATION_MESSAGES.ENERGY_RANGE,
-          }}
-        />
+        <TestWrapper>
+          <WorkoutCustomization
+            {...defaultProps}
+            options={options}
+            errors={{
+              customization_energy: VALIDATION_MESSAGES.ENERGY_RANGE,
+            }}
+          />
+        </TestWrapper>
       );
 
       // Note: Range validation errors are handled by the errors prop
@@ -217,14 +263,16 @@ describe('WorkoutCustomization Validation', () => {
       };
 
       render(
-        <WorkoutCustomization
-          {...defaultProps}
-          options={options}
-          errors={{
-            customization_duration: VALIDATION_MESSAGES.DURATION_RANGE,
-          }}
-          activeQuickStep="duration-equipment"
-        />
+        <TestWrapper>
+          <WorkoutCustomization
+            {...defaultProps}
+            options={options}
+            errors={{
+              customization_duration: VALIDATION_MESSAGES.DURATION_RANGE,
+            }}
+            activeQuickStep="duration-equipment"
+          />
+        </TestWrapper>
       );
 
       // Note: Range validation errors are handled by the errors prop
