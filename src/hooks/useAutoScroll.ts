@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useAnalytics } from './useAnalytics';
+import { useConditionalAnalytics } from './useConditionalAnalytics';
 
 interface UseAutoScrollOptions {
   /** Enable/disable auto-scroll functionality */
@@ -31,7 +31,7 @@ export const useAutoScroll = ({
   onAfterScroll,
   trackingContext = 'unknown',
 }: UseAutoScrollOptions = {}) => {
-  const analytics = useAnalytics();
+  const analytics = useConditionalAnalytics(enabled);
   const triggerAutoScroll = useCallback(
     (targetElement: HTMLElement) => {
       if (!enabled) return;

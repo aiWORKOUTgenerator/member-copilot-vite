@@ -35,3 +35,4 @@ export * from './useCurrentWorkoutInstance';
 export { useAutoScroll } from './useAutoScroll';
 export { useToast } from './useToast';
 export { useAutoScrollPreferences } from './useAutoScrollPreferences';
+export { useConditionalAnalytics } from './useConditionalAnalytics';
