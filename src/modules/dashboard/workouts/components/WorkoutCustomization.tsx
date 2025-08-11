@@ -533,6 +533,18 @@ export default function WorkoutCustomization({
           size="md"
         />
 
+        {/* Workout Structure Section - matching Detailed mode */}
+        <div className="mt-section mb-6">
+          <h3 className="text-xl font-semibold text-base-content mb-2">
+            Workout Structure
+          </h3>
+          <p className="text-base-content/70">
+            Define your workout's core parameters: what your main focus is, how
+            you are feeling today, how long you want to work out, and what
+            equipment you have available.
+          </p>
+        </div>
+
         {/* Step content */}
         {currentStep === 'focus-energy' && (
           <div className="space-y-8">
