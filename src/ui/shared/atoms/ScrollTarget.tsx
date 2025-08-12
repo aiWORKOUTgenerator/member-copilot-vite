@@ -1,4 +1,4 @@
-import React, { forwardRef, ElementType } from 'react';
+import React, { ElementType } from 'react';
 
 export interface ScrollTargetProps {
   /** Unique identifier for this scroll target */
@@ -44,8 +44,8 @@ export interface ScrollTargetProps {
  *   />
  * </ScrollTarget>
  */
-export const ScrollTarget = forwardRef<HTMLElement, ScrollTargetProps>(
-  (
+export const ScrollTarget = React.forwardRef(
+  <T extends HTMLElement = HTMLElement>(
     {
       targetId,
       registerScrollTarget,
@@ -53,10 +53,10 @@ export const ScrollTarget = forwardRef<HTMLElement, ScrollTargetProps>(
       children,
       as: Component = 'div' as ElementType,
       ...props
-    },
-    ref
+    }: ScrollTargetProps,
+    ref: React.Ref<T>
   ) => {
-    const handleRef = (element: HTMLElement | null) => {
+    const handleRef = (element: T | null) => {
       // Validate inputs
       if (!targetId) {
         console.warn('ScrollTarget: targetId is required');
@@ -74,9 +74,9 @@ export const ScrollTarget = forwardRef<HTMLElement, ScrollTargetProps>(
 
         // Forward the ref if provided
         if (typeof ref === 'function') {
-          ref(element);
+          ref(element as T);
         } else if (ref) {
-          ref.current = element;
+          ref.current = element as T;
         }
       } catch (error) {
         console.error('ScrollTarget: Error registering scroll target:', error);
