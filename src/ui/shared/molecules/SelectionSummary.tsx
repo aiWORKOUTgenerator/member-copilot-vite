@@ -34,7 +34,7 @@ export const SelectionSummary: React.FC<SelectionSummaryProps> = ({
 
   return (
     <div
-      className={`flex flex-wrap gap-2 animate-in fade-in duration-300 ${className}`}
+      className={`flex flex-wrap gap-tight animate-in fade-in duration-300 ${className}`}
       role="group"
       aria-label="Selected options"
     >
@@ -42,7 +42,7 @@ export const SelectionSummary: React.FC<SelectionSummaryProps> = ({
         <div
           key={selection.key}
           className={`
-            flex items-center gap-2 
+            flex items-center gap-tight 
             bg-base-200 rounded-full px-3 py-1.5 
             text-sm border border-base-300
             transition-all duration-200

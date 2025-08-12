@@ -22,14 +22,25 @@
   --width-connector-md: 2rem; /* 32px */
   --width-connector-lg: 3rem; /* 48px */
 
-  /* Step Indicator Spacing */
-  --spacing-step-gap-sm: 1rem; /* 16px */
-  --spacing-step-gap-md: 1.5rem; /* 24px */
-  --spacing-step-gap-lg: 2rem; /* 32px */
+  /* Step Indicator Spacing - Now using semantic tokens */
+  /* Legacy tokens kept for reference:
+  --spacing-step-gap-sm: 1rem (16px) → gap-element
+  --spacing-step-gap-md: 1.5rem (24px) → gap-element  
+  --spacing-step-gap-lg: 2rem (32px) → gap-component
+  --spacing-label-sm: 0.5rem (8px) → mt-tight
+  --spacing-label-md: 0.75rem (12px) → mt-tight
+  --spacing-label-lg: 1rem (16px) → mt-element
+  */
 
-  --spacing-label-sm: 0.5rem; /* 8px */
-  --spacing-label-md: 0.75rem; /* 12px */
-  --spacing-label-lg: 1rem; /* 16px */
+  /* Semantic Spacing Scale */
+  --spacing-section: 2rem; /* 32px - Between major sections */
+  --spacing-component: 1.5rem; /* 24px - Between related components */
+  --spacing-element: 1rem; /* 16px - Between form elements */
+  --spacing-tight: 0.5rem; /* 8px - For compact layouts */
+
+  /* Component-specific tokens */
+  --spacing-form-field: 1rem; /* 16px - Standard form field spacing */
+  --spacing-card-content: 1.5rem; /* 24px - Card internal padding */
 }
 
 /* Mobile-specific base styles */

@@ -52,16 +52,16 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
 
   return (
     <div
-      className="flex justify-center p-4"
+      className="flex justify-center p-element"
       data-testid="step-indicator-container"
     >
       <div
         className={`flex items-center ${
           size === 'sm'
-            ? 'gap-[var(--spacing-step-gap-sm)]'
+            ? 'gap-element'
             : size === 'lg'
-              ? 'gap-[var(--spacing-step-gap-lg)]'
-              : 'gap-[var(--spacing-step-gap-md)]'
+              ? 'gap-component'
+              : 'gap-element'
         }`}
         data-testid="step-indicator-steps"
       >
@@ -119,10 +119,10 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
               <div
                 className={`${
                   size === 'sm'
-                    ? 'mt-[var(--spacing-label-sm)]'
+                    ? 'mt-tight'
                     : size === 'lg'
-                      ? 'mt-[var(--spacing-label-lg)]'
-                      : 'mt-[var(--spacing-label-md)]'
+                      ? 'mt-element'
+                      : 'mt-tight'
                 } text-center`}
               >
                 <div

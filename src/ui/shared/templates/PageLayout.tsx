@@ -22,7 +22,7 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
   bgColor = 'bg-white',
 }) => {
   return (
-    <div className={`min-h-screen py-8 ${bgColor} ${className}`}>
+    <div className={`min-h-screen py-section ${bgColor} ${className}`}>
       {withContainer ? (
         <div className="container mx-auto px-4">
           {withCard ? (

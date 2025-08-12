@@ -410,6 +410,12 @@ export default function WorkoutCustomization({
       }
     }
 
+    // Precompute state needed for timing decisions
+    const updatedOptions = { ...options, [key]: value };
+    const nextSectionRef = getNextSectionRef(key);
+    const shouldAdvance =
+      !nextSectionRef?.current && isStepComplete(currentStep, updatedOptions);
+
     // Use structured timing system for auto-scroll sequence
     scheduleAutoScrollSequence({
       initial: () => {
@@ -423,9 +429,6 @@ export default function WorkoutCustomization({
           }
           return;
         }
-
-        const updatedOptions = { ...options, [key]: value };
-        const nextSectionRef = getNextSectionRef(key);
 
         if (nextSectionRef?.current) {
           // Intra-step scroll to next section
@@ -450,7 +453,7 @@ export default function WorkoutCustomization({
         }
       },
       stepAdvance: () => {
-        if (currentStep === 'focus-energy') {
+        if (shouldAdvance && currentStep === 'focus-energy') {
           setCurrentStep('duration-equipment');
         }
         // No step after duration-equipment
@@ -529,6 +532,18 @@ export default function WorkoutCustomization({
           showConnectors={true}
           size="md"
         />
+
+        {/* Workout Structure Section - matching Detailed mode */}
+        <div className="mt-section mb-6">
+          <h3 className="text-xl font-semibold text-base-content mb-2">
+            Workout Structure
+          </h3>
+          <p className="text-base-content/70">
+            Define your workout's core parameters: what your main focus is, how
+            you are feeling today, how long you want to work out, and what
+            equipment you have available.
+          </p>
+        </div>
 
         {/* Step content */}
         {currentStep === 'focus-energy' && (
