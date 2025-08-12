@@ -6,10 +6,12 @@ import {
   StepIndicator,
   DetailedSelector,
   SimpleDetailedViewSelector,
+  ProgressBar,
 } from '@/ui/shared/molecules';
 import { LevelDots, SelectionBadge, ScrollTarget } from '@/ui/shared/atoms';
 import { FieldValidationMessage } from './FieldValidationMessage';
 import { useDetailedWorkoutSteps } from './hooks/useDetailedWorkoutSteps';
+import { useQuickWorkoutProgress } from './hooks/useQuickWorkoutProgress';
 import { useToast, useAutoScrollPreferences, useFormAutoScroll } from '@/hooks';
 import {
   WorkoutStructureStep,
@@ -109,6 +111,9 @@ export default function WorkoutCustomization({
 
   // Detailed mode step management
   const detailedSteps = useDetailedWorkoutSteps(options, 'workout-structure');
+
+  // Quick mode progress tracking
+  const quickProgress = useQuickWorkoutProgress(options);
 
   // Initialize universal auto-scroll pattern
   const { registerScrollTarget, handleFieldSelection } = useFormAutoScroll<
@@ -455,6 +460,19 @@ export default function WorkoutCustomization({
           />
         </div>
 
+        {/* Overall Progress Bar */}
+        <div className="mb-4">
+          <ProgressBar
+            progress={quickProgress.overallProgress}
+            label="Overall Progress"
+            showPercentage={true}
+            size="md"
+            variant="primary"
+            animated={true}
+            description={`${quickProgress.completedFields} of ${quickProgress.totalFields} required fields completed`}
+          />
+        </div>
+
         {/* Step Indicator / Linear Stepper */}
         <StepIndicator
           steps={[
@@ -676,18 +694,14 @@ export default function WorkoutCustomization({
 
           {/* Overall Progress */}
           <div className="mb-4">
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-medium">Overall Progress</span>
-              <span className="text-sm text-base-content/70">
-                {detailedSteps.getOverallProgress()}% Complete
-              </span>
-            </div>
-            <div className="w-full bg-base-200 rounded-full h-2">
-              <div
-                className="bg-primary h-2 rounded-full transition-all duration-300"
-                style={{ width: `${detailedSteps.getOverallProgress()}%` }}
-              />
-            </div>
+            <ProgressBar
+              progress={detailedSteps.getOverallProgress()}
+              label="Overall Progress"
+              showPercentage={true}
+              size="md"
+              variant="primary"
+              animated={true}
+            />
           </div>
         </div>
 

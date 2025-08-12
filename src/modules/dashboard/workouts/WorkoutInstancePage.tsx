@@ -7,6 +7,7 @@ import { useTrainerPersonaData } from '@/hooks/useTrainerPersona';
 import { Exercise, Section } from '@/domain/entities/generatedWorkout';
 import { ExerciseInstance } from '@/domain/entities/workoutInstance';
 import { useAnalytics } from '@/hooks/useAnalytics';
+import { ProgressBar } from '@/ui/shared/molecules';
 import { Check, Clock, Target, X } from 'lucide-react';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -820,12 +821,13 @@ export default function WorkoutInstancePage() {
         </div>
 
         {/* Progress Bar */}
-        <div className="w-full bg-base-200 h-1">
-          <div
-            className="bg-primary h-1 transition-all duration-300 ease-out"
-            style={{ width: `${progressPercentage}%` }}
-          />
-        </div>
+        <ProgressBar
+          progress={progressPercentage}
+          showPercentage={false}
+          size="xs"
+          variant="primary"
+          animated={true}
+        />
       </div>
 
       {/* Vertical Progress Indicator (Desktop) */}

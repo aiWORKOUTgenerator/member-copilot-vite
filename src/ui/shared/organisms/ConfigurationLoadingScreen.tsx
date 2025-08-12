@@ -1,5 +1,6 @@
 import { Button } from '@/ui/shared/atoms/Button';
 import LoadingState from '@/ui/shared/atoms/LoadingState';
+import { ProgressBar } from '@/ui/shared/molecules';
 
 export interface ConfigurationLoadingScreenProps {
   /** Whether configuration is currently loading */
@@ -39,9 +40,14 @@ export function ConfigurationLoadingScreen({
           </div>
 
           {/* Progress indicator */}
-          <div className="w-full bg-base-200 rounded-full h-2">
-            <div className="bg-primary h-2 rounded-full animate-pulse w-3/4"></div>
-          </div>
+          <ProgressBar
+            progress={75}
+            showPercentage={false}
+            size="md"
+            variant="primary"
+            animated={true}
+            className="animate-pulse"
+          />
         </div>
       </div>
     );
