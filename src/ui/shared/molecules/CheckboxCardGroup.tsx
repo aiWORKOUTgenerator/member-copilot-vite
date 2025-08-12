@@ -18,6 +18,7 @@ interface CheckboxCardGroupProps {
     | 'warning'
     | 'info'
     | 'error';
+  selectedBadgeContent?: string | React.ReactNode;
 }
 
 /**
@@ -34,6 +35,7 @@ export const CheckboxCardGroup: React.FC<CheckboxCardGroupProps> = ({
   disabled = false,
   gridCols = 3,
   colorScheme = 'accent',
+  selectedBadgeContent = 'Selected',
 }) => {
   // Transform choices into SelectableItem format for RadioGroupOfCards
   const items = choices.map((choice) => ({
@@ -41,7 +43,7 @@ export const CheckboxCardGroup: React.FC<CheckboxCardGroupProps> = ({
     title: choice.text,
     description: '', // Choice entity doesn't have description
     tertiary: selectedValues.includes(choice.text) ? (
-      <div className="badge badge-primary badge-sm">Selected</div>
+      <div className="badge badge-primary badge-sm">{selectedBadgeContent}</div>
     ) : undefined,
   }));
 
