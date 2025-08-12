@@ -1,4 +1,5 @@
 import { WorkoutInstance } from '@/domain/entities/workoutInstance';
+import { ProgressBar } from '@/ui/shared/molecules';
 import {
   Activity,
   Calendar,
@@ -162,18 +163,14 @@ export default function WorkoutInstanceModal({
           {/* Progress Bar */}
           {totalExercises > 0 && (
             <div className="mb-4">
-              <div className="flex justify-between text-xs text-base-content/70 mb-1">
-                <span>Progress</span>
-                <span>{completionPercentage}%</span>
-              </div>
-              <div className="w-full bg-base-300 rounded-full h-2">
-                <div
-                  className={`h-2 rounded-full transition-all duration-300 ${
-                    workoutInstance.completed ? 'bg-success' : 'bg-primary'
-                  }`}
-                  style={{ width: `${completionPercentage}%` }}
-                ></div>
-              </div>
+              <ProgressBar
+                progress={completionPercentage}
+                label="Progress"
+                showPercentage={true}
+                size="sm"
+                variant={workoutInstance.completed ? 'success' : 'primary'}
+                animated={true}
+              />
             </div>
           )}
 
