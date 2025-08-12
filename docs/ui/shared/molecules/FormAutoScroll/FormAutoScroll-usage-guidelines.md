@@ -416,6 +416,13 @@ function EnhancedForm() {
 - Adapt to device and screen size
 - Align with overall application design patterns
 
+### 6. Use Named Constants
+
+- Always use `AUTO_SCROLL_CONFIG.timing.*` instead of magic numbers
+- Import configuration from `@/config/autoScroll`
+- Document timing choices with clear comments
+- Maintain consistency across similar use cases
+
 ## Common Patterns
 
 ### Quick Setup Flow

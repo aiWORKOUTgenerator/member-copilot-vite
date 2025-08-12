@@ -14,6 +14,7 @@ import { Outlet, useLocation, useNavigate } from 'react-router';
 import { useAnalytics } from '@/hooks/useAnalytics';
 import { usePromptsData } from '@/hooks/usePrompts';
 import { useAutoScrollPreferences } from '@/hooks/useAutoScrollPreferences';
+import { AUTO_SCROLL_CONFIG } from '@/config/autoScroll';
 
 export default function TrainingProfileLayout() {
   const { setTitle } = useTitle();
@@ -156,7 +157,7 @@ export default function TrainingProfileLayout() {
                       block: 'start',
                     });
                   }
-                }, 500); // Wait for navigation and render
+                }, AUTO_SCROLL_CONFIG.timing.profileNavigationDelay); // Wait for navigation and render
               }
             }
           }}

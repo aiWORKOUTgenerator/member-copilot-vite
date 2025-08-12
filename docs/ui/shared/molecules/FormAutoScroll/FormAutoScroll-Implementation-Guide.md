@@ -125,6 +125,8 @@ const { enabled: autoScrollEnabled } = useAutoScrollPreferences();
 2. **Implement Navigation Handler**
 
 ```typescript
+import { AUTO_SCROLL_CONFIG } from '@/config/autoScroll';
+
 const handleCardSelection = (selected: SelectableItem) => {
   // Track analytics
   analytics.track('Card Selected', {
@@ -145,7 +147,7 @@ const handleCardSelection = (selected: SelectableItem) => {
       if (firstPrompt) {
         firstPrompt.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
-    }, 500);
+    }, AUTO_SCROLL_CONFIG.timing.profileNavigationDelay); // Wait for navigation and render
   }
 };
 ```
@@ -172,10 +174,11 @@ const handleCardSelection = (selected: SelectableItem) => {
 #### **Acceptance Criteria**
 
 - ✅ Navigates immediately on card selection
-- ✅ Waits 500ms for navigation and render
+- ✅ Waits for navigation and render using `AUTO_SCROLL_CONFIG.timing.profileNavigationDelay`
 - ✅ Scrolls to first prompt if auto-scroll enabled
 - ✅ Uses smooth scroll behavior
 - ✅ Respects user preferences
+- ✅ Uses named constants instead of magic numbers
 
 ---
 

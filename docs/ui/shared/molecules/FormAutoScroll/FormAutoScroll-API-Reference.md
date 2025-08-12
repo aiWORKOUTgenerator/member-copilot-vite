@@ -465,6 +465,72 @@ const handleFieldSelection = useCallback(
 );
 ```
 
+## ⚙️ **Configuration**
+
+### **AUTO_SCROLL_CONFIG**
+
+Global configuration for auto-scroll timing and behavior.
+
+```typescript
+import { AUTO_SCROLL_CONFIG } from '@/config/autoScroll';
+
+export const AUTO_SCROLL_CONFIG = {
+  /** Default delay before scrolling (ms) */
+  defaultDelay: 1200,
+  /** Default scroll behavior */
+  defaultBehavior: 'smooth' as ScrollBehavior,
+  /** Toast notification duration (ms) */
+  toastDuration: 1800,
+  /** Enable auto-scroll by default */
+  enabledByDefault: true,
+  /** Local storage key for user preferences */
+  storageKey: 'auto-scroll-preferences',
+  /** Timing constants for auto-scroll operations */
+  timing: {
+    /** Initial delay before auto-scroll check (ms) */
+    initialDelay: 100,
+    /** Step-to-step advancement delay (ms) */
+    stepAdvanceDelay: 800,
+    /** Delay before scrolling to new step content (ms) */
+    stepScrollDelay: 100,
+    /** Delay for profile navigation auto-scroll (ms) */
+    profileNavigationDelay: 500,
+  },
+} as const;
+```
+
+#### **Usage Examples**
+
+```typescript
+// Use profile navigation delay
+setTimeout(() => {
+  // Scroll logic
+}, AUTO_SCROLL_CONFIG.timing.profileNavigationDelay);
+
+// Use step advancement delay
+setTimeout(() => {
+  // Step transition logic
+}, AUTO_SCROLL_CONFIG.timing.stepAdvanceDelay);
+
+// Use custom timing with overrides
+const { scheduleAutoScrollSequence } = useAutoScrollTiming({
+  timing: {
+    initialDelay: AUTO_SCROLL_CONFIG.timing.initialDelay,
+    stepAdvanceDelay: AUTO_SCROLL_CONFIG.timing.stepAdvanceDelay,
+    stepScrollDelay: AUTO_SCROLL_CONFIG.timing.stepScrollDelay,
+  },
+});
+```
+
+#### **Best Practices**
+
+- **Use Named Constants**: Always use `AUTO_SCROLL_CONFIG.timing.*` instead of magic numbers
+- **Consistent Timing**: Use the same timing constants across similar use cases
+- **Documentation**: Add comments explaining timing choices
+- **Maintainability**: Centralize timing configuration for easy adjustment
+
+---
+
 ## 🔍 **Troubleshooting**
 
 ### **Common Issues**
