@@ -1,6 +1,8 @@
-import React from 'react';
+import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import React from 'react';
 import { ProgressBar } from '../ProgressBar';
+import '@testing-library/jest-dom';
 
 describe('ProgressBar', () => {
   it('renders with basic props', () => {
