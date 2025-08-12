@@ -34,7 +34,7 @@ export const CheckboxCardGroup: React.FC<CheckboxCardGroupProps> = ({
   onChange,
   disabled = false,
   gridCols = 3,
-  colorScheme = 'accent',
+  colorScheme = 'primary',
   selectedBadgeContent = 'Selected',
 }) => {
   // Transform choices into SelectableItem format for RadioGroupOfCards
