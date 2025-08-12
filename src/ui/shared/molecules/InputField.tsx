@@ -10,6 +10,7 @@ import { ValidationMessage } from '../atoms/ValidationMessage';
 // Constants for textarea decision logic
 const PLACEHOLDER_LENGTH_THRESHOLD = 50;
 const VALUE_LENGTH_THRESHOLD = 100;
+const LONG_ANSWER_KEYWORDS = ['describe', 'explain', 'detail', 'tell us about'];
 
 interface InputFieldProps {
   id: string;
@@ -44,10 +45,9 @@ export const InputField: React.FC<InputFieldProps> = ({
           (placeholder && placeholder.length > PLACEHOLDER_LENGTH_THRESHOLD) || // Long placeholder suggests longer input
           String(value).length > VALUE_LENGTH_THRESHOLD || // Current value is long
           (placeholder &&
-            (placeholder.toLowerCase().includes('describe') ||
-              placeholder.toLowerCase().includes('explain') ||
-              placeholder.toLowerCase().includes('detail') ||
-              placeholder.toLowerCase().includes('tell us about'))); // Placeholder suggests longer response
+            LONG_ANSWER_KEYWORDS.some((keyword) =>
+              placeholder.toLowerCase().includes(keyword.toLowerCase())
+            )); // Placeholder suggests longer response
 
         return useTextArea ? (
           <TextArea
