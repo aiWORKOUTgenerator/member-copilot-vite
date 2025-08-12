@@ -93,19 +93,6 @@ export default function GenerateWorkoutPage() {
       }
     });
 
-    // Log the conversion for debugging (only in development)
-    if (import.meta.env.DEV) {
-      console.log('Converting workout options to strings:', {
-        original: options,
-        converted: stringOptions,
-        mode: activeTab,
-        hasGoal: !!options.customization_goal,
-        hasEnergy: !!options.customization_energy,
-        hasDuration: !!options.customization_duration,
-        hasEquipment: !!options.customization_equipment,
-      });
-    }
-
     return stringOptions;
   };
 
@@ -136,9 +123,6 @@ export default function GenerateWorkoutPage() {
             combinedParams,
             '' // No prompt for quick workout
           );
-
-          console.log('Generated workout:', response);
-          console.log('Submitted customization options:', stringOptions);
 
           // Redirect to the generated workout page
           navigate(`/dashboard/workouts/${response.id}`);
@@ -174,9 +158,6 @@ export default function GenerateWorkoutPage() {
           combinedParams,
           workoutPrompt
         );
-
-        console.log('Generated workout:', response);
-        console.log('Submitted customization options:', stringOptions);
 
         // Redirect to the generated workout page
         navigate(`/dashboard/workouts/${response.id}`);
