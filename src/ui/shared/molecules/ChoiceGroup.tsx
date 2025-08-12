@@ -42,7 +42,7 @@ export const ChoiceGroup: React.FC<ChoiceGroupProps> = ({
   isValid = true,
   validationMessage,
   disabled = false,
-  colorScheme = 'accent',
+  colorScheme = 'primary',
 }) => {
   const [otherValue, setOtherValue] = useState('');
   const isOtherSelected = selectedValues.includes('other');
