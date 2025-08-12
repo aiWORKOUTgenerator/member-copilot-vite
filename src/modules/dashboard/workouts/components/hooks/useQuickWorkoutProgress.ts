@@ -24,13 +24,13 @@ export const useQuickWorkoutProgress = (
 ): QuickWorkoutProgressReturn => {
   return useMemo(() => {
     // Focus & Energy step fields
-    const focusEnergyFields = [
+    const focusEnergyFields: (keyof PerWorkoutOptions)[] = [
       CUSTOMIZATION_FIELD_KEYS.FOCUS,
       CUSTOMIZATION_FIELD_KEYS.ENERGY,
     ];
 
     // Duration & Equipment step fields
-    const durationEquipmentFields = [
+    const durationEquipmentFields: (keyof PerWorkoutOptions)[] = [
       CUSTOMIZATION_FIELD_KEYS.DURATION,
       CUSTOMIZATION_FIELD_KEYS.EQUIPMENT,
     ];
