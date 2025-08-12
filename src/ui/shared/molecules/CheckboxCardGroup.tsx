@@ -45,8 +45,8 @@ export const CheckboxCardGroup: React.FC<CheckboxCardGroupProps> = ({
     ) : undefined,
   }));
 
-  // Find currently selected items
-  const selectedItems = items.filter((item) =>
+  // Find currently selected items - always an array for multiple selection
+  const selectedItems: typeof items = items.filter((item) =>
     selectedValues.includes(item.title)
   );
 
