@@ -32,6 +32,12 @@
   --spacing-label-lg: 1rem; /* 16px */
 }
 
+/* Prevent iOS Safari text autosizing that can cause tall rows */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 /* Mobile-specific base styles */
 html,
 body {

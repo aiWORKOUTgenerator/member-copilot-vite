@@ -59,10 +59,9 @@ export default function WorkoutList({
     return (
       <li
         key={workout.id}
-        className={`list-row p-2 transition-colors rounded-lg my-1 border border-base-300 relative cursor-pointer ${
+        className={`p-0 transition-colors rounded-lg my-1 border border-base-300 relative ${
           isRestricted ? 'opacity-60 hover:opacity-80' : 'hover:bg-base-200'
         }`}
-        onClick={handleClick}
       >
         {/* Overlay for restricted workouts */}
         {isRestricted && (
@@ -74,35 +73,41 @@ export default function WorkoutList({
           </div>
         )}
 
-        <div className="flex-shrink-0 flex flex-col items-center justify-center bg-base-200 rounded-md p-2 mr-3">
-          <span className="text-lg font-semibold text-primary tabular-nums p-2">
-            {formattedDate}
-          </span>
-        </div>
-        <div className="list-col-grow min-w-0">
-          <div className="py-1 overflow-hidden flex items-center h-full">
-            <p className="line-clamp-2 text-ellipsis">
-              {workout.jsonFormat?.title ||
-                getFirstWords(workout.textFormat, 20)}
-            </p>
+        <button
+          type="button"
+          onClick={handleClick}
+          className="flex w-full items-center gap-3 p-2 cursor-pointer text-left"
+        >
+          <div className="flex-shrink-0 flex flex-col items-center justify-center bg-base-200 rounded-md p-2">
+            <span className="text-lg leading-none font-semibold text-primary tabular-nums p-2">
+              {formattedDate}
+            </span>
           </div>
-        </div>
-        <div className="flex-shrink-0 flex items-center justify-center ml-2">
-          <div className="btn btn-circle btn-ghost btn-sm">
-            {isRestricted ? (
-              <Lock className="w-4 h-4 text-warning" />
-            ) : (
-              <ArrowBigRight className="w-4 h-4 text-primary" />
-            )}
+          <div className="flex-1 min-w-0">
+            <div className="py-1 overflow-hidden flex items-center h-full min-h-0">
+              <p className="line-clamp-2 text-ellipsis break-words leading-snug">
+                {workout.jsonFormat?.title ||
+                  getFirstWords(workout.textFormat, 20)}
+              </p>
+            </div>
           </div>
-        </div>
+          <div className="flex-shrink-0 flex items-center justify-center ml-2 leading-none">
+            <div className="btn btn-circle btn-ghost btn-sm leading-none">
+              {isRestricted ? (
+                <Lock className="w-4 h-4 text-warning block" />
+              ) : (
+                <ArrowBigRight className="w-4 h-4 text-primary block" />
+              )}
+            </div>
+          </div>
+        </button>
       </li>
     );
   };
 
   return (
     <div>
-      <ul className="list bg-base-100">
+      <ul className="bg-base-100">
         <li className="p-3 pb-1 text-xs opacity-60 tracking-wide">{title}</li>
 
         {/* Render accessible workouts */}

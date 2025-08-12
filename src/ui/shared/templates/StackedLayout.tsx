@@ -157,7 +157,7 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
   };
 
   return (
-    <div className="min-h-full bg-base-300 w-full max-w-full overflow-x-hidden">
+    <div className="min-h-full bg-base-300 w-full max-w-full overflow-x-hidden [text-size-adjust:100%] [-webkit-text-size-adjust:100%]">
       <div className="bg-primary pb-12 sm:pb-32 w-full">
         <div className="navbar border-b border-secondary-focus/25 bg-primary w-full">
           <div className="navbar-start">
@@ -224,7 +224,10 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
 
             {/* Mobile menu dropdown */}
             <div className="dropdown dropdown-end lg:hidden">
-              <label tabIndex={0} className="btn text-white">
+              <label
+                tabIndex={0}
+                className="btn btn-ghost hover:btn-secondary text-white"
+              >
                 <MenuIcon className="h-6 w-6" />
               </label>
               <ul

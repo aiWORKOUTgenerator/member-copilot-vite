@@ -18,7 +18,6 @@ export * from './molecules/AuthMethodCard';
 export * from './molecules/PageLoading';
 export * from './molecules/FormLoading';
 export * from './molecules/InfoCard';
-export * from './molecules/UserDropdown';
 export * from './molecules/SignOutButton';
 export * from './molecules/TrainerPersonaCard';
 export * from './molecules/ErrorBoundary';
