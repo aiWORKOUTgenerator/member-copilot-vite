@@ -5,6 +5,7 @@ import { RadioChoice } from '../atoms/RadioChoice';
 import { CheckboxChoice } from '../atoms/CheckboxChoice';
 import { ValidationMessage } from '../atoms/ValidationMessage';
 import { TextInput } from '../atoms/TextInput';
+import { CheckboxCardGroup } from './CheckboxCardGroup';
 import { Choice } from '@/domain/entities';
 
 interface ChoiceGroupProps {
@@ -58,71 +59,79 @@ export const ChoiceGroup: React.FC<ChoiceGroupProps> = ({
   };
 
   return (
-    <div className="space-y-2">
-      <div className="space-y-1">
-        {choices.map((choice) => (
-          <div key={choice.id}>
-            {allowMultiple ? (
-              <CheckboxChoice
-                id={`${id}-${choice.id}`}
-                value={choice.text}
-                label={choice.text}
-                checked={selectedValues.includes(choice.text)}
-                onChange={handleMultipleChange}
-                disabled={disabled}
-              />
-            ) : (
-              <RadioChoice
-                id={`${id}-${choice.id}`}
-                name={name}
-                value={choice.text}
-                label={choice.text}
-                checked={selectedValues.includes(choice.text)}
-                onChange={handleSingleChange}
-                disabled={disabled}
-              />
-            )}
-          </div>
-        ))}
-
-        {otherChoiceEnabled && (
-          <div>
-            {allowMultiple ? (
-              <CheckboxChoice
-                id={`${id}-other`}
-                value="other"
-                label={otherChoiceText}
-                checked={isOtherSelected}
-                onChange={handleMultipleChange}
-                disabled={disabled}
-              />
-            ) : (
-              <RadioChoice
-                id={`${id}-other`}
-                name={name}
-                value="other"
-                label={otherChoiceText}
-                checked={isOtherSelected}
-                onChange={handleSingleChange}
-                disabled={disabled}
-              />
-            )}
-
-            {isOtherSelected && (
-              <div className="ml-8 mt-2">
-                <TextInput
-                  id={`${id}-other-input`}
-                  value={otherValue}
-                  onChange={handleOtherInputChange}
-                  placeholder="Please specify"
-                  isValid={isValid}
-                  disabled={disabled}
-                />
+    <div className="space-y-4">
+      {/* Modern card-based selection for main choices */}
+      {allowMultiple ? (
+        <CheckboxCardGroup
+          choices={choices}
+          selectedValues={selectedValues.filter((v) => v !== 'other')}
+          onChange={(values) => {
+            // Preserve 'other' selection if it exists
+            const newValues = isOtherSelected ? [...values, 'other'] : values;
+            onChange(newValues);
+          }}
+          disabled={disabled}
+          gridCols={3}
+          colorScheme="accent"
+        />
+      ) : (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {choices.map((choice) => (
+            <div
+              key={choice.id}
+              className={`card cursor-pointer transition-all duration-200 hover:shadow-md hover:scale-[1.02] ${
+                selectedValues.includes(choice.text)
+                  ? 'bg-primary text-primary-content border-primary border-2 shadow-sm'
+                  : 'bg-base-100 border-base-300 border hover:border-base-400'
+              }`}
+              onClick={() => handleSingleChange(choice.text)}
+            >
+              <div className="card-body p-4">
+                <h3 className="card-title text-base">{choice.text}</h3>
               </div>
-            )}
-          </div>
-        )}
-      </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Other choice option - keep existing implementation for now */}
+      {otherChoiceEnabled && (
+        <div className="space-y-2">
+          {allowMultiple ? (
+            <CheckboxChoice
+              id={`${id}-other`}
+              value="other"
+              label={otherChoiceText}
+              checked={isOtherSelected}
+              onChange={handleMultipleChange}
+              disabled={disabled}
+            />
+          ) : (
+            <RadioChoice
+              id={`${id}-other`}
+              name={name}
+              value="other"
+              label={otherChoiceText}
+              checked={isOtherSelected}
+              onChange={handleSingleChange}
+              disabled={disabled}
+            />
+          )}
+
+          {isOtherSelected && (
+            <div className="ml-8 mt-2">
+              <TextInput
+                id={`${id}-other-input`}
+                value={otherValue}
+                onChange={handleOtherInputChange}
+                placeholder="Please specify"
+                isValid={isValid}
+                disabled={disabled}
+              />
+            </div>
+          )}
+        </div>
+      )}
 
       <ValidationMessage message={validationMessage} isValid={isValid} />
     </div>

@@ -1,4 +1,5 @@
 export * from './TextInput';
+export * from './TextArea';
 export * from './NumberInput';
 export * from './DateInput';
 export * from './EmailInput';
