@@ -7,6 +7,10 @@ import { TextInput } from '../atoms/TextInput';
 import { TextArea } from '../atoms/TextArea';
 import { ValidationMessage } from '../atoms/ValidationMessage';
 
+// Constants for textarea decision logic
+const PLACEHOLDER_LENGTH_THRESHOLD = 50;
+const VALUE_LENGTH_THRESHOLD = 100;
+
 interface InputFieldProps {
   id: string;
   type: PromptType;
@@ -37,8 +41,8 @@ export const InputField: React.FC<InputFieldProps> = ({
       case PromptType.TEXT: {
         // Use textarea for longer text or hints that suggest longer content
         const useTextArea =
-          (placeholder && placeholder.length > 50) || // Long placeholder suggests longer input
-          String(value).length > 100 || // Current value is long
+          (placeholder && placeholder.length > PLACEHOLDER_LENGTH_THRESHOLD) || // Long placeholder suggests longer input
+          String(value).length > VALUE_LENGTH_THRESHOLD || // Current value is long
           (placeholder &&
             (placeholder.toLowerCase().includes('describe') ||
               placeholder.toLowerCase().includes('explain') ||
