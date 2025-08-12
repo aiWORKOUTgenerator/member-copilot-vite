@@ -9,6 +9,7 @@ import {
   RadioGroupOfCards,
   SelectableItem,
 } from '@/ui/shared/molecules/RadioGroupOfCards';
+import { SimpleDetailedViewSelector } from '@/ui/shared/molecules/SimpleDetailedViewSelector';
 import { useEffect, useMemo, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
 import { useAnalytics } from '@/hooks/useAnalytics';
@@ -25,6 +26,7 @@ export default function TrainingProfileLayout() {
   const [defaultSelected, setDefaultSelected] = useState<
     SelectableItem | undefined
   >(undefined);
+  const [viewMode, setViewMode] = useState<'simple' | 'detailed'>('detailed');
 
   // Get contact and prompts data
   const contact = useContactData();
@@ -80,88 +82,135 @@ export default function TrainingProfileLayout() {
     });
   }, [analytics]);
 
+  // Handle view mode changes with analytics tracking
+  const handleViewModeChange = (newViewMode: 'simple' | 'detailed') => {
+    setViewMode(newViewMode);
+
+    // Track view mode changes
+    analytics.track('Profile View Mode Changed', {
+      viewMode: newViewMode,
+      tracked_at: new Date().toISOString(),
+    });
+  };
+
+  // Helper function to create attribute type items based on view mode
+  const createAttributeTypeItems = (showDetailed: boolean) => {
+    return attributeTypes.map((attributeType) => {
+      const completion = attributeCompletions.find(
+        (c) => c.attributeType.id === attributeType.id
+      );
+
+      return {
+        id: attributeType.id,
+        title: attributeType.name,
+        description: showDetailed ? attributeType.description || '' : '',
+        tertiary: completion ? (
+          showDetailed ? (
+            // Detailed view: Full progress bar
+            <div className="flex flex-col gap-2">
+              <div className="flex justify-between mb-1">
+                <span className="text-xs">
+                  {completion.completedPrompts}/{completion.totalPrompts}{' '}
+                  complete
+                </span>
+                <span className="text-xs">{completion.percentComplete}%</span>
+              </div>
+              <progress
+                className={`progress ${
+                  completion.percentComplete === 100
+                    ? 'progress-success'
+                    : completion.hasProvidedValue
+                      ? 'progress-primary'
+                      : 'progress-secondary'
+                }`}
+                value={completion.percentComplete}
+                max="100"
+              />
+            </div>
+          ) : (
+            // Simple view: Just percentage
+            <div className="text-xs text-base-content/70">
+              {completion.percentComplete}% complete
+            </div>
+          )
+        ) : null,
+      } as SelectableItem;
+    });
+  };
+
   // User is authenticated, show Training Profile page
   return (
     <div className="p-4 space-y-4">
-      <h2 className="text-2xl font-bold">Training Profile</h2>
-      <p className="text-sm text-base-content/70">
-        Provide information about your fitness goals, injuries, preferences, and
-        other details that will help the AI generate better workouts for you.
-      </p>
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
+        <div className="flex-1">
+          <h2 className="text-2xl font-bold">Training Profile</h2>
+          <p className="text-sm text-base-content/70">
+            Provide information about your fitness goals, injuries, preferences,
+            and other details that will help the AI generate better workouts for
+            you.
+          </p>
+        </div>
+
+        {/* View Mode Toggle - Responsive positioning */}
+        <div className="flex justify-center sm:justify-end">
+          <SimpleDetailedViewSelector
+            value={viewMode}
+            onChange={handleViewModeChange}
+            size="sm"
+            labels={{ simple: 'Simple', detailed: 'Detailed' }}
+          />
+        </div>
+      </div>
 
       {isAttributeTypesLoading ? (
         <div className="flex justify-center my-8">
           <span className="loading loading-spinner loading-lg"></span>
         </div>
       ) : (
-        <RadioGroupOfCards
-          items={attributeTypes.map((attributeType) => {
-            // Find completion info for this attribute type
-            const completion = attributeCompletions.find(
-              (c) => c.attributeType.id === attributeType.id
-            );
+        <div
+          className={`transition-all duration-200 ${
+            isAttributeTypesLoading ? 'opacity-50' : 'opacity-100'
+          }`}
+        >
+          <RadioGroupOfCards
+            items={createAttributeTypeItems(viewMode === 'detailed')}
+            selected={defaultSelected}
+            onChange={(selected: SelectableItem | SelectableItem[]) => {
+              if (!Array.isArray(selected)) {
+                // Track card selection for analytics
+                analytics.track('Profile Attribute Card Selected', {
+                  attributeTypeId: selected.id,
+                  attributeTypeName: selected.title,
+                  viewMode: viewMode,
+                  autoScrollEnabled,
+                });
 
-            return {
-              id: attributeType.id,
-              title: attributeType.name,
-              description: attributeType.description || '',
-              tertiary: completion ? (
-                <div className="flex flex-col g">
-                  <div className="flex justify-between mb-1">
-                    <span className="text-xs">
-                      {completion.completedPrompts}/{completion.totalPrompts}{' '}
-                      complete
-                    </span>
-                    <span className="text-xs">
-                      {completion.percentComplete}%
-                    </span>
-                  </div>
-                  <progress
-                    className={`progress ${
-                      completion.percentComplete === 100
-                        ? 'progress-success'
-                        : completion.hasProvidedValue
-                          ? 'progress-primary'
-                          : 'progress-secondary'
-                    }`}
-                    value={completion.percentComplete}
-                    max="100"
-                  ></progress>
-                </div>
-              ) : null,
-            } as SelectableItem;
-          })}
-          selected={defaultSelected}
-          onChange={(selected: SelectableItem | SelectableItem[]) => {
-            if (!Array.isArray(selected)) {
-              // Track card selection for analytics
-              analytics.track('Profile Attribute Card Selected', {
-                attributeTypeId: selected.id,
-                attributeTypeName: selected.title,
-                autoScrollEnabled,
-              });
+                // Navigate immediately
+                const targetPath = `/dashboard/profile/${selected.id}`;
+                navigate(targetPath);
 
-              // Navigate immediately
-              const targetPath = `/dashboard/profile/${selected.id}`;
-              navigate(targetPath);
-
-              // Simple auto-scroll after navigation
-              if (autoScrollEnabled) {
-                setTimeout(() => {
-                  const firstPrompt = document.querySelector(
-                    '[data-scroll-target="first-prompt"]'
-                  );
-                  if (firstPrompt) {
-                    firstPrompt.scrollIntoView({
-                      behavior: 'smooth',
-                      block: 'start',
-                    });
-                  }
-                }, AUTO_SCROLL_CONFIG.timing.profileNavigationDelay); // Wait for navigation and render
+                // Simple auto-scroll after navigation
+                if (autoScrollEnabled) {
+                  setTimeout(() => {
+                    const firstPrompt = document.querySelector(
+                      '[data-scroll-target="first-prompt"]'
+                    );
+                    if (firstPrompt) {
+                      firstPrompt.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start',
+                      });
+                    }
+                  }, AUTO_SCROLL_CONFIG.timing.profileNavigationDelay); // Wait for navigation and render
+                }
               }
-            }
-          }}
-        />
+            }}
+            showDescription={viewMode === 'detailed'}
+            showTertiary={true}
+            gridCols={3}
+            colorScheme="primary"
+          />
+        </div>
       )}
       <div>
         <Outlet />
