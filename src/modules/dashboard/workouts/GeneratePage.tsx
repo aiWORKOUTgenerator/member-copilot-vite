@@ -8,7 +8,6 @@ import { useAnalytics } from '@/hooks/useAnalytics';
 import { ButtonStateLogic } from './selectionCountingLogic';
 import { useSelectionSummary } from './hooks/useSelectionSummary';
 import { SelectionSummary } from '@/ui/shared/molecules';
-import { useAuth } from '@/hooks/auth';
 
 // 15 workout prompt examples
 const WORKOUT_PROMPTS = [
@@ -35,19 +34,6 @@ const WORKOUT_PROMPTS = [
 ];
 
 export default function GenerateWorkoutPage() {
-  const { isSignedIn, isLoaded } = useAuth();
-
-  // Add authentication debugging
-  useEffect(() => {
-    console.log('🔐 Authentication Status:', { isSignedIn, isLoaded });
-
-    if (isLoaded && !isSignedIn) {
-      console.error('❌ User is not authenticated!');
-    } else if (isLoaded && isSignedIn) {
-      console.log('✅ User is authenticated');
-    }
-  }, [isSignedIn, isLoaded]);
-
   const [activeTab, setActiveTab] = useState<'quick' | 'detailed'>('quick');
   const [activeQuickStep, setActiveQuickStep] = useState<
     'focus-energy' | 'duration-equipment'
@@ -107,33 +93,11 @@ export default function GenerateWorkoutPage() {
       }
     });
 
-    // Log the conversion for debugging (only in development)
-    if (import.meta.env.DEV) {
-      console.log('Converting workout options to strings:', {
-        original: options,
-        converted: stringOptions,
-        mode: activeTab,
-        hasGoal: !!options.customization_goal,
-        hasEnergy: !!options.customization_energy,
-        hasDuration: !!options.customization_duration,
-        hasEquipment: !!options.customization_equipment,
-      });
-    }
-
     return stringOptions;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Add authentication check before API call
-    if (!isSignedIn) {
-      console.error('❌ Cannot generate workout: User not authenticated');
-      alert('Please log in to generate a workout');
-      return;
-    }
-
-    console.log('🚀 Starting workout generation...');
 
     // For quick workout, handle step navigation
     if (activeTab === 'quick') {
@@ -159,9 +123,6 @@ export default function GenerateWorkoutPage() {
             combinedParams,
             '' // No prompt for quick workout
           );
-
-          console.log('Generated workout:', response);
-          console.log('Submitted customization options:', stringOptions);
 
           // Redirect to the generated workout page
           navigate(`/dashboard/workouts/${response.id}`);
@@ -197,9 +158,6 @@ export default function GenerateWorkoutPage() {
           combinedParams,
           workoutPrompt
         );
-
-        console.log('Generated workout:', response);
-        console.log('Submitted customization options:', stringOptions);
 
         // Redirect to the generated workout page
         navigate(`/dashboard/workouts/${response.id}`);

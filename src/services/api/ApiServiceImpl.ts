@@ -58,12 +58,7 @@ export class ApiServiceImpl implements ApiService {
       const token = await this.tokenProvider.getToken();
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
-        console.log('🔑 JWT Token included in request');
-      } else {
-        console.error('❌ No JWT token available from token provider');
       }
-    } else {
-      console.error('❌ No token provider configured');
     }
 
     return headers;
