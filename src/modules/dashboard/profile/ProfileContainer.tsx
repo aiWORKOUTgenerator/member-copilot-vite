@@ -133,8 +133,6 @@ export default function TrainingProfileLayout() {
           selected={defaultSelected}
           onChange={(selected: SelectableItem | SelectableItem[]) => {
             if (!Array.isArray(selected)) {
-              console.log('🚀 NAVIGATING TO:', selected.id);
-
               // Track card selection for analytics
               analytics.track('Profile Attribute Card Selected', {
                 attributeTypeId: selected.id,
@@ -153,13 +151,10 @@ export default function TrainingProfileLayout() {
                     '[data-scroll-target="first-prompt"]'
                   );
                   if (firstPrompt) {
-                    console.log('🎯 SCROLLING TO FIRST PROMPT');
                     firstPrompt.scrollIntoView({
                       behavior: 'smooth',
                       block: 'start',
                     });
-                  } else {
-                    console.log('❌ First prompt not found');
                   }
                 }, 500); // Wait for navigation and render
               }

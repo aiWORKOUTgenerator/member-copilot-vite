@@ -49,10 +49,12 @@ const { enabled: autoScrollEnabled } = useAutoScrollPreferences();
 
 const handleNavigation = (selected: SelectableItem) => {
   navigate(`/page/${selected.id}`);
-  
+
   if (autoScrollEnabled) {
     setTimeout(() => {
-      const target = document.querySelector('[data-scroll-target="first-prompt"]');
+      const target = document.querySelector(
+        '[data-scroll-target="first-prompt"]'
+      );
       if (target) {
         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
@@ -85,35 +87,43 @@ useAutoScrollPreferences (Atom)
 ## 🎯 **Implementation Patterns**
 
 ### **Pattern 1: Multi-Step Form Auto-Scroll**
+
 **Use for:** Complex forms with multiple steps and field-to-field navigation
 
 ### **Pattern 2: Navigation-Triggered Scroll**
+
 **Use for:** Simple navigation between pages or sections
 
 ### **Pattern 3: Conditional Auto-Scroll**
+
 **Use for:** Auto-scroll that only works in certain conditions
 
 ### **Pattern 4: Custom Timing Configuration**
+
 **Use for:** Forms that need specific timing for auto-scroll sequences
 
 ## 🔧 **Key Features**
 
 ### **Universal Pattern**
+
 - Works across all form types and use cases
 - Consistent behavior and timing
 - Easy to implement and maintain
 
 ### **Developer Friendly**
+
 - Clean APIs with sensible defaults
 - Full TypeScript support
 - Comprehensive error handling
 
 ### **Accessible**
+
 - Respects user preferences
 - Works with screen readers
 - Keyboard navigation support
 
 ### **Stable**
+
 - Zero breaking changes
 - Backward compatible
 - Comprehensive testing
@@ -121,6 +131,7 @@ useAutoScrollPreferences (Atom)
 ## 📊 **Quality Assurance**
 
 ### **Verification Results**
+
 - ✅ **TypeScript**: No compilation errors
 - ✅ **ESLint**: No new warnings introduced
 - ✅ **Tests**: 248 tests passed
@@ -129,6 +140,7 @@ useAutoScrollPreferences (Atom)
 - ✅ **Coverage**: >90% on new components
 
 ### **Performance Impact**
+
 - **Bundle Size**: <2KB additional
 - **Runtime**: No performance degradation
 - **Memory**: Efficient state management
@@ -170,6 +182,7 @@ The FormAutoScroll system is production-ready with:
 ## 🔮 **Future Enhancements**
 
 ### **Planned Features**
+
 - Animation support for scroll transitions
 - Scroll history and back navigation
 - Global auto-scroll configuration
@@ -177,6 +190,7 @@ The FormAutoScroll system is production-ready with:
 - Performance monitoring and analytics
 
 ### **Integration Opportunities**
+
 - Other form components
 - Dashboard views
 - User preferences

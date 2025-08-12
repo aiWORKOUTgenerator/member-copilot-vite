@@ -83,16 +83,16 @@ For convenience, we provide:
 
 ## Decision Matrix
 
-| Scenario                              | Recommended Pattern                             | Reasoning                                     |
-| ------------------------------------- | ----------------------------------------------- | --------------------------------------------- |
-| Multi-step form with field navigation | `useFormAutoScroll`                             | Handles complex form progression automatically |
-| Simple navigation between pages       | Navigation-Triggered Scroll                     | Simple, direct approach with immediate navigation |
-| User preference control               | Conditional Auto-Scroll                         | Respects user choices and accessibility needs |
-| Complex timing requirements           | Custom Timing Configuration                     | Provides precise control over scroll timing |
-| Mobile-specific behavior              | Custom Scroll Behavior                          | Optimized for mobile interaction patterns |
-| Quick selection workflows             | Navigation-Triggered Scroll                     | Prioritizes speed and immediate feedback |
-| Training/onboarding flows             | `useFormAutoScroll`                             | Provides guided progression through steps |
-| Mixed requirements                    | Conditional Auto-Scroll with custom timing     | Combines multiple patterns for complex needs |
+| Scenario                              | Recommended Pattern                        | Reasoning                                         |
+| ------------------------------------- | ------------------------------------------ | ------------------------------------------------- |
+| Multi-step form with field navigation | `useFormAutoScroll`                        | Handles complex form progression automatically    |
+| Simple navigation between pages       | Navigation-Triggered Scroll                | Simple, direct approach with immediate navigation |
+| User preference control               | Conditional Auto-Scroll                    | Respects user choices and accessibility needs     |
+| Complex timing requirements           | Custom Timing Configuration                | Provides precise control over scroll timing       |
+| Mobile-specific behavior              | Custom Scroll Behavior                     | Optimized for mobile interaction patterns         |
+| Quick selection workflows             | Navigation-Triggered Scroll                | Prioritizes speed and immediate feedback          |
+| Training/onboarding flows             | `useFormAutoScroll`                        | Provides guided progression through steps         |
+| Mixed requirements                    | Conditional Auto-Scroll with custom timing | Combines multiple patterns for complex needs      |
 
 ## Performance Considerations
 
@@ -172,7 +172,7 @@ function WorkoutCustomization() {
               onChange={(value) => handleFieldSelection('focus', value, formData, setFormData)}
             />
           </div>
-          
+
           <div ref={(el) => registerScrollTarget('energy-question', el)}>
             <h3>What's your energy level?</h3>
             <DetailedSelector
@@ -183,7 +183,7 @@ function WorkoutCustomization() {
           </div>
         </>
       )}
-      
+
       {currentStep === 'duration-equipment' && (
         <>
           <div ref={(el) => registerScrollTarget('duration-question', el)}>
@@ -194,7 +194,7 @@ function WorkoutCustomization() {
               onChange={(value) => handleFieldSelection('duration', value, formData, setFormData)}
             />
           </div>
-          
+
           <div ref={(el) => registerScrollTarget('equipment-question', el)}>
             <h3>What equipment do you have?</h3>
             <DetailedSelector
@@ -229,7 +229,7 @@ function ProfileContainer() {
     });
 
     navigate(`/dashboard/profile/${selected.id}`);
-    
+
     if (autoScrollEnabled) {
       setTimeout(() => {
         const firstPrompt = document.querySelector('[data-scroll-target="first-prompt"]');
@@ -275,7 +275,7 @@ function ConditionalAutoScroll() {
         onChange={setMode}
         labels={{ quick: 'Quick', detailed: 'Detailed' }}
       />
-      
+
       {mode === 'quick' ? (
         // Auto-scroll enabled
         <div ref={(el) => registerScrollTarget('field1', el)}>
@@ -303,14 +303,14 @@ const { registerScrollTarget, handleFieldSelection } = useFormAutoScroll({
   setCurrentStep: setCurrentStep,
   isStepComplete: (stepId, data) => isStepComplete(stepId, data),
   timing: {
-    initialDelay: 200,      // Wait longer for complex forms
+    initialDelay: 200, // Wait longer for complex forms
     stepAdvanceDelay: 1000, // Longer delay for step transitions
-    stepScrollDelay: 200    // Longer scroll delay
+    stepScrollDelay: 200, // Longer scroll delay
   },
   scrollBehavior: {
-    block: 'center',    // Center the element
-    inline: 'nearest'   // Minimal horizontal scroll
-  }
+    block: 'center', // Center the element
+    inline: 'nearest', // Minimal horizontal scroll
+  },
 });
 ```
 
@@ -321,8 +321,8 @@ const { registerScrollTarget, handleFieldSelection } = useFormAutoScroll({
 ```typescript
 // Before (manual implementation)
 const handleSelection = (value: string) => {
-  setFormData(prev => ({ ...prev, field: value }));
-  
+  setFormData((prev) => ({ ...prev, field: value }));
+
   setTimeout(() => {
     const nextField = document.querySelector('.next-field');
     if (nextField) {
@@ -345,11 +345,11 @@ const handleSelection = (value: string) => {
 // Before (existing form)
 function ExistingForm() {
   const [formData, setFormData] = useState({});
-  
+
   const handleChange = (field: string, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
-  
+
   return (
     <div>
       <input onChange={(e) => handleChange('field1', e.target.value)} />
@@ -361,7 +361,7 @@ function ExistingForm() {
 // After (with auto-scroll)
 function EnhancedForm() {
   const [formData, setFormData] = useState({});
-  
+
   const { registerScrollTarget, handleFieldSelection } = useFormAutoScroll({
     formId: 'enhanced-form',
     steps: [{ id: 'step1', label: 'Step 1', fields: ['field1', 'field2'] }],
@@ -369,7 +369,7 @@ function EnhancedForm() {
     setCurrentStep: () => {},
     isStepComplete: () => false
   });
-  
+
   return (
     <div>
       <div ref={(el) => registerScrollTarget('field1', el)}>
@@ -426,7 +426,11 @@ const { registerScrollTarget, handleFieldSelection } = useFormAutoScroll({
   formId: 'quick-setup',
   steps: [
     { id: 'goals', label: 'Goals', fields: ['focus', 'energy'] },
-    { id: 'preferences', label: 'Preferences', fields: ['duration', 'equipment'] }
+    {
+      id: 'preferences',
+      label: 'Preferences',
+      fields: ['duration', 'equipment'],
+    },
   ],
   // ... other config
 });
@@ -459,7 +463,7 @@ const handleMobileSelection = (selected: SelectableItem) => {
 ```typescript
 // Basic functionality without auto-scroll
 const handleBasicChange = (field: string, value: any) => {
-  setFormData(prev => ({ ...prev, [field]: value }));
+  setFormData((prev) => ({ ...prev, [field]: value }));
 };
 
 // Enhanced with auto-scroll when available

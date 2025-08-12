@@ -42,8 +42,16 @@ const [formData, setFormData] = useState({});
 const { registerScrollTarget, handleFieldSelection } = useFormAutoScroll({
   formId: 'workout-customization',
   steps: [
-    { id: 'focus-energy', label: 'Focus & Energy', fields: ['focus', 'energy'] },
-    { id: 'duration-equipment', label: 'Duration & Equipment', fields: ['duration', 'equipment'] }
+    {
+      id: 'focus-energy',
+      label: 'Focus & Energy',
+      fields: ['focus', 'energy'],
+    },
+    {
+      id: 'duration-equipment',
+      label: 'Duration & Equipment',
+      fields: ['duration', 'equipment'],
+    },
   ],
   currentStepId: currentStep,
   setCurrentStep: setCurrentStep,
@@ -51,7 +59,7 @@ const { registerScrollTarget, handleFieldSelection } = useFormAutoScroll({
     if (stepId === 'focus-energy') return data.focus && data.energy;
     if (stepId === 'duration-equipment') return data.duration && data.equipment;
     return false;
-  }
+  },
 });
 ```
 
@@ -127,11 +135,13 @@ const handleCardSelection = (selected: SelectableItem) => {
 
   // Navigate immediately
   navigate(`/dashboard/profile/${selected.id}`);
-  
+
   // Simple auto-scroll after navigation
   if (autoScrollEnabled) {
     setTimeout(() => {
-      const firstPrompt = document.querySelector('[data-scroll-target="first-prompt"]');
+      const firstPrompt = document.querySelector(
+        '[data-scroll-target="first-prompt"]'
+      );
       if (firstPrompt) {
         firstPrompt.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
@@ -186,7 +196,7 @@ const { registerScrollTarget, handleFieldSelection } = useFormAutoScroll({
   setCurrentStep: setCurrentStep,
   isStepComplete: (stepId, data) => isStepComplete(stepId, data),
   // Only enable if in quick mode and auto-scroll is enabled
-  enabled: mode === 'quick' && autoScrollEnabled
+  enabled: mode === 'quick' && autoScrollEnabled,
 });
 ```
 
@@ -231,10 +241,10 @@ const { registerScrollTarget, handleFieldSelection } = useFormAutoScroll({
   setCurrentStep: setCurrentStep,
   isStepComplete: (stepId, data) => isStepComplete(stepId, data),
   timing: {
-    initialDelay: 200,      // Wait longer for complex forms
+    initialDelay: 200, // Wait longer for complex forms
     stepAdvanceDelay: 1000, // Longer delay for step transitions
-    stepScrollDelay: 200    // Longer scroll delay
-  }
+    stepScrollDelay: 200, // Longer scroll delay
+  },
 });
 ```
 
@@ -248,9 +258,9 @@ const { registerScrollTarget, handleFieldSelection } = useFormAutoScroll({
   setCurrentStep: setCurrentStep,
   isStepComplete: (stepId, data) => isStepComplete(stepId, data),
   scrollBehavior: {
-    block: 'center',    // Center the element
-    inline: 'nearest'   // Minimal horizontal scroll
-  }
+    block: 'center', // Center the element
+    inline: 'nearest', // Minimal horizontal scroll
+  },
 });
 ```
 
@@ -303,7 +313,7 @@ function WorkoutCustomization() {
               onChange={(value) => handleFieldSelection('focus', value, formData, setFormData)}
             />
           </div>
-          
+
           <div ref={(el) => registerScrollTarget('energy-question', el)}>
             <h3>What's your energy level?</h3>
             <DetailedSelector
@@ -314,7 +324,7 @@ function WorkoutCustomization() {
           </div>
         </>
       )}
-      
+
       {currentStep === 'duration-equipment' && (
         <>
           <div ref={(el) => registerScrollTarget('duration-question', el)}>
@@ -325,7 +335,7 @@ function WorkoutCustomization() {
               onChange={(value) => handleFieldSelection('duration', value, formData, setFormData)}
             />
           </div>
-          
+
           <div ref={(el) => registerScrollTarget('equipment-question', el)}>
             <h3>What equipment do you have?</h3>
             <DetailedSelector
@@ -360,7 +370,7 @@ function ProfileContainer() {
     });
 
     navigate(`/dashboard/profile/${selected.id}`);
-    
+
     if (autoScrollEnabled) {
       setTimeout(() => {
         const firstPrompt = document.querySelector('[data-scroll-target="first-prompt"]');
@@ -406,7 +416,7 @@ function ConditionalAutoScroll() {
         onChange={setMode}
         labels={{ quick: 'Quick', detailed: 'Detailed' }}
       />
-      
+
       {mode === 'quick' ? (
         // Auto-scroll enabled
         <div ref={(el) => registerScrollTarget('field1', el)}>
@@ -506,22 +516,22 @@ useAutoScrollPreferences (Atom)
 
 ### **When to Use Each Pattern**
 
-| Scenario                    | Recommended Pattern                    | Reasoning                           |
-| --------------------------- | -------------------------------------- | ----------------------------------- |
-| **Multi-step forms**        | `useFormAutoScroll`                    | Handles complex form navigation     |
-| **Simple navigation**       | Navigation-Triggered Scroll            | Simple, direct approach             |
-| **Conditional behavior**    | Conditional Auto-Scroll                | Respects user preferences           |
-| **Custom timing**           | Custom Timing Configuration            | Specific timing requirements        |
-| **Mobile forms**            | Custom Scroll Behavior                 | Mobile-specific scroll behavior     |
+| Scenario                 | Recommended Pattern         | Reasoning                       |
+| ------------------------ | --------------------------- | ------------------------------- |
+| **Multi-step forms**     | `useFormAutoScroll`         | Handles complex form navigation |
+| **Simple navigation**    | Navigation-Triggered Scroll | Simple, direct approach         |
+| **Conditional behavior** | Conditional Auto-Scroll     | Respects user preferences       |
+| **Custom timing**        | Custom Timing Configuration | Specific timing requirements    |
+| **Mobile forms**         | Custom Scroll Behavior      | Mobile-specific scroll behavior |
 
 ### **When to Use Each Hook**
 
-| Use Case                    | Hook                    | Benefits                |
-| --------------------------- | ----------------------- | ----------------------- |
-| **Complex forms**           | `useFormAutoScroll`     | Full form management    |
-| **Simple scroll**           | `useAutoScroll`         | Basic scroll triggering |
-| **Timing coordination**     | `useAutoScrollTiming`   | Complex timing sequences |
-| **User preferences**        | `useAutoScrollPreferences` | User control          |
+| Use Case                | Hook                       | Benefits                 |
+| ----------------------- | -------------------------- | ------------------------ |
+| **Complex forms**       | `useFormAutoScroll`        | Full form management     |
+| **Simple scroll**       | `useAutoScroll`            | Basic scroll triggering  |
+| **Timing coordination** | `useAutoScrollTiming`      | Complex timing sequences |
+| **User preferences**    | `useAutoScrollPreferences` | User control             |
 
 ## 🔮 **Future Enhancements**
 

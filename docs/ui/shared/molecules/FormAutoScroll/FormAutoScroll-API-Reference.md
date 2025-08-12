@@ -133,7 +133,7 @@ export interface AutoScrollReturn {
 const { triggerAutoScroll } = useAutoScroll({
   enabled: true,
   delay: 100,
-  trackingContext: 'WorkoutCustomization'
+  trackingContext: 'WorkoutCustomization',
 });
 
 // Trigger scroll
@@ -179,8 +179,8 @@ const { scheduleAutoScrollSequence } = useAutoScrollTiming({
   timing: {
     initialDelay: 100,
     stepAdvanceDelay: 800,
-    stepScrollDelay: 100
-  }
+    stepScrollDelay: 100,
+  },
 });
 
 // Schedule complex sequence
@@ -193,7 +193,7 @@ scheduleAutoScrollSequence({
   },
   stepScroll: () => {
     scrollToTarget(nextStepTarget);
-  }
+  },
 });
 ```
 
@@ -278,11 +278,13 @@ const { enabled: autoScrollEnabled } = useAutoScrollPreferences();
 const handleCardSelection = (selected: SelectableItem) => {
   // Navigate immediately
   navigate(`/dashboard/profile/${selected.id}`);
-  
+
   // Simple auto-scroll after navigation
   if (autoScrollEnabled) {
     setTimeout(() => {
-      const firstPrompt = document.querySelector('[data-scroll-target="first-prompt"]');
+      const firstPrompt = document.querySelector(
+        '[data-scroll-target="first-prompt"]'
+      );
       if (firstPrompt) {
         firstPrompt.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
@@ -331,15 +333,15 @@ interface FormAutoScrollConfig<TFormData> {
   formId: string;
   steps: FormStep[];
   currentStepId: string;
-  
+
   // Business logic
   setCurrentStep: (stepId: string) => void;
   isStepComplete: (stepId: string, formData: TFormData) => boolean;
-  
+
   // Optional enhancements
   getNextField?: (currentField: string, currentStepId: string) => string | null;
   getNextStep?: (currentStepId: string) => string | null;
-  
+
   // Customization
   timing?: AutoScrollTimingConfig;
   scrollBehavior?: ScrollBehaviorConfig;
@@ -354,21 +356,19 @@ interface FormAutoScrollConfig<TFormData> {
 describe('useFormAutoScroll', () => {
   const defaultConfig = {
     formId: 'test-form',
-    steps: [
-      { id: 'step1', label: 'Step 1', fields: ['field1', 'field2'] }
-    ],
+    steps: [{ id: 'step1', label: 'Step 1', fields: ['field1', 'field2'] }],
     currentStepId: 'step1',
     setCurrentStep: vi.fn(),
-    isStepComplete: vi.fn().mockReturnValue(false)
+    isStepComplete: vi.fn().mockReturnValue(false),
   };
 
   describe('Field Selection', () => {
     it('should handle field selection with auto-scroll', () => {
       const { result } = renderHook(() => useFormAutoScroll(defaultConfig));
-      
+
       const onFieldChange = vi.fn();
       result.current.handleFieldSelection('field1', 'value', {}, onFieldChange);
-      
+
       expect(onFieldChange).toHaveBeenCalledWith('field1', 'value');
     });
   });
@@ -382,12 +382,16 @@ const mockFormData = {
   focus: 'strength',
   energy: 5,
   duration: 30,
-  equipment: ['dumbbells']
+  equipment: ['dumbbells'],
 };
 
 const mockSteps = [
   { id: 'focus-energy', label: 'Focus & Energy', fields: ['focus', 'energy'] },
-  { id: 'duration-equipment', label: 'Duration & Equipment', fields: ['duration', 'equipment'] }
+  {
+    id: 'duration-equipment',
+    label: 'Duration & Equipment',
+    fields: ['duration', 'equipment'],
+  },
 ];
 ```
 
@@ -429,7 +433,7 @@ useEffect(() => {
   if (isVisible && elementRef.current) {
     registerScrollTarget(targetId, elementRef.current);
   }
-  
+
   return () => {
     registerScrollTarget(targetId, null);
   };
@@ -440,22 +444,25 @@ useEffect(() => {
 
 ```typescript
 // Efficient state updates
-const handleFieldSelection = useCallback((
-  fieldId: string,
-  value: unknown,
-  formData: TFormData,
-  onFieldChange: (fieldId: string, value: unknown) => void
-) => {
-  // Update field immediately
-  onFieldChange(fieldId, value);
-  
-  // Schedule auto-scroll sequence
-  scheduleAutoScrollSequence({
-    initial: () => checkNextAction(),
-    stepAdvance: () => advanceStep(),
-    stepScroll: () => scrollToTarget()
-  });
-}, [scheduleAutoScrollSequence]);
+const handleFieldSelection = useCallback(
+  (
+    fieldId: string,
+    value: unknown,
+    formData: TFormData,
+    onFieldChange: (fieldId: string, value: unknown) => void
+  ) => {
+    // Update field immediately
+    onFieldChange(fieldId, value);
+
+    // Schedule auto-scroll sequence
+    scheduleAutoScrollSequence({
+      initial: () => checkNextAction(),
+      stepAdvance: () => advanceStep(),
+      stepScroll: () => scrollToTarget(),
+    });
+  },
+  [scheduleAutoScrollSequence]
+);
 ```
 
 ## 🔍 **Troubleshooting**
@@ -472,7 +479,7 @@ useEffect(() => {
       registerScrollTarget('my-target', elementRef.current);
     }
   }, 50);
-  
+
   return () => {
     clearTimeout(timeoutId);
     registerScrollTarget('my-target', null);
@@ -486,10 +493,10 @@ useEffect(() => {
 // Use proper timing configuration
 const { scheduleAutoScrollSequence } = useAutoScrollTiming({
   timing: {
-    initialDelay: 100,    // Wait for DOM updates
+    initialDelay: 100, // Wait for DOM updates
     stepAdvanceDelay: 800, // Wait for state changes
-    stepScrollDelay: 100   // Wait for new content
-  }
+    stepScrollDelay: 100, // Wait for new content
+  },
 });
 ```
 
@@ -526,8 +533,8 @@ console.log('Available scroll targets:', Array.from(scrollTargets.keys()));
 ```typescript
 // Before (manual implementation)
 const handleSelection = (value: string) => {
-  setFormData(prev => ({ ...prev, field: value }));
-  
+  setFormData((prev) => ({ ...prev, field: value }));
+
   setTimeout(() => {
     const nextField = document.querySelector('.next-field');
     if (nextField) {
