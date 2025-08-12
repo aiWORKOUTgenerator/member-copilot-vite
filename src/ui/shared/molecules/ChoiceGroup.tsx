@@ -20,6 +20,14 @@ interface ChoiceGroupProps {
   isValid?: boolean;
   validationMessage?: string;
   disabled?: boolean;
+  colorScheme?:
+    | 'primary'
+    | 'secondary'
+    | 'accent'
+    | 'success'
+    | 'warning'
+    | 'info'
+    | 'error';
 }
 
 export const ChoiceGroup: React.FC<ChoiceGroupProps> = ({
@@ -34,6 +42,7 @@ export const ChoiceGroup: React.FC<ChoiceGroupProps> = ({
   isValid = true,
   validationMessage,
   disabled = false,
+  colorScheme = 'accent',
 }) => {
   const [otherValue, setOtherValue] = useState('');
   const isOtherSelected = selectedValues.includes('other');
@@ -72,7 +81,7 @@ export const ChoiceGroup: React.FC<ChoiceGroupProps> = ({
           }}
           disabled={disabled}
           gridCols={3}
-          colorScheme="accent"
+          colorScheme={colorScheme}
         />
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -81,7 +90,7 @@ export const ChoiceGroup: React.FC<ChoiceGroupProps> = ({
               key={choice.id}
               className={`card cursor-pointer transition-all duration-200 hover:shadow-md hover:scale-[1.02] ${
                 selectedValues.includes(choice.text)
-                  ? 'bg-primary text-primary-content border-primary border-2 shadow-sm'
+                  ? `bg-${colorScheme} text-${colorScheme}-content border-${colorScheme} border-2 shadow-sm`
                   : 'bg-base-100 border-base-300 border hover:border-base-400'
               }`}
               onClick={() => handleSingleChange(choice.text)}
