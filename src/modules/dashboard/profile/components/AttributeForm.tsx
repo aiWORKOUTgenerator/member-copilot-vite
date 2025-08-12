@@ -1,7 +1,7 @@
 'use client';
 
 import { useAttributeForm } from '@/hooks/useAttributeForm';
-import { useAttributeType } from '@/hooks/useAttributeTypes';
+import { useAttributeType, useAttributeTypes } from '@/hooks/useAttributeTypes';
 import { useContact } from '@/hooks/useContact';
 import { usePrompts } from '@/hooks/usePrompts';
 import { usePromptService } from '@/hooks';
@@ -18,7 +18,8 @@ export function AttributeForm({
 }) {
   const { formValues, isFormDirty, isValid, initFormValues, updateFormValue } =
     useAttributeForm();
-  const { prompts, isLoading } = usePrompts();
+  const { prompts, isLoading: promptsLoading } = usePrompts();
+  const { isLoading: attributeTypesLoading } = useAttributeTypes();
   const attributeType = useAttributeType(attributeTypeId);
   const promptService = usePromptService();
   const [isSaving, setIsSaving] = useState(false);
@@ -89,7 +90,8 @@ export function AttributeForm({
     }
   };
 
-  if (isLoading) {
+  // Show loading state while data is being fetched
+  if (promptsLoading || attributeTypesLoading) {
     return (
       <div className="flex justify-center my-8">
         <span className="loading loading-spinner loading-lg"></span>
@@ -97,7 +99,8 @@ export function AttributeForm({
     );
   }
 
-  if (!attributeType) {
+  // Only show error if data is loaded but attribute type is not found
+  if (!attributeTypesLoading && !attributeType) {
     return (
       <div className="card bg-base-100 shadow-xl">
         <div className="card-body">
