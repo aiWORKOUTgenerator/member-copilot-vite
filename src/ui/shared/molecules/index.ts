@@ -10,3 +10,4 @@ export * from './DetailedSelector';
 export * from './SimpleSelector';
 export * from './SimpleDetailedViewSelector';
 export * from './SelectionSummary';
+export * from './ProgressBar';
