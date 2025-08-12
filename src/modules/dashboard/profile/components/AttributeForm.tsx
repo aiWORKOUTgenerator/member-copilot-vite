@@ -4,14 +4,10 @@ import { useAttributeForm } from '@/hooks/useAttributeForm';
 import { useAttributeType } from '@/hooks/useAttributeTypes';
 import { useContact } from '@/hooks/useContact';
 import { usePrompts } from '@/hooks/usePrompts';
-import {
-  usePromptService,
-  useAutoScroll,
-  useToast,
-  useAutoScrollPreferences,
-} from '@/hooks';
+import { usePromptService } from '@/hooks';
+
 import { PromptCard } from '@/ui';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 
 // Component to display the attribute form with access to context
@@ -30,50 +26,18 @@ export function AttributeForm({
   const [saveSuccess, setSaveSuccess] = useState(false);
   const { contact, refetch } = useContact();
 
-  // Auto-scroll functionality
-  const { enabled: autoScrollEnabled } = useAutoScrollPreferences();
-  const { showSelectionToast } = useToast();
-  const nextSectionRef = useRef<HTMLDivElement>(null);
-  const { triggerAutoScroll } = useAutoScroll({
-    enabled: autoScrollEnabled,
-    delay: 1000,
-    trackingContext: 'AttributeForm',
-  });
-
-  // Enhanced form value handler with auto-scroll
-  const handleFormValueChange = (
-    promptId: string,
-    value: string | number | string[] | null
-  ) => {
-    // Update the form value
-    updateFormValue(promptId, value);
-
-    // Show feedback and auto-scroll if enabled
-    if (autoScrollEnabled) {
-      const prompt = attributePrompts.find((p) => p.id === promptId);
-      if (prompt) {
-        showSelectionToast(`${prompt.text || 'Selection'} updated`);
-
-        // Find next incomplete prompt and scroll to it
-        setTimeout(() => {
-          const nextIncompleteIndex = attributePrompts.findIndex(
-            (p, index) =>
-              index > attributePrompts.findIndex((ap) => ap.id === promptId) &&
-              !formValues[p.id]
-          );
-
-          if (nextIncompleteIndex > -1 && nextSectionRef.current) {
-            triggerAutoScroll(nextSectionRef.current);
-          }
-        }, 100);
-      }
-    }
-  };
-
   // Filter prompts for this attribute type
   const attributePrompts = prompts.filter(
     (prompt) => prompt.attributeType?.id === attributeTypeId
   );
+
+  // Simple form value handler
+  const handleFormValueChange = (
+    promptId: string,
+    value: string | number | string[] | null
+  ) => {
+    updateFormValue(promptId, value);
+  };
 
   // Initialize form values when component mounts
   useEffect(() => {
@@ -169,20 +133,22 @@ export function AttributeForm({
           <span>No prompts available for this attribute type.</span>
         </div>
       ) : (
-        attributePrompts.map((prompt) => (
-          <PromptCard
+        attributePrompts.map((prompt, index) => (
+          <div
             key={prompt.id}
-            prompt={prompt}
-            value={formValues[prompt.id] || ''}
-            onChange={(value) => handleFormValueChange(prompt.id, value)}
-            validationMessage={''}
-            isValid={true}
-          />
+            data-scroll-target={index === 0 ? 'first-prompt' : undefined}
+            className={index === 0 ? 'scroll-mt-4' : ''}
+          >
+            <PromptCard
+              prompt={prompt}
+              value={formValues[prompt.id] || ''}
+              onChange={(value) => handleFormValueChange(prompt.id, value)}
+              validationMessage={''}
+              isValid={true}
+            />
+          </div>
         ))
       )}
-
-      {/* Scroll target for auto-scroll functionality */}
-      <div ref={nextSectionRef} className="scroll-mt-4" />
 
       {saveSuccess && (
         <div className="alert alert-success">

@@ -20,6 +20,8 @@ export const AUTO_SCROLL_CONFIG = {
     stepAdvanceDelay: 800,
     /** Delay before scrolling to new step content (ms) */
     stepScrollDelay: 100,
+    /** Delay for profile navigation auto-scroll (ms) */
+    profileNavigationDelay: 500,
   },
 } as const;
 

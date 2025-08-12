@@ -13,6 +13,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
 import { useAnalytics } from '@/hooks/useAnalytics';
 import { usePromptsData } from '@/hooks/usePrompts';
+import { useAutoScrollPreferences } from '@/hooks/useAutoScrollPreferences';
+import { AUTO_SCROLL_CONFIG } from '@/config/autoScroll';
 
 export default function TrainingProfileLayout() {
   const { setTitle } = useTitle();
@@ -69,6 +71,7 @@ export default function TrainingProfileLayout() {
   }, [pathname, attributeTypes]);
 
   const analytics = useAnalytics();
+  const { enabled: autoScrollEnabled } = useAutoScrollPreferences();
 
   // Track profile page views
   useEffect(() => {
@@ -130,10 +133,32 @@ export default function TrainingProfileLayout() {
           })}
           selected={defaultSelected}
           onChange={(selected: SelectableItem | SelectableItem[]) => {
-            // Navigate to the selected attribute page
             if (!Array.isArray(selected)) {
-              // For single selection, navigate to the attribute page
-              navigate(`/dashboard/profile/${selected.id}`);
+              // Track card selection for analytics
+              analytics.track('Profile Attribute Card Selected', {
+                attributeTypeId: selected.id,
+                attributeTypeName: selected.title,
+                autoScrollEnabled,
+              });
+
+              // Navigate immediately
+              const targetPath = `/dashboard/profile/${selected.id}`;
+              navigate(targetPath);
+
+              // Simple auto-scroll after navigation
+              if (autoScrollEnabled) {
+                setTimeout(() => {
+                  const firstPrompt = document.querySelector(
+                    '[data-scroll-target="first-prompt"]'
+                  );
+                  if (firstPrompt) {
+                    firstPrompt.scrollIntoView({
+                      behavior: 'smooth',
+                      block: 'start',
+                    });
+                  }
+                }, AUTO_SCROLL_CONFIG.timing.profileNavigationDelay); // Wait for navigation and render
+              }
             }
           }}
         />
