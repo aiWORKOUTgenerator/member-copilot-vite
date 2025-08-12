@@ -37,3 +37,4 @@ export { useToast } from './useToast';
 export { useAutoScrollPreferences } from './useAutoScrollPreferences';
 export { useConditionalAnalytics } from './useConditionalAnalytics';
 export { useAutoScrollTiming } from './useAutoScrollTiming';
+export { useFormAutoScroll } from './useFormAutoScroll';

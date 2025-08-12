@@ -8,6 +8,7 @@ import { useAnalytics } from '@/hooks/useAnalytics';
 import { ButtonStateLogic } from './selectionCountingLogic';
 import { useSelectionSummary } from './hooks/useSelectionSummary';
 import { SelectionSummary } from '@/ui/shared/molecules';
+import { useAuth } from '@/hooks/auth';
 
 // 15 workout prompt examples
 const WORKOUT_PROMPTS = [
@@ -34,6 +35,19 @@ const WORKOUT_PROMPTS = [
 ];
 
 export default function GenerateWorkoutPage() {
+  const { isSignedIn, isLoaded } = useAuth();
+
+  // Add authentication debugging
+  useEffect(() => {
+    console.log('🔐 Authentication Status:', { isSignedIn, isLoaded });
+
+    if (isLoaded && !isSignedIn) {
+      console.error('❌ User is not authenticated!');
+    } else if (isLoaded && isSignedIn) {
+      console.log('✅ User is authenticated');
+    }
+  }, [isSignedIn, isLoaded]);
+
   const [activeTab, setActiveTab] = useState<'quick' | 'detailed'>('quick');
   const [activeQuickStep, setActiveQuickStep] = useState<
     'focus-energy' | 'duration-equipment'
@@ -111,6 +125,15 @@ export default function GenerateWorkoutPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Add authentication check before API call
+    if (!isSignedIn) {
+      console.error('❌ Cannot generate workout: User not authenticated');
+      alert('Please log in to generate a workout');
+      return;
+    }
+
+    console.log('🚀 Starting workout generation...');
 
     // For quick workout, handle step navigation
     if (activeTab === 'quick') {
