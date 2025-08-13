@@ -1,5 +1,5 @@
 import { PerWorkoutOptions } from './components/types';
-import { VALIDATION_MESSAGES } from './constants/validationMessages';
+import { DETAILED_VALIDATION_MESSAGES } from './constants/validationMessages';
 import { CUSTOMIZATION_FIELD_KEYS } from './constants/fieldKeys';
 import { VALID_EQUIPMENT_IDS } from './constants';
 
@@ -160,7 +160,7 @@ export class SelectionCounter {
             value !== null &&
             !isNaN(energy) &&
             (energy < 1 || energy > 6)
-              ? VALIDATION_MESSAGES.ENERGY_RANGE
+              ? DETAILED_VALIDATION_MESSAGES.ENERGY_RANGE
               : undefined,
         };
       }
@@ -176,7 +176,7 @@ export class SelectionCounter {
           isValid: durationIsValid,
           errorMessage:
             durationHasValue && !durationIsValid
-              ? VALIDATION_MESSAGES.DURATION_RANGE
+              ? DETAILED_VALIDATION_MESSAGES.DURATION_MIN
               : undefined,
         };
       }
