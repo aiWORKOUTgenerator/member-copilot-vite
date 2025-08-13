@@ -33,17 +33,7 @@ export function ConfigurationProvider({
    * Returns format: https://example.com:3000 or http://localhost:5174
    */
   const getCurrentDomain = useCallback((): string => {
-    const { protocol, hostname, port } = window.location;
-
-    // For standard ports (80 for HTTP, 443 for HTTPS), don't include port
-    const isStandardPort =
-      (protocol === 'https:' && port === '443') ||
-      (protocol === 'http:' && port === '80') ||
-      port === '';
-
-    return isStandardPort
-      ? `${protocol}//${hostname}`
-      : `${protocol}//${hostname}:${port}`;
+    return window.location.hostname;
   }, []);
 
   /**
