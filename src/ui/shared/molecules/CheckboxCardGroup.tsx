@@ -4,6 +4,7 @@ import React from 'react';
 import { RadioGroupOfCards } from './RadioGroupOfCards';
 import { Choice } from '@/domain/entities';
 import { ViewMode } from '@/contexts/ViewModeContext';
+import { parseChoiceText } from '@/utils/textParsing';
 
 interface CheckboxCardGroupProps {
   choices: Choice[];
@@ -41,17 +42,20 @@ export const CheckboxCardGroup: React.FC<CheckboxCardGroupProps> = ({
   viewMode = 'detailed',
 }) => {
   // Transform choices into SelectableItem format for RadioGroupOfCards
-  const items = choices.map((choice) => ({
-    id: choice.id,
-    title: choice.text.split(/[-:]/)[0].trim(),
-    description:
-      viewMode === 'detailed' && /[-:]/.test(choice.text)
-        ? choice.text.split(/[-:]/).slice(1).join(':').trim()
-        : '',
-    tertiary: selectedValues.includes(choice.text) ? (
-      <div className="badge badge-primary badge-sm">{selectedBadgeContent}</div>
-    ) : undefined,
-  }));
+  const items = choices.map((choice) => {
+    const { title, description } = parseChoiceText(choice.text, viewMode);
+
+    return {
+      id: choice.id,
+      title,
+      description,
+      tertiary: selectedValues.includes(choice.text) ? (
+        <div className="badge badge-primary badge-sm">
+          {selectedBadgeContent}
+        </div>
+      ) : undefined,
+    };
+  });
 
   // Find currently selected items - always an array for multiple selection
   // Need to match against original choice.text since selectedValues contains full text

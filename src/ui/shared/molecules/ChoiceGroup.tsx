@@ -8,6 +8,7 @@ import { TextInput } from '../atoms/TextInput';
 import { CheckboxCardGroup } from './CheckboxCardGroup';
 import { Choice } from '@/domain/entities';
 import { ViewMode } from '@/contexts/ViewModeContext';
+import { parseChoiceText } from '@/utils/textParsing';
 
 interface ChoiceGroupProps {
   id: string;
@@ -100,14 +101,24 @@ export const ChoiceGroup: React.FC<ChoiceGroupProps> = ({
               onClick={() => handleSingleChange(choice.text)}
             >
               <div className="card-body p-4">
-                <h3 className="card-title text-base">
-                  {choice.text.split(/[-:]/)[0].trim()}
-                </h3>
-                {viewMode === 'detailed' && /[-:]/.test(choice.text) && (
-                  <p className="text-sm text-base-content/70 mt-2">
-                    {choice.text.split(/[-:]/).slice(1).join(':').trim()}
-                  </p>
-                )}
+                {(() => {
+                  const { title, description, hasDelimiter } = parseChoiceText(
+                    choice.text,
+                    viewMode
+                  );
+                  return (
+                    <>
+                      <h3 className="card-title text-base">{title}</h3>
+                      {viewMode === 'detailed' &&
+                        hasDelimiter &&
+                        description && (
+                          <p className="text-sm text-base-content/70 mt-2">
+                            {description}
+                          </p>
+                        )}
+                    </>
+                  );
+                })()}
               </div>
             </div>
           ))}
