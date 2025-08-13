@@ -17,6 +17,7 @@ export interface StepIndicatorProps {
   disabled?: boolean;
   showConnectors?: boolean;
   size?: 'sm' | 'md' | 'lg';
+  responsive?: boolean; // New prop for mobile responsiveness
 }
 
 export const StepIndicator: React.FC<StepIndicatorProps> = ({
@@ -26,6 +27,7 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
   disabled = false,
   showConnectors = true,
   size = 'md',
+  responsive = true,
 }) => {
   const getVariantClasses = (
     isActive: boolean,
@@ -52,11 +54,11 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
 
   return (
     <div
-      className="flex justify-center p-element"
+      className={`${responsive ? 'overflow-x-auto' : 'flex justify-center'} p-element`}
       data-testid="step-indicator-container"
     >
       <div
-        className={`flex items-center ${
+        className={`flex items-center ${responsive ? 'min-w-max px-2' : ''} ${
           size === 'sm'
             ? 'gap-element'
             : size === 'lg'
@@ -77,10 +79,16 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
                 <div
                   className={`${
                     size === 'sm'
-                      ? 'w-[var(--size-step-sm)] h-[var(--size-step-sm)] text-[var(--text-step-sm)]'
+                      ? responsive
+                        ? 'w-8 h-8 text-xs sm:w-[var(--size-step-sm)] sm:h-[var(--size-step-sm)] sm:text-[var(--text-step-sm)]'
+                        : 'w-[var(--size-step-sm)] h-[var(--size-step-sm)] text-[var(--text-step-sm)]'
                       : size === 'lg'
-                        ? 'w-[var(--size-step-lg)] h-[var(--size-step-lg)] text-[var(--text-step-lg)]'
-                        : 'w-[var(--size-step-md)] h-[var(--size-step-md)] text-[var(--text-step-md)]'
+                        ? responsive
+                          ? 'w-10 h-10 text-sm sm:w-[var(--size-step-lg)] sm:h-[var(--size-step-lg)] sm:text-[var(--text-step-lg)]'
+                          : 'w-[var(--size-step-lg)] h-[var(--size-step-lg)] text-[var(--text-step-lg)]'
+                        : responsive
+                          ? 'w-9 h-9 text-xs sm:w-[var(--size-step-md)] sm:h-[var(--size-step-md)] sm:text-[var(--text-step-md)]'
+                          : 'w-[var(--size-step-md)] h-[var(--size-step-md)] text-[var(--text-step-md)]'
                   } ${getVariantClasses(
                     isActive,
                     isCompleted,
@@ -106,10 +114,16 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
                   <div
                     className={`absolute top-1/2 left-full ${
                       size === 'sm'
-                        ? 'w-[var(--width-connector-sm)]'
+                        ? responsive
+                          ? 'w-4 sm:w-[var(--width-connector-sm)]'
+                          : 'w-[var(--width-connector-sm)]'
                         : size === 'lg'
-                          ? 'w-[var(--width-connector-lg)]'
-                          : 'w-[var(--width-connector-md)]'
+                          ? responsive
+                            ? 'w-6 sm:w-[var(--width-connector-lg)]'
+                            : 'w-[var(--width-connector-lg)]'
+                          : responsive
+                            ? 'w-5 sm:w-[var(--width-connector-md)]'
+                            : 'w-[var(--width-connector-md)]'
                     } h-0.5 bg-base-300 transform -translate-y-1/2`}
                     aria-hidden="true"
                   />
@@ -123,16 +137,22 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
                     : size === 'lg'
                       ? 'mt-element'
                       : 'mt-tight'
-                } text-center`}
+                } text-center ${responsive ? 'max-w-20 sm:max-w-none' : ''}`}
               >
                 <div
                   className={`${
                     size === 'sm'
-                      ? 'text-xs'
+                      ? responsive
+                        ? 'text-xs sm:text-xs'
+                        : 'text-xs'
                       : size === 'lg'
-                        ? 'text-base'
-                        : 'text-sm'
-                  } font-medium text-base-content`}
+                        ? responsive
+                          ? 'text-xs sm:text-base'
+                          : 'text-base'
+                        : responsive
+                          ? 'text-xs sm:text-sm'
+                          : 'text-sm'
+                  } font-medium text-base-content ${responsive ? 'leading-tight' : ''}`}
                 >
                   {step.label}
                 </div>
@@ -141,11 +161,17 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
                     <div
                       className={`${
                         size === 'sm'
-                          ? 'text-xs'
-                          : size === 'lg'
-                            ? 'text-sm'
+                          ? responsive
+                            ? 'text-xs sm:text-xs'
                             : 'text-xs'
-                      } text-base-content/70`}
+                          : size === 'lg'
+                            ? responsive
+                              ? 'text-xs sm:text-sm'
+                              : 'text-sm'
+                            : responsive
+                              ? 'text-xs sm:text-xs'
+                              : 'text-xs'
+                      } text-base-content/70 ${responsive ? 'hidden sm:block' : ''}`}
                     >
                       {step.description}
                     </div>
