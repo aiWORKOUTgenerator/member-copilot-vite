@@ -216,12 +216,18 @@ export const ValidationMessageHelpers = {
   ): string => {
     const fieldName = fieldKey.replace('customization_', '').replace('_', ' ');
 
+    // Singularize field names that are already plural to avoid double pluralization
+    const singularFieldName = fieldName
+      .replace(/areas$/, 'area')
+      .replace(/soreness$/, 'soreness area') // Special case: soreness -> soreness area
+      .replace(/equipment$/, 'equipment item'); // Special case: equipment -> equipment item
+
     if (count > max) {
-      return `Select up to ${max} ${fieldName} option${max > 1 ? 's' : ''}`;
+      return `Select up to ${max} ${singularFieldName} option${max > 1 ? 's' : ''}`;
     }
 
     if (count < min && min > 0) {
-      return `Select at least ${min} ${fieldName} option${min > 1 ? 's' : ''}`;
+      return `Select at least ${min} ${singularFieldName} option${min > 1 ? 's' : ''}`;
     }
 
     return '';

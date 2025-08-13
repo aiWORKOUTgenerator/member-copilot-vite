@@ -224,7 +224,7 @@ describe('ValidationMessageHelpers', () => {
         6,
         5
       );
-      expect(result).toBe('Select up to 5 areas options');
+      expect(result).toBe('Select up to 5 area options');
     });
 
     it('should return min selection message when count below minimum', () => {
@@ -234,7 +234,7 @@ describe('ValidationMessageHelpers', () => {
         10,
         1
       );
-      expect(result).toBe('Select at least 1 equipment option');
+      expect(result).toBe('Select at least 1 equipment item option');
     });
 
     it('should handle singular vs plural correctly', () => {
@@ -250,7 +250,7 @@ describe('ValidationMessageHelpers', () => {
         6,
         5
       );
-      expect(result2).toBe('Select up to 5 areas options');
+      expect(result2).toBe('Select up to 5 area options');
     });
   });
 
