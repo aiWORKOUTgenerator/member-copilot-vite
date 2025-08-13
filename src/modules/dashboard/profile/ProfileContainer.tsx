@@ -5,11 +5,12 @@ import {
 import { useContactData } from '@/hooks/useContact';
 import { useTitle } from '@/hooks/useTitle';
 import { AttributeCompletion, ContactUtils } from '@/domain';
+
 import {
-  RadioGroupOfCards,
-  SelectableItem,
-} from '@/ui/shared/molecules/RadioGroupOfCards';
-import { SimpleDetailedViewSelector } from '@/ui/shared/molecules/SimpleDetailedViewSelector';
+  SimpleDetailedViewSelector,
+  StepIndicator,
+  ProgressBar,
+} from '@/ui/shared/molecules';
 import { ViewModeProvider } from '@/contexts/ViewModeContext';
 import { useEffect, useMemo, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
@@ -24,10 +25,22 @@ export default function TrainingProfileLayout() {
   const isAttributeTypesLoading = useAttributeTypesLoading();
   const navigate = useNavigate();
   const pathname = useLocation().pathname;
-  const [defaultSelected, setDefaultSelected] = useState<
-    SelectableItem | undefined
-  >(undefined);
+
   const [viewMode, setViewMode] = useState<'simple' | 'detailed'>('detailed');
+
+  // Current step state for step indicator
+  const [currentStep, setCurrentStep] = useState<string>(() => {
+    // Set initial step based on URL or first attribute type
+    const pathParts = pathname.split('/');
+    const attributeTypeId = pathParts[pathParts.length - 1];
+    if (
+      pathname.startsWith('/dashboard/profile/') &&
+      attributeTypeId !== 'profile'
+    ) {
+      return attributeTypeId;
+    }
+    return attributeTypes[0]?.id.toString() || '';
+  });
 
   // Get contact and prompts data
   const contact = useContactData();
@@ -63,12 +76,14 @@ export default function TrainingProfileLayout() {
         );
 
         if (selectedAttributeType) {
-          setDefaultSelected({
-            id: selectedAttributeType.id,
-            title: selectedAttributeType.name,
-            description: selectedAttributeType.description || '',
-          });
+          setCurrentStep(attributeTypeId);
         }
+      } else if (
+        pathname === '/dashboard/profile' &&
+        attributeTypes.length > 0
+      ) {
+        // If we're on the main profile page, set the first attribute as current
+        setCurrentStep(attributeTypes[0].id.toString());
       }
     }
   }, [pathname, attributeTypes]);
@@ -94,50 +109,48 @@ export default function TrainingProfileLayout() {
     });
   };
 
-  // Helper function to create attribute type items based on view mode
-  const createAttributeTypeItems = (showDetailed: boolean) => {
-    return attributeTypes.map((attributeType) => {
-      const completion = attributeCompletions.find(
-        (c) => c.attributeType.id === attributeType.id
-      );
-
-      return {
-        id: attributeType.id,
-        title: attributeType.name,
-        description: showDetailed ? attributeType.description || '' : '',
-        tertiary: completion ? (
-          showDetailed ? (
-            // Detailed view: Full progress bar
-            <div className="flex flex-col gap-2">
-              <div className="flex justify-between mb-1">
-                <span className="text-xs">
-                  {completion.completedPrompts}/{completion.totalPrompts}{' '}
-                  complete
-                </span>
-                <span className="text-xs">{completion.percentComplete}%</span>
-              </div>
-              <progress
-                className={`progress ${
-                  completion.percentComplete === 100
-                    ? 'progress-success'
-                    : completion.hasProvidedValue
-                      ? 'progress-primary'
-                      : 'progress-secondary'
-                }`}
-                value={completion.percentComplete}
-                max="100"
-              />
-            </div>
-          ) : (
-            // Simple view: Just percentage
-            <div className="text-xs text-base-content/70">
-              {completion.percentComplete}% complete
-            </div>
-          )
-        ) : null,
-      } as SelectableItem;
+  // Handle step click navigation
+  const handleStepClick = (stepId: string) => {
+    // Track step selection for analytics
+    const attributeType = attributeTypes.find(
+      (type) => type.id.toString() === stepId
+    );
+    analytics.track('Profile Step Selected', {
+      attributeTypeId: stepId,
+      attributeTypeName: attributeType?.name,
+      viewMode: viewMode,
+      autoScrollEnabled,
     });
+
+    // Navigate to the selected attribute
+    const targetPath = `/dashboard/profile/${stepId}`;
+    navigate(targetPath);
+
+    // Simple auto-scroll after navigation
+    if (autoScrollEnabled) {
+      setTimeout(() => {
+        const firstPrompt = document.querySelector(
+          '[data-scroll-target="first-prompt"]'
+        );
+        if (firstPrompt) {
+          firstPrompt.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+          });
+        }
+      }, AUTO_SCROLL_CONFIG.timing.profileNavigationDelay);
+    }
   };
+
+  // Calculate overall progress
+  const overallProgress = useMemo(() => {
+    if (attributeCompletions.length === 0) return 0;
+    const totalCompletion = attributeCompletions.reduce(
+      (sum, completion) => sum + completion.percentComplete,
+      0
+    );
+    return Math.round(totalCompletion / attributeCompletions.length);
+  }, [attributeCompletions]);
 
   // User is authenticated, show Training Profile page
   return (
@@ -173,43 +186,38 @@ export default function TrainingProfileLayout() {
             isAttributeTypesLoading ? 'opacity-50' : 'opacity-100'
           }`}
         >
-          <RadioGroupOfCards
-            items={createAttributeTypeItems(viewMode === 'detailed')}
-            selected={defaultSelected}
-            onChange={(selected: SelectableItem | SelectableItem[]) => {
-              if (!Array.isArray(selected)) {
-                // Track card selection for analytics
-                analytics.track('Profile Attribute Card Selected', {
-                  attributeTypeId: selected.id,
-                  attributeTypeName: selected.title,
-                  viewMode: viewMode,
-                  autoScrollEnabled,
-                });
+          {/* Overall Progress Bar */}
+          <div className="mb-6">
+            <ProgressBar
+              progress={overallProgress}
+              label="Overall Profile Completion"
+              showPercentage={true}
+              size="md"
+              variant="primary"
+              animated={true}
+              description={`Complete your training profile to get better workout recommendations`}
+            />
+          </div>
 
-                // Navigate immediately
-                const targetPath = `/dashboard/profile/${selected.id}`;
-                navigate(targetPath);
-
-                // Simple auto-scroll after navigation
-                if (autoScrollEnabled) {
-                  setTimeout(() => {
-                    const firstPrompt = document.querySelector(
-                      '[data-scroll-target="first-prompt"]'
-                    );
-                    if (firstPrompt) {
-                      firstPrompt.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start',
-                      });
-                    }
-                  }, AUTO_SCROLL_CONFIG.timing.profileNavigationDelay); // Wait for navigation and render
-                }
-              }
-            }}
-            showDescription={viewMode === 'detailed'}
-            showTertiary={true}
-            gridCols={3}
-            colorScheme="primary"
+          {/* Step Indicator */}
+          <StepIndicator
+            steps={attributeTypes.map((attributeType) => {
+              const completion = attributeCompletions.find(
+                (c) => c.attributeType.id === attributeType.id
+              );
+              return {
+                id: attributeType.id.toString(),
+                label: attributeType.name,
+                description: `${completion?.percentComplete || 0}% complete`,
+                disabled: false,
+                hasErrors: false,
+              };
+            })}
+            currentStep={currentStep}
+            onStepClick={handleStepClick}
+            disabled={false}
+            showConnectors={true}
+            size="md"
           />
         </div>
       )}
