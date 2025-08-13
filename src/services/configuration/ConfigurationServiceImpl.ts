@@ -135,7 +135,9 @@ export class MockConfigurationService implements ConfigurationService {
       },
       app_config: {
         logo: 'https://via.placeholder.com/200x100?text=Mock+Logo',
-        apiUrl: 'https://mock.api.domain.com',
+        apiUrl: (
+          import.meta.env.VITE_API_URL || 'http://tenant.aitenanttest.test'
+        ).replace('/api', ''),
         logoUrl: 'https://via.placeholder.com/200x100?text=Mock+Logo',
         subtext: 'MOCK LOCATION',
         themeMode: 'dark',
@@ -145,7 +147,7 @@ export class MockConfigurationService implements ConfigurationService {
         rudderDataPlaneUrl: 'https://mock.dataplane.rudderstack.com',
         favicon: 'https://via.placeholder.com/32x32?text=M',
       },
-      api_domain: 'mock.api.domain.com',
+      api_domain: 'tenant.aitenanttest.test',
     };
 
     return AppConfiguration.fromApiResponse(mockData);

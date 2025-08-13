@@ -16,7 +16,11 @@ export function useApiService(
   const { getToken } = useAuth();
   const { configuration } = useConfiguration();
   let apiUrl = configuration?.appConfig.apiUrl || baseUrl;
-  apiUrl = apiUrl + '/api';
+
+  // Don't append /api if it's already in the URL
+  if (!apiUrl.endsWith('/api')) {
+    apiUrl = apiUrl + '/api';
+  }
 
   // Create a memoized API service instance that will only change when dependencies change
   const apiService = useMemo(() => {
