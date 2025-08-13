@@ -186,3 +186,105 @@ export const getEnergyLevelById = (
 ): EnergyLevelOption | undefined => {
   return ENERGY_LEVEL_OPTIONS.find((option) => option.id === id);
 };
+
+// New interfaces for detailed workout setup
+export interface FocusAreaOption {
+  value: string;
+  label: string;
+}
+
+export interface SleepQualityOption {
+  value: number;
+  label: string;
+  description: string;
+}
+
+export interface StressLevelOption {
+  value: number;
+  label: string;
+  description: string;
+}
+
+export interface SorenessAreaOption {
+  value: string;
+  label: string;
+}
+
+// Focus area options for detailed setup
+export const FOCUS_AREA_OPTIONS: FocusAreaOption[] = [
+  { value: 'upper_body', label: 'Upper Body' },
+  { value: 'lower_body', label: 'Lower Body' },
+  { value: 'core', label: 'Core' },
+  { value: 'back', label: 'Back' },
+  { value: 'shoulders', label: 'Shoulders' },
+  { value: 'chest', label: 'Chest' },
+  { value: 'arms', label: 'Arms' },
+  { value: 'mobility_flexibility', label: 'Mobility/Flexibility' },
+  { value: 'cardio', label: 'Cardio' },
+  { value: 'recovery_stretching', label: 'Recovery/Stretching' },
+];
+
+// Sleep quality options (1-5 scale)
+export const SLEEP_QUALITY_OPTIONS: SleepQualityOption[] = [
+  { value: 1, label: 'Very Poor', description: 'Barely slept, very tired' },
+  { value: 2, label: 'Poor', description: 'Restless sleep, feeling tired' },
+  { value: 3, label: 'Fair', description: 'Decent sleep, somewhat rested' },
+  { value: 4, label: 'Good', description: 'Solid sleep, feeling rested' },
+  {
+    value: 5,
+    label: 'Excellent',
+    description: 'Perfect sleep, fully refreshed',
+  },
+];
+
+// Stress level options (1-5 scale)
+export const STRESS_LEVEL_OPTIONS: StressLevelOption[] = [
+  { value: 1, label: 'Very Low', description: 'Calm and relaxed' },
+  { value: 2, label: 'Low', description: 'Mostly relaxed with minor concerns' },
+  { value: 3, label: 'Moderate', description: 'Some stress, manageable' },
+  { value: 4, label: 'High', description: 'Feeling stressed and tense' },
+  {
+    value: 5,
+    label: 'Very High',
+    description: 'Extremely stressed and overwhelmed',
+  },
+];
+
+// Soreness area options
+export const SORENESS_AREA_OPTIONS: SorenessAreaOption[] = [
+  { value: 'neck_shoulders', label: 'Neck & Shoulders' },
+  { value: 'upper_back', label: 'Upper Back' },
+  { value: 'lower_back', label: 'Lower Back' },
+  { value: 'chest', label: 'Chest' },
+  { value: 'arms', label: 'Arms' },
+  { value: 'core', label: 'Core' },
+  { value: 'glutes', label: 'Glutes' },
+  { value: 'quads', label: 'Quadriceps' },
+  { value: 'hamstrings', label: 'Hamstrings' },
+  { value: 'calves', label: 'Calves' },
+];
+
+// Helper functions for detailed workout options
+export const getFocusAreaByValue = (
+  value: string
+): FocusAreaOption | undefined => {
+  return FOCUS_AREA_OPTIONS.find((option) => option.value === value);
+};
+
+export const getSleepQualityByValue = (
+  value: number
+): SleepQualityOption | undefined => {
+  return SLEEP_QUALITY_OPTIONS.find((option) => option.value === value);
+};
+
+export const getStressLevelByValue = (
+  value: number
+): StressLevelOption | undefined => {
+  return STRESS_LEVEL_OPTIONS.find((option) => option.value === value);
+};
+
+export const getSorenessAreaByValue = (
+  value: string
+): SorenessAreaOption | undefined => {
+  return SORENESS_AREA_OPTIONS.find((option) => option.value === value);
+};
