@@ -71,6 +71,71 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
     }[size];
   };
 
+  const getResponsiveConnectorClasses = (
+    size: 'sm' | 'md' | 'lg',
+    responsive: boolean
+  ): string => {
+    if (!responsive) {
+      return {
+        sm: 'w-[var(--width-connector-sm)]',
+        md: 'w-[var(--width-connector-md)]',
+        lg: 'w-[var(--width-connector-lg)]',
+      }[size];
+    }
+
+    return {
+      sm: 'w-4 sm:w-[var(--width-connector-sm)]',
+      md: 'w-5 sm:w-[var(--width-connector-md)]',
+      lg: 'w-6 sm:w-[var(--width-connector-lg)]',
+    }[size];
+  };
+
+  const getResponsiveLabelClasses = (
+    size: 'sm' | 'md' | 'lg',
+    responsive: boolean
+  ): string => {
+    if (!responsive) {
+      return {
+        sm: 'text-xs',
+        md: 'text-sm',
+        lg: 'text-base',
+      }[size];
+    }
+
+    return {
+      sm: 'text-xs sm:text-xs',
+      md: 'text-xs sm:text-sm',
+      lg: 'text-xs sm:text-base',
+    }[size];
+  };
+
+  const getResponsiveDescriptionClasses = (
+    size: 'sm' | 'md' | 'lg',
+    responsive: boolean
+  ): string => {
+    if (!responsive) {
+      return {
+        sm: 'text-xs',
+        md: 'text-xs',
+        lg: 'text-sm',
+      }[size];
+    }
+
+    return {
+      sm: 'text-xs sm:text-xs',
+      md: 'text-xs sm:text-xs',
+      lg: 'text-xs sm:text-sm',
+    }[size];
+  };
+
+  const getResponsiveMarginClasses = (size: 'sm' | 'md' | 'lg'): string => {
+    return {
+      sm: 'mt-tight',
+      md: 'mt-tight',
+      lg: 'mt-element',
+    }[size];
+  };
+
   return (
     <div
       className={`${responsive ? 'overflow-x-auto' : 'flex justify-center'} p-element`}
@@ -119,66 +184,37 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
                 {/* Connector line to next step */}
                 {showConnectors && index < steps.length - 1 && (
                   <div
-                    className={`absolute top-1/2 left-full ${
-                      size === 'sm'
-                        ? responsive
-                          ? 'w-4 sm:w-[var(--width-connector-sm)]'
-                          : 'w-[var(--width-connector-sm)]'
-                        : size === 'lg'
-                          ? responsive
-                            ? 'w-6 sm:w-[var(--width-connector-lg)]'
-                            : 'w-[var(--width-connector-lg)]'
-                          : responsive
-                            ? 'w-5 sm:w-[var(--width-connector-md)]'
-                            : 'w-[var(--width-connector-md)]'
-                    } h-0.5 bg-base-300 transform -translate-y-1/2`}
+                    className={`absolute top-1/2 left-full ${getResponsiveConnectorClasses(
+                      size,
+                      responsive
+                    )} h-0.5 bg-base-300 transform -translate-y-1/2`}
                     aria-hidden="true"
                   />
                 )}
               </div>
 
               <div
-                className={`${
-                  size === 'sm'
-                    ? 'mt-tight'
-                    : size === 'lg'
-                      ? 'mt-element'
-                      : 'mt-tight'
-                } text-center ${responsive ? 'max-w-20 sm:max-w-none' : ''}`}
+                className={`${getResponsiveMarginClasses(size)} text-center ${
+                  responsive ? 'max-w-20 sm:max-w-none' : ''
+                }`}
               >
                 <div
-                  className={`${
-                    size === 'sm'
-                      ? responsive
-                        ? 'text-xs sm:text-xs'
-                        : 'text-xs'
-                      : size === 'lg'
-                        ? responsive
-                          ? 'text-xs sm:text-base'
-                          : 'text-base'
-                        : responsive
-                          ? 'text-xs sm:text-sm'
-                          : 'text-sm'
-                  } font-medium text-base-content ${responsive ? 'leading-tight' : ''}`}
+                  className={`${getResponsiveLabelClasses(
+                    size,
+                    responsive
+                  )} font-medium text-base-content ${
+                    responsive ? 'leading-tight' : ''
+                  }`}
                 >
                   {step.label}
                 </div>
                 {step.description &&
                   step.description !== `${index + 1} of ${steps.length}` && (
                     <div
-                      className={`${
-                        size === 'sm'
-                          ? responsive
-                            ? 'text-xs sm:text-xs'
-                            : 'text-xs'
-                          : size === 'lg'
-                            ? responsive
-                              ? 'text-xs sm:text-sm'
-                              : 'text-sm'
-                            : responsive
-                              ? 'text-xs sm:text-xs'
-                              : 'text-xs'
-                      } text-base-content/70 ${responsive ? 'hidden sm:block' : ''}`}
+                      className={`${getResponsiveDescriptionClasses(
+                        size,
+                        responsive
+                      )} text-base-content/70 ${responsive ? 'hidden sm:block' : ''}`}
                     >
                       {step.description}
                     </div>
