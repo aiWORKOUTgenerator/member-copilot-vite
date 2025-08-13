@@ -18,9 +18,13 @@ export default {
         'revert',
       ],
     ],
-    'subject-case': [2, 'always', 'lower-case'],
+    // Allow any case for subject (no strict lower-case)
+    'subject-case': [0],
+    // Subject must not be empty
     'subject-empty': [2, 'never'],
-    'subject-full-stop': [2, 'never', '.'],
-    'header-max-length': [2, 'always', 72],
+    // Subject does not have to avoid a full stop
+    'subject-full-stop': [0],
+    // Allow a bit longer headers, but still recommend a limit
+    'header-max-length': [1, 'always', 100],
   },
 };

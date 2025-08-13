@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { ApiServiceImpl } from '@/services/api/ApiServiceImpl';
 import { ClerkTokenProvider } from '@/services/api/ClerkTokenProvider';
 import { ApiService } from '@/domain/interfaces/api/ApiService';
+import { useConfiguration } from './useConfiguration';
 
 /**
  * Hook to get an API service instance with authentication configured
@@ -13,6 +14,9 @@ export function useApiService(
   baseUrl: string = import.meta.env.VITE_API_URL || ''
 ): ApiService {
   const { getToken } = useAuth();
+  const { configuration } = useConfiguration();
+  let apiUrl = configuration?.appConfig.apiUrl || baseUrl;
+  apiUrl = apiUrl + '/api';
 
   // Create a memoized API service instance that will only change when dependencies change
   const apiService = useMemo(() => {
@@ -21,13 +25,13 @@ export function useApiService(
 
     // Create the API service with the token provider
     return new ApiServiceImpl(
-      baseUrl,
+      apiUrl,
       {
         'Content-Type': 'application/json',
       },
       tokenProvider
     );
-  }, [baseUrl, getToken]);
+  }, [apiUrl, getToken]);
 
   return apiService;
 }
