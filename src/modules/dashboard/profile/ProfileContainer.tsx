@@ -154,11 +154,11 @@ export default function TrainingProfileLayout() {
 
   // User is authenticated, show Training Profile page
   return (
-    <div className="p-4 space-y-4">
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
+    <div className="p-3 sm:p-4 space-y-4">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 sm:gap-4">
         <div className="flex-1">
-          <h2 className="text-2xl font-bold">Training Profile</h2>
-          <p className="text-sm text-base-content/70">
+          <h2 className="text-xl sm:text-2xl font-bold">Training Profile</h2>
+          <p className="text-xs sm:text-sm text-base-content/70 leading-relaxed">
             Provide information about your fitness goals, injuries, preferences,
             and other details that will help the AI generate better workouts for
             you.
@@ -187,7 +187,7 @@ export default function TrainingProfileLayout() {
           }`}
         >
           {/* Overall Progress Bar */}
-          <div className="mb-6">
+          <div className="mb-4 sm:mb-6">
             <ProgressBar
               progress={overallProgress}
               label="Overall Profile Completion"
@@ -218,6 +218,7 @@ export default function TrainingProfileLayout() {
             disabled={false}
             showConnectors={true}
             size="md"
+            responsive={true}
           />
         </div>
       )}

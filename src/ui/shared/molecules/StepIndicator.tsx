@@ -17,6 +17,7 @@ export interface StepIndicatorProps {
   disabled?: boolean;
   showConnectors?: boolean;
   size?: 'sm' | 'md' | 'lg';
+  responsive?: boolean; // New prop for mobile responsiveness
 }
 
 export const StepIndicator: React.FC<StepIndicatorProps> = ({
@@ -26,6 +27,7 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
   disabled = false,
   showConnectors = true,
   size = 'md',
+  responsive = true,
 }) => {
   const getVariantClasses = (
     isActive: boolean,
@@ -50,13 +52,97 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
     return `${baseClasses} bg-base-100 text-base-content/70 border-base-300`;
   };
 
+  const getResponsiveStepClasses = (
+    size: 'sm' | 'md' | 'lg',
+    responsive: boolean
+  ): string => {
+    if (!responsive) {
+      return {
+        sm: 'w-[var(--size-step-sm)] h-[var(--size-step-sm)] text-[var(--text-step-sm)]',
+        md: 'w-[var(--size-step-md)] h-[var(--size-step-md)] text-[var(--text-step-md)]',
+        lg: 'w-[var(--size-step-lg)] h-[var(--size-step-lg)] text-[var(--text-step-lg)]',
+      }[size];
+    }
+
+    return {
+      sm: 'w-8 h-8 text-xs sm:w-[var(--size-step-sm)] sm:h-[var(--size-step-sm)] sm:text-[var(--text-step-sm)]',
+      md: 'w-9 h-9 text-xs sm:w-[var(--size-step-md)] sm:h-[var(--size-step-md)] sm:text-[var(--text-step-md)]',
+      lg: 'w-10 h-10 text-sm sm:w-[var(--size-step-lg)] sm:h-[var(--size-step-lg)] sm:text-[var(--text-step-lg)]',
+    }[size];
+  };
+
+  const getResponsiveConnectorClasses = (
+    size: 'sm' | 'md' | 'lg',
+    responsive: boolean
+  ): string => {
+    if (!responsive) {
+      return {
+        sm: 'w-[var(--width-connector-sm)]',
+        md: 'w-[var(--width-connector-md)]',
+        lg: 'w-[var(--width-connector-lg)]',
+      }[size];
+    }
+
+    return {
+      sm: 'w-4 sm:w-[var(--width-connector-sm)]',
+      md: 'w-5 sm:w-[var(--width-connector-md)]',
+      lg: 'w-6 sm:w-[var(--width-connector-lg)]',
+    }[size];
+  };
+
+  const getResponsiveLabelClasses = (
+    size: 'sm' | 'md' | 'lg',
+    responsive: boolean
+  ): string => {
+    if (!responsive) {
+      return {
+        sm: 'text-xs',
+        md: 'text-sm',
+        lg: 'text-base',
+      }[size];
+    }
+
+    return {
+      sm: 'text-xs sm:text-xs',
+      md: 'text-xs sm:text-sm',
+      lg: 'text-xs sm:text-base',
+    }[size];
+  };
+
+  const getResponsiveDescriptionClasses = (
+    size: 'sm' | 'md' | 'lg',
+    responsive: boolean
+  ): string => {
+    if (!responsive) {
+      return {
+        sm: 'text-xs',
+        md: 'text-xs',
+        lg: 'text-sm',
+      }[size];
+    }
+
+    return {
+      sm: 'text-xs sm:text-xs',
+      md: 'text-xs sm:text-xs',
+      lg: 'text-xs sm:text-sm',
+    }[size];
+  };
+
+  const getResponsiveMarginClasses = (size: 'sm' | 'md' | 'lg'): string => {
+    return {
+      sm: 'mt-tight',
+      md: 'mt-tight',
+      lg: 'mt-element',
+    }[size];
+  };
+
   return (
     <div
-      className="flex justify-center p-element"
+      className={`${responsive ? 'overflow-x-auto' : 'flex justify-center'} p-element`}
       data-testid="step-indicator-container"
     >
       <div
-        className={`flex items-center ${
+        className={`flex items-center ${responsive ? 'min-w-max px-2' : ''} ${
           size === 'sm'
             ? 'gap-element'
             : size === 'lg'
@@ -75,13 +161,7 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
             <div key={step.id} className="flex flex-col items-center">
               <div className="relative">
                 <div
-                  className={`${
-                    size === 'sm'
-                      ? 'w-[var(--size-step-sm)] h-[var(--size-step-sm)] text-[var(--text-step-sm)]'
-                      : size === 'lg'
-                        ? 'w-[var(--size-step-lg)] h-[var(--size-step-lg)] text-[var(--text-step-lg)]'
-                        : 'w-[var(--size-step-md)] h-[var(--size-step-md)] text-[var(--text-step-md)]'
-                  } ${getVariantClasses(
+                  className={`${getResponsiveStepClasses(size, responsive)} ${getVariantClasses(
                     isActive,
                     isCompleted,
                     step.hasErrors || false
@@ -104,48 +184,37 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
                 {/* Connector line to next step */}
                 {showConnectors && index < steps.length - 1 && (
                   <div
-                    className={`absolute top-1/2 left-full ${
-                      size === 'sm'
-                        ? 'w-[var(--width-connector-sm)]'
-                        : size === 'lg'
-                          ? 'w-[var(--width-connector-lg)]'
-                          : 'w-[var(--width-connector-md)]'
-                    } h-0.5 bg-base-300 transform -translate-y-1/2`}
+                    className={`absolute top-1/2 left-full ${getResponsiveConnectorClasses(
+                      size,
+                      responsive
+                    )} h-0.5 bg-base-300 transform -translate-y-1/2`}
                     aria-hidden="true"
                   />
                 )}
               </div>
 
               <div
-                className={`${
-                  size === 'sm'
-                    ? 'mt-tight'
-                    : size === 'lg'
-                      ? 'mt-element'
-                      : 'mt-tight'
-                } text-center`}
+                className={`${getResponsiveMarginClasses(size)} text-center ${
+                  responsive ? 'max-w-20 sm:max-w-none' : ''
+                }`}
               >
                 <div
-                  className={`${
-                    size === 'sm'
-                      ? 'text-xs'
-                      : size === 'lg'
-                        ? 'text-base'
-                        : 'text-sm'
-                  } font-medium text-base-content`}
+                  className={`${getResponsiveLabelClasses(
+                    size,
+                    responsive
+                  )} font-medium text-base-content ${
+                    responsive ? 'leading-tight' : ''
+                  }`}
                 >
                   {step.label}
                 </div>
                 {step.description &&
                   step.description !== `${index + 1} of ${steps.length}` && (
                     <div
-                      className={`${
-                        size === 'sm'
-                          ? 'text-xs'
-                          : size === 'lg'
-                            ? 'text-sm'
-                            : 'text-xs'
-                      } text-base-content/70`}
+                      className={`${getResponsiveDescriptionClasses(
+                        size,
+                        responsive
+                      )} text-base-content/70 ${responsive ? 'hidden sm:block' : ''}`}
                     >
                       {step.description}
                     </div>
