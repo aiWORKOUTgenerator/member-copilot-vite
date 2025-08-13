@@ -1,6 +1,7 @@
 'use client';
 
 import { AttributeFormProvider } from '@/contexts/AttributeFormContext';
+import { useViewMode } from '@/contexts/ViewModeContext';
 import { useAttributeTypesLoading } from '@/hooks/useAttributeTypes';
 import { PageLoading } from '@/ui';
 import { useParams } from 'react-router';
@@ -10,6 +11,7 @@ export default function AttributeTypeDetail() {
   const params = useParams();
   const attributeTypeId = params?.attributeTypeId as string;
   const isAttributeTypesLoading = useAttributeTypesLoading();
+  const { viewMode } = useViewMode();
 
   // Show loading state while checking auth status
   if (isAttributeTypesLoading) {
@@ -19,7 +21,7 @@ export default function AttributeTypeDetail() {
   // Wrap content with AttributeFormProvider for state management
   return (
     <AttributeFormProvider>
-      <AttributeForm attributeTypeId={attributeTypeId} />
+      <AttributeForm attributeTypeId={attributeTypeId} viewMode={viewMode} />
     </AttributeFormProvider>
   );
 }

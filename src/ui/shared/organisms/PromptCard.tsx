@@ -5,6 +5,7 @@ import { Prompt, PromptType } from '@/domain/entities';
 import { PromptHeader } from '../molecules/PromptHeader';
 import { InputField } from '../molecules/InputField';
 import { ChoiceGroup } from '../molecules/ChoiceGroup';
+import { ViewMode } from '@/contexts/ViewModeContext';
 
 interface PromptCardProps {
   prompt: Prompt;
@@ -12,6 +13,7 @@ interface PromptCardProps {
   onChange: (value: string | string[] | number) => void;
   validationMessage?: string;
   isValid?: boolean;
+  viewMode?: ViewMode;
 }
 
 export const PromptCard: React.FC<PromptCardProps> = ({
@@ -20,6 +22,7 @@ export const PromptCard: React.FC<PromptCardProps> = ({
   onChange,
   validationMessage,
   isValid = true,
+  viewMode = 'detailed',
 }) => {
   const [selectedValues, setSelectedValues] = useState<string[]>([]);
 
@@ -88,6 +91,7 @@ export const PromptCard: React.FC<PromptCardProps> = ({
             otherChoiceText={prompt.otherChoiceText}
             isValid={isValid}
             validationMessage={validationMessage}
+            viewMode={viewMode}
           />
         ) : (
           <InputField

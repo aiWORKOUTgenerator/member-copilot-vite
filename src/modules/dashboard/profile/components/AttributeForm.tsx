@@ -5,6 +5,7 @@ import { useAttributeType } from '@/hooks/useAttributeTypes';
 import { useContact } from '@/hooks/useContact';
 import { usePrompts } from '@/hooks/usePrompts';
 import { usePromptService } from '@/hooks';
+import { ViewMode } from '@/contexts/ViewModeContext';
 
 import { PromptCard } from '@/ui';
 import { useEffect, useState } from 'react';
@@ -13,8 +14,10 @@ import { Link } from 'react-router';
 // Component to display the attribute form with access to context
 export function AttributeForm({
   attributeTypeId,
+  viewMode,
 }: {
   attributeTypeId: string;
+  viewMode: ViewMode;
 }) {
   const { formValues, isFormDirty, isValid, initFormValues, updateFormValue } =
     useAttributeForm();
@@ -145,6 +148,7 @@ export function AttributeForm({
               onChange={(value) => handleFormValueChange(prompt.id, value)}
               validationMessage={''}
               isValid={true}
+              viewMode={viewMode}
             />
           </div>
         ))

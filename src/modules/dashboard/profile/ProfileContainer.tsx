@@ -10,6 +10,7 @@ import {
   SelectableItem,
 } from '@/ui/shared/molecules/RadioGroupOfCards';
 import { SimpleDetailedViewSelector } from '@/ui/shared/molecules/SimpleDetailedViewSelector';
+import { ViewModeProvider } from '@/contexts/ViewModeContext';
 import { useEffect, useMemo, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
 import { useAnalytics } from '@/hooks/useAnalytics';
@@ -213,7 +214,12 @@ export default function TrainingProfileLayout() {
         </div>
       )}
       <div>
-        <Outlet />
+        <ViewModeProvider
+          viewMode={viewMode}
+          setViewMode={handleViewModeChange}
+        >
+          <Outlet />
+        </ViewModeProvider>
       </div>
     </div>
   );

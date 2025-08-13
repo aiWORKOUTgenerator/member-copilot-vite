@@ -3,6 +3,7 @@
 import React from 'react';
 import { RadioGroupOfCards } from './RadioGroupOfCards';
 import { Choice } from '@/domain/entities';
+import { ViewMode } from '@/contexts/ViewModeContext';
 
 interface CheckboxCardGroupProps {
   choices: Choice[];
@@ -19,6 +20,7 @@ interface CheckboxCardGroupProps {
     | 'info'
     | 'error';
   selectedBadgeContent?: string | React.ReactNode;
+  viewMode?: ViewMode;
 }
 
 /**
@@ -36,12 +38,13 @@ export const CheckboxCardGroup: React.FC<CheckboxCardGroupProps> = ({
   gridCols = 3,
   colorScheme = 'primary',
   selectedBadgeContent = 'Selected',
+  viewMode = 'detailed',
 }) => {
   // Transform choices into SelectableItem format for RadioGroupOfCards
   const items = choices.map((choice) => ({
     id: choice.id,
     title: choice.text,
-    description: '', // Choice entity doesn't have description
+    description: '', // Choice entity doesn't have description field
     tertiary: selectedValues.includes(choice.text) ? (
       <div className="badge badge-primary badge-sm">{selectedBadgeContent}</div>
     ) : undefined,
@@ -77,7 +80,7 @@ export const CheckboxCardGroup: React.FC<CheckboxCardGroupProps> = ({
         legend=""
         gridCols={gridCols}
         colorScheme={colorScheme}
-        showDescription={false}
+        showDescription={viewMode === 'detailed'}
         showTertiary={true}
       />
     </div>
