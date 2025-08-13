@@ -7,6 +7,8 @@ import { ValidationMessage } from '../atoms/ValidationMessage';
 import { TextInput } from '../atoms/TextInput';
 import { CheckboxCardGroup } from './CheckboxCardGroup';
 import { Choice } from '@/domain/entities';
+import { ViewMode } from '@/contexts/ViewModeContext';
+import { parseChoiceText } from '@/utils/textParsing';
 
 interface ChoiceGroupProps {
   id: string;
@@ -28,6 +30,7 @@ interface ChoiceGroupProps {
     | 'warning'
     | 'info'
     | 'error';
+  viewMode?: ViewMode;
 }
 
 export const ChoiceGroup: React.FC<ChoiceGroupProps> = ({
@@ -43,6 +46,7 @@ export const ChoiceGroup: React.FC<ChoiceGroupProps> = ({
   validationMessage,
   disabled = false,
   colorScheme = 'primary',
+  viewMode = 'detailed',
 }) => {
   const [otherValue, setOtherValue] = useState('');
   const isOtherSelected = selectedValues.includes('other');
@@ -82,6 +86,7 @@ export const ChoiceGroup: React.FC<ChoiceGroupProps> = ({
           disabled={disabled}
           gridCols={3}
           colorScheme={colorScheme}
+          viewMode={viewMode}
         />
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -96,7 +101,24 @@ export const ChoiceGroup: React.FC<ChoiceGroupProps> = ({
               onClick={() => handleSingleChange(choice.text)}
             >
               <div className="card-body p-4">
-                <h3 className="card-title text-base">{choice.text}</h3>
+                {(() => {
+                  const { title, description, hasDelimiter } = parseChoiceText(
+                    choice.text,
+                    viewMode
+                  );
+                  return (
+                    <>
+                      <h3 className="card-title text-base">{title}</h3>
+                      {viewMode === 'detailed' &&
+                        hasDelimiter &&
+                        description && (
+                          <p className="text-sm text-base-content/70 mt-2">
+                            {description}
+                          </p>
+                        )}
+                    </>
+                  );
+                })()}
               </div>
             </div>
           ))}

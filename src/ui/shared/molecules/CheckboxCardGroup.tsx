@@ -3,6 +3,8 @@
 import React from 'react';
 import { RadioGroupOfCards } from './RadioGroupOfCards';
 import { Choice } from '@/domain/entities';
+import { ViewMode } from '@/contexts/ViewModeContext';
+import { parseChoiceText } from '@/utils/textParsing';
 
 interface CheckboxCardGroupProps {
   choices: Choice[];
@@ -19,6 +21,7 @@ interface CheckboxCardGroupProps {
     | 'info'
     | 'error';
   selectedBadgeContent?: string | React.ReactNode;
+  viewMode?: ViewMode;
 }
 
 /**
@@ -36,33 +39,48 @@ export const CheckboxCardGroup: React.FC<CheckboxCardGroupProps> = ({
   gridCols = 3,
   colorScheme = 'primary',
   selectedBadgeContent = 'Selected',
+  viewMode = 'detailed',
 }) => {
   // Transform choices into SelectableItem format for RadioGroupOfCards
-  const items = choices.map((choice) => ({
-    id: choice.id,
-    title: choice.text,
-    description: '', // Choice entity doesn't have description
-    tertiary: selectedValues.includes(choice.text) ? (
-      <div className="badge badge-primary badge-sm">{selectedBadgeContent}</div>
-    ) : undefined,
-  }));
+  const items = choices.map((choice) => {
+    const { title, description } = parseChoiceText(choice.text, viewMode);
+
+    return {
+      id: choice.id,
+      title,
+      description,
+      tertiary: selectedValues.includes(choice.text) ? (
+        <div className="badge badge-primary badge-sm">
+          {selectedBadgeContent}
+        </div>
+      ) : undefined,
+    };
+  });
 
   // Find currently selected items - always an array for multiple selection
-  const selectedItems: typeof items = items.filter((item) =>
-    selectedValues.includes(item.title)
-  );
+  // Need to match against original choice.text since selectedValues contains full text
+  const selectedItems: typeof items = items.filter((item) => {
+    const originalChoice = choices.find((c) => c.id === item.id);
+    return originalChoice && selectedValues.includes(originalChoice.text);
+  });
 
   const handleChange = (selected: (typeof items)[0] | typeof items) => {
     if (Array.isArray(selected)) {
-      // Multiple selection - extract titles from selected items
-      const newValues = selected.map((s) => s.title);
+      // Multiple selection - extract original choice.text from selected items
+      const newValues = selected.map((s) => {
+        const originalChoice = choices.find((c) => c.id === s.id);
+        return originalChoice ? originalChoice.text : s.title;
+      });
       onChange(newValues);
     } else {
       // Single item selected - toggle it in the array
-      const itemTitle = selected.title;
-      const newValues = selectedValues.includes(itemTitle)
-        ? selectedValues.filter((v) => v !== itemTitle)
-        : [...selectedValues, itemTitle];
+      const originalChoice = choices.find((c) => c.id === selected.id);
+      const originalText = originalChoice
+        ? originalChoice.text
+        : selected.title;
+      const newValues = selectedValues.includes(originalText)
+        ? selectedValues.filter((v) => v !== originalText)
+        : [...selectedValues, originalText];
       onChange(newValues);
     }
   };
@@ -77,7 +95,7 @@ export const CheckboxCardGroup: React.FC<CheckboxCardGroupProps> = ({
         legend=""
         gridCols={gridCols}
         colorScheme={colorScheme}
-        showDescription={false}
+        showDescription={viewMode === 'detailed'}
         showTertiary={true}
       />
     </div>
