@@ -12,7 +12,6 @@ import {
 } from 'lucide-react';
 import { CustomizationConfig } from '../types';
 import WorkoutDurationCustomization from './WorkoutDurationCustomization';
-import FocusAreaCustomization from './FocusAreaCustomization';
 import WorkoutFocusCustomization from './WorkoutFocusCustomization';
 import SleepQualityCustomization from './SleepQualityCustomization';
 import EnergyLevelCustomization from './EnergyLevelCustomization';
@@ -21,6 +20,9 @@ import AvailableEquipmentCustomization from './AvailableEquipmentCustomization';
 import SorenessCustomization from './SorenessCustomization';
 import IncludeExercisesCustomization from './IncludeExercisesCustomization';
 import ExcludeExercisesCustomization from './ExcludeExercisesCustomization';
+
+// Enhanced components from PR #3 modularization effort
+import { EnhancedFocusAreaCustomization } from './enhanced';
 
 // Export individual components
 export { default as WorkoutDurationCustomization } from './WorkoutDurationCustomization';
@@ -34,6 +36,9 @@ export { default as SorenessCustomization } from './SorenessCustomization';
 export { default as IncludeExercisesCustomization } from './IncludeExercisesCustomization';
 export { default as ExcludeExercisesCustomization } from './ExcludeExercisesCustomization';
 
+// Enhanced components exports
+export { EnhancedFocusAreaCustomization } from './enhanced';
+
 // Configuration for all available customizations
 export const CUSTOMIZATION_CONFIG: CustomizationConfig[] = [
   {
@@ -45,7 +50,7 @@ export const CUSTOMIZATION_CONFIG: CustomizationConfig[] = [
   },
   {
     key: 'customization_areas',
-    component: FocusAreaCustomization,
+    component: EnhancedFocusAreaCustomization,
     label: 'Focus Areas',
     icon: Target,
     category: 'Workout Goals & Structure',
