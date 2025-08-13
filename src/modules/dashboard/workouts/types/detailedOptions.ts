@@ -121,11 +121,11 @@ export const FIELD_SPECIFIC_CONSTRAINTS: Partial<
 > = {
   customization_sleep: {
     min: 1,
-    max: 5, // Sleep uses 1-5 scale
+    max: 6, // Sleep uses 1-6 scale (uniform with energy)
   },
   customization_stress: {
     min: 1,
-    max: 5, // Stress uses 1-5 scale
+    max: 6, // Stress uses 1-6 scale (uniform with energy)
   },
   customization_energy: {
     min: 1,

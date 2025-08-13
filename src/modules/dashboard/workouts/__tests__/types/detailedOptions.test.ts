@@ -131,7 +131,7 @@ describe('getFieldConstraints', () => {
       'rating'
     );
 
-    expect(sleepConstraints.max).toBe(5);
+    expect(sleepConstraints.max).toBe(6); // Updated to uniform 1-6 scale
     expect(energyConstraints.max).toBe(6);
   });
 });
@@ -147,11 +147,11 @@ describe('validateFieldValue', () => {
     it('should reject out-of-range values', () => {
       const lowResult = validateFieldValue('customization_sleep', 'rating', 0);
       expect(lowResult.isValid).toBe(false);
-      expect(lowResult.error).toContain('Must be between 1 and 5');
+      expect(lowResult.error).toContain('Must be between 1 and 6');
 
-      const highResult = validateFieldValue('customization_sleep', 'rating', 6);
+      const highResult = validateFieldValue('customization_sleep', 'rating', 7);
       expect(highResult.isValid).toBe(false);
-      expect(highResult.error).toContain('Must be between 1 and 5');
+      expect(highResult.error).toContain('Must be between 1 and 6');
     });
 
     it('should reject non-numeric values', () => {
@@ -164,14 +164,14 @@ describe('validateFieldValue', () => {
       expect(result.error).toBe('Must be a valid number');
     });
 
-    it('should handle different rating scales', () => {
-      // Sleep: 1-5 scale
+    it('should handle uniform 1-6 rating scales', () => {
+      // Sleep: 1-6 scale (uniform with energy)
       const sleepResult = validateFieldValue(
         'customization_sleep',
         'rating',
         6
       );
-      expect(sleepResult.isValid).toBe(false);
+      expect(sleepResult.isValid).toBe(true);
 
       // Energy: 1-6 scale
       const energyResult = validateFieldValue(
@@ -180,6 +180,14 @@ describe('validateFieldValue', () => {
         6
       );
       expect(energyResult.isValid).toBe(true);
+
+      // Stress: 1-6 scale (uniform with energy)
+      const stressResult = validateFieldValue(
+        'customization_stress',
+        'rating',
+        6
+      );
+      expect(stressResult.isValid).toBe(true);
     });
   });
 

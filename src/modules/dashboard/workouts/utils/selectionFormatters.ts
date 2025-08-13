@@ -58,17 +58,33 @@ export const formatSelectionValue = (
 
     [CUSTOMIZATION_FIELD_KEYS.SLEEP]: (val) => {
       const sleep = Number(val);
-      if (isNaN(sleep) || sleep < 1 || sleep > 5) return null;
+      if (isNaN(sleep) || sleep < 1 || sleep > 6) return null;
 
-      const labels = ['', 'Very Poor', 'Poor', 'Fair', 'Good', 'Excellent'];
+      const labels = [
+        '',
+        'Very Poor',
+        'Poor',
+        'Fair',
+        'Good',
+        'Very Good',
+        'Excellent',
+      ];
       return labels[sleep];
     },
 
     [CUSTOMIZATION_FIELD_KEYS.STRESS]: (val) => {
       const stress = Number(val);
-      if (isNaN(stress) || stress < 1 || stress > 5) return null;
+      if (isNaN(stress) || stress < 1 || stress > 6) return null;
 
-      const labels = ['', 'Very Low', 'Low', 'Moderate', 'High', 'Very High'];
+      const labels = [
+        '',
+        'Very Low',
+        'Low',
+        'Moderate',
+        'High',
+        'Very High',
+        'Extreme',
+      ];
       return labels[stress];
     },
 

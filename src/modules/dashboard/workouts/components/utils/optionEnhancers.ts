@@ -152,7 +152,7 @@ export const enhanceSleepQualityOptions = () => {
       title: option.label,
       description: option.description,
       tertiary: createElement(LevelDots, {
-        count: 5,
+        count: 6,
         activeIndex: option.value - 1,
         size: 'sm',
       }),
@@ -170,7 +170,7 @@ export const enhanceStressLevelOptions = () => {
       title: option.label,
       description: option.description,
       tertiary: createElement(LevelDots, {
-        count: 5,
+        count: 6,
         activeIndex: option.value - 1,
         size: 'sm',
       }),

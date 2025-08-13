@@ -62,12 +62,13 @@ describe('formatSelectionValue', () => {
       expect(formatSelectionValue(fieldKey, 2)).toBe('Poor');
       expect(formatSelectionValue(fieldKey, 3)).toBe('Fair');
       expect(formatSelectionValue(fieldKey, 4)).toBe('Good');
-      expect(formatSelectionValue(fieldKey, 5)).toBe('Excellent');
+      expect(formatSelectionValue(fieldKey, 5)).toBe('Very Good');
+      expect(formatSelectionValue(fieldKey, 6)).toBe('Excellent');
     });
 
     it('should handle invalid values', () => {
       expect(formatSelectionValue(fieldKey, 0)).toBeNull();
-      expect(formatSelectionValue(fieldKey, 6)).toBeNull();
+      expect(formatSelectionValue(fieldKey, 7)).toBeNull();
       expect(formatSelectionValue(fieldKey, null)).toBeNull();
     });
   });
@@ -81,11 +82,12 @@ describe('formatSelectionValue', () => {
       expect(formatSelectionValue(fieldKey, 3)).toBe('Moderate');
       expect(formatSelectionValue(fieldKey, 4)).toBe('High');
       expect(formatSelectionValue(fieldKey, 5)).toBe('Very High');
+      expect(formatSelectionValue(fieldKey, 6)).toBe('Extreme');
     });
 
     it('should handle invalid values', () => {
       expect(formatSelectionValue(fieldKey, 0)).toBeNull();
-      expect(formatSelectionValue(fieldKey, 6)).toBeNull();
+      expect(formatSelectionValue(fieldKey, 7)).toBeNull();
       expect(formatSelectionValue(fieldKey, null)).toBeNull();
     });
   });

@@ -224,7 +224,7 @@ export const FOCUS_AREA_OPTIONS: FocusAreaOption[] = [
   { value: 'recovery_stretching', label: 'Recovery/Stretching' },
 ];
 
-// Sleep quality options (1-5 scale)
+// Sleep quality options (1-6 scale)
 export const SLEEP_QUALITY_OPTIONS: SleepQualityOption[] = [
   { value: 1, label: 'Very Poor', description: 'Barely slept, very tired' },
   { value: 2, label: 'Poor', description: 'Restless sleep, feeling tired' },
@@ -232,12 +232,17 @@ export const SLEEP_QUALITY_OPTIONS: SleepQualityOption[] = [
   { value: 4, label: 'Good', description: 'Solid sleep, feeling rested' },
   {
     value: 5,
+    label: 'Very Good',
+    description: 'Great sleep, feeling refreshed',
+  },
+  {
+    value: 6,
     label: 'Excellent',
-    description: 'Perfect sleep, fully refreshed',
+    description: 'Perfect sleep, fully energized',
   },
 ];
 
-// Stress level options (1-5 scale)
+// Stress level options (1-6 scale)
 export const STRESS_LEVEL_OPTIONS: StressLevelOption[] = [
   { value: 1, label: 'Very Low', description: 'Calm and relaxed' },
   { value: 2, label: 'Low', description: 'Mostly relaxed with minor concerns' },
@@ -246,7 +251,12 @@ export const STRESS_LEVEL_OPTIONS: StressLevelOption[] = [
   {
     value: 5,
     label: 'Very High',
-    description: 'Extremely stressed and overwhelmed',
+    description: 'Quite stressed and overwhelmed',
+  },
+  {
+    value: 6,
+    label: 'Extreme',
+    description: 'Extremely stressed, need immediate relief',
   },
 ];
 

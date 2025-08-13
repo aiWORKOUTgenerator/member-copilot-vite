@@ -249,7 +249,7 @@ describe('Detailed Mode Option Enhancers', () => {
     it('should enhance sleep quality options with level dots', () => {
       const enhanced = enhanceSleepQualityOptions();
 
-      expect(enhanced).toHaveLength(5); // 1-5 sleep quality scale
+      expect(enhanced).toHaveLength(6); // 1-6 sleep quality scale (uniform)
 
       enhanced.forEach((option, index) => {
         expect(option).toHaveProperty('id');
@@ -261,7 +261,7 @@ describe('Detailed Mode Option Enhancers', () => {
         // Check that the active index matches the sleep quality level
         const { container } = render(option.tertiary as React.ReactElement);
         const dots = container.querySelector('[data-testid="level-dots"]');
-        expect(dots?.getAttribute('data-count')).toBe('5');
+        expect(dots?.getAttribute('data-count')).toBe('6');
         expect(dots?.getAttribute('data-active')).toBe(index.toString());
       });
     });
@@ -271,7 +271,7 @@ describe('Detailed Mode Option Enhancers', () => {
     it('should enhance stress level options with level dots', () => {
       const enhanced = enhanceStressLevelOptions();
 
-      expect(enhanced).toHaveLength(5); // 1-5 stress level scale
+      expect(enhanced).toHaveLength(6); // 1-6 stress level scale (uniform)
 
       enhanced.forEach((option, index) => {
         expect(option).toHaveProperty('tertiary');
@@ -279,7 +279,7 @@ describe('Detailed Mode Option Enhancers', () => {
 
         const { container } = render(option.tertiary as React.ReactElement);
         const dots = container.querySelector('[data-testid="level-dots"]');
-        expect(dots?.getAttribute('data-count')).toBe('5');
+        expect(dots?.getAttribute('data-count')).toBe('6');
         expect(dots?.getAttribute('data-active')).toBe(index.toString());
       });
     });
