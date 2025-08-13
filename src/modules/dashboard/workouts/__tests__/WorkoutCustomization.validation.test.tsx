@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import WorkoutCustomization from '../components/WorkoutCustomization';
-import { VALIDATION_MESSAGES } from '../constants/validationMessages';
+import { DETAILED_VALIDATION_MESSAGES } from '../constants/validationMessages';
 import { PerWorkoutOptions } from '../components/types';
 import { AutoScrollProvider } from '@/contexts/AutoScrollContext';
 
@@ -35,9 +35,11 @@ describe('WorkoutCustomization Validation', () => {
 
       // Should not show any validation messages
       const energyError = screen.queryByText(
-        VALIDATION_MESSAGES.ENERGY_REQUIRED
+        DETAILED_VALIDATION_MESSAGES.ENERGY_REQUIRED
       );
-      const focusError = screen.queryByText(VALIDATION_MESSAGES.FOCUS_REQUIRED);
+      const focusError = screen.queryByText(
+        DETAILED_VALIDATION_MESSAGES.FOCUS_REQUIRED
+      );
 
       expect(energyError).not.toBeInTheDocument();
       expect(focusError).not.toBeInTheDocument();
@@ -140,10 +142,10 @@ describe('WorkoutCustomization Validation', () => {
       );
 
       const durationError = screen.queryByText(
-        VALIDATION_MESSAGES.INVALID_DURATION
+        DETAILED_VALIDATION_MESSAGES.DURATION_REQUIRED
       );
       const equipmentError = screen.queryByText(
-        VALIDATION_MESSAGES.INVALID_EQUIPMENT
+        DETAILED_VALIDATION_MESSAGES.EQUIPMENT_REQUIRED
       );
 
       expect(durationError).not.toBeInTheDocument();
@@ -244,7 +246,7 @@ describe('WorkoutCustomization Validation', () => {
             {...defaultProps}
             options={options}
             errors={{
-              customization_energy: VALIDATION_MESSAGES.ENERGY_RANGE,
+              customization_energy: DETAILED_VALIDATION_MESSAGES.ENERGY_RANGE,
             }}
           />
         </TestWrapper>
@@ -252,7 +254,9 @@ describe('WorkoutCustomization Validation', () => {
 
       // Note: Range validation errors are handled by the errors prop
       // but may not be displayed in the current UI implementation
-      const rangeError = screen.queryByText(VALIDATION_MESSAGES.ENERGY_RANGE);
+      const rangeError = screen.queryByText(
+        DETAILED_VALIDATION_MESSAGES.ENERGY_RANGE
+      );
       // For now, we'll skip this test as range validation is handled differently
       expect(rangeError).not.toBeInTheDocument();
     });
@@ -268,7 +272,7 @@ describe('WorkoutCustomization Validation', () => {
             {...defaultProps}
             options={options}
             errors={{
-              customization_duration: VALIDATION_MESSAGES.DURATION_RANGE,
+              customization_duration: DETAILED_VALIDATION_MESSAGES.DURATION_MIN,
             }}
             activeQuickStep="duration-equipment"
           />
@@ -277,7 +281,9 @@ describe('WorkoutCustomization Validation', () => {
 
       // Note: Range validation errors are handled by the errors prop
       // but may not be displayed in the current UI implementation
-      const rangeError = screen.queryByText(VALIDATION_MESSAGES.DURATION_RANGE);
+      const rangeError = screen.queryByText(
+        DETAILED_VALIDATION_MESSAGES.DURATION_MIN
+      );
       // For now, we'll skip this test as range validation is handled differently
       expect(rangeError).not.toBeInTheDocument();
     });
