@@ -9,6 +9,7 @@ import {
   useWorkoutFieldAnalytics,
 } from '../useWorkoutAnalytics';
 import { useAnalytics } from '@/hooks/useAnalytics';
+import { CUSTOMIZATION_FIELD_KEYS } from '../../constants/fieldKeys';
 
 // Mock the analytics service
 vi.mock('@/hooks/useAnalytics');
@@ -35,6 +36,146 @@ describe('useWorkoutAnalytics', () => {
 
   afterEach(() => {
     vi.restoreAllMocks();
+  });
+
+  describe('field type detection', () => {
+    it('should correctly detect rating field types', () => {
+      const { result } = renderHook(() => useWorkoutAnalytics());
+
+      act(() => {
+        result.current.trackSelection(
+          CUSTOMIZATION_FIELD_KEYS.ENERGY,
+          4,
+          'detailed'
+        );
+      });
+
+      expect(mockAnalytics.track).toHaveBeenCalledWith(
+        'workout_field_selected',
+        {
+          field: CUSTOMIZATION_FIELD_KEYS.ENERGY,
+          value: 4,
+          valueType: 'rating',
+          mode: 'detailed',
+          timestamp: 1234567890,
+        }
+      );
+    });
+
+    it('should correctly detect duration field types', () => {
+      const { result } = renderHook(() => useWorkoutAnalytics());
+
+      act(() => {
+        result.current.trackSelection(
+          CUSTOMIZATION_FIELD_KEYS.DURATION,
+          30,
+          'detailed'
+        );
+      });
+
+      expect(mockAnalytics.track).toHaveBeenCalledWith(
+        'workout_field_selected',
+        {
+          field: CUSTOMIZATION_FIELD_KEYS.DURATION,
+          value: 30,
+          valueType: 'duration',
+          mode: 'detailed',
+          timestamp: 1234567890,
+        }
+      );
+    });
+
+    it('should correctly detect text field types', () => {
+      const { result } = renderHook(() => useWorkoutAnalytics());
+
+      act(() => {
+        result.current.trackSelection(
+          CUSTOMIZATION_FIELD_KEYS.INCLUDE,
+          'pushups, squats',
+          'detailed'
+        );
+      });
+
+      expect(mockAnalytics.track).toHaveBeenCalledWith(
+        'workout_field_selected',
+        {
+          field: CUSTOMIZATION_FIELD_KEYS.INCLUDE,
+          value: 'pushups, squats',
+          valueType: 'text',
+          mode: 'detailed',
+          timestamp: 1234567890,
+        }
+      );
+    });
+
+    it('should correctly detect single-select field types', () => {
+      const { result } = renderHook(() => useWorkoutAnalytics());
+
+      act(() => {
+        result.current.trackSelection(
+          CUSTOMIZATION_FIELD_KEYS.FOCUS,
+          'strength',
+          'detailed'
+        );
+      });
+
+      expect(mockAnalytics.track).toHaveBeenCalledWith(
+        'workout_field_selected',
+        {
+          field: CUSTOMIZATION_FIELD_KEYS.FOCUS,
+          value: 'strength',
+          valueType: 'single-select',
+          mode: 'detailed',
+          timestamp: 1234567890,
+        }
+      );
+    });
+
+    it('should correctly detect multi-select field types for arrays', () => {
+      const { result } = renderHook(() => useWorkoutAnalytics());
+
+      act(() => {
+        result.current.trackSelection(
+          CUSTOMIZATION_FIELD_KEYS.AREAS,
+          ['upper_body', 'core'],
+          'detailed'
+        );
+      });
+
+      expect(mockAnalytics.track).toHaveBeenCalledWith(
+        'workout_field_selected',
+        {
+          field: CUSTOMIZATION_FIELD_KEYS.AREAS,
+          value: 2, // Array length for multi-select
+          valueType: 'multi-select',
+          mode: 'detailed',
+          timestamp: 1234567890,
+        }
+      );
+    });
+
+    it('should fallback to single-select for unknown fields', () => {
+      const { result } = renderHook(() => useWorkoutAnalytics());
+
+      act(() => {
+        result.current.trackSelection(
+          'unknown_field',
+          'some_value',
+          'detailed'
+        );
+      });
+
+      expect(mockAnalytics.track).toHaveBeenCalledWith(
+        'workout_field_selected',
+        {
+          field: 'unknown_field',
+          value: 'some_value',
+          valueType: 'single-select',
+          mode: 'detailed',
+          timestamp: 1234567890,
+        }
+      );
+    });
   });
 
   describe('trackSelection', () => {

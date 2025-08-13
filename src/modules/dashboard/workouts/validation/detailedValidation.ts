@@ -7,7 +7,7 @@
  */
 
 import { validateFieldValue } from '../types/detailedOptions';
-import { CUSTOMIZATION_FIELD_KEYS } from '../constants/fieldKeys';
+import { FIELD_TYPE_MAP } from '../constants/fieldTypes';
 import {
   getValidationMessage,
   ValidationMessageHelpers,
@@ -94,24 +94,8 @@ export const validateSingleField = (
   fieldKey: keyof WorkoutOptions,
   value: unknown
 ): { isValid: boolean; error?: string } => {
-  // Map field keys to validation types
-  const fieldTypeMap: Record<
-    string,
-    'rating' | 'multi-select' | 'single-select' | 'duration' | 'text'
-  > = {
-    [CUSTOMIZATION_FIELD_KEYS.ENERGY]: 'rating',
-    [CUSTOMIZATION_FIELD_KEYS.SLEEP]: 'rating',
-    [CUSTOMIZATION_FIELD_KEYS.STRESS]: 'rating',
-    [CUSTOMIZATION_FIELD_KEYS.DURATION]: 'duration',
-    [CUSTOMIZATION_FIELD_KEYS.FOCUS]: 'single-select',
-    [CUSTOMIZATION_FIELD_KEYS.AREAS]: 'multi-select',
-    [CUSTOMIZATION_FIELD_KEYS.SORENESS]: 'multi-select',
-    [CUSTOMIZATION_FIELD_KEYS.EQUIPMENT]: 'multi-select',
-    [CUSTOMIZATION_FIELD_KEYS.INCLUDE]: 'text',
-    [CUSTOMIZATION_FIELD_KEYS.EXCLUDE]: 'text',
-  };
-
-  const fieldType = fieldTypeMap[fieldKey];
+  // Use shared field type mapping for consistency with analytics
+  const fieldType = FIELD_TYPE_MAP[fieldKey];
   if (!fieldType) {
     return { isValid: true }; // Unknown fields pass validation
   }

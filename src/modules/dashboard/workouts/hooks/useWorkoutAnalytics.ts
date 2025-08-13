@@ -9,6 +9,7 @@
 import { useCallback } from 'react';
 import { useAnalytics } from '@/hooks/useAnalytics';
 import type { AnalyticsService } from '@/services/analytics';
+import { getFieldType } from '../constants/fieldTypes';
 
 /**
  * Analytics events specific to workout customization
@@ -81,25 +82,19 @@ export const useWorkoutAnalytics = () => {
   const trackSelection = useCallback(
     (fieldKey: string, value: unknown, mode: 'quick' | 'detailed') => {
       try {
-        // Determine value type for better analytics
+        // Determine value type for better analytics using shared field type mapping
         let valueType: WorkoutAnalyticsEvents['workout_field_selected']['valueType'];
+
         if (Array.isArray(value)) {
           valueType = 'multi-select';
-        } else if (
-          (typeof value === 'number' && fieldKey.includes('energy')) ||
-          fieldKey.includes('sleep') ||
-          fieldKey.includes('stress')
-        ) {
-          valueType = 'rating';
-        } else if (typeof value === 'number' && fieldKey.includes('duration')) {
-          valueType = 'duration';
-        } else if (
-          typeof value === 'string' &&
-          (fieldKey.includes('include') || fieldKey.includes('exclude'))
-        ) {
-          valueType = 'text';
         } else {
-          valueType = 'single-select';
+          const fieldType = getFieldType(fieldKey);
+          if (fieldType) {
+            valueType = fieldType;
+          } else {
+            // Fallback for unknown fields
+            valueType = 'single-select';
+          }
         }
 
         analytics.track('workout_field_selected', {
