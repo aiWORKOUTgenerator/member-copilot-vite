@@ -58,8 +58,8 @@ export const isTextField = (
  */
 export interface FieldConstraints {
   rating: {
-    min: number;
-    max: number;
+    min?: number; // Optional but defaults to 1 in validation
+    max?: number; // Optional but defaults to 6 in validation
     required?: boolean;
   };
   'multi-select': {
@@ -187,13 +187,14 @@ export const validateFieldValue = (
         return { isValid: false, error: 'Must be a valid number' };
       }
 
-      if (
-        numValue < ratingConstraints.min ||
-        numValue > ratingConstraints.max
-      ) {
+      // Defensive programming: ensure min/max are defined for ratings
+      const minValue = ratingConstraints.min ?? 1;
+      const maxValue = ratingConstraints.max ?? 6;
+
+      if (numValue < minValue || numValue > maxValue) {
         return {
           isValid: false,
-          error: `Must be between ${ratingConstraints.min} and ${ratingConstraints.max}`,
+          error: `Must be between ${minValue} and ${maxValue}`,
         };
       }
       break;

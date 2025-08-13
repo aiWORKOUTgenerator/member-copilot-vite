@@ -189,6 +189,33 @@ describe('validateFieldValue', () => {
       );
       expect(stressResult.isValid).toBe(true);
     });
+
+    it('should handle undefined min/max values with defensive defaults', () => {
+      // Test with a field that has no specific constraints (should use defaults)
+      const result = validateFieldValue('unknown_rating_field', 'rating', 3);
+      expect(result.isValid).toBe(true);
+
+      // Test edge cases with defaults (1-6)
+      const minResult = validateFieldValue('unknown_rating_field', 'rating', 1);
+      expect(minResult.isValid).toBe(true);
+
+      const maxResult = validateFieldValue('unknown_rating_field', 'rating', 6);
+      expect(maxResult.isValid).toBe(true);
+
+      const belowMinResult = validateFieldValue(
+        'unknown_rating_field',
+        'rating',
+        0
+      );
+      expect(belowMinResult.isValid).toBe(false);
+
+      const aboveMaxResult = validateFieldValue(
+        'unknown_rating_field',
+        'rating',
+        7
+      );
+      expect(aboveMaxResult.isValid).toBe(false);
+    });
   });
 
   describe('Multi-select field validation', () => {
