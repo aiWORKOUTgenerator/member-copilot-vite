@@ -111,11 +111,11 @@ export default function TrainingProfileLayout() {
 
   // Handle step click navigation
   const handleStepClick = (stepId: string) => {
-    // Track step selection for analytics
+    // Track attribute selection for analytics (keeping original event name for continuity)
     const attributeType = attributeTypes.find(
       (type) => type.id.toString() === stepId
     );
-    analytics.track('Profile Step Selected', {
+    analytics.track('Profile Attribute Card Selected', {
       attributeTypeId: stepId,
       attributeTypeName: attributeType?.name,
       viewMode: viewMode,
