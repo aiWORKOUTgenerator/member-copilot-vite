@@ -43,8 +43,12 @@ export const CheckboxCardGroup: React.FC<CheckboxCardGroupProps> = ({
   // Transform choices into SelectableItem format for RadioGroupOfCards
   const items = choices.map((choice) => ({
     id: choice.id,
-    title: choice.text,
-    description: '', // Choice entity doesn't have description field
+    title:
+      viewMode === 'simple' ? choice.text.split(/[-:]/)[0].trim() : choice.text,
+    description:
+      viewMode === 'detailed' && /[-:]/.test(choice.text)
+        ? choice.text.split(/[-:]/).slice(1).join(':').trim()
+        : '',
     tertiary: selectedValues.includes(choice.text) ? (
       <div className="badge badge-primary badge-sm">{selectedBadgeContent}</div>
     ) : undefined,

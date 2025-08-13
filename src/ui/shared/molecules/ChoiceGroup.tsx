@@ -100,8 +100,16 @@ export const ChoiceGroup: React.FC<ChoiceGroupProps> = ({
               onClick={() => handleSingleChange(choice.text)}
             >
               <div className="card-body p-4">
-                <h3 className="card-title text-base">{choice.text}</h3>
-                {/* Choice entity doesn't have description field - only shows title in both views */}
+                <h3 className="card-title text-base">
+                  {viewMode === 'simple'
+                    ? choice.text.split(/[-:]/)[0].trim()
+                    : choice.text}
+                </h3>
+                {viewMode === 'detailed' && /[-:]/.test(choice.text) && (
+                  <p className="text-sm text-base-content/70 mt-2">
+                    {choice.text.split(/[-:]/).slice(1).join(':').trim()}
+                  </p>
+                )}
               </div>
             </div>
           ))}
