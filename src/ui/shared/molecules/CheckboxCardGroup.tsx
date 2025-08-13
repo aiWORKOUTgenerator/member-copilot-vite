@@ -43,8 +43,7 @@ export const CheckboxCardGroup: React.FC<CheckboxCardGroupProps> = ({
   // Transform choices into SelectableItem format for RadioGroupOfCards
   const items = choices.map((choice) => ({
     id: choice.id,
-    title:
-      viewMode === 'simple' ? choice.text.split(/[-:]/)[0].trim() : choice.text,
+    title: choice.text.split(/[-:]/)[0].trim(),
     description:
       viewMode === 'detailed' && /[-:]/.test(choice.text)
         ? choice.text.split(/[-:]/).slice(1).join(':').trim()

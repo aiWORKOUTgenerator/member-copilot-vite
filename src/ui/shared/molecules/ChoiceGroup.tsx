@@ -101,9 +101,7 @@ export const ChoiceGroup: React.FC<ChoiceGroupProps> = ({
             >
               <div className="card-body p-4">
                 <h3 className="card-title text-base">
-                  {viewMode === 'simple'
-                    ? choice.text.split(/[-:]/)[0].trim()
-                    : choice.text}
+                  {choice.text.split(/[-:]/)[0].trim()}
                 </h3>
                 {viewMode === 'detailed' && /[-:]/.test(choice.text) && (
                   <p className="text-sm text-base-content/70 mt-2">
