@@ -52,6 +52,25 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
     return `${baseClasses} bg-base-100 text-base-content/70 border-base-300`;
   };
 
+  const getResponsiveStepClasses = (
+    size: 'sm' | 'md' | 'lg',
+    responsive: boolean
+  ): string => {
+    if (!responsive) {
+      return {
+        sm: 'w-[var(--size-step-sm)] h-[var(--size-step-sm)] text-[var(--text-step-sm)]',
+        md: 'w-[var(--size-step-md)] h-[var(--size-step-md)] text-[var(--text-step-md)]',
+        lg: 'w-[var(--size-step-lg)] h-[var(--size-step-lg)] text-[var(--text-step-lg)]',
+      }[size];
+    }
+
+    return {
+      sm: 'w-8 h-8 text-xs sm:w-[var(--size-step-sm)] sm:h-[var(--size-step-sm)] sm:text-[var(--text-step-sm)]',
+      md: 'w-9 h-9 text-xs sm:w-[var(--size-step-md)] sm:h-[var(--size-step-md)] sm:text-[var(--text-step-md)]',
+      lg: 'w-10 h-10 text-sm sm:w-[var(--size-step-lg)] sm:h-[var(--size-step-lg)] sm:text-[var(--text-step-lg)]',
+    }[size];
+  };
+
   return (
     <div
       className={`${responsive ? 'overflow-x-auto' : 'flex justify-center'} p-element`}
@@ -77,19 +96,7 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
             <div key={step.id} className="flex flex-col items-center">
               <div className="relative">
                 <div
-                  className={`${
-                    size === 'sm'
-                      ? responsive
-                        ? 'w-8 h-8 text-xs sm:w-[var(--size-step-sm)] sm:h-[var(--size-step-sm)] sm:text-[var(--text-step-sm)]'
-                        : 'w-[var(--size-step-sm)] h-[var(--size-step-sm)] text-[var(--text-step-sm)]'
-                      : size === 'lg'
-                        ? responsive
-                          ? 'w-10 h-10 text-sm sm:w-[var(--size-step-lg)] sm:h-[var(--size-step-lg)] sm:text-[var(--text-step-lg)]'
-                          : 'w-[var(--size-step-lg)] h-[var(--size-step-lg)] text-[var(--text-step-lg)]'
-                        : responsive
-                          ? 'w-9 h-9 text-xs sm:w-[var(--size-step-md)] sm:h-[var(--size-step-md)] sm:text-[var(--text-step-md)]'
-                          : 'w-[var(--size-step-md)] h-[var(--size-step-md)] text-[var(--text-step-md)]'
-                  } ${getVariantClasses(
+                  className={`${getResponsiveStepClasses(size, responsive)} ${getVariantClasses(
                     isActive,
                     isCompleted,
                     step.hasErrors || false
