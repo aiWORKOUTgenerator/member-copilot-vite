@@ -11,7 +11,7 @@ import { ConfigurationGuard } from './ui/shared/organisms/ConfigurationGuard.tsx
 
 // Load dynamic theme CSS
 const currentDomain = window.location.hostname;
-const apiUrl = import.meta.env.VITE_PRIMARY_URL;
+const apiUrl = import.meta.env.VITE_CONFIG_API_URL;
 
 if (apiUrl) {
   const cssLink = document.createElement('link');
