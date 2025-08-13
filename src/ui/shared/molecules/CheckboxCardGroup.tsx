@@ -54,21 +54,29 @@ export const CheckboxCardGroup: React.FC<CheckboxCardGroupProps> = ({
   }));
 
   // Find currently selected items - always an array for multiple selection
-  const selectedItems: typeof items = items.filter((item) =>
-    selectedValues.includes(item.title)
-  );
+  // Need to match against original choice.text since selectedValues contains full text
+  const selectedItems: typeof items = items.filter((item) => {
+    const originalChoice = choices.find((c) => c.id === item.id);
+    return originalChoice && selectedValues.includes(originalChoice.text);
+  });
 
   const handleChange = (selected: (typeof items)[0] | typeof items) => {
     if (Array.isArray(selected)) {
-      // Multiple selection - extract titles from selected items
-      const newValues = selected.map((s) => s.title);
+      // Multiple selection - extract original choice.text from selected items
+      const newValues = selected.map((s) => {
+        const originalChoice = choices.find((c) => c.id === s.id);
+        return originalChoice ? originalChoice.text : s.title;
+      });
       onChange(newValues);
     } else {
       // Single item selected - toggle it in the array
-      const itemTitle = selected.title;
-      const newValues = selectedValues.includes(itemTitle)
-        ? selectedValues.filter((v) => v !== itemTitle)
-        : [...selectedValues, itemTitle];
+      const originalChoice = choices.find((c) => c.id === selected.id);
+      const originalText = originalChoice
+        ? originalChoice.text
+        : selected.title;
+      const newValues = selectedValues.includes(originalText)
+        ? selectedValues.filter((v) => v !== originalText)
+        : [...selectedValues, originalText];
       onChange(newValues);
     }
   };
