@@ -9,7 +9,7 @@ describe('Selection Counting Edge Cases', () => {
     );
     expect(result.isValid).toBe(false);
     expect(result.errorMessage).toBe(
-      'Duration must be between 5 and 300 minutes'
+      'Workout duration must be at least 5 minutes'
     );
   });
 
