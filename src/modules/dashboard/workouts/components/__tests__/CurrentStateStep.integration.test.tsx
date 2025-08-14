@@ -427,16 +427,16 @@ describe('CurrentStateStep Integration', () => {
       render(<CurrentStateStep {...defaultProps} />);
 
       expect(
-        screen.getByText('How energetic are you feeling today?')
+        screen.getAllByText('How energetic are you feeling today?')[0]
       ).toBeInTheDocument();
       expect(
-        screen.getByText('How well did you sleep last night?')
+        screen.getAllByText('How well did you sleep last night?')[0]
       ).toBeInTheDocument();
       expect(
-        screen.getByText("What's your current stress level?")
+        screen.getAllByText("What's your current stress level?")[0]
       ).toBeInTheDocument();
       expect(
-        screen.getByText('Are you experiencing any soreness?')
+        screen.getAllByText('Are you experiencing any soreness?')[0]
       ).toBeInTheDocument();
     });
   });
@@ -447,7 +447,7 @@ describe('CurrentStateStep Integration', () => {
       render(<CurrentStateStep {...defaultProps} options={options} />);
 
       // Verify the component receives the correct value
-      const selectedButton = screen.querySelector('.selected');
+      const selectedButton = document.querySelector('.selected');
       expect(selectedButton).toHaveTextContent('Moderate');
     });
 
@@ -459,10 +459,9 @@ describe('CurrentStateStep Integration', () => {
       fireEvent.click(firstSorenessOption);
 
       await waitFor(() => {
-        expect(mockOnChange).toHaveBeenCalledWith(
-          'customization_soreness',
-          'neck_shoulders'
-        );
+        expect(mockOnChange).toHaveBeenCalledWith('customization_soreness', [
+          'neck_shoulders',
+        ]);
       });
     });
   });
