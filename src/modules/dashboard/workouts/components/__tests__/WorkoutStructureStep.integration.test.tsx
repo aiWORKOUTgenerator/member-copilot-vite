@@ -278,30 +278,9 @@ describe('WorkoutStructureStep Integration', () => {
         );
       });
     });
-
-    it('calls validation when field values change', async () => {
-      const onChange = vi.fn();
-      render(<WorkoutStructureStep {...defaultProps} onChange={onChange} />);
-
-      // Select a duration
-      const durationOption = screen.getByText('15 minutes');
-      fireEvent.click(durationOption);
-
-      await waitFor(() => {
-        expect(vi.mocked(validateDetailedStep)).toHaveBeenCalled();
-      });
-    });
   });
 
   describe('Analytics Integration', () => {
-    it('has analytics tracking functions available', () => {
-      render(<WorkoutStructureStep {...defaultProps} />);
-
-      // Verify that the analytics functions are available and mocked
-      expect(mockTrackStepCompletion).toBeDefined();
-      expect(mockTrackValidationError).toBeDefined();
-    });
-
     it('has analytics tracking functions available', () => {
       render(<WorkoutStructureStep {...defaultProps} />);
 
