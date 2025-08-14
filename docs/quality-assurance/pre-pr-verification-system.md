@@ -1,412 +1,471 @@
-# Pre-PR Verification System Implementation
+# Pre-PR Verification System - Developer Checklist
 
-**Date:** August 2025  
-**Status:** Implementation Plan  
+**Date:** January 2025  
+**Status:** Active Checklist  
 **Owner:** Development Team
 
 ## Overview
 
-This document outlines the comprehensive pre-PR verification system designed to catch issues before they reach GitHub, ensuring faster reviews, fewer CI failures, and a consistently healthy codebase.
+This comprehensive checklist ensures code quality and catches issues before committing and pushing code. Use this checklist systematically to maintain a healthy codebase and prevent CI failures.
 
-## Current State Analysis
+## 🚀 Quick Start Checklist
 
-### Existing Infrastructure
+Before committing any code, run through this checklist:
 
-- ✅ **ESLint**: Configured with TypeScript and React rules
-- ✅ **TypeScript**: Strict configuration with modern patterns
-- ✅ **Husky**: Basic pre-commit and pre-push hooks
-- ✅ **Vitest**: Test framework configured with 52 passing tests across 11 test files
-- ✅ **Security**: npm audit configured and passing (0 vulnerabilities)
-- ✅ **Testing**: Unit, integration, and E2E tests present and passing
-- ✅ **Formatting**: Prettier configured
-- ✅ **Coverage**: Test coverage thresholds configured
-- ❌ **Accessibility**: No automated a11y checks
-- ❌ **Performance**: No performance monitoring
-
-### Recent Issues That Would Be Caught
-
-- ✅ TypeScript interval type errors (caught by ESLint + TypeScript)
-- ✅ Build failures (caught by build verification)
-- ✅ Context-to-hooks migration issues (caught by unit tests)
-- ✅ Runtime errors (caught by unit tests and build verification)
-- ✅ Security vulnerabilities (caught by npm audit)
-- ✅ Code formatting issues (caught by Prettier)
-- ✅ Test coverage gaps (caught by coverage thresholds)
-
-## Implementation Status
-
-### Phase 1: Critical Foundation ✅ COMPLETED
-
-#### 1.1 Prettier for Code Formatting ✅ IMPLEMENTED
+### Essential Pre-Commit Checks
 
 ```bash
-npm install --save-dev prettier
+# 1. Quick verification (2-3 minutes)
+npm run verify:quick
+
+# 2. Full verification (5-10 minutes)
+npm run verify
+
+# 3. Manual checks (see sections below)
 ```
 
-**Current Configuration** (`prettier.config.js`):
+## 📋 Comprehensive Pre-Commit Checklist
 
-```javascript
-export default {
-  semi: true,
-  trailingComma: 'es5',
-  singleQuote: true,
-  printWidth: 80,
-  tabWidth: 2,
-  useTabs: false,
-};
+### Phase 1: Code Quality & Formatting ⚡ (1-2 minutes)
+
+#### ✅ Code Formatting
+
+- [ ] **Prettier Check**: `npm run format:check`
+  - If fails: `npm run format` to auto-fix
+- [ ] **Manual Review**: Scan for consistent indentation and spacing
+- [ ] **Import Organization**: Verify imports are organized (auto-sorted by ESLint)
+
+#### ✅ Linting
+
+- [ ] **ESLint**: `npm run lint`
+  - Fix all errors (warnings can be addressed later)
+  - Pay attention to React hooks rules
+  - Verify no `any` types are introduced
+- [ ] **Manual Code Review**:
+  - [ ] No commented-out code blocks
+  - [ ] No console.log statements (except intentional logging)
+  - [ ] No TODO comments without tickets
+  - [ ] Meaningful variable and function names
+
+### Phase 2: Type Safety & Compilation ⚡ (1-2 minutes)
+
+#### ✅ TypeScript Compilation
+
+- [ ] **Type Check**: `npx tsc --noEmit`
+  - Zero TypeScript errors allowed
+  - Address all type mismatches
+  - Verify proper interface definitions
+- [ ] **Import Verification**:
+  - [ ] All imports resolve correctly
+  - [ ] No circular dependencies
+  - [ ] Proper barrel exports used
+
+### Phase 3: Testing & Coverage 🧪 (3-5 minutes)
+
+#### ✅ Unit Tests
+
+- [ ] **Test Execution**: `npm run test:run`
+  - All tests must pass
+  - No skipped tests without justification
+- [ ] **New Tests**: If adding new functionality:
+  - [ ] Unit tests for new functions/components
+  - [ ] Integration tests for complex features
+  - [ ] Mock external dependencies properly
+
+#### ✅ Test Coverage
+
+- [ ] **Coverage Check**: `npm run test:coverage`
+  - Meet minimum thresholds (currently 1%, targeting 80%)
+  - Critical components should have higher coverage
+- [ ] **Coverage Review**:
+  - [ ] New code is covered by tests
+  - [ ] Edge cases are tested
+  - [ ] Error handling is tested
+
+### Phase 4: Build & Runtime Verification 🏗️ (2-3 minutes)
+
+#### ✅ Build Process
+
+- [ ] **Development Build**: `npm run build`
+  - Build completes without errors
+  - No build warnings for new code
+  - Bundle size hasn't increased significantly
+- [ ] **Build Output Review**:
+  - [ ] Check console for any warnings
+  - [ ] Verify all assets are included
+  - [ ] No missing dependencies
+
+#### ✅ Runtime Verification
+
+- [ ] **Development Server**: `npm run dev`
+  - [ ] Application starts without errors
+  - [ ] No console errors in browser
+  - [ ] New features work as expected
+  - [ ] Existing functionality still works
+- [ ] **Environment Variables**:
+  - [ ] Use `import.meta.env` for Vite (not `process.env`)
+  - [ ] All required env vars are documented
+  - [ ] Feature flags work correctly
+
+### Phase 5: Security & Dependencies 🔒 (1-2 minutes)
+
+#### ✅ Security Audit
+
+- [ ] **Dependency Audit**: `npm audit`
+  - Zero high/critical vulnerabilities
+  - Address moderate vulnerabilities if possible
+- [ ] **Dependency Review**:
+  - [ ] No unnecessary dependencies added
+  - [ ] Dependencies are up to date
+  - [ ] Lock file is committed
+
+#### ✅ Code Security
+
+- [ ] **Manual Security Review**:
+  - [ ] No hardcoded secrets or API keys
+  - [ ] Input validation for user data
+  - [ ] Proper authentication checks
+  - [ ] No XSS vulnerabilities
+
+### Phase 6: Performance & Accessibility 🚀 (2-3 minutes)
+
+#### ✅ Performance Checks
+
+- [ ] **Bundle Analysis** (for significant changes):
+  - [ ] Bundle size impact assessment
+  - [ ] No unnecessary re-renders
+  - [ ] Proper memoization where needed
+- [ ] **Runtime Performance**:
+  - [ ] Fast initial load
+  - [ ] Smooth interactions
+  - [ ] No memory leaks in tests
+
+#### ✅ Accessibility
+
+- [ ] **Manual A11y Check**:
+  - [ ] Proper heading hierarchy
+  - [ ] Alt text for images
+  - [ ] Keyboard navigation works
+  - [ ] Focus management is correct
+  - [ ] Color contrast is sufficient
+
+### Phase 7: Feature-Specific Checks 🎯 (varies)
+
+#### ✅ Component Development
+
+- [ ] **Component Checklist**:
+  - [ ] Props have proper TypeScript interfaces
+  - [ ] Component is properly memoized if needed
+  - [ ] Error boundaries handle edge cases
+  - [ ] Loading states are implemented
+  - [ ] Responsive design works
+
+#### ✅ Hook Development
+
+- [ ] **Hook Checklist**:
+  - [ ] Follows React hooks rules
+  - [ ] Proper dependency arrays
+  - [ ] Cleanup functions for subscriptions
+  - [ ] Error handling implemented
+
+#### ✅ API Integration
+
+- [ ] **API Checklist**:
+  - [ ] Proper error handling
+  - [ ] Loading states
+  - [ ] Type safety for responses
+  - [ ] Authentication headers included
+
+### Phase 8: Documentation & Communication 📝 (1-2 minutes)
+
+#### ✅ Code Documentation
+
+- [ ] **Inline Documentation**:
+  - [ ] JSDoc comments for public APIs
+  - [ ] Complex logic is commented
+  - [ ] README updates if needed
+- [ ] **Change Documentation**:
+  - [ ] Update relevant documentation
+  - [ ] Note breaking changes
+  - [ ] Update migration guides if needed
+
+## 🛠️ Automated Tools & Scripts
+
+### Available npm Scripts
+
+```bash
+# Quick checks (essential)
+npm run verify:quick          # Lint + TypeCheck + Test + Build
+npm run verify               # Full verification including formatting
+
+# Individual checks
+npm run lint                 # ESLint check
+npm run lint:fix            # ESLint with auto-fix
+npm run format              # Prettier format
+npm run format:check        # Prettier check only
+npm run test:run            # Run all tests
+npm run test:coverage       # Test with coverage report
+npm run build               # Production build
+npm run dev                 # Development server
+
+# Security & dependencies
+npm audit                   # Security vulnerability check
+npm outdated                # Check for outdated packages
 ```
 
-**Package.json Scripts**:
+### Husky Git Hooks (Automated)
+
+The following checks run automatically:
+
+**Pre-commit Hook:**
+
+- ESLint with auto-fix
+- Prettier formatting check
+- Staged files only (via lint-staged)
+
+**Pre-push Hook:**
+
+- Full test suite
+- TypeScript compilation
+- Build verification
+- Linting check
+
+### IDE Integration
+
+**VSCode Extensions (Recommended):**
+
+- ESLint
+- Prettier
+- TypeScript Importer
+- Error Lens
+- GitLens
+
+**Settings for VSCode (`.vscode/settings.json`):**
 
 ```json
 {
-  "scripts": {
-    "format": "prettier --write .",
-    "format:check": "prettier --check ."
-  }
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true,
+    "source.organizeImports": true
+  },
+  "typescript.preferences.importModuleSpecifier": "relative"
 }
 ```
 
-#### 1.2 Unit Tests ✅ IMPLEMENTED
+## 🚨 Common Issues & Quick Fixes
 
-**Current Test Coverage**:
-
-- 52 tests passing across 11 test files
-- Coverage thresholds configured and enforced
-- React Testing Library integration complete
-
-**Test Setup** (`src/test/setup.ts`):
-
-```typescript
-import '@testing-library/jest-dom';
-import { vi } from 'vitest';
-
-// Mock environment variables
-vi.mock('@/hooks/auth', () => ({
-  useAuth: () => ({
-    isSignedIn: true,
-    isLoaded: true,
-  }),
-}));
-
-// Mock API services
-vi.mock('@/hooks/useApiService', () => ({
-  useApiService: () => ({
-    get: vi.fn(),
-    post: vi.fn(),
-    put: vi.fn(),
-    delete: vi.fn(),
-  }),
-}));
-```
-
-#### 1.3 Coverage Thresholds ✅ IMPLEMENTED
-
-**Current Vitest Configuration**:
-
-```typescript
-export default defineConfig({
-  plugins: [react(), tailwindcss()],
-  test: {
-    environment: 'jsdom',
-    setupFiles: ['./src/test/setup.ts'],
-    globals: true,
-    coverage: {
-      provider: 'v8',
-      reporter: ['text', 'json', 'html'],
-      thresholds: {
-        global: {
-          branches: 1, // Start at 1%, increase to 80% in next sprint
-          functions: 1,
-          lines: 1,
-          statements: 1,
-        },
-        // Critical components have higher thresholds
-        './src/modules/dashboard/trainer/': {
-          branches: 1, // Start at 1%, increase to 90% in next sprint
-          functions: 1,
-          lines: 1,
-          statements: 1,
-        },
-      },
-    },
-  },
-});
-```
-
-#### 1.4 Verify Scripts ✅ IMPLEMENTED
-
-**Current Package.json Scripts**:
-
-```json
-{
-  "scripts": {
-    "verify": "npm run lint && npm run format:check && tsc --noEmit && npm run test:run && npm run build",
-    "verify:quick": "npm run lint && tsc --noEmit && npm run test:run && npm run build"
-  }
-}
-```
-
-### Phase 2: Testing Foundation (Next Sprint)
-
-#### 2.1 Unit Test Implementation
-
-**Test File Structure**:
-
-```
-src/
-├── __tests__/
-│   ├── components/
-│   │   └── GeneratingTrainerPage.test.tsx
-│   ├── hooks/
-│   │   ├── useTrainerPersona.test.ts
-│   │   └── usePhoneVerification.test.ts
-│   └── services/
-│       └── TrainerPersonaService.test.ts
-```
-
-**Example Test** (`src/__tests__/hooks/useTrainerPersona.test.ts`):
-
-```typescript
-import { renderHook, waitFor } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
-import { useTrainerPersona } from '@/hooks/useTrainerPersona';
-
-describe('useTrainerPersona', () => {
-  it('should fetch trainer persona on mount', async () => {
-    const { result } = renderHook(() => useTrainerPersona());
-
-    await waitFor(() => {
-      expect(result.current.isLoaded).toBe(true);
-    });
-  });
-});
-```
-
-#### 2.2 Integration Tests
-
-**Component Testing** (`src/__tests__/components/GeneratingTrainerPage.test.tsx`):
-
-```typescript
-import { render, screen, waitFor } from '@testing-library/react';
-import { BrowserRouter } from 'react-router-dom';
-import GeneratingTrainerPage from '@/modules/dashboard/trainer/pages/GeneratingTrainerPage';
-
-describe('GeneratingTrainerPage', () => {
-  it('should show loading state initially', () => {
-    render(
-      <BrowserRouter>
-        <GeneratingTrainerPage />
-      </BrowserRouter>
-    );
-
-    expect(screen.getByText(/Generating personality traits/i)).toBeInTheDocument();
-  });
-});
-```
-
-### Phase 3: Advanced Quality Gates (Future Sprints)
-
-#### 3.1 E2E Testing with Playwright
+### TypeScript Errors
 
 ```bash
-npm install --save-dev @playwright/test
+# Issue: Type errors
+# Fix: Run type check and fix issues
+npx tsc --noEmit
+
+# Issue: Missing types for packages
+# Fix: Install type definitions
+npm install --save-dev @types/package-name
 ```
 
-**Configuration** (`playwright.config.ts`):
-
-```typescript
-import { defineConfig, devices } from '@playwright/test';
-
-export default defineConfig({
-  testDir: './e2e',
-  fullyParallel: true,
-  forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
-  reporter: 'html',
-  use: {
-    baseURL: 'http://localhost:5173',
-    trace: 'on-first-retry',
-  },
-  projects: [
-    {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
-    },
-  ],
-  webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:5173',
-    reuseExistingServer: !process.env.CI,
-  },
-});
-```
-
-#### 3.2 Accessibility Testing
+### ESLint Errors
 
 ```bash
-npm install --save-dev @axe-core/react
+# Issue: Linting errors
+# Fix: Auto-fix what's possible
+npm run lint:fix
+
+# Issue: React hooks rules violation
+# Fix: Move hooks to top level, avoid conditional calls
 ```
 
-**A11y Test Example**:
-
-```typescript
-import { axe, toHaveNoViolations } from 'jest-axe';
-import { render } from '@testing-library/react';
-
-expect.extend(toHaveNoViolations);
-
-it('should not have accessibility violations', async () => {
-  const { container } = render(<Component />);
-  const results = await axe(container);
-  expect(results).toHaveNoViolations();
-});
-```
-
-#### 3.3 Performance Monitoring
+### Test Failures
 
 ```bash
-npm install --save-dev lighthouse
+# Issue: Tests failing
+# Fix: Run tests in watch mode for debugging
+npm run test
+
+# Issue: Outdated snapshots
+# Fix: Update snapshots
+npm run test -- --update-snapshots
 ```
 
-**Performance Script**:
-
-```json
-{
-  "scripts": {
-    "lighthouse": "lighthouse http://localhost:5173 --output=json --output-path=./lighthouse-report.json"
-  }
-}
-```
-
-## Husky Configuration
-
-### Pre-commit Hook
+### Build Failures
 
 ```bash
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
+# Issue: Build fails
+# Fix: Check for missing dependencies or type errors
+npm run build 2>&1 | grep -i error
 
-npm run lint && npm run format:check
+# Issue: Environment variables not found
+# Fix: Use import.meta.env instead of process.env
 ```
 
-### Pre-push Hook
+### Git Hook Failures
 
 ```bash
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
+# Issue: Pre-commit hook failing
+# Fix: Run checks manually and fix issues
+npm run lint:fix && npm run format
 
+# Issue: Pre-push hook failing
+# Fix: Run full verification
 npm run verify
 ```
 
-## CI/CD Integration
+## 📊 Quality Metrics & Thresholds
 
-### GitHub Actions Workflow (`.github/workflows/verify.yml`)
+### Current Standards
 
-```yaml
-name: Pre-PR Verification
+| Metric                   | Current         | Target | Critical               |
+| ------------------------ | --------------- | ------ | ---------------------- |
+| Test Coverage            | 1%              | 80%    | 90% for critical paths |
+| TypeScript Errors        | 0               | 0      | 0                      |
+| ESLint Errors            | 0               | 0      | 0                      |
+| Build Time               | <30s            | <20s   | <60s                   |
+| Bundle Size              | ~1.15MB         | <1.5MB | <2MB                   |
+| Security Vulnerabilities | 0 high/critical | 0      | 0                      |
 
-on:
-  pull_request:
-    branches: [main, develop]
+### Performance Budgets
 
-jobs:
-  verify:
-    runs-on: ubuntu-latest
+```javascript
+// Performance thresholds
+const PERFORMANCE_BUDGETS = {
+  // Bundle size limits
+  maxBundleSize: '1.5MB',
+  maxChunkSize: '500KB',
 
-    steps:
-      - uses: actions/checkout@v4
+  // Runtime performance
+  maxInitialLoad: '3s',
+  maxInteractionDelay: '100ms',
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run linting
-        run: npm run lint
-
-      - name: Check formatting
-        run: npm run format:check
-
-      - name: Type check
-        run: tsc --noEmit
-
-      - name: Run tests
-        run: npm run test:run
-
-      - name: Check coverage
-        run: npm run test:coverage
-
-      - name: Build
-        run: npm run build
-
-      - name: Security audit
-        run: npm audit --audit-level=moderate
+  // Memory usage
+  maxMemoryIncrease: '5MB',
+};
 ```
 
-## Success Metrics
+## 🎯 Project-Specific Checklist Items
 
-### Phase 1 Goals
+### Member Copilot Specific Checks
 
-- [ ] 100% of TypeScript errors caught before PR
-- [ ] Consistent code formatting across codebase
-- [ ] 80% test coverage on critical components
-- [ ] Zero build failures in CI
+#### ✅ Feature Flag Implementation
 
-### Phase 2 Goals
+- [ ] **Environment Variables**: Use `VITE_` prefix for Vite compatibility
+- [ ] **Fallback Components**: Legacy components available for rollback
+- [ ] **Feature Flag Logic**: Proper boolean checks (`=== 'true'`)
 
-- [ ] 90% test coverage overall
-- [ ] All critical user flows covered by tests
-- [ ] Integration tests for context-to-hooks migration
+#### ✅ Component Architecture
 
-### Phase 3 Goals
+- [ ] **Clean Architecture**: Follow domain/services/contexts pattern
+- [ ] **Atomic Design**: Components in correct atoms/molecules/organisms structure
+- [ ] **Feature First**: Components organized by feature, not by type
 
-- [ ] E2E tests for critical user journeys
-- [ ] Accessibility compliance (WCAG 2.1 AA)
-- [ ] Performance budgets met
-- [ ] Zero security vulnerabilities
+#### ✅ Styling Standards
 
-## Maintenance
+- [ ] **Tailwind + DaisyUI**: Only approved styling system
+- [ ] **No Custom CSS**: Use utility classes only
+- [ ] **Responsive Design**: Mobile-first approach with breakpoints
 
-### Regular Tasks
+#### ✅ Analytics Integration
 
-- **Weekly**: Review and update test coverage
-- **Monthly**: Update dependencies and security audit
-- **Quarterly**: Review and optimize verification pipeline
+- [ ] **Event Tracking**: User interactions tracked with meaningful names
+- [ ] **Analytics Hooks**: Use `useAnalytics()` hook pattern
+- [ ] **Data Privacy**: No sensitive data in analytics events
 
-### Monitoring
+#### ✅ Authentication (Clerk)
 
-- Track CI/CD pipeline success rates
-- Monitor test execution times
-- Review coverage trends
-- Analyze security vulnerability patterns
+- [ ] **Auth Checks**: Use `useAuth()` hook wrapper
+- [ ] **Protected Routes**: `<AuthRequired>` component for protected pages
+- [ ] **Loading States**: Handle `isLoaded` state properly
 
-## Troubleshooting
+## 📋 Commit Message Standards
 
-### Common Issues
+### Format
 
-1. **Tests failing in CI but passing locally**
-   - Check environment differences
-   - Verify mock implementations
+```
+type(scope): description
 
-2. **Coverage thresholds not met**
-   - Review uncovered code paths
-   - Add targeted tests for missing coverage
+body (optional)
 
-3. **Performance regressions**
-   - Check bundle size changes
-   - Review Lighthouse scores
+footer (optional)
+```
 
-### Getting Help
+### Types
 
-- Check the [Testing Guide](../testing/README.md)
-- Review [CI/CD Documentation](../ci-cd/README.md)
-- Contact the development team
+- `feat`: New feature
+- `fix`: Bug fix
+- `docs`: Documentation changes
+- `style`: Code style changes (formatting, etc.)
+- `refactor`: Code refactoring
+- `test`: Adding or updating tests
+- `chore`: Maintenance tasks
+
+### Examples
+
+```bash
+feat(workouts): add enhanced current state step with analytics
+
+- Implement EnhancedEnergyLevelCustomization component
+- Add progressive validation with validateDetailedStep
+- Integrate analytics tracking with useWorkoutAnalytics
+- Support feature flag for safe rollout
+
+Resolves: #123
+```
+
+## 🔄 Continuous Improvement
+
+### Weekly Reviews
+
+- [ ] Review failed CI builds and add preventive checks
+- [ ] Update performance budgets based on metrics
+- [ ] Review and update test coverage targets
+- [ ] Assess new tools and integrate beneficial ones
+
+### Monthly Audits
+
+- [ ] Dependency security audit and updates
+- [ ] Performance metrics review
+- [ ] Documentation accuracy check
+- [ ] Team feedback on checklist effectiveness
+
+## 📚 Additional Resources
+
+### Documentation Links
+
+- [TypeScript Handbook](https://www.typescriptlang.org/docs/)
+- [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/)
+- [ESLint Rules](https://eslint.org/docs/rules/)
+- [Prettier Configuration](https://prettier.io/docs/en/configuration.html)
+
+### Team Resources
+
+- [Component Development Guide](../ui/shared/README.md)
+- [Testing Best Practices](../testing/README.md)
+- [Architecture Guidelines](../README.md)
+
+---
+
+## 🎯 Quick Reference Commands
+
+```bash
+# Essential pre-commit workflow
+npm run lint:fix && npm run format && npx tsc --noEmit && npm run test:run && npm run build
+
+# Quick verification
+npm run verify:quick
+
+# Full verification
+npm run verify
+
+# Fix common issues
+npm run lint:fix && npm run format
+
+# Security check
+npm audit --audit-level=moderate
+```
+
+**Remember:** This checklist is a living document. Update it as the project evolves and new patterns emerge.
 
 ---
 
