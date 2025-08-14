@@ -14,12 +14,12 @@ import {
 import { LegacyCurrentStateStep } from './LegacyCurrentStateStep';
 
 // Feature flag for enhanced current state step
-// Using import.meta.env for Vite environment variables with development default
+// Using import.meta.env for Vite environment variables
 const USE_ENHANCED_CURRENT_STATE_STEP = (() => {
   const envValue = import.meta.env.VITE_ENHANCED_CURRENT_STATE;
-  // Default to enabled in development, disabled in production if not explicitly set
+  // Default to disabled (legacy mode) if not explicitly set
   if (envValue === undefined || envValue === '') {
-    return import.meta.env.DEV;
+    return false;
   }
   return envValue === 'true';
 })();
@@ -74,8 +74,9 @@ export const CurrentStateStep: React.FC<CurrentStateStepProps> = ({
       return; // Don't track for legacy component
     }
 
+    const currentStartTime = startTime.current; // Copy ref value to avoid stale closure
+
     return () => {
-      const currentStartTime = startTime.current; // Copy ref value to avoid stale closure
       const duration = Date.now() - currentStartTime;
       const fieldsCompleted = [
         options.customization_energy,
