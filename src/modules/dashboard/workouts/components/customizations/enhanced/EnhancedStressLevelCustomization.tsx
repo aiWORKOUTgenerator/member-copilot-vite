@@ -33,7 +33,9 @@ export default memo(function EnhancedStressLevelCustomization({
       onChange(stressValue);
 
       // Track user selection for analytics and AI learning
-      trackSelection('customization_stress', stressValue, 'detailed');
+      // Map component variant to analytics mode ('simple' -> 'quick', 'detailed' -> 'detailed')
+      const analyticsMode = variant === 'simple' ? 'quick' : 'detailed';
+      trackSelection('customization_stress', stressValue, analyticsMode);
     }
   };
 

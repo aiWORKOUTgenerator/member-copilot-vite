@@ -33,7 +33,9 @@ export default memo(function EnhancedSleepQualityCustomization({
       onChange(sleepValue);
 
       // Track user selection for analytics and AI learning
-      trackSelection('customization_sleep', sleepValue, 'detailed');
+      // Map component variant to analytics mode ('simple' -> 'quick', 'detailed' -> 'detailed')
+      const analyticsMode = variant === 'simple' ? 'quick' : 'detailed';
+      trackSelection('customization_sleep', sleepValue, analyticsMode);
     }
   };
 
