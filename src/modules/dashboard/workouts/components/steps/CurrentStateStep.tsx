@@ -18,7 +18,7 @@ export const CurrentStateStep: React.FC<CurrentStateStepProps> = ({
   disabled = false,
 }) => {
   // Fields that should have minimal UI (no icon, title, or description)
-  const MINIMAL_UI_FIELDS = [
+  const MINIMAL_UI_FIELDS: string[] = [
     CUSTOMIZATION_FIELD_KEYS.SLEEP,
     CUSTOMIZATION_FIELD_KEYS.STRESS,
     CUSTOMIZATION_FIELD_KEYS.SORENESS,
