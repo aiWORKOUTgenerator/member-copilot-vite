@@ -899,14 +899,6 @@ export default function WorkoutCustomization({
                                   'Specify exercises you definitely want in your workout'}
                                 {config.key === 'customization_exclude' &&
                                   'Specify exercises you want to avoid'}
-                                {config.key === 'customization_sleep' &&
-                                  'How well did you sleep last night?'}
-                                {config.key === 'customization_energy' &&
-                                  'How energetic are you feeling today?'}
-                                {config.key === 'customization_stress' &&
-                                  "What's your current stress level?"}
-                                {config.key === 'customization_soreness' &&
-                                  'Are you experiencing any soreness?'}
                               </p>
                               <CustomizationComponent
                                 value={value}

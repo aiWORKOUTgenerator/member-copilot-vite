@@ -1,46 +1,23 @@
-import {
-  Clock,
-  Activity,
-  Zap,
-  Heart,
-  Moon,
-  Target,
-  AlertTriangle,
-  Brain,
-  Plus,
-  Minus,
-} from 'lucide-react';
+import { Clock, Activity, Heart, Target, Plus, Minus } from 'lucide-react';
 import { CustomizationConfig } from '../types';
 import WorkoutDurationCustomization from './WorkoutDurationCustomization';
 import WorkoutFocusCustomization from './WorkoutFocusCustomization';
-import EnergyLevelCustomization from './EnergyLevelCustomization';
 import AvailableEquipmentCustomization from './AvailableEquipmentCustomization';
 import IncludeExercisesCustomization from './IncludeExercisesCustomization';
 import ExcludeExercisesCustomization from './ExcludeExercisesCustomization';
 
 // Enhanced components from PR #3, PR #4, and PR #5 modularization effort
-import {
-  EnhancedFocusAreaCustomization,
-  EnhancedSleepQualityCustomization,
-  EnhancedStressLevelCustomization,
-  EnhancedSorenessCustomization,
-} from './enhanced';
+import { EnhancedFocusAreaCustomization } from './enhanced';
 
 // Export individual components
 export { default as WorkoutDurationCustomization } from './WorkoutDurationCustomization';
 export { default as WorkoutFocusCustomization } from './WorkoutFocusCustomization';
-export { default as EnergyLevelCustomization } from './EnergyLevelCustomization';
 export { default as AvailableEquipmentCustomization } from './AvailableEquipmentCustomization';
 export { default as IncludeExercisesCustomization } from './IncludeExercisesCustomization';
 export { default as ExcludeExercisesCustomization } from './ExcludeExercisesCustomization';
 
-// Enhanced components exports
-export {
-  EnhancedFocusAreaCustomization,
-  EnhancedSleepQualityCustomization,
-  EnhancedStressLevelCustomization,
-  EnhancedSorenessCustomization,
-} from './enhanced';
+// Enhanced components exports (wellness components moved to step system)
+export { EnhancedFocusAreaCustomization } from './enhanced';
 
 // Configuration for all available customizations
 export const CUSTOMIZATION_CONFIG: CustomizationConfig[] = [
@@ -86,32 +63,6 @@ export const CUSTOMIZATION_CONFIG: CustomizationConfig[] = [
     icon: Minus,
     category: 'Physical Focus & Equipment',
   },
-  {
-    key: 'customization_sleep',
-    component: EnhancedSleepQualityCustomization,
-    label: 'Sleep Quality',
-    icon: Moon,
-    category: 'Current State & Wellness',
-  },
-  {
-    key: 'customization_energy',
-    component: EnergyLevelCustomization,
-    label: 'Energy Level',
-    icon: Zap,
-    category: 'Current State & Wellness',
-  },
-  {
-    key: 'customization_stress',
-    component: EnhancedStressLevelCustomization,
-    label: 'Stress Level',
-    icon: Brain,
-    category: 'Current State & Wellness',
-  },
-  {
-    key: 'customization_soreness',
-    component: EnhancedSorenessCustomization,
-    label: 'Current Soreness',
-    icon: AlertTriangle,
-    category: 'Current State & Wellness',
-  },
+  // Note: Wellness fields (sleep, stress, soreness, energy) are now handled
+  // by the modularized step system in CurrentStateStep and WorkoutStructureStep
 ];
