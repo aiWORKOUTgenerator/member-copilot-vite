@@ -10,6 +10,41 @@ import {
 } from '../customizations/enhanced';
 import { Zap, Moon, Brain, AlertTriangle } from 'lucide-react';
 
+// Fields that should have minimal UI (no icon, title, or description)
+const MINIMAL_UI_FIELDS: string[] = [
+  CUSTOMIZATION_FIELD_KEYS.SLEEP,
+  CUSTOMIZATION_FIELD_KEYS.STRESS,
+  CUSTOMIZATION_FIELD_KEYS.SORENESS,
+];
+
+// Define step components directly to avoid CUSTOMIZATION_CONFIG issues
+const stepComponents = [
+  {
+    key: CUSTOMIZATION_FIELD_KEYS.ENERGY,
+    component: EnergyLevelCustomization,
+    label: 'Energy Level',
+    icon: Zap,
+  },
+  {
+    key: CUSTOMIZATION_FIELD_KEYS.SLEEP,
+    component: EnhancedSleepQualityCustomization,
+    label: 'Sleep Quality',
+    icon: Moon,
+  },
+  {
+    key: CUSTOMIZATION_FIELD_KEYS.STRESS,
+    component: EnhancedStressLevelCustomization,
+    label: 'Stress Level',
+    icon: Brain,
+  },
+  {
+    key: CUSTOMIZATION_FIELD_KEYS.SORENESS,
+    component: EnhancedSorenessCustomization,
+    label: 'Current Soreness',
+    icon: AlertTriangle,
+  },
+];
+
 export interface LegacyCurrentStateStepProps {
   options: PerWorkoutOptions;
   onChange: (key: keyof PerWorkoutOptions, value: unknown) => void;
@@ -31,41 +66,6 @@ export const LegacyCurrentStateStep: React.FC<LegacyCurrentStateStepProps> = ({
   errors,
   disabled = false,
 }) => {
-  // Define step components directly to avoid CUSTOMIZATION_CONFIG issues
-  const stepComponents = [
-    {
-      key: CUSTOMIZATION_FIELD_KEYS.ENERGY,
-      component: EnergyLevelCustomization,
-      label: 'Energy Level',
-      icon: Zap,
-    },
-    {
-      key: CUSTOMIZATION_FIELD_KEYS.SLEEP,
-      component: EnhancedSleepQualityCustomization,
-      label: 'Sleep Quality',
-      icon: Moon,
-    },
-    {
-      key: CUSTOMIZATION_FIELD_KEYS.STRESS,
-      component: EnhancedStressLevelCustomization,
-      label: 'Stress Level',
-      icon: Brain,
-    },
-    {
-      key: CUSTOMIZATION_FIELD_KEYS.SORENESS,
-      component: EnhancedSorenessCustomization,
-      label: 'Current Soreness',
-      icon: AlertTriangle,
-    },
-  ];
-
-  // Fields that should have minimal UI (no icon, title, or description)
-  const MINIMAL_UI_FIELDS: string[] = [
-    CUSTOMIZATION_FIELD_KEYS.SLEEP,
-    CUSTOMIZATION_FIELD_KEYS.STRESS,
-    CUSTOMIZATION_FIELD_KEYS.SORENESS,
-  ];
-
   const formatCurrentSelection = (
     config: { key: string; label: string },
     value: unknown
