@@ -13,6 +13,7 @@ import {
 import { CustomizationConfig } from '../types';
 import WorkoutDurationCustomization from './WorkoutDurationCustomization';
 import WorkoutFocusCustomization from './WorkoutFocusCustomization';
+// Keeping legacy import for backward compatibility
 import EnergyLevelCustomization from './EnergyLevelCustomization';
 import AvailableEquipmentCustomization from './AvailableEquipmentCustomization';
 import IncludeExercisesCustomization from './IncludeExercisesCustomization';
@@ -24,6 +25,7 @@ import {
   EnhancedSleepQualityCustomization,
   EnhancedStressLevelCustomization,
   EnhancedSorenessCustomization,
+  // EnhancedEnergyLevelCustomization, // Not used in CUSTOMIZATION_CONFIG yet
 } from './enhanced';
 
 // Export individual components
@@ -40,6 +42,7 @@ export {
   EnhancedSleepQualityCustomization,
   EnhancedStressLevelCustomization,
   EnhancedSorenessCustomization,
+  // EnhancedEnergyLevelCustomization, // Available but not used in main config yet
 } from './enhanced';
 
 // Configuration for all available customizations
@@ -95,7 +98,7 @@ export const CUSTOMIZATION_CONFIG: CustomizationConfig[] = [
   },
   {
     key: 'customization_energy',
-    component: EnergyLevelCustomization,
+    component: EnergyLevelCustomization, // Keep legacy for now to avoid import issues
     label: 'Energy Level',
     icon: Zap,
     category: 'Current State & Wellness',
