@@ -26,7 +26,6 @@ import { EnhancedFocusAreaCustomization } from './enhanced';
 
 // Export individual components
 export { default as WorkoutDurationCustomization } from './WorkoutDurationCustomization';
-export { default as FocusAreaCustomization } from './FocusAreaCustomization';
 export { default as WorkoutFocusCustomization } from './WorkoutFocusCustomization';
 export { default as SleepQualityCustomization } from './SleepQualityCustomization';
 export { default as EnergyLevelCustomization } from './EnergyLevelCustomization';
