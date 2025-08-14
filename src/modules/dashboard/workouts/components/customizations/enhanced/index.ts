@@ -14,7 +14,7 @@
  * Implementation Status:
  * ✅ PR #3: EnhancedFocusAreaCustomization (Focus areas multi-select)
  * ✅ PR #4: Enhanced wellness components (Sleep & Stress)
- * ⏳ PR #5: Enhanced soreness component
+ * ✅ PR #5: Enhanced soreness component
  * ⏳ Future: Additional enhanced components as needed
  */
 
@@ -25,5 +25,11 @@ export { default as EnhancedFocusAreaCustomization } from './EnhancedFocusAreaCu
 export { default as EnhancedSleepQualityCustomization } from './EnhancedSleepQualityCustomization';
 export { default as EnhancedStressLevelCustomization } from './EnhancedStressLevelCustomization';
 
+// PR #5: Enhanced Soreness Component
+export { default as EnhancedSorenessCustomization } from './EnhancedSorenessCustomization';
+
 // Future enhanced components will be exported here as they're implemented
-// export { default as EnhancedSorenessCustomization } from './EnhancedSorenessCustomization';
+// export { default as EnhancedWorkoutFocusCustomization } from './EnhancedWorkoutFocusCustomization';
+// export { default as EnhancedEnergyLevelCustomization } from './EnhancedEnergyLevelCustomization';
+// export { default as EnhancedWorkoutDurationCustomization } from './EnhancedWorkoutDurationCustomization';
+// export { default as EnhancedAvailableEquipmentCustomization } from './EnhancedAvailableEquipmentCustomization';
