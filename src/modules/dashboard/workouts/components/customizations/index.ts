@@ -15,15 +15,15 @@ import WorkoutDurationCustomization from './WorkoutDurationCustomization';
 import WorkoutFocusCustomization from './WorkoutFocusCustomization';
 import EnergyLevelCustomization from './EnergyLevelCustomization';
 import AvailableEquipmentCustomization from './AvailableEquipmentCustomization';
-import SorenessCustomization from './SorenessCustomization';
 import IncludeExercisesCustomization from './IncludeExercisesCustomization';
 import ExcludeExercisesCustomization from './ExcludeExercisesCustomization';
 
-// Enhanced components from PR #3 and PR #4 modularization effort
+// Enhanced components from PR #3, PR #4, and PR #5 modularization effort
 import {
   EnhancedFocusAreaCustomization,
   EnhancedSleepQualityCustomization,
   EnhancedStressLevelCustomization,
+  EnhancedSorenessCustomization,
 } from './enhanced';
 
 // Export individual components
@@ -31,7 +31,6 @@ export { default as WorkoutDurationCustomization } from './WorkoutDurationCustom
 export { default as WorkoutFocusCustomization } from './WorkoutFocusCustomization';
 export { default as EnergyLevelCustomization } from './EnergyLevelCustomization';
 export { default as AvailableEquipmentCustomization } from './AvailableEquipmentCustomization';
-export { default as SorenessCustomization } from './SorenessCustomization';
 export { default as IncludeExercisesCustomization } from './IncludeExercisesCustomization';
 export { default as ExcludeExercisesCustomization } from './ExcludeExercisesCustomization';
 
@@ -40,6 +39,7 @@ export {
   EnhancedFocusAreaCustomization,
   EnhancedSleepQualityCustomization,
   EnhancedStressLevelCustomization,
+  EnhancedSorenessCustomization,
 } from './enhanced';
 
 // Configuration for all available customizations
@@ -109,7 +109,7 @@ export const CUSTOMIZATION_CONFIG: CustomizationConfig[] = [
   },
   {
     key: 'customization_soreness',
-    component: SorenessCustomization,
+    component: EnhancedSorenessCustomization,
     label: 'Current Soreness',
     icon: AlertTriangle,
     category: 'Current State & Wellness',
