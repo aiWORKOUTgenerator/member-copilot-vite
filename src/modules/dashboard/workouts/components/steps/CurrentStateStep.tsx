@@ -96,20 +96,22 @@ export const CurrentStateStep: React.FC<CurrentStateStepProps> = ({
             <div key={config.key} className="space-y-4">
               {/* Header with Icon - matching Quick mode DetailedSelector header pattern */}
               <div className="flex items-center space-x-3">
-                <IconComponent className="w-5 h-5 text-primary" />
+                {config.key !== CUSTOMIZATION_FIELD_KEYS.SLEEP &&
+                  config.key !== CUSTOMIZATION_FIELD_KEYS.STRESS &&
+                  config.key !== CUSTOMIZATION_FIELD_KEYS.SORENESS && (
+                    <IconComponent className="w-5 h-5 text-primary" />
+                  )}
                 <div>
                   <h4 className="font-medium text-base-content">
-                    {config.label}
+                    {config.key === CUSTOMIZATION_FIELD_KEYS.SLEEP ||
+                    config.key === CUSTOMIZATION_FIELD_KEYS.STRESS ||
+                    config.key === CUSTOMIZATION_FIELD_KEYS.SORENESS
+                      ? ''
+                      : config.label}
                   </h4>
                   <p className="text-sm text-base-content/70">
-                    {config.key === CUSTOMIZATION_FIELD_KEYS.SLEEP &&
-                      'How well did you sleep last night?'}
                     {config.key === CUSTOMIZATION_FIELD_KEYS.ENERGY &&
                       'How energetic are you feeling today?'}
-                    {config.key === CUSTOMIZATION_FIELD_KEYS.STRESS &&
-                      "What's your current stress level?"}
-                    {config.key === CUSTOMIZATION_FIELD_KEYS.SORENESS &&
-                      'Are you experiencing any soreness?'}
                   </p>
                 </div>
                 <SelectionBadge value={currentSelection} size="sm" />
