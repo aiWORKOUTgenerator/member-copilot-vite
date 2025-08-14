@@ -313,7 +313,7 @@ export default function GenerateWorkoutPage() {
           <div className="join mb-6 w-fit">
             <button
               type="button"
-              className={`btn join-item ${
+              className={`btn btn-sm md:btn-md join-item ${
                 activeTab === 'quick' ? 'btn-primary' : 'btn-outline'
               }`}
               onClick={() => setActiveTab('quick')}
@@ -322,7 +322,7 @@ export default function GenerateWorkoutPage() {
             </button>
             <button
               type="button"
-              className={`btn join-item ${
+              className={`btn btn-sm md:btn-md join-item ${
                 activeTab === 'detailed' ? 'btn-primary' : 'btn-outline'
               }`}
               onClick={() => setActiveTab('detailed')}
