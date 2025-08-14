@@ -28,8 +28,10 @@ export { default as EnhancedStressLevelCustomization } from './EnhancedStressLev
 // PR #5: Enhanced Soreness Component
 export { default as EnhancedSorenessCustomization } from './EnhancedSorenessCustomization';
 
+// PR #6: Enhanced Workout Structure Components
+export { default as EnhancedWorkoutDurationCustomization } from './EnhancedWorkoutDurationCustomization';
+export { default as EnhancedWorkoutFocusCustomization } from './EnhancedWorkoutFocusCustomization';
+
 // Future enhanced components will be exported here as they're implemented
-// export { default as EnhancedWorkoutFocusCustomization } from './EnhancedWorkoutFocusCustomization';
 // export { default as EnhancedEnergyLevelCustomization } from './EnhancedEnergyLevelCustomization';
-// export { default as EnhancedWorkoutDurationCustomization } from './EnhancedWorkoutDurationCustomization';
 // export { default as EnhancedAvailableEquipmentCustomization } from './EnhancedAvailableEquipmentCustomization';
