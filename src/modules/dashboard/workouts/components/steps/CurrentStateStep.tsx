@@ -17,6 +17,13 @@ export const CurrentStateStep: React.FC<CurrentStateStepProps> = ({
   errors,
   disabled = false,
 }) => {
+  // Fields that should have minimal UI (no icon, title, or description)
+  const MINIMAL_UI_FIELDS = [
+    CUSTOMIZATION_FIELD_KEYS.SLEEP,
+    CUSTOMIZATION_FIELD_KEYS.STRESS,
+    CUSTOMIZATION_FIELD_KEYS.SORENESS,
+  ];
+
   // Get components for this step
   const stepConfigs = CUSTOMIZATION_CONFIG.filter((config) =>
     (
@@ -96,18 +103,12 @@ export const CurrentStateStep: React.FC<CurrentStateStepProps> = ({
             <div key={config.key} className="space-y-4">
               {/* Header with Icon - matching Quick mode DetailedSelector header pattern */}
               <div className="flex items-center space-x-3">
-                {config.key !== CUSTOMIZATION_FIELD_KEYS.SLEEP &&
-                  config.key !== CUSTOMIZATION_FIELD_KEYS.STRESS &&
-                  config.key !== CUSTOMIZATION_FIELD_KEYS.SORENESS && (
-                    <IconComponent className="w-5 h-5 text-primary" />
-                  )}
+                {!MINIMAL_UI_FIELDS.includes(config.key) && (
+                  <IconComponent className="w-5 h-5 text-primary" />
+                )}
                 <div>
                   <h4 className="font-medium text-base-content">
-                    {config.key === CUSTOMIZATION_FIELD_KEYS.SLEEP ||
-                    config.key === CUSTOMIZATION_FIELD_KEYS.STRESS ||
-                    config.key === CUSTOMIZATION_FIELD_KEYS.SORENESS
-                      ? ''
-                      : config.label}
+                    {MINIMAL_UI_FIELDS.includes(config.key) ? '' : config.label}
                   </h4>
                   <p className="text-sm text-base-content/70">
                     {config.key === CUSTOMIZATION_FIELD_KEYS.ENERGY &&
