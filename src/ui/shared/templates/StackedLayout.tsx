@@ -217,19 +217,14 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
           </div>
 
           <div className="navbar-end">
-            {/* User profile dropdown */}
-            <div className="hidden lg:flex lg:items-center lg:ml-4">
-              <UserButton />
-            </div>
-
             {/* Mobile menu dropdown */}
-            <div className="dropdown dropdown-end lg:hidden">
-              <label tabIndex={0} className="btn text-white">
+            <div className="dropdown dropdown-end lg:hidden ">
+              <label tabIndex={0} className="btn btn-ghost text-white">
                 <MenuIcon className="h-6 w-6" />
               </label>
               <ul
                 tabIndex={0}
-                className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
+                className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-lg"
               >
                 {navigation.map((item) => {
                   const isCurrentPage =
@@ -278,13 +273,11 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
                     </li>
                   );
                 })}
-                {/* User profile for mobile */}
-                <li className="mt-2 pt-2 border-t border-base-200">
-                  <div className="flex justify-center">
-                    <UserButton />
-                  </div>
-                </li>
               </ul>
+            </div>
+            {/* User profile dropdown */}
+            <div className=" flex items-center ml-1">
+              <UserButton />
             </div>
           </div>
         </div>

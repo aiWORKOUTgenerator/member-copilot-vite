@@ -206,11 +206,11 @@ const MyAITrainerPage = () => {
     <div className="p-4 space-y-6">
       <h1 className="text-3xl font-bold">My AI Trainer</h1>
 
-      <div className="">
+      <div>
         <div className="card-body">
-          <div className="flex items-start gap-4">
+          <div className="flex flex-col md:flex-row items-center md:items-start gap-4">
             {trainerPersona.avatar_url && (
-              <div className="avatar">
+              <div className="avatar mb-2 md:mb-0">
                 <div className="w-24 rounded-full">
                   <img
                     src={trainerPersona.avatar_url}
@@ -220,7 +220,7 @@ const MyAITrainerPage = () => {
               </div>
             )}
 
-            <div className="flex-1">
+            <div className="flex-1 w-full">
               <h2 className="card-title text-2xl">
                 {trainerPersona.trainer_name}
               </h2>
