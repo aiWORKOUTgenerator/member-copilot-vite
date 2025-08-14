@@ -13,30 +13,34 @@ import {
 import { CustomizationConfig } from '../types';
 import WorkoutDurationCustomization from './WorkoutDurationCustomization';
 import WorkoutFocusCustomization from './WorkoutFocusCustomization';
-import SleepQualityCustomization from './SleepQualityCustomization';
 import EnergyLevelCustomization from './EnergyLevelCustomization';
-import StressLevelCustomization from './StressLevelCustomization';
 import AvailableEquipmentCustomization from './AvailableEquipmentCustomization';
 import SorenessCustomization from './SorenessCustomization';
 import IncludeExercisesCustomization from './IncludeExercisesCustomization';
 import ExcludeExercisesCustomization from './ExcludeExercisesCustomization';
 
-// Enhanced components from PR #3 modularization effort
-import { EnhancedFocusAreaCustomization } from './enhanced';
+// Enhanced components from PR #3 and PR #4 modularization effort
+import {
+  EnhancedFocusAreaCustomization,
+  EnhancedSleepQualityCustomization,
+  EnhancedStressLevelCustomization,
+} from './enhanced';
 
 // Export individual components
 export { default as WorkoutDurationCustomization } from './WorkoutDurationCustomization';
 export { default as WorkoutFocusCustomization } from './WorkoutFocusCustomization';
-export { default as SleepQualityCustomization } from './SleepQualityCustomization';
 export { default as EnergyLevelCustomization } from './EnergyLevelCustomization';
-export { default as StressLevelCustomization } from './StressLevelCustomization';
 export { default as AvailableEquipmentCustomization } from './AvailableEquipmentCustomization';
 export { default as SorenessCustomization } from './SorenessCustomization';
 export { default as IncludeExercisesCustomization } from './IncludeExercisesCustomization';
 export { default as ExcludeExercisesCustomization } from './ExcludeExercisesCustomization';
 
 // Enhanced components exports
-export { EnhancedFocusAreaCustomization } from './enhanced';
+export {
+  EnhancedFocusAreaCustomization,
+  EnhancedSleepQualityCustomization,
+  EnhancedStressLevelCustomization,
+} from './enhanced';
 
 // Configuration for all available customizations
 export const CUSTOMIZATION_CONFIG: CustomizationConfig[] = [
@@ -84,7 +88,7 @@ export const CUSTOMIZATION_CONFIG: CustomizationConfig[] = [
   },
   {
     key: 'customization_sleep',
-    component: SleepQualityCustomization,
+    component: EnhancedSleepQualityCustomization,
     label: 'Sleep Quality',
     icon: Moon,
     category: 'Current State & Wellness',
@@ -98,7 +102,7 @@ export const CUSTOMIZATION_CONFIG: CustomizationConfig[] = [
   },
   {
     key: 'customization_stress',
-    component: StressLevelCustomization,
+    component: EnhancedStressLevelCustomization,
     label: 'Stress Level',
     icon: Brain,
     category: 'Current State & Wellness',
