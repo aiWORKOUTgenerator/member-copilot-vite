@@ -45,7 +45,7 @@ export default memo(function EnhancedSleepQualityCustomization({
       description="Your sleep quality affects workout intensity recommendations"
       disabled={disabled}
       error={error}
-      gridCols={6}
+      gridCols={3}
       colorScheme="primary"
       required={false}
       variant={variant}

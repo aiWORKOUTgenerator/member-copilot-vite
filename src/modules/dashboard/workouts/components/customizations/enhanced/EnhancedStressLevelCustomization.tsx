@@ -45,7 +45,7 @@ export default memo(function EnhancedStressLevelCustomization({
       description="We'll adjust the workout to help manage your stress"
       disabled={disabled}
       error={error}
-      gridCols={6}
+      gridCols={3}
       colorScheme="primary"
       required={false}
       variant={variant}
