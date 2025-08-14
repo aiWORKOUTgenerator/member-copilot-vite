@@ -23,8 +23,10 @@ export default memo(function EnhancedStressLevelCustomization({
    * @param newValue - The new selection value (string from DetailedSelector)
    */
   const handleChange = (newValue: string | string[]) => {
+    // Handle both string and array inputs safely
+    const valueStr = Array.isArray(newValue) ? newValue[0] : newValue;
     // Convert string to number for stress level
-    const stressValue = parseInt(newValue as string, 10);
+    const stressValue = parseInt(valueStr, 10);
 
     // Validate the value is within range (1-6)
     if (stressValue >= 1 && stressValue <= 6) {

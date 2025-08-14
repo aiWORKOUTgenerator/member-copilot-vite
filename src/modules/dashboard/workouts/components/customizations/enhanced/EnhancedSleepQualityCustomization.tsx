@@ -23,8 +23,10 @@ export default memo(function EnhancedSleepQualityCustomization({
    * @param newValue - The new selection value (string from DetailedSelector)
    */
   const handleChange = (newValue: string | string[]) => {
+    // Handle both string and array inputs safely
+    const valueStr = Array.isArray(newValue) ? newValue[0] : newValue;
     // Convert string to number for sleep quality
-    const sleepValue = parseInt(newValue as string, 10);
+    const sleepValue = parseInt(valueStr, 10);
 
     // Validate the value is within range (1-6)
     if (sleepValue >= 1 && sleepValue <= 6) {
