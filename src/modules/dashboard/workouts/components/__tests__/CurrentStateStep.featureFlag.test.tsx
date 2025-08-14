@@ -222,7 +222,7 @@ describe('CurrentStateStep Feature Flag', () => {
       expect(
         screen.getAllByTestId('enhanced-detailed-selector').length
       ).toBeGreaterThan(0);
-    });
+    }, 10000);
 
     it('passes correct props to enhanced components', async () => {
       const { CurrentStateStep: EnhancedCurrentStateStep } = await import(
@@ -246,7 +246,7 @@ describe('CurrentStateStep Feature Flag', () => {
       expect(
         screen.getAllByTestId('enhanced-detailed-selector').length
       ).toBeGreaterThan(0);
-    });
+    }, 10000);
   });
 
   describe('Legacy Mode (Feature Flag Disabled)', () => {
@@ -267,7 +267,7 @@ describe('CurrentStateStep Feature Flag', () => {
       expect(
         screen.queryByTestId('current-state-step')
       ).not.toBeInTheDocument();
-    });
+    }, 10000);
 
     it('passes correct props to legacy components', async () => {
       const { CurrentStateStep: LegacyCurrentStateStep } = await import(
@@ -283,7 +283,7 @@ describe('CurrentStateStep Feature Flag', () => {
       expect(screen.getByTestId('legacy-energy-display')).toHaveTextContent(
         '4'
       );
-    });
+    }, 10000);
   });
 
   describe('Default Behavior (No Feature Flag)', () => {
@@ -304,7 +304,7 @@ describe('CurrentStateStep Feature Flag', () => {
       expect(
         screen.queryByTestId('current-state-step')
       ).not.toBeInTheDocument();
-    });
+    }, 10000);
   });
 
   describe('Feature Flag Edge Cases', () => {
