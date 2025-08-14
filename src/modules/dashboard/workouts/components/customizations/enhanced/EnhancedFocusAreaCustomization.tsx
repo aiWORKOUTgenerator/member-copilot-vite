@@ -3,7 +3,7 @@ import { DetailedSelector } from '@/ui/shared/molecules';
 import { Target } from 'lucide-react';
 import { useWorkoutAnalytics } from '../../../hooks/useWorkoutAnalytics';
 import { useEnhancedOptions } from '../../utils/optionEnhancers';
-import type { CustomizationComponentProps } from '../types';
+import type { CustomizationComponentProps } from '../../types';
 
 /**
  * Enhanced Focus Area Customization Component
