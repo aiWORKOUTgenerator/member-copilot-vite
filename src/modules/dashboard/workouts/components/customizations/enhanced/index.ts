@@ -32,6 +32,8 @@ export { default as EnhancedSorenessCustomization } from './EnhancedSorenessCust
 export { default as EnhancedWorkoutDurationCustomization } from './EnhancedWorkoutDurationCustomization';
 export { default as EnhancedWorkoutFocusCustomization } from './EnhancedWorkoutFocusCustomization';
 
+// PR #7: Enhanced Energy Level Component
+export { default as EnhancedEnergyLevelCustomization } from './EnhancedEnergyLevelCustomization';
+
 // Future enhanced components will be exported here as they're implemented
-// export { default as EnhancedEnergyLevelCustomization } from './EnhancedEnergyLevelCustomization';
 // export { default as EnhancedAvailableEquipmentCustomization } from './EnhancedAvailableEquipmentCustomization';
