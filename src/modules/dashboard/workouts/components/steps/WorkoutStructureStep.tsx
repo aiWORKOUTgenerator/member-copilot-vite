@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { CUSTOMIZATION_CONFIG } from '../customizations';
 import { CUSTOMIZATION_FIELD_KEYS } from '../../constants/fieldKeys';
 import type { PerWorkoutOptions } from '../types';
 import { SelectionBadge } from '@/ui/shared/atoms';
+import { validateDetailedStep } from '../../validation/detailedValidation';
+import { useWorkoutAnalytics } from '../../hooks/useWorkoutAnalytics';
 
 export interface WorkoutStructureStepProps {
   options: PerWorkoutOptions;
@@ -17,6 +19,57 @@ export const WorkoutStructureStep: React.FC<WorkoutStructureStepProps> = ({
   errors,
   disabled = false,
 }) => {
+  // Analytics integration for tracking user interactions
+  const { trackStepCompletion, trackValidationError } = useWorkoutAnalytics();
+  const startTime = useRef(Date.now());
+
+  // Track step completion when component unmounts
+  useEffect(() => {
+    return () => {
+      const duration = Date.now() - startTime.current;
+      const fieldsCompleted = [
+        options.customization_duration,
+        options.customization_focus,
+        (options.customization_areas?.length ?? 0) > 0,
+      ].filter(Boolean).length;
+
+      trackStepCompletion(
+        'workout-structure',
+        duration,
+        'detailed',
+        (fieldsCompleted / 3) * 100,
+        fieldsCompleted
+      );
+    };
+  }, [
+    options.customization_duration,
+    options.customization_focus,
+    options.customization_areas,
+    trackStepCompletion,
+  ]);
+
+  // Enhanced onChange handler with validation integration
+  const handleChange = useCallback(
+    (key: keyof PerWorkoutOptions, value: unknown) => {
+      // Update the value
+      onChange(key, value);
+
+      // Run step validation for real-time feedback
+      const stepErrors = validateDetailedStep('workout-structure', {
+        ...options,
+        [key]: value,
+      });
+
+      // Track validation errors for analytics
+      const errorMessage =
+        stepErrors.errors[key as keyof typeof stepErrors.errors];
+      if (errorMessage) {
+        trackValidationError(key, errorMessage, 'detailed', value);
+      }
+    },
+    [options, onChange, trackValidationError]
+  );
+
   // Get components for this step - matching Quick mode pattern
   const stepConfigs = CUSTOMIZATION_CONFIG.filter((config) =>
     (
@@ -119,7 +172,7 @@ export const WorkoutStructureStep: React.FC<WorkoutStructureStepProps> = ({
               {!config.comingSoon ? (
                 <CustomizationComponent
                   value={value}
-                  onChange={(newValue) => onChange(config.key, newValue)}
+                  onChange={(newValue) => handleChange(config.key, newValue)}
                   disabled={disabled}
                   error={error}
                 />
