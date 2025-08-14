@@ -162,7 +162,7 @@ describe('EnhancedSleepQualityCustomization', () => {
       'Your sleep quality affects workout intensity recommendations'
     );
     expect(screen.getByTestId('selector-props')).toHaveTextContent(
-      'disabled: false, gridCols: 6, colorScheme: primary, required: false, variant: detailed, showDescription: true, showTertiary: true'
+      'disabled: false, gridCols: 3, colorScheme: primary, required: false, variant: detailed, showDescription: true, showTertiary: true'
     );
   });
 
@@ -302,7 +302,7 @@ describe('EnhancedSleepQualityCustomization', () => {
     render(<EnhancedSleepQualityCustomization {...defaultProps} />);
 
     expect(screen.getByTestId('selector-props')).toHaveTextContent(
-      'gridCols: 6'
+      'gridCols: 3'
     );
   });
 

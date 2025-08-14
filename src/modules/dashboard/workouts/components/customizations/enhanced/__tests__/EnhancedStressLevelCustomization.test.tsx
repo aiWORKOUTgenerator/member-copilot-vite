@@ -162,7 +162,7 @@ describe('EnhancedStressLevelCustomization', () => {
       "We'll adjust the workout to help manage your stress"
     );
     expect(screen.getByTestId('selector-props')).toHaveTextContent(
-      'disabled: false, gridCols: 6, colorScheme: primary, required: false, variant: detailed, showDescription: true, showTertiary: true'
+      'disabled: false, gridCols: 3, colorScheme: primary, required: false, variant: detailed, showDescription: true, showTertiary: true'
     );
   });
 
@@ -293,7 +293,7 @@ describe('EnhancedStressLevelCustomization', () => {
     render(<EnhancedStressLevelCustomization {...defaultProps} />);
 
     expect(screen.getByTestId('selector-props')).toHaveTextContent(
-      'gridCols: 6'
+      'gridCols: 3'
     );
   });
 
