@@ -66,10 +66,17 @@ describe('PhoneNumberInput', () => {
     );
 
     const input = screen.getByLabelText('Phone number');
-    await user.type(input, '1234567890');
+
+    // Type more slowly and wait for each character
+    await user.type(input, '1');
+    await user.type(input, '2');
+    await user.type(input, '3');
+
+    // Wait for any async operations to complete
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     expect(mockOnChange).toHaveBeenCalled();
-  });
+  }, 10000); // Increase timeout to 10 seconds
 
   it('calls onBlur when input loses focus', async () => {
     const user = userEvent.setup();

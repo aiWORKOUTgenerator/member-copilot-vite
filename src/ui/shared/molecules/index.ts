@@ -4,6 +4,7 @@ export * from './ChoiceGroup';
 export * from './CheckboxCardGroup';
 export { default as StarRating } from './StarRating';
 export { default as FeedbackModal } from '../../../modules/dashboard/workouts/components/FeedbackModal';
+export { default as PromptInputWithExamples } from './PromptInputWithExamples';
 
 // Quick Workout Components
 export * from './StepIndicator';
