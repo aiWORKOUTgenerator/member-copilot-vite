@@ -56,7 +56,11 @@ export default memo(function EnhancedAvailableEquipmentCustomization({
     // Track user selection for analytics and AI learning
     // Map 'simple' variant to 'quick' for analytics compatibility
     const analyticsMode = variant === 'simple' ? 'quick' : 'detailed';
-    trackSelection('customization_equipment', finalValue || [], analyticsMode);
+    trackSelection(
+      'customization_equipment',
+      finalValue === undefined ? null : finalValue,
+      analyticsMode
+    );
   };
 
   return (
