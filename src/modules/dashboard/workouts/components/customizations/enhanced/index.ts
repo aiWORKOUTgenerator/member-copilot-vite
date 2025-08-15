@@ -35,5 +35,5 @@ export { default as EnhancedWorkoutFocusCustomization } from './EnhancedWorkoutF
 // PR #7: Enhanced Energy Level Component
 export { default as EnhancedEnergyLevelCustomization } from './EnhancedEnergyLevelCustomization';
 
-// Future enhanced components will be exported here as they're implemented
-// export { default as EnhancedAvailableEquipmentCustomization } from './EnhancedAvailableEquipmentCustomization';
+// PR #8: Enhanced Equipment Component
+export { default as EnhancedAvailableEquipmentCustomization } from './EnhancedAvailableEquipmentCustomization';

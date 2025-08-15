@@ -1,142 +1,182 @@
-import React from 'react';
-import { CUSTOMIZATION_CONFIG } from '../customizations';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { CUSTOMIZATION_FIELD_KEYS } from '../../constants/fieldKeys';
 import type { PerWorkoutOptions } from '../types';
 import { SelectionBadge } from '@/ui/shared/atoms';
+import { formatSelectionValue } from '../../utils/selectionFormatters';
+import { useWorkoutAnalytics } from '../../hooks/useWorkoutAnalytics';
+import { EnhancedAvailableEquipmentCustomization } from '../customizations/enhanced';
+// Keep legacy components for text input fields
+import {
+  IncludeExercisesCustomization,
+  ExcludeExercisesCustomization,
+} from '../customizations';
 
 export interface EquipmentPreferencesStepProps {
   options: PerWorkoutOptions;
   onChange: (key: keyof PerWorkoutOptions, value: unknown) => void;
   errors: Partial<Record<keyof PerWorkoutOptions, string>>;
   disabled?: boolean;
+  variant?: 'simple' | 'detailed';
 }
 
 export const EquipmentPreferencesStep: React.FC<
   EquipmentPreferencesStepProps
-> = ({ options, onChange, errors, disabled = false }) => {
-  // Get components for this step
-  const stepConfigs = CUSTOMIZATION_CONFIG.filter((config) =>
-    (
-      [
-        CUSTOMIZATION_FIELD_KEYS.EQUIPMENT,
-        CUSTOMIZATION_FIELD_KEYS.INCLUDE,
-        CUSTOMIZATION_FIELD_KEYS.EXCLUDE,
-      ] as string[]
-    ).includes(config.key)
+> = ({ options, onChange, errors, disabled = false, variant = 'detailed' }) => {
+  const { trackStepCompletion } = useWorkoutAnalytics();
+  const startTime = useRef(Date.now());
+
+  // Track step completion
+  useEffect(() => {
+    return () => {
+      const duration = Date.now() - startTime.current;
+      const fieldsCompleted = [
+        (options.customization_equipment?.length ?? 0) > 0,
+        options.customization_include,
+        options.customization_exclude,
+      ].filter(Boolean).length;
+
+      trackStepCompletion(
+        'equipment-preferences',
+        duration,
+        variant === 'simple' ? 'quick' : 'detailed',
+        (fieldsCompleted / 3) * 100
+      );
+    };
+  }, [
+    trackStepCompletion,
+    options.customization_equipment,
+    options.customization_include,
+    options.customization_exclude,
+    variant,
+  ]);
+
+  const handleChange = useCallback(
+    (key: keyof PerWorkoutOptions, value: unknown) => {
+      onChange(key, value);
+    },
+    [onChange]
   );
 
-  const formatCurrentSelection = (
-    config: (typeof CUSTOMIZATION_CONFIG)[0],
-    value: unknown
-  ): string | null => {
+  // Format functions for text fields
+  const formatIncludeExercises = (value: string | undefined): string | null => {
     if (!value) return null;
+    const exercises = value
+      .split(',')
+      .map((e) => e.trim())
+      .filter(Boolean);
+    if (exercises.length === 0) return null;
+    if (exercises.length === 1) return exercises[0];
+    return `${exercises.length} exercises`;
+  };
 
-    switch (config.key) {
-      case CUSTOMIZATION_FIELD_KEYS.EQUIPMENT: {
-        const equipment = value as string[];
-        if (equipment.length === 0) return null;
-        if (equipment.length === 1) {
-          const formatted = equipment[0]
-            .replace(/_/g, ' ')
-            .replace(/\b\w/g, (l) => l.toUpperCase());
-          return formatted === 'Bodyweight Only'
-            ? 'Bodyweight Only'
-            : formatted;
-        }
-        return `${equipment.length} items`;
-      }
-
-      case CUSTOMIZATION_FIELD_KEYS.INCLUDE: {
-        const exercises = value as string;
-        const exerciseList = exercises
-          .split(',')
-          .map((e) => e.trim())
-          .filter((e) => e.length > 0);
-        if (exerciseList.length === 0) return null;
-        if (exerciseList.length === 1) {
-          return exerciseList[0];
-        }
-        return `${exerciseList.length} exercises`;
-      }
-
-      case CUSTOMIZATION_FIELD_KEYS.EXCLUDE: {
-        const exercises = value as string;
-        const exerciseList = exercises
-          .split(',')
-          .map((e) => e.trim())
-          .filter((e) => e.length > 0);
-        if (exerciseList.length === 0) return null;
-        if (exerciseList.length === 1) {
-          return exerciseList[0];
-        }
-        return `${exerciseList.length} exercises`;
-      }
-
-      default:
-        return String(value);
-    }
+  const formatExcludeExercises = (value: string | undefined): string | null => {
+    if (!value) return null;
+    const exercises = value
+      .split(',')
+      .map((e) => e.trim())
+      .filter(Boolean);
+    if (exercises.length === 0) return null;
+    if (exercises.length === 1) return exercises[0];
+    return `${exercises.length} exercises`;
   };
 
   return (
     <div className="space-y-8" data-testid="equipment-preferences-step">
-      {/* Step Header - matching Quick mode pattern */}
+      {/* Step Header */}
       <div className="mb-6">
         <h3 className="text-xl font-semibold text-base-content mb-2">
           Equipment & Preferences
         </h3>
         <p className="text-base-content/70">
-          Tell us about your available equipment and any specific exercises
-          you'd like to include or avoid in your workout.
+          Tell us about your available equipment and exercise preferences.
         </p>
       </div>
 
-      {/* Customization Options - using space-y-8 like Quick mode */}
       <div className="space-y-8">
-        {stepConfigs.map((config) => {
-          const IconComponent = config.icon;
-          const CustomizationComponent = config.component;
-          const value = options[config.key];
-          const error = errors[config.key];
-          const currentSelection = formatCurrentSelection(config, value);
-
-          return (
-            <div key={config.key} className="space-y-4">
-              {/* Header with Icon - matching Quick mode DetailedSelector header pattern */}
-              <div className="flex items-center space-x-3">
-                <IconComponent className="w-5 h-5 text-primary" />
-                <div>
-                  <h4 className="font-medium text-base-content">
-                    {config.label}
-                  </h4>
-                  <p className="text-sm text-base-content/70">
-                    {config.key === CUSTOMIZATION_FIELD_KEYS.EQUIPMENT &&
-                      'Tell us what equipment you have available'}
-                    {config.key === CUSTOMIZATION_FIELD_KEYS.INCLUDE &&
-                      'Specify exercises you definitely want in your workout'}
-                    {config.key === CUSTOMIZATION_FIELD_KEYS.EXCLUDE &&
-                      'Specify exercises you want to avoid'}
-                  </p>
-                </div>
-                <SelectionBadge value={currentSelection} size="sm" />
-              </div>
-
-              {/* Customization Component */}
-              {!config.comingSoon ? (
-                <CustomizationComponent
-                  value={value}
-                  onChange={(newValue) => onChange(config.key, newValue)}
-                  disabled={disabled}
-                  error={error}
-                />
-              ) : (
-                <p className="text-sm text-base-content/50">
-                  This customization option is coming soon! Stay tuned for
-                  updates.
-                </p>
-              )}
+        {/* Equipment - Enhanced Component */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h4 className="font-medium text-base-content">
+                Available Equipment
+              </h4>
+              <p className="text-sm text-base-content/70">
+                What equipment do you have available?
+              </p>
             </div>
-          );
-        })}
+            <SelectionBadge
+              value={formatSelectionValue(
+                CUSTOMIZATION_FIELD_KEYS.EQUIPMENT,
+                options.customization_equipment
+              )}
+              size="sm"
+            />
+          </div>
+
+          <EnhancedAvailableEquipmentCustomization
+            value={options.customization_equipment}
+            onChange={(equipment) =>
+              handleChange(CUSTOMIZATION_FIELD_KEYS.EQUIPMENT, equipment)
+            }
+            disabled={disabled}
+            error={errors.customization_equipment}
+            variant={variant}
+          />
+        </div>
+
+        {/* Include Exercises - Keep Legacy (Text Input) */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h4 className="font-medium text-base-content">
+                Include Exercises
+              </h4>
+              <p className="text-sm text-base-content/70">
+                Specify exercises you want in your workout (optional)
+              </p>
+            </div>
+            <SelectionBadge
+              value={formatIncludeExercises(options.customization_include)}
+              size="sm"
+            />
+          </div>
+
+          <IncludeExercisesCustomization
+            value={options.customization_include}
+            onChange={(include) =>
+              handleChange(CUSTOMIZATION_FIELD_KEYS.INCLUDE, include)
+            }
+            disabled={disabled}
+            error={errors.customization_include}
+          />
+        </div>
+
+        {/* Exclude Exercises - Keep Legacy (Text Input) */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h4 className="font-medium text-base-content">
+                Exclude Exercises
+              </h4>
+              <p className="text-sm text-base-content/70">
+                Specify exercises you want to avoid (optional)
+              </p>
+            </div>
+            <SelectionBadge
+              value={formatExcludeExercises(options.customization_exclude)}
+              size="sm"
+            />
+          </div>
+
+          <ExcludeExercisesCustomization
+            value={options.customization_exclude}
+            onChange={(exclude) =>
+              handleChange(CUSTOMIZATION_FIELD_KEYS.EXCLUDE, exclude)
+            }
+            disabled={disabled}
+            error={errors.customization_exclude}
+          />
+        </div>
       </div>
     </div>
   );
