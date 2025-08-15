@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { CurrentStateStep } from '../steps/CurrentStateStep';
 import { PerWorkoutOptions } from '../types';
+import React from 'react';
 
 // Mock the analytics hook
 vi.mock('../../../hooks/useWorkoutAnalytics', () => ({
