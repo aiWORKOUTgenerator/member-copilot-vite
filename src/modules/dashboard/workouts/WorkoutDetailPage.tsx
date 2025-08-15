@@ -319,6 +319,7 @@ export default function WorkoutDetailPage() {
           )
         }
         tabs={tabs}
+        backgroundClassName="bg-base-200"
       />
 
       {workoutFormat === 'plain' ? (

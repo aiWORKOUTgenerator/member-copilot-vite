@@ -142,6 +142,7 @@ export default function BillingLayout() {
             onTabChange={handleTabChange}
             tabs={tabs}
             className="mb-6"
+            backgroundClassName="bg-base-200"
           />
 
           <div className="card bg-base-100 shadow-md border border-base-200">
