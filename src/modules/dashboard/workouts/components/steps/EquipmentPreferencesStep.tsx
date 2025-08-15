@@ -38,11 +38,17 @@ export const EquipmentPreferencesStep: React.FC<
       trackStepCompletion(
         'equipment-preferences',
         duration,
-        'detailed',
+        variant === 'simple' ? 'quick' : 'detailed',
         (fieldsCompleted / 3) * 100
       );
     };
-  }, []);
+  }, [
+    trackStepCompletion,
+    options.customization_equipment,
+    options.customization_include,
+    options.customization_exclude,
+    variant,
+  ]);
 
   const handleChange = useCallback(
     (key: keyof PerWorkoutOptions, value: unknown) => {
