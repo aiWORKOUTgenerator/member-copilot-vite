@@ -228,11 +228,11 @@ export default function WorkoutHistoryPage() {
 
       {/* Trainer Persona Section */}
       {trainerPersona && (
-        <div className="mb-6 p-3 bg-base-100 border border-base-300 rounded-lg">
-          <TrainerPersonaDisplay trainerPersona={trainerPersona} />
-          <div className="mt-2 text-sm text-base-content/70">
-            <p>Here's your workout history and progress overview:</p>
-          </div>
+        <div className="mb-6">
+          <TrainerPersonaDisplay
+            trainerPersona={trainerPersona}
+            subtitle={"Here's your workout history and progress overview:"}
+          />
         </div>
       )}
 

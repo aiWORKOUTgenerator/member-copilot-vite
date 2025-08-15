@@ -298,11 +298,11 @@ export default function WorkoutDetailPage() {
 
       {/* Trainer Persona Section */}
       {trainerPersona && (
-        <div className="mb-4 p-3 bg-base-100 border border-base-300 rounded-lg">
-          <TrainerPersonaDisplay trainerPersona={trainerPersona} />
-          <div className="mt-2 text-sm text-base-content/70">
-            <p>Here's your personalized workout plan:</p>
-          </div>
+        <div className="mb-4">
+          <TrainerPersonaDisplay
+            trainerPersona={trainerPersona}
+            subtitle={"Here's your personalized workout plan:"}
+          />
         </div>
       )}
 
