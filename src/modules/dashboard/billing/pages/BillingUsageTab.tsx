@@ -4,6 +4,7 @@ import { MeteredFeature } from '@/domain/entities/meteredFeatures';
 import { useUserAccess } from '@/hooks';
 import AccessAwareComponent from '@/ui/shared/molecules/AccessAwareComponent';
 import { useNavigate } from 'react-router';
+import { ContentCard } from '@/ui';
 
 export default function UsagePage() {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ export default function UsagePage() {
   };
 
   return (
-    <div className="p-6 bg-base-100 rounded-box space-y-6">
+    <ContentCard>
       <h2 className="text-xl font-bold mb-4">Usage Statistics</h2>
       <p className="text-base-content/70 mb-4">
         Track your usage metrics for the current billing period.
@@ -62,6 +63,6 @@ export default function UsagePage() {
           </div>
         )}
       </AccessAwareComponent>
-    </div>
+    </ContentCard>
   );
 }

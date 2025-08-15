@@ -274,7 +274,7 @@ export default function DashboardHomePage() {
       )}
 
       {/* Action Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-6">
         <AccessAwareComponent showSkeleton={true} skeletonClassName="w-full">
           <ActionCard
             title="Generate New Workout"
@@ -316,15 +316,8 @@ export default function DashboardHomePage() {
           }
           badgeColor="badge-accent"
         />
-      </div>
 
-      {/* Account Security Section */}
-      <div className="mb-8">
         <PhoneVerificationCard />
-      </div>
-
-      {/* Announcements Section */}
-      <div className="mb-8">
         <AnnouncementsSection />
       </div>
     </div>

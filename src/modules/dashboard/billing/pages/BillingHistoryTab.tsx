@@ -4,6 +4,7 @@ import { PortalConfiguration } from '@/domain/interfaces/services/SubscriptionSe
 import { useState } from 'react';
 import { useBillingContext } from '@/hooks/useBillingContext';
 import { useSubscription } from '@/hooks/useSubscription';
+import { ContentCard } from '@/ui';
 
 export default function BillingHistoryPage() {
   const { createCustomerPortalSession } = useSubscription();
@@ -21,12 +22,10 @@ export default function BillingHistoryPage() {
     setErrorMessage(''); // Clear previous errors
 
     try {
-      console.log(`Requesting customer portal session: ${portalConfiguration}`);
       const { url } = await createCustomerPortalSession(
         portalConfiguration,
         returnPath
       );
-      console.log(`Received portal URL: ${url}`);
 
       if (url) {
         window.location.href = url;
@@ -48,7 +47,7 @@ export default function BillingHistoryPage() {
   };
 
   return (
-    <div className="p-6 bg-base-100 rounded-box space-y-4">
+    <ContentCard>
       <h2 className="text-xl font-bold mb-4">Billing History</h2>
       <p className="text-base-content/70">
         View your past invoices and download them for your records.
@@ -63,6 +62,6 @@ export default function BillingHistoryPage() {
         ) : null}
         View Billing History
       </button>
-    </div>
+    </ContentCard>
   );
 }

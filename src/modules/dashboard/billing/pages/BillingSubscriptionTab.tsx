@@ -4,6 +4,7 @@ import { useSubscription } from '@/hooks/useSubscription';
 import { useAnalytics } from '@/hooks/useAnalytics';
 import { useBillingContext } from '@/hooks/useBillingContext';
 import PricingComponent from '@/ui/shared/organisms/PricingComponent';
+import { ContentCard } from '@/ui';
 import { useEffect, useState } from 'react';
 
 export default function SubscriptionPage() {
@@ -94,11 +95,13 @@ export default function SubscriptionPage() {
   }
 
   return (
-    <PricingComponent
-      tiers={tiers}
-      selectedTier={selectedTier}
-      isProcessing={isProcessing}
-      onSelectTier={handleSubscriptionChange}
-    />
+    <ContentCard>
+      <PricingComponent
+        tiers={tiers}
+        selectedTier={selectedTier}
+        isProcessing={isProcessing}
+        onSelectTier={handleSubscriptionChange}
+      />
+    </ContentCard>
   );
 }

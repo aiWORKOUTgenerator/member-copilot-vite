@@ -4,6 +4,7 @@ import { useSubscription } from '@/hooks/useSubscription';
 import { PortalConfiguration } from '@/domain/interfaces/services/SubscriptionService';
 import { useBillingContext } from '@/hooks/useBillingContext';
 import { useState } from 'react';
+import { ContentCard } from '@/ui';
 
 export default function PaymentMethodPage() {
   const { createCustomerPortalSession } = useSubscription();
@@ -48,7 +49,7 @@ export default function PaymentMethodPage() {
   };
 
   return (
-    <div className="p-6 bg-base-100 rounded-box space-y-4">
+    <ContentCard>
       <h2 className="text-xl font-bold mb-4">Payment Method</h2>
       <p className="text-base-content/70">
         Manage your payment methods, view upcoming invoices, update billing
@@ -62,8 +63,8 @@ export default function PaymentMethodPage() {
         {isProcessingPortal ? (
           <span className="loading loading-spinner"></span>
         ) : null}
-        Manage Payment & Billing Details
+        Manage Billing
       </button>
-    </div>
+    </ContentCard>
   );
 }
