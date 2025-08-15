@@ -227,7 +227,7 @@ export default function WorkoutDetailPage() {
           {canStartWorkouts ? (
             <button
               onClick={handleStartWorkout}
-              className="btn btn-primary flex-1 sm:flex-initial"
+              className="btn btn-primary flex-1 sm:flex-initial w-full sm:w-auto"
               disabled={!generatedWorkout || isCreatingInstance}
               title="Start a new workout session"
             >
@@ -246,7 +246,7 @@ export default function WorkoutDetailPage() {
             >
               <button
                 onClick={() => navigate('/dashboard/billing')}
-                className="btn btn-outline btn-warning flex-1 sm:flex-initial relative"
+                className="btn btn-outline btn-warning flex-1 sm:flex-initial w-full sm:w-auto relative"
                 disabled={!generatedWorkout}
               >
                 <div className="flex items-center">
@@ -266,7 +266,7 @@ export default function WorkoutDetailPage() {
             }}
             className={`btn ${
               existingFeedback ? 'btn-success' : 'btn-outline'
-            } flex-1 sm:flex-initial`}
+            } flex-1 sm:flex-initial w-full sm:w-auto`}
             disabled={!generatedWorkout}
             title={existingFeedback ? 'Workout Rated' : 'Rate This Workout'}
           >
