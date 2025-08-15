@@ -7,31 +7,11 @@ import { PerWorkoutOptions } from './components/types';
 import { useAnalytics } from '@/hooks/useAnalytics';
 import { ButtonStateLogic } from './selectionCountingLogic';
 import { useSelectionSummary } from './hooks/useSelectionSummary';
-import { SelectionSummary } from '@/ui/shared/molecules';
-
-// 15 workout prompt examples
-const WORKOUT_PROMPTS = [
-  '30 minute HIIT workout for fat loss',
-  'Strength training for beginners with dumbbells only',
-  'Recovery yoga routine after leg day',
-  '20-minute HIIT workout with no equipment',
-  'Strength training routine for building leg muscles',
-  'Full body workout with dumbbells only',
-  'Low impact cardio for beginners',
-  'Upper body workout focusing on arms and shoulders',
-  'Quick morning yoga routine for flexibility',
-  'Core strengthening workout for abs',
-  'Endurance training plan for marathon preparation',
-  'Bodyweight exercises for hotel room travel workouts',
-  'Kettlebell circuit for full body conditioning',
-  'Back pain relief stretching routine',
-  'Powerlifting workout for strength gains',
-  'Post-workout recovery stretching routine',
-  '15-minute desk-based workout for office breaks',
-  'Workout for improving running speed and endurance',
-  'Senior-friendly gentle exercise routine',
-  'Mobility workout for improving joint health',
-];
+import {
+  SelectionSummary,
+  PromptInputWithExamples,
+} from '@/ui/shared/molecules';
+import { WORKOUT_PROMPT_EXAMPLES } from './constants/promptExamples';
 
 export default function GenerateWorkoutPage() {
   const [activeTab, setActiveTab] = useState<'quick' | 'detailed'>('quick');
@@ -50,7 +30,6 @@ export default function GenerateWorkoutPage() {
     activeQuickStep
   );
   const [isGenerating, setIsGenerating] = useState(false);
-  const [displayPrompts, setDisplayPrompts] = useState<string[]>([]);
 
   const { createWorkout } = useGeneratedWorkouts();
   const navigate = useNavigate();
@@ -65,12 +44,6 @@ export default function GenerateWorkoutPage() {
       tracked_at: new Date().toISOString(),
     });
   }, [analytics]);
-
-  // Select 3 random prompts when the component mounts
-  useEffect(() => {
-    const shuffled = [...WORKOUT_PROMPTS].sort(() => 0.5 - Math.random());
-    setDisplayPrompts(shuffled.slice(0, 3));
-  }, []);
 
   // Helper function to convert options to string format for API submission
   const convertOptionsToStrings = (
@@ -191,11 +164,6 @@ export default function GenerateWorkoutPage() {
     handlePreferenceChange(option, value);
   };
 
-  // Function to use an example prompt
-  const setExamplePrompt = (example: string) => {
-    setPrompt(example);
-  };
-
   // Track successful workout generation
   const handleGenerationSuccess = (workoutId: string) => {
     analytics.track('Workout Generated Successfully', {
@@ -303,7 +271,7 @@ export default function GenerateWorkoutPage() {
         Back to workouts
       </button>
 
-      <div className="card card-border bg-base-200">
+      <div className="card card-border max-w-4xl mx-auto bg-base-200">
         <div className="card-body">
           <h2 className="card-title">Generate a New Workout</h2>
 
@@ -363,73 +331,15 @@ export default function GenerateWorkoutPage() {
                   mode="detailed"
                 />
 
-                {/* Text area - Now below customization */}
-                <div className="mb-6">
-                  <label className="block mb-2 font-medium flex justify-between items-center">
-                    <span>
-                      Additional Requirements{' '}
-                      <span className="text-sm font-normal text-base-content/70">
-                        (optional)
-                      </span>
-                    </span>
-                    <button
-                      type="button"
-                      className="btn btn-sm btn-ghost"
-                      onClick={() => {
-                        const shuffled = [...WORKOUT_PROMPTS].sort(
-                          () => 0.5 - Math.random()
-                        );
-                        setDisplayPrompts(shuffled.slice(0, 3));
-                      }}
-                      aria-label="Refresh examples"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="lucide lucide-refresh-cw"
-                      >
-                        <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
-                        <path d="M21 3v5h-5" />
-                        <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
-                        <path d="M3 21v-5h5" />
-                      </svg>
-                    </button>
-                  </label>
-
-                  <div className="mockup-code mb-3 text-sm">
-                    {displayPrompts.map((example, index) => (
-                      <pre
-                        key={index}
-                        data-prefix=">"
-                        className={`text-${
-                          index === 0
-                            ? 'success'
-                            : index === 1
-                              ? 'info'
-                              : 'warning'
-                        } cursor-pointer hover:bg-base-300`}
-                        onClick={() => setExamplePrompt(example)}
-                      >
-                        <code>{example}</code>
-                      </pre>
-                    ))}
-                  </div>
-
-                  <textarea
-                    className="textarea textarea-bordered validator w-full min-h-32"
-                    placeholder="Describe any additional requirements, modifications, or specific goals for your workout..."
-                    value={prompt}
-                    onChange={(e) => setPrompt(e.target.value)}
-                    disabled={isGenerating}
-                  ></textarea>
-                </div>
+                {/* Prompt Input with Examples - Now as a separate container */}
+                <PromptInputWithExamples
+                  value={prompt}
+                  onChange={setPrompt}
+                  examples={WORKOUT_PROMPT_EXAMPLES}
+                  disabled={isGenerating}
+                  optional={false}
+                  className="mb-6"
+                />
               </>
             )}
 
