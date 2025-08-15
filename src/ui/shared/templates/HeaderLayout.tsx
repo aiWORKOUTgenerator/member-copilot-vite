@@ -1,20 +1,19 @@
 'use client';
 
+import { ContactUtils } from '@/domain';
+import { useUserAccess } from '@/hooks';
 import { useAttributesLoaded } from '@/hooks/useAttributes';
 import {
   useAttributeTypesData,
   useAttributeTypesLoaded,
 } from '@/hooks/useAttributeTypes';
+import { useAppConfig } from '@/hooks/useConfiguration';
 import { useContactData } from '@/hooks/useContact';
 import { usePromptsData, usePromptsLoaded } from '@/hooks/usePrompts';
-import { useTitle } from '@/hooks/useTitle';
-import { ContactUtils } from '@/domain';
-import { useUserAccess } from '@/hooks';
+import { MobileNavDropdown } from '@/ui/shared/molecules/MobileNavDropdown';
 import { UserButton } from '@clerk/clerk-react';
 import React, { ReactNode, useMemo } from 'react';
 import { Link, useLocation } from 'react-router';
-import { useAppConfig } from '@/hooks/useConfiguration';
-import { MobileNavDropdown } from '@/ui/shared/molecules/MobileNavDropdown';
 
 interface NavigationItem {
   name: string;
@@ -30,8 +29,6 @@ interface HeaderLayoutProps {
   title?: string;
   navigation?: NavigationItem[];
   logo?: string;
-  containerStyle?: 'default' | 'none' | string;
-  headerStyle?: 'white' | 'base' | string;
 }
 
 function classNames(...classes: string[]) {
@@ -40,15 +37,9 @@ function classNames(...classes: string[]) {
 
 export const HeaderLayout: React.FC<HeaderLayoutProps> = ({
   children,
-  title,
   logo,
-  containerStyle = 'default',
-  headerStyle = 'white',
 }) => {
   const pathname = useLocation().pathname || '';
-  // Get title from context if not provided as prop
-  const { title: contextTitle } = useTitle();
-  const displayTitle = title || contextTitle;
 
   // App config (for logoUrl)
   const appConfig = useAppConfig();
@@ -150,25 +141,8 @@ export const HeaderLayout: React.FC<HeaderLayoutProps> = ({
     ];
   }, [incompleteAttributesCount, isOnBasicTier, showTrainerNewBadge]);
 
-  // Determine container class based on containerStyle prop
-  const getContainerClass = () => {
-    if (containerStyle === 'none') return '';
-    if (containerStyle === 'default')
-      return 'bg-base-100 shadow-xl border border-base-200 rounded-lg min-h-96 relative';
-    return containerStyle; // Custom class string
-  };
-
-  // Determine header class based on headerStyle prop
-  const getHeaderClass = () => {
-    if (headerStyle === 'white')
-      return 'bg-base-100 shadow-sm border-b border-base-300';
-    if (headerStyle === 'base')
-      return 'bg-base-200 shadow-sm border-b border-base-300';
-    return headerStyle; // Custom class string
-  };
-
   return (
-    <div className="min-h-full bg-base-200">
+    <div className="min-h-full bg-base-100">
       {/* Navigation Header */}
       <nav className="bg-primary border-b border-primary-focus/25">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -255,32 +229,10 @@ export const HeaderLayout: React.FC<HeaderLayoutProps> = ({
         </div>
       </nav>
 
-      {/* Page Title Header */}
-      <header className={`relative ${getHeaderClass()}`}>
-        <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-semibold text-base-content break-words">
-              {displayTitle}
-            </h1>
-            {/* Optional: Add breadcrumbs or additional header content here */}
-          </div>
-        </div>
-      </header>
-
       {/* Main Content */}
-      <main className="w-full">
-        <div className="mx-auto max-w-7xl w-full px-4 py-6 sm:px-6 lg:px-8">
-          {containerStyle === 'none' ? (
-            <div className="w-full max-w-full overflow-x-hidden">
-              {children}
-            </div>
-          ) : (
-            <div
-              className={`${getContainerClass()} w-full max-w-full overflow-x-hidden p-6`}
-            >
-              {children}
-            </div>
-          )}
+      <main className="h-full bg-base-100 p-4">
+        <div className="mx-auto max-w-7xl w-full py-4 sm:px-6 lg:px-8 bg-base-200 rounded-xl p-4 shadow-lg">
+          <div className="min-h-96">{children}</div>
         </div>
       </main>
     </div>

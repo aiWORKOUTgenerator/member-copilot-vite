@@ -23,7 +23,7 @@ export default function TabBar({
   className = '',
 }: TabBarProps) {
   return (
-    <div role="tablist" className={`tabs tabs-box mb-4 ${className}`}>
+    <div role="tablist" className={`tabs tabs-box bg-base-100 ${className}`}>
       {tabs.map((tab) => (
         <a
           key={tab.id}

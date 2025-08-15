@@ -325,7 +325,6 @@ export default function DashboardHomePage() {
 
       {/* Announcements Section */}
       <div className="mb-8">
-        <div className="border-t border-base-300 mb-6"></div>
         <AnnouncementsSection />
       </div>
     </div>

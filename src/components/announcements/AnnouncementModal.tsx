@@ -114,7 +114,7 @@ export function AnnouncementModal({
       aria-labelledby="modal-title"
       aria-describedby="modal-description"
     >
-      <div className="modal-box max-w-4xl">
+      <div className="bg-base-300 modal-box max-w-4xl">
         {/* Modal Header */}
         <div className="flex justify-between items-start mb-4">
           <div className="flex items-center gap-3">
