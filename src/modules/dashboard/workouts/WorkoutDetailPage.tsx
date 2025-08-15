@@ -323,7 +323,7 @@ export default function WorkoutDetailPage() {
 
       {workoutFormat === 'plain' ? (
         displayText ? (
-          <div className="p-4 prose-lg dark:prose-invert">
+          <div className="bg-base-100 mt-4 p-4 prose-lg dark:prose-invert">
             <ReactMarkdown>{displayText}</ReactMarkdown>
           </div>
         ) : (
