@@ -159,7 +159,7 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
   return (
     <div className="min-h-full bg-base-300 w-full max-w-full overflow-x-hidden">
       <div className="bg-primary pb-12 sm:pb-32 w-full">
-        <div className="navbar border-b border-secondary-focus/25 bg-primary w-full">
+        <div className="navbar border-b border-secondary-focus/25 bg-primary w-full text-primary-content">
           <div className="navbar-start">
             <div className="flex items-center">
               {/* Mobile logo */}

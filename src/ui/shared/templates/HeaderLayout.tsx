@@ -157,7 +157,7 @@ export const HeaderLayout: React.FC<HeaderLayoutProps> = ({
                 ) : (
                   <Link
                     to="/dashboard"
-                    className="text-xl font-bold text-white"
+                    className="text-xl font-bold text-primary-content"
                   >
                     App
                   </Link>
@@ -179,8 +179,8 @@ export const HeaderLayout: React.FC<HeaderLayoutProps> = ({
                         className={classNames(
                           'relative inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors duration-200',
                           isCurrentPage
-                            ? 'bg-primary-focus text-white shadow-md'
-                            : 'text-primary-content/90 hover:bg-white/10 hover:text-white',
+                            ? 'bg-primary-focus text-primary-content shadow-md'
+                            : 'text-primary-content/90 hover:bg-primary-content/10 hover:text-primary-content',
                           item.enhanced && !item.isUpgrade
                             ? 'ring-2 ring-secondary/50 hover:ring-secondary'
                             : '',
