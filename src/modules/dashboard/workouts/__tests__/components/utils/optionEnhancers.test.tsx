@@ -10,6 +10,7 @@ import {
   enhanceFocusOptionsWithIntensity,
   enhanceEnergyOptionsWithDots,
   enhanceDurationOptionsWithSubtitles,
+  enhanceDetailedDurationOptionsWithSubtitles,
   enhanceEquipmentOptions,
   enhanceFocusAreaOptions,
   enhanceSleepQualityOptions,
@@ -199,6 +200,37 @@ describe('Quick Mode Option Enhancers', () => {
     });
   });
 
+  describe('enhanceDetailedDurationOptionsWithSubtitles', () => {
+    it('should enhance detailed duration options with comprehensive descriptions', () => {
+      const enhanced = enhanceDetailedDurationOptionsWithSubtitles();
+
+      expect(enhanced).toHaveLength(6); // All detailed duration options
+
+      enhanced.forEach((option) => {
+        expect(option).toHaveProperty('id');
+        expect(option).toHaveProperty('title');
+        expect(option).toHaveProperty('description');
+        expect(option).toHaveProperty('tertiary');
+        expect(typeof option.tertiary).toBe('string'); // Subtitle is a string
+      });
+    });
+
+    it('should provide comprehensive duration options for detailed setup', () => {
+      const enhanced = enhanceDetailedDurationOptionsWithSubtitles();
+
+      // Check that we have the full range of detailed options
+      const durations = enhanced.map((option) => parseInt(option.id, 10));
+      expect(durations).toEqual([20, 30, 45, 60, 75, 90]);
+
+      // Check that descriptions are comprehensive
+      const option20 = enhanced.find((opt) => opt.id === '20');
+      const option90 = enhanced.find((opt) => opt.id === '90');
+
+      expect(option20?.description).toContain('HIIT, mobility flows');
+      expect(option90?.description).toContain('Full powerlifting splits');
+    });
+  });
+
   describe('enhanceEquipmentOptions', () => {
     it('should enhance equipment options', () => {
       const enhanced = enhanceEquipmentOptions();
@@ -320,6 +352,7 @@ describe('Performance and Caching', () => {
     enhanceFocusOptionsWithIntensity();
     enhanceEnergyOptionsWithDots();
     enhanceDurationOptionsWithSubtitles();
+    enhanceDetailedDurationOptionsWithSubtitles();
     enhanceEquipmentOptions();
     enhanceFocusAreaOptions();
     enhanceSleepQualityOptions();
@@ -327,10 +360,11 @@ describe('Performance and Caching', () => {
     enhanceSorenessAreaOptions();
 
     const stats = getCacheStats();
-    expect(stats.size).toBe(8); // All 8 option types cached
+    expect(stats.size).toBe(9); // All 9 option types cached
     expect(stats.keys).toContain('focusWithIntensity');
     expect(stats.keys).toContain('energyWithDots');
     expect(stats.keys).toContain('durationWithSubtitles');
+    expect(stats.keys).toContain('detailedDurationWithSubtitles');
     expect(stats.keys).toContain('equipment');
     expect(stats.keys).toContain('focusAreas');
     expect(stats.keys).toContain('sleepQuality');

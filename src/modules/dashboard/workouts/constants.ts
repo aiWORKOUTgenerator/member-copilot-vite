@@ -106,6 +106,53 @@ export const QUICK_WORKOUT_DURATION_OPTIONS: WorkoutDurationOption[] = [
   },
 ];
 
+// Detailed workout duration options - broader range for comprehensive customization
+export const DETAILED_WORKOUT_DURATION_OPTIONS: WorkoutDurationOption[] = [
+  {
+    id: '20',
+    title: '20 min',
+    description:
+      'HIIT, mobility flows, EMOM/AMRAP circuits, bodyweight conditioning',
+    subtitle: 'Great for low-energy days, warm-ups, or time-crunched routines',
+  },
+  {
+    id: '30',
+    title: '30 min',
+    description:
+      'Full-body dumbbell or kettlebell workouts, short cardio/strength combos',
+    subtitle: 'Efficient option for consistency and busy users',
+  },
+  {
+    id: '45',
+    title: '45 min',
+    description:
+      'Balanced strength splits, cardio intervals + accessory work, functional circuits',
+    subtitle: 'Sweet spot for general fitness – warm-up to cool-down included',
+  },
+  {
+    id: '60',
+    title: '60 min',
+    description:
+      'Hypertrophy splits, strength + cardio combos, skill practice + accessories',
+    subtitle: 'Traditional full training session; good rest-to-work balance',
+  },
+  {
+    id: '75',
+    title: '75 min',
+    description:
+      'Powerbuilding, Olympic lift work, strength splits with long rest, mobility + core work',
+    subtitle: 'Advanced sessions with more complexity or mixed modalities',
+  },
+  {
+    id: '90',
+    title: '90 min',
+    description:
+      'Full powerlifting splits, CrossFit WOD + skill blocks, athlete-specific periodization',
+    subtitle:
+      'Rare use—advanced or competitive athletes needing full recovery blocks',
+  },
+];
+
 // Quick workout equipment options
 export const QUICK_WORKOUT_EQUIPMENT_OPTIONS: WorkoutEquipmentOption[] = [
   {

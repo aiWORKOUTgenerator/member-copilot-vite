@@ -57,6 +57,53 @@ const mockEnhancedOptions = {
       tertiary: 'Comprehensive',
     },
   ],
+  detailedDurationOptions: [
+    {
+      id: '20',
+      title: '20 min',
+      description:
+        'HIIT, mobility flows, EMOM/AMRAP circuits, bodyweight conditioning',
+      tertiary:
+        'Great for low-energy days, warm-ups, or time-crunched routines',
+    },
+    {
+      id: '30',
+      title: '30 min',
+      description:
+        'Full-body dumbbell or kettlebell workouts, short cardio/strength combos',
+      tertiary: 'Efficient option for consistency and busy users',
+    },
+    {
+      id: '45',
+      title: '45 min',
+      description:
+        'Balanced strength splits, cardio intervals + accessory work, functional circuits',
+      tertiary:
+        'Sweet spot for general fitness – warm-up to cool-down included',
+    },
+    {
+      id: '60',
+      title: '60 min',
+      description:
+        'Hypertrophy splits, strength + cardio combos, skill practice + accessories',
+      tertiary: 'Traditional full training session; good rest-to-work balance',
+    },
+    {
+      id: '75',
+      title: '75 min',
+      description:
+        'Powerbuilding, Olympic lift work, strength splits with long rest, mobility + core work',
+      tertiary: 'Advanced sessions with more complexity or mixed modalities',
+    },
+    {
+      id: '90',
+      title: '90 min',
+      description:
+        'Full powerlifting splits, CrossFit WOD + skill blocks, athlete-specific periodization',
+      tertiary:
+        'Rare use—advanced or competitive athletes needing full recovery blocks',
+    },
+  ],
   focusAreaOptions: [
     {
       id: 'upper_body',
@@ -181,7 +228,7 @@ describe('WorkoutStructureStep Integration', () => {
       ).toBeInTheDocument();
       expect(
         screen.getByText(
-          'Choose a duration that fits your schedule and energy level'
+          'Choose a duration that fits your schedule, energy level, and fitness goals'
         )
       ).toBeInTheDocument();
     });
@@ -219,11 +266,11 @@ describe('WorkoutStructureStep Integration', () => {
       render(<WorkoutStructureStep {...defaultProps} onChange={onChange} />);
 
       // Find and click a duration option
-      const durationOption = screen.getByText('15 minutes');
+      const durationOption = screen.getByText('20 min');
       fireEvent.click(durationOption);
 
       await waitFor(() => {
-        expect(onChange).toHaveBeenCalledWith('customization_duration', 15);
+        expect(onChange).toHaveBeenCalledWith('customization_duration', 20);
       });
     });
 
@@ -265,7 +312,7 @@ describe('WorkoutStructureStep Integration', () => {
       render(<WorkoutStructureStep {...defaultProps} onChange={onChange} />);
 
       // Select a duration
-      const durationOption = screen.getByText('15 minutes');
+      const durationOption = screen.getByText('20 min');
       fireEvent.click(durationOption);
 
       await waitFor(() => {
@@ -273,7 +320,7 @@ describe('WorkoutStructureStep Integration', () => {
           'workout-structure',
           {
             ...defaultOptions,
-            customization_duration: 15,
+            customization_duration: 20,
           }
         );
       });
