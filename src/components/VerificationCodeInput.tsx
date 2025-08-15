@@ -81,10 +81,14 @@ export const VerificationCodeInput = forwardRef<
                   fontSize: 'clamp(14px, 4vw, 18px)',
                   fontWeight: '600',
                   textAlign: 'center',
-                  border: error ? '2px solid #ef4444' : '2px solid #d1d5db',
+                  border: error
+                    ? '2px solid hsl(var(--er))'
+                    : '2px solid hsl(var(--bc) / 0.2)',
                   borderRadius: '8px',
-                  backgroundColor: disabled ? '#f9fafb' : '#ffffff',
-                  color: disabled ? '#9ca3af' : '#1f2937',
+                  backgroundColor: disabled
+                    ? 'hsl(var(--b2))'
+                    : 'hsl(var(--b1))',
+                  color: disabled ? 'hsl(var(--bc) / 0.6)' : 'hsl(var(--bc))',
                   outline: 'none',
                   transition: 'all 0.2s ease-in-out',
                   maxWidth: '48px',
@@ -92,16 +96,16 @@ export const VerificationCodeInput = forwardRef<
                 }}
                 onFocus={(e) => {
                   e.target.style.border = error
-                    ? '2px solid #ef4444'
-                    : '2px solid #3b82f6';
+                    ? '2px solid hsl(var(--er))'
+                    : '2px solid hsl(var(--p))';
                   e.target.style.boxShadow = error
-                    ? '0 0 0 3px rgba(239, 68, 68, 0.1)'
-                    : '0 0 0 3px rgba(59, 130, 246, 0.1)';
+                    ? '0 0 0 3px hsl(var(--er) / 0.1)'
+                    : '0 0 0 3px hsl(var(--p) / 0.1)';
                 }}
                 onBlur={(e) => {
                   e.target.style.border = error
-                    ? '2px solid #ef4444'
-                    : '2px solid #d1d5db';
+                    ? '2px solid hsl(var(--er))'
+                    : '2px solid hsl(var(--bc) / 0.2)';
                   e.target.style.boxShadow = 'none';
                 }}
                 disabled={disabled}
@@ -126,7 +130,7 @@ export const VerificationCodeInput = forwardRef<
 
         {/* Error message */}
         {error && (
-          <p className="text-red-600 text-sm flex items-center justify-center gap-1">
+          <p className="text-error text-sm flex items-center justify-center gap-1">
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
               <path
                 fillRule="evenodd"
@@ -221,10 +225,10 @@ export const SimpleVerificationCodeInput = forwardRef<
             border rounded-lg shadow-sm transition-colors duration-200
             ${
               error
-                ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
-                : 'border-gray-300 focus:border-blue-500 focus:ring-blue-500'
+                ? 'border-error focus:border-error focus:ring-error'
+                : 'border-base-300 focus:border-primary focus:ring-primary'
             }
-            ${disabled ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'}
+            ${disabled ? 'bg-base-200 cursor-not-allowed' : 'bg-base-100'}
             focus:ring-2 focus:ring-opacity-50 outline-none
             ${className}
           `}
@@ -237,7 +241,7 @@ export const SimpleVerificationCodeInput = forwardRef<
         />
 
         {error && (
-          <p className="text-red-600 text-sm flex items-center gap-1">
+          <p className="text-error text-sm flex items-center gap-1">
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
               <path
                 fillRule="evenodd"

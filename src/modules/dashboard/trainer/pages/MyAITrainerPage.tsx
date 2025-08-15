@@ -204,8 +204,6 @@ const MyAITrainerPage = () => {
 
   return (
     <div className="p-4 space-y-6">
-      <h1 className="text-3xl font-bold">My AI Trainer</h1>
-
       <div>
         <div className="card-body">
           <div className="flex flex-col md:flex-row items-center md:items-start gap-4">

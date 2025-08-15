@@ -227,7 +227,7 @@ export default function WorkoutDetailPage() {
           {canStartWorkouts ? (
             <button
               onClick={handleStartWorkout}
-              className="btn btn-primary flex-1 sm:flex-initial"
+              className="btn btn-primary flex-1 sm:flex-initial w-full sm:w-auto"
               disabled={!generatedWorkout || isCreatingInstance}
               title="Start a new workout session"
             >
@@ -246,7 +246,7 @@ export default function WorkoutDetailPage() {
             >
               <button
                 onClick={() => navigate('/dashboard/billing')}
-                className="btn btn-outline btn-warning flex-1 sm:flex-initial relative"
+                className="btn btn-outline btn-warning flex-1 sm:flex-initial w-full sm:w-auto relative"
                 disabled={!generatedWorkout}
               >
                 <div className="flex items-center">
@@ -266,7 +266,7 @@ export default function WorkoutDetailPage() {
             }}
             className={`btn ${
               existingFeedback ? 'btn-success' : 'btn-outline'
-            } flex-1 sm:flex-initial`}
+            } flex-1 sm:flex-initial w-full sm:w-auto`}
             disabled={!generatedWorkout}
             title={existingFeedback ? 'Workout Rated' : 'Rate This Workout'}
           >
@@ -298,11 +298,11 @@ export default function WorkoutDetailPage() {
 
       {/* Trainer Persona Section */}
       {trainerPersona && (
-        <div className="mb-4 p-3 bg-base-100 border border-base-300 rounded-lg">
-          <TrainerPersonaDisplay trainerPersona={trainerPersona} />
-          <div className="mt-2 text-sm text-base-content/70">
-            <p>Here's your personalized workout plan:</p>
-          </div>
+        <div className="mb-4">
+          <TrainerPersonaDisplay
+            trainerPersona={trainerPersona}
+            subtitle={"Here's your personalized workout plan:"}
+          />
         </div>
       )}
 
@@ -319,11 +319,12 @@ export default function WorkoutDetailPage() {
           )
         }
         tabs={tabs}
+        backgroundClassName="bg-base-200"
       />
 
       {workoutFormat === 'plain' ? (
         displayText ? (
-          <div className="p-4 prose-lg dark:prose-invert">
+          <div className="bg-base-100 mt-4 p-4 prose-lg dark:prose-invert">
             <ReactMarkdown>{displayText}</ReactMarkdown>
           </div>
         ) : (

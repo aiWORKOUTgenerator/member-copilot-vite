@@ -80,7 +80,7 @@ export function PhoneVerificationModal({
     <div className="fixed inset-0 z-50 overflow-y-auto">
       <div className="flex items-center justify-center min-h-screen p-4">
         <div
-          className="fixed inset-0 bg-gray-500 bg-opacity-75"
+          className="fixed inset-0 bg-neutral bg-opacity-75"
           onClick={onClose}
         ></div>
 
@@ -181,9 +181,9 @@ export function PhoneVerificationModal({
             {currentStep === VerificationStep.SUCCESS && (
               <>
                 <div className="text-center py-6">
-                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
+                  <div className="w-16 h-16 bg-success/20 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
                     <svg
-                      className="w-8 h-8 text-green-600"
+                      className="w-8 h-8 text-success"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"

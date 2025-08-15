@@ -27,7 +27,7 @@ export default function EmptyStateBasic({
 }: EmptyStateBasicProps) {
   const defaultIcon = (
     <FolderPlus
-      className="mx-auto size-12 text-gray-400"
+      className="mx-auto size-12 text-base-content/40"
       strokeWidth={2}
       aria-hidden="true"
     />
@@ -43,7 +43,7 @@ export default function EmptyStateBasic({
           <button
             type="button"
             onClick={onAction}
-            className="inline-flex items-center rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-primary/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            className="inline-flex items-center rounded-md bg-primary px-3 py-2 text-sm font-semibold text-primary-content shadow-xs hover:bg-primary/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
             {actionIcon}
             {actionLabel}

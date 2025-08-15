@@ -8,7 +8,6 @@ import { useNavigate } from 'react-router';
 
 interface WorkoutListProps {
   workouts: GeneratedWorkout[];
-  title?: string;
   onWorkoutClick?: (workout: GeneratedWorkout) => void;
 }
 
@@ -18,7 +17,6 @@ const getFirstWords = (text: string, wordCount = 10) =>
 
 export default function WorkoutList({
   workouts,
-  title = '',
   onWorkoutClick,
 }: WorkoutListProps) {
   const navigate = useNavigate();
@@ -59,15 +57,14 @@ export default function WorkoutList({
     return (
       <li
         key={workout.id}
-        className={`list-row p-2 transition-colors rounded-lg my-1 border border-base-300 relative cursor-pointer ${
-          isRestricted ? 'opacity-60 hover:opacity-80' : 'hover:bg-base-200'
+        className={`list-row p-2 bg-base-100 transition-colors rounded-lg my-1 border border-base-300 relative cursor-pointer ${
+          isRestricted ? 'opacity-60 hover:opacity-80' : 'hover:bg-base-300'
         }`}
         onClick={handleClick}
       >
-        {/* Overlay for restricted workouts */}
         {isRestricted && (
           <div className="absolute inset-0 bg-base-300/30 backdrop-blur-[1px] rounded-lg flex items-center justify-center z-10 pointer-events-none">
-            <div className="flex items-center space-x-2 bg-base-100 px-3 py-2 rounded-lg shadow-lg border">
+            <div className="flex items-center space-x-2 px-3 py-2 rounded-lg shadow-lg border">
               <Lock className="w-4 h-4 text-warning" />
               <span className="text-sm font-medium">Upgrade to Access</span>
             </div>
@@ -102,9 +99,7 @@ export default function WorkoutList({
 
   return (
     <div>
-      <ul className="list bg-base-100">
-        <li className="p-3 pb-1 text-xs opacity-60 tracking-wide">{title}</li>
-
+      <ul className="list">
         {/* Render accessible workouts */}
         {accessibleWorkouts.map((workout) => renderWorkoutItem(workout, false))}
 

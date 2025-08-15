@@ -14,6 +14,8 @@ type TabBarProps = {
   onTabChange: (tabId: string) => void;
   tabs: TabOption[];
   className?: string;
+  /** Optional background class for the tab container (e.g., 'bg-base-200', 'bg-base-100') */
+  backgroundClassName?: string;
 };
 
 export default function TabBar({
@@ -21,23 +23,32 @@ export default function TabBar({
   onTabChange,
   tabs,
   className = '',
+  backgroundClassName = 'bg-base-200',
 }: TabBarProps) {
   return (
-    <div role="tablist" className={`tabs tabs-box mb-4 ${className}`}>
+    <div
+      role="tablist"
+      className={`tabs tabs-boxed ${backgroundClassName} ${className}`}
+    >
       {tabs.map((tab) => (
-        <a
+        <button
+          type="button"
           key={tab.id}
           role="tab"
-          className={`tab ${selectedTab === tab.id ? 'tab-active' : ''} ${
-            tab.disabled ? 'tab-disabled' : ''
-          }`}
+          aria-selected={selectedTab === tab.id}
+          className={`tab rounded-lg transition-colors ${
+            selectedTab === tab.id
+              ? 'tab-active bg-base-100 text-base-content shadow-sm border border-base-300'
+              : 'text-base-content/70 hover:bg-base-100 hover:text-base-content'
+          } ${tab.disabled ? 'tab-disabled' : ''}`}
           onClick={() => !tab.disabled && onTabChange(tab.id)}
+          disabled={tab.disabled}
         >
           {tab.label}
           {tab.loading && (
             <span className="loading loading-spinner loading-xs ml-2"></span>
           )}
-        </a>
+        </button>
       ))}
     </div>
   );

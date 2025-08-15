@@ -878,16 +878,12 @@ export default function WorkoutInstancePage() {
       <div ref={contentRef} className="pt-24 pb-8 px-4 max-w-4xl mx-auto">
         {/* Trainer Persona Section */}
         {trainerPersona && (
-          <div className="bg-base-100 border border-base-300 rounded-lg p-4 mb-6">
+          <div className="mb-6">
             <TrainerPersonaDisplay
               trainerPersona={trainerPersona}
-              className="justify-center md:justify-start"
+              contentClassName="justify-center md:justify-start"
+              subtitle="Your AI trainer is here to guide you through this workout"
             />
-            <div className="mt-3 text-center md:text-left">
-              <p className="text-sm text-base-content/70">
-                Your AI trainer is here to guide you through this workout
-              </p>
-            </div>
           </div>
         )}
 

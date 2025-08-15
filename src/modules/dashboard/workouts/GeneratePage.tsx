@@ -262,16 +262,14 @@ export default function GenerateWorkoutPage() {
   const buttonState = getButtonState();
 
   return (
-    <div className="p-2 sm:p-4">
-      <div className="mb-2 sm:mb-4">
-        <button
-          onClick={() => navigate(-1)}
-          className="btn btn-ghost flex items-center"
-        >
-          <ArrowBigLeft className="w-4 h-4" />
-          Back to workouts
-        </button>
-      </div>
+    <div>
+      <button
+        onClick={() => navigate(-1)}
+        className="btn btn-ghost flex items-center"
+      >
+        <ArrowBigLeft className="w-4 h-4" />
+        Back to workouts
+      </button>
 
       <div className="card card-border max-w-4xl mx-auto bg-base-200">
         <div className="card-body">

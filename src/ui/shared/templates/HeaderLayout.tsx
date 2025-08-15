@@ -1,20 +1,19 @@
 'use client';
 
+import { ContactUtils } from '@/domain';
+import { useUserAccess } from '@/hooks';
 import { useAttributesLoaded } from '@/hooks/useAttributes';
 import {
   useAttributeTypesData,
   useAttributeTypesLoaded,
 } from '@/hooks/useAttributeTypes';
+import { useAppConfig } from '@/hooks/useConfiguration';
 import { useContactData } from '@/hooks/useContact';
 import { usePromptsData, usePromptsLoaded } from '@/hooks/usePrompts';
-import { useTitle } from '@/hooks/useTitle';
-import { ContactUtils } from '@/domain';
-import { useUserAccess } from '@/hooks';
+import { MobileNavDropdown } from '@/ui/shared/molecules/MobileNavDropdown';
 import { UserButton } from '@clerk/clerk-react';
 import React, { ReactNode, useMemo } from 'react';
 import { Link, useLocation } from 'react-router';
-import { useAppConfig } from '@/hooks/useConfiguration';
-import { MobileNavDropdown } from '@/ui/shared/molecules/MobileNavDropdown';
 
 interface NavigationItem {
   name: string;
@@ -25,28 +24,22 @@ interface NavigationItem {
   isUpgrade?: boolean;
 }
 
-interface StackedLayoutProps {
+interface HeaderLayoutProps {
   children: ReactNode;
   title?: string;
   navigation?: NavigationItem[];
   logo?: string;
-  containerStyle?: 'default' | 'none' | string;
 }
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
 }
 
-export const StackedLayout: React.FC<StackedLayoutProps> = ({
+export const HeaderLayout: React.FC<HeaderLayoutProps> = ({
   children,
-  title,
   logo,
-  containerStyle = 'default',
 }) => {
   const pathname = useLocation().pathname || '';
-  // Get title from context if not provided as prop
-  const { title: contextTitle } = useTitle();
-  const displayTitle = title || contextTitle;
 
   // App config (for logoUrl)
   const appConfig = useAppConfig();
@@ -148,28 +141,32 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
     ];
   }, [incompleteAttributesCount, isOnBasicTier, showTrainerNewBadge]);
 
-  // Determine container class based on containerStyle prop
-  const getContainerClass = () => {
-    if (containerStyle === 'none') return '';
-    if (containerStyle === 'default')
-      return 'bg-base-100 shadow-xl border-1 border-base-200  sm:rounded-lg min-h-96 relative';
-    return containerStyle; // Custom class string
-  };
-
   return (
-    <div className="min-h-full bg-base-300 w-full max-w-full overflow-x-hidden">
-      <div className="bg-primary pb-12 sm:pb-32 w-full">
-        <div className="navbar border-b border-secondary-focus/25 bg-primary w-full text-primary-content">
-          <div className="navbar-start">
+    <div className="min-h-full bg-base-100">
+      {/* Navigation Header */}
+      <nav className="bg-primary border-b border-primary-focus/25">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex h-16 items-center justify-between">
             <div className="flex items-center">
-              {/* Mobile logo */}
-              {logoSrc ? (
-                <Link to="/dashboard" className="lg:hidden ml-2">
-                  <img src={logoSrc} alt="App logo" className="h-8 w-auto" />
-                </Link>
-              ) : null}
-              <div className="hidden lg:ml-10 lg:block">
-                <div className="flex space-x-2 border-secondary-focus/50 pb-1">
+              {/* Logo */}
+              <div className="shrink-0">
+                {logoSrc ? (
+                  <Link to="/dashboard">
+                    <img src={logoSrc} alt="App logo" className="h-8 w-auto" />
+                  </Link>
+                ) : (
+                  <Link
+                    to="/dashboard"
+                    className="text-xl font-bold text-primary-content"
+                  >
+                    App
+                  </Link>
+                )}
+              </div>
+
+              {/* Desktop Navigation */}
+              <div className="hidden md:block">
+                <div className="ml-10 flex items-baseline space-x-4">
                   {navigation.map((item) => {
                     const isCurrentPage =
                       pathname === item.href ||
@@ -180,17 +177,16 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
                         key={item.name}
                         to={item.href}
                         className={classNames(
-                          'btn text-white hover:btn-secondary',
+                          'relative inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors duration-200',
                           isCurrentPage
-                            ? 'btn-active btn-secondary'
-                            : 'btn-ghost',
+                            ? 'bg-primary-focus text-primary-content shadow-md'
+                            : 'text-primary-content/90 hover:bg-primary-content/10 hover:text-primary-content',
                           item.enhanced && !item.isUpgrade
-                            ? 'animate-pulse border border-secondary hover:animate-none'
+                            ? 'ring-2 ring-secondary/50 hover:ring-secondary'
                             : '',
                           item.isUpgrade
-                            ? 'btn-accent font-bold text-accent-content border-2 border-warning animate-pulse hover:animate-none hover:btn-warning hover:scale-105 transition-all duration-200'
-                            : '',
-                          'rounded-md font-medium'
+                            ? 'bg-gradient-to-r from-accent to-warning text-accent-content font-bold border-2 border-warning/50 hover:border-warning hover:scale-105 transition-all duration-200'
+                            : ''
                         )}
                         aria-current={isCurrentPage ? 'page' : undefined}
                       >
@@ -199,11 +195,11 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
                           (typeof item.badgeCount === 'string' ||
                             item.badgeCount > 0) && (
                             <span
-                              className={`badge ${
+                              className={`badge badge-sm ${
                                 item.badgeVariant
                                   ? `badge-${item.badgeVariant}`
                                   : 'badge-secondary'
-                              } ml-1`}
+                              } font-bold shadow-sm`}
                             >
                               {item.badgeCount}
                             </span>
@@ -214,52 +210,33 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
                 </div>
               </div>
             </div>
-          </div>
 
-          <div className="navbar-end">
-            {/* Mobile menu dropdown */}
-            <MobileNavDropdown navigation={navigation} />
-            {/* User profile dropdown */}
-            <div className=" flex items-center ml-1">
-              <UserButton />
+            <div className="flex items-center">
+              {/* Desktop User Menu */}
+              <div className="ml-4 flex items-center md:ml-6">
+                {/* User profile dropdown */}
+                <div className="flex items-center">
+                  <UserButton />
+                </div>
+              </div>
+
+              {/* Mobile menu button */}
+              <div className="flex md:hidden">
+                <MobileNavDropdown navigation={navigation} />
+              </div>
             </div>
           </div>
         </div>
+      </nav>
 
-        <header className="py-2 sm:py-10 w-full">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full flex items-center justify-between">
-            <h1 className="text-xl sm:text-3xl font-bold tracking-tight text-white break-words">
-              {displayTitle}
-            </h1>
-            {/* Desktop logo */}
-            {logoSrc ? (
-              <div className="hidden lg:block">
-                <img src={logoSrc} alt="App logo" className="h-12 w-auto" />
-              </div>
-            ) : null}
-          </div>
-        </header>
-      </div>
-
-      <main className="-mt-12 sm:-mt-32 w-full">
-        <div className="mx-auto max-w-7xl w-full px-2 sm:px-0">
-          <div className="sm:p-4 w-full">
-            {containerStyle === 'none' ? (
-              <div className="w-full max-w-full overflow-x-hidden">
-                {children}
-              </div>
-            ) : (
-              <div
-                className={`${getContainerClass()} w-full max-w-full overflow-x-hidden`}
-              >
-                {children}
-              </div>
-            )}
-          </div>
+      {/* Main Content */}
+      <main className="h-full bg-base-100 p-4">
+        <div className="mx-auto max-w-7xl w-full py-4 sm:px-6 lg:px-8 bg-base-200 rounded-xl p-4 shadow-lg">
+          <div className="min-h-96">{children}</div>
         </div>
       </main>
     </div>
   );
 };
 
-export default StackedLayout;
+export default HeaderLayout;

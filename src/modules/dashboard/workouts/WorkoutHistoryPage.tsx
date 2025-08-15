@@ -228,11 +228,11 @@ export default function WorkoutHistoryPage() {
 
       {/* Trainer Persona Section */}
       {trainerPersona && (
-        <div className="mb-6 p-3 bg-base-100 border border-base-300 rounded-lg">
-          <TrainerPersonaDisplay trainerPersona={trainerPersona} />
-          <div className="mt-2 text-sm text-base-content/70">
-            <p>Here's your workout history and progress overview:</p>
-          </div>
+        <div className="mb-6">
+          <TrainerPersonaDisplay
+            trainerPersona={trainerPersona}
+            subtitle={"Here's your workout history and progress overview:"}
+          />
         </div>
       )}
 
@@ -262,44 +262,56 @@ export default function WorkoutHistoryPage() {
       ) : (
         <div className="space-y-4">
           {recentWorkouts.map((workout) => (
-            <div key={workout.id} className="card bg-base-100 shadow-lg">
+            <button
+              type="button"
+              key={workout.id}
+              onClick={() => handleWorkoutClick(workout)}
+              className={`card bg-base-100 shadow-lg border transition-all duration-200 cursor-pointer text-left w-full ${
+                workout.completed
+                  ? 'border-primary hover:bg-primary/5 hover:shadow-xl'
+                  : 'border-base-300 hover:bg-base-100/80 hover:shadow-xl'
+              }`}
+            >
               <div className="card-body">
-                <div className="flex justify-between items-start">
-                  <div className="flex-1">
-                    <h3 className="card-title text-lg">
+                {/* Top row: title + checkbox */}
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex-1 min-w-0">
+                    <h3 className="card-title text-lg truncate">
                       {workout.jsonFormat?.title ||
                         `Workout ${workout.id.slice(0, 8)}`}
-                      {workout.completed && (
-                        <div className="badge badge-success">Completed</div>
-                      )}
                     </h3>
-                    <p className="text-sm text-base-content/70 mb-2">
-                      {formatDate(workout.performedAt)}
-                    </p>
-                    {workout.duration && (
-                      <p className="text-sm">
-                        <span className="font-semibold">Duration:</span>{' '}
-                        {workout.duration} minutes
-                      </p>
-                    )}
-                    {workout.notes && (
-                      <p className="text-sm mt-2">
-                        <span className="font-semibold">Notes:</span>{' '}
-                        {workout.notes}
-                      </p>
-                    )}
                   </div>
-                  <div className="flex gap-2">
-                    <button
-                      className="btn btn-outline btn-sm"
-                      onClick={() => handleWorkoutClick(workout)}
-                    >
-                      View Details
-                    </button>
-                  </div>
+                  {workout.completed ? (
+                    <div className="flex-shrink-0">
+                      <div className="w-7 h-7 rounded-full bg-primary text-primary-content flex items-center justify-center shadow-sm">
+                        <CheckCircle className="w-4 h-4" />
+                      </div>
+                    </div>
+                  ) : null}
                 </div>
+
+                {/* Meta rows */}
+                <p className="text-sm text-base-content/70 truncate">
+                  {formatDate(workout.performedAt)}
+                </p>
+                {workout.duration && workout.duration > 0 ? (
+                  <p className="text-sm truncate">
+                    <span className="font-semibold">Duration:</span>{' '}
+                    {workout.duration} minutes
+                  </p>
+                ) : (
+                  <p className="text-sm truncate">
+                    <span className="font-semibold">Duration:</span> —
+                  </p>
+                )}
+                {workout.notes ? (
+                  <p className="text-sm truncate">
+                    <span className="font-semibold">Notes:</span>{' '}
+                    {workout.notes}
+                  </p>
+                ) : null}
               </div>
-            </div>
+            </button>
           ))}
         </div>
       )}
