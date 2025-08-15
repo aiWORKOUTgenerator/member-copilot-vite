@@ -91,27 +91,30 @@ export const PromptInputWithExamples: React.FC<
         {/* Example Tabs */}
         <div className="mb-4">
           <div role="tablist" className="tabs tabs-lift">
-            <a
+            <button
+              type="button"
               role="tab"
               className={`tab ${activeExampleTab === 'environment' ? 'tab-active text-primary-content [--tab-bg:black] [--tab-border-color:black]' : ''}`}
               onClick={() => setActiveExampleTab('environment')}
             >
               Environment
-            </a>
-            <a
+            </button>
+            <button
+              type="button"
               role="tab"
               className={`tab ${activeExampleTab === 'modifications' ? 'tab-active text-primary-content [--tab-bg:black] [--tab-border-color:black]' : ''}`}
               onClick={() => setActiveExampleTab('modifications')}
             >
               Modifications
-            </a>
-            <a
+            </button>
+            <button
+              type="button"
               role="tab"
               className={`tab ${activeExampleTab === 'context' ? 'tab-active text-primary-content [--tab-bg:black] [--tab-border-color:black]' : ''}`}
               onClick={() => setActiveExampleTab('context')}
             >
               Context
-            </a>
+            </button>
           </div>
 
           {/* Example Buttons */}
