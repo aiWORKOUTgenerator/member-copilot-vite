@@ -11,10 +11,10 @@ import { useTitle } from '@/hooks/useTitle';
 import { ContactUtils } from '@/domain';
 import { useUserAccess } from '@/hooks';
 import { UserButton } from '@clerk/clerk-react';
-import { MenuIcon } from 'lucide-react';
 import React, { ReactNode, useMemo } from 'react';
 import { Link, useLocation } from 'react-router';
 import { useAppConfig } from '@/hooks/useConfiguration';
+import { MobileNavDropdown } from '@/ui/shared/molecules/MobileNavDropdown';
 
 interface NavigationItem {
   name: string;
@@ -218,63 +218,7 @@ export const StackedLayout: React.FC<StackedLayoutProps> = ({
 
           <div className="navbar-end">
             {/* Mobile menu dropdown */}
-            <div className="dropdown dropdown-end lg:hidden ">
-              <label tabIndex={0} className="btn btn-ghost text-white">
-                <MenuIcon className="h-6 w-6" />
-              </label>
-              <ul
-                tabIndex={0}
-                className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-lg"
-              >
-                {navigation.map((item) => {
-                  const isCurrentPage =
-                    pathname === item.href ||
-                    (item.href !== '/dashboard' &&
-                      pathname.startsWith(item.href));
-                  return (
-                    <li key={item.name}>
-                      <Link
-                        to={item.href}
-                        onClick={() => {
-                          // Remove focus from dropdown to close it
-                          const activeElement =
-                            document.activeElement as HTMLElement;
-                          if (activeElement) {
-                            activeElement.blur();
-                          }
-                        }}
-                        className={classNames(
-                          isCurrentPage
-                            ? 'menu-active bg-primary text-white'
-                            : 'hover:bg-primary/10',
-                          item.enhanced && !item.isUpgrade
-                            ? 'border border-secondary'
-                            : '',
-                          item.isUpgrade
-                            ? 'bg-accent text-accent-content font-bold border-2 border-warning hover:bg-warning hover:text-warning-content'
-                            : ''
-                        )}
-                      >
-                        {item.name}
-                        {item.badgeCount !== undefined &&
-                          (typeof item.badgeCount === 'string' ||
-                            item.badgeCount > 0) && (
-                            <span
-                              className={`badge ${
-                                item.badgeVariant
-                                  ? `badge-${item.badgeVariant}`
-                                  : 'badge-secondary'
-                              } ml-1`}
-                            >
-                              {item.badgeCount}
-                            </span>
-                          )}
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
+            <MobileNavDropdown navigation={navigation} />
             {/* User profile dropdown */}
             <div className=" flex items-center ml-1">
               <UserButton />
