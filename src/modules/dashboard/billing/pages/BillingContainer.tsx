@@ -144,7 +144,11 @@ export default function BillingLayout() {
             className="mb-6"
           />
 
-          <Outlet />
+          <div className="card bg-base-100 shadow-md border border-base-200">
+            <div className="card-body p-6">
+              <Outlet />
+            </div>
+          </div>
         </div>
       </StripeProvider>
     </BillingContext.Provider>
