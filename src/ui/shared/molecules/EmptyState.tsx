@@ -27,7 +27,7 @@ export default function EmptyStateBasic({
 }: EmptyStateBasicProps) {
   const defaultIcon = (
     <FolderPlus
-      className="mx-auto size-12 text-gray-400"
+      className="mx-auto size-12 text-base-content/40"
       strokeWidth={2}
       aria-hidden="true"
     />

@@ -86,7 +86,7 @@ export default function StarRating({
   };
 
   const getStarClass = (starNumber: number) => {
-    const baseClass = 'mask mask-star-2 bg-orange-400';
+    const baseClass = 'mask mask-star-2 bg-accent';
     const isActive = starNumber <= displayValue;
     const isHovered = hoverValue > 0 && starNumber <= hoverValue;
 

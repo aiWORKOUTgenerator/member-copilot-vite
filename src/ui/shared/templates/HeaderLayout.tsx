@@ -237,19 +237,19 @@ export const HeaderLayout: React.FC<HeaderLayoutProps> = ({
               </div>
             </div>
 
-            {/* Desktop User Menu */}
-            <div className="hidden md:block">
+            <div className="flex items-center">
+              {/* Desktop User Menu */}
               <div className="ml-4 flex items-center md:ml-6">
                 {/* User profile dropdown */}
                 <div className="flex items-center">
                   <UserButton />
                 </div>
               </div>
-            </div>
 
-            {/* Mobile menu button */}
-            <div className="flex md:hidden">
-              <MobileNavDropdown navigation={navigation} />
+              {/* Mobile menu button */}
+              <div className="flex md:hidden">
+                <MobileNavDropdown navigation={navigation} />
+              </div>
             </div>
           </div>
         </div>

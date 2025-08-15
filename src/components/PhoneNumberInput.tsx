@@ -74,9 +74,9 @@ export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
 
     switch (status) {
       case 'verified':
-        return 'border-green-500 focus:border-green-500';
+        return 'border-success focus:border-success';
       case 'pending':
-        return 'border-yellow-500 focus:border-yellow-500';
+        return 'border-warning focus:border-warning';
       default:
         return '';
     }
@@ -89,7 +89,7 @@ export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
     switch (status) {
       case 'verified':
         return (
-          <div className="flex items-center gap-1 text-green-600 text-sm">
+          <div className="flex items-center gap-1 text-success text-sm">
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
               <path
                 fillRule="evenodd"
@@ -103,7 +103,7 @@ export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
       case 'pending':
         return (
           <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1 text-yellow-600 text-sm">
+            <div className="flex items-center gap-1 text-warning text-sm">
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                 <path
                   fillRule="evenodd"
@@ -117,7 +117,7 @@ export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
               <button
                 type="button"
                 onClick={onVerifyClick}
-                className="text-blue-600 hover:text-blue-800 text-sm underline"
+                className="text-info hover:text-info-content text-sm underline"
               >
                 Verify
               </button>
@@ -146,11 +146,11 @@ export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
               w-full px-3 py-2 border rounded-lg shadow-sm transition-colors duration-200
               ${
                 showError
-                  ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
+                  ? 'border-error focus:border-error focus:ring-error'
                   : getVerificationStatusStyles() ||
-                    'border-gray-300 focus:border-blue-500 focus:ring-blue-500'
+                    'border-base-300 focus:border-primary focus:ring-primary'
               }
-              ${disabled ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'}
+              ${disabled ? 'bg-base-200 cursor-not-allowed' : 'bg-base-100'}
               ${className}
             `}
           aria-label={ariaLabel || 'Phone number'}
@@ -165,7 +165,7 @@ export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
 
       {/* Error message */}
       {showError && (
-        <p className="text-red-600 text-sm flex items-center gap-1">
+        <p className="text-error text-sm flex items-center gap-1">
           <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
             <path
               fillRule="evenodd"
@@ -227,7 +227,9 @@ export function PhoneNumberDisplay({
 
   if (!phoneNumber) {
     return (
-      <span className={`text-gray-500 ${className}`}>No phone number</span>
+      <span className={`text-base-content/60 ${className}`}>
+        No phone number
+      </span>
     );
   }
 
@@ -239,7 +241,7 @@ export function PhoneNumberDisplay({
       case 'verified':
         return (
           <svg
-            className="w-4 h-4 text-green-600"
+            className="w-4 h-4 text-success"
             fill="currentColor"
             viewBox="0 0 20 20"
           >
@@ -253,7 +255,7 @@ export function PhoneNumberDisplay({
       case 'pending':
         return (
           <svg
-            className="w-4 h-4 text-yellow-600"
+            className="w-4 h-4 text-warning"
             fill="currentColor"
             viewBox="0 0 20 20"
           >
@@ -274,7 +276,7 @@ export function PhoneNumberDisplay({
       <span>{formattedNumber}</span>
       {getStatusIcon()}
       {showVerificationStatus && status === 'verified' && (
-        <span className="text-green-600 text-sm">Verified</span>
+        <span className="text-success text-sm">Verified</span>
       )}
     </div>
   );
