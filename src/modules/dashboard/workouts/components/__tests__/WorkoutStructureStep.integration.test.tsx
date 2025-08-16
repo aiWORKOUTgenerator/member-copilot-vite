@@ -192,8 +192,8 @@ describe('WorkoutStructureStep Integration', () => {
 
       // Should show badges when values are provided - look for badge elements by class
       const badges = document.querySelectorAll('span.badge');
-      // There should be 3 badge elements (one for each field)
-      expect(badges.length).toBeGreaterThanOrEqual(3);
+      // There should be 2 badge elements (Duration and Target Areas - Focus badge was removed)
+      expect(badges.length).toBeGreaterThanOrEqual(2);
     });
   });
 
@@ -218,7 +218,7 @@ describe('WorkoutStructureStep Integration', () => {
       // Check for focus selector elements - use getAllByText to handle duplicates
       expect(
         screen.getAllByText("What's your main focus for this workout session?")
-      ).toHaveLength(2); // One in header description, one in selector
+      ).toHaveLength(1); // Only in selector (header was removed)
       expect(
         screen.getByText(
           'Choose the training intention that best matches your goals for today'
@@ -354,7 +354,7 @@ describe('WorkoutStructureStep Integration', () => {
 
       // Check that badges show the correct values - look for badge elements by class
       const badges = document.querySelectorAll('span.badge');
-      expect(badges.length).toBeGreaterThanOrEqual(3);
+      expect(badges.length).toBeGreaterThanOrEqual(2); // Duration and Target Areas only
     });
   });
 
