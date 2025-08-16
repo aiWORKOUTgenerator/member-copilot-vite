@@ -23,6 +23,7 @@ import WorkoutDetailPage from './workouts/WorkoutDetailPage';
 import WorkoutHistoryPage from './workouts/WorkoutHistoryPage';
 import WorkoutInstancePage from './workouts/WorkoutInstancePage';
 import WorkoutsPage from './workouts/WorkoutsPage';
+import { LocationProvider } from '@/contexts/LocationContext';
 
 export default function DashboardContainer() {
   return (
@@ -90,7 +91,11 @@ export default function DashboardContainer() {
                             />
                             <Route
                               path="/workouts/generate"
-                              element={<GeneratePage />}
+                              element={
+                                <LocationProvider>
+                                  <GeneratePage />
+                                </LocationProvider>
+                              }
                             />
                             <Route
                               path="/workouts/:id"
