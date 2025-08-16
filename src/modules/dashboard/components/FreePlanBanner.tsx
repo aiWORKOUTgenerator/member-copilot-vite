@@ -52,7 +52,7 @@ export const FreePlanBanner = ({
             </div>
             <div className="flex flex-col sm:flex-row gap-2">
               <button
-                className="btn btn-neutral btn-lg sm:btn-xl"
+                className="btn btn-accent btn-lg sm:btn-xl secondary-content"
                 onClick={onUpgradeClick}
               >
                 <Star className="w-4 h-4" />

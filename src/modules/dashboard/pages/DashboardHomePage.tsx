@@ -279,6 +279,8 @@ export default function DashboardHomePage() {
         />
 
         <PhoneVerificationCard />
+      </div>
+      <div className="mt-4">
         <AnnouncementsSection />
       </div>
     </div>
