@@ -51,6 +51,7 @@ The Detailed Workout Setup is an advanced, multi-step interface designed for use
 - **Recovery & Restoration**: Gentle, supportive movement to aid recovery, reduce tension, and restore balance
 
 **Key Improvements:**
+
 - **No Overlap**: These options don't duplicate Focus Areas, Equipment, or Duration fields
 - **Session Intent Focus**: Reflects training methodology and philosophy rather than specific modalities
 - **Appropriate Scope**: Covers beginner to advanced without being too niche
