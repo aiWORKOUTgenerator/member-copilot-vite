@@ -217,7 +217,7 @@ describe('WorkoutStructureStep Integration', () => {
       // Check for focus selector elements - use getAllByText to handle duplicates
       expect(
         screen.getAllByText("What's your main focus for this workout session?")
-      ).toHaveLength(1); // Only in selector (updated question)
+      ).toHaveLength(2); // One in header description, one in selector
       expect(
         screen.getByText(
           'Choose the training intention that best matches your goals for today'
