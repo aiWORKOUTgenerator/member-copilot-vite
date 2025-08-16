@@ -8,24 +8,15 @@ import type { CustomizationComponentProps } from '../../types';
 /**
  * Enhanced Workout Focus Customization Component
  *
- * Enhanced version of the workout focus component specifically designed for detailed
- * workout setup. Uses session intent-based options that reflect training methodology
- * and philosophy rather than specific modalities or outcomes.
+ * Session intent-based workout focus selector for detailed workout setup.
+ * Provides 6 training methodology options that avoid overlap with Focus Areas
+ * and Equipment fields.
  *
- * Features 6 refined focus options:
- * - General Fitness Maintenance: Balanced health and energy support
- * - Strength & Power Development: Maximal force and explosive movement
- * - Muscle Building (Hypertrophy): Targeted muscle development
- * - Endurance & Conditioning: Cardiovascular fitness and stamina
- * - Mobility & Movement Quality: Joint range of motion and control
- * - Recovery & Restoration: Gentle, supportive recovery movement
- *
- * Key Features:
- * - Card-based UI using DetailedSelector molecule
- * - Session intent-based options (no overlap with Focus Areas/Equipment)
- * - Analytics integration for user behavior tracking
- * - Detailed descriptions for better UX
- * - Maintains exact API compatibility with legacy component
+ * Key Differentiators from Quick Workout:
+ * - Session intent focus (training philosophy vs. specific modalities)
+ * - No overlap with other customization fields
+ * - Broader scope suitable for detailed setup workflows
+ * - Enhanced analytics tracking for detailed mode
  *
  * @example
  * <EnhancedWorkoutFocusCustomization
