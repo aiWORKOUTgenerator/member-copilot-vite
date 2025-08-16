@@ -10,8 +10,10 @@ import { useMemo, createElement } from 'react';
 import { LevelDots } from '@/ui/shared/atoms';
 import {
   QUICK_WORKOUT_FOCUS_OPTIONS,
+  DETAILED_WORKOUT_FOCUS_OPTIONS,
   ENERGY_LEVEL_OPTIONS,
   QUICK_WORKOUT_DURATION_OPTIONS,
+  DETAILED_WORKOUT_DURATION_OPTIONS,
   QUICK_WORKOUT_EQUIPMENT_OPTIONS,
   FOCUS_AREA_OPTIONS,
   SLEEP_QUALITY_OPTIONS,
@@ -83,6 +85,19 @@ export const enhanceFocusOptionsWithIntensity = () => {
 };
 
 /**
+ * Enhanced detailed workout focus options for session intent
+ */
+export const enhanceDetailedWorkoutFocusOptions = () => {
+  return getCachedEnhancedOptions('detailedWorkoutFocus', () =>
+    DETAILED_WORKOUT_FOCUS_OPTIONS.map((option) => ({
+      id: option.id,
+      title: option.title,
+      description: option.description,
+    }))
+  );
+};
+
+/**
  * Enhanced energy options with LevelDots indicators (existing Quick mode)
  */
 export const enhanceEnergyOptionsWithDots = () => {
@@ -104,6 +119,20 @@ export const enhanceEnergyOptionsWithDots = () => {
 export const enhanceDurationOptionsWithSubtitles = () => {
   return getCachedEnhancedOptions('durationWithSubtitles', () =>
     QUICK_WORKOUT_DURATION_OPTIONS.map((option) => ({
+      id: option.id,
+      title: option.title,
+      description: option.description,
+      tertiary: option.subtitle,
+    }))
+  );
+};
+
+/**
+ * Enhanced detailed duration options with comprehensive descriptions
+ */
+export const enhanceDetailedDurationOptionsWithSubtitles = () => {
+  return getCachedEnhancedOptions('detailedDurationWithSubtitles', () =>
+    DETAILED_WORKOUT_DURATION_OPTIONS.map((option) => ({
       id: option.id,
       title: option.title,
       description: option.description,
@@ -240,6 +269,8 @@ export const useEnhancedOptions = () => {
       sleepQualityOptions: enhanceSleepQualityOptions(),
       stressLevelOptions: enhanceStressLevelOptions(),
       sorenessAreaOptions: enhanceSorenessAreaOptions(),
+      detailedDurationOptions: enhanceDetailedDurationOptionsWithSubtitles(),
+      detailedWorkoutFocusOptions: enhanceDetailedWorkoutFocusOptions(),
     }),
     []
   );

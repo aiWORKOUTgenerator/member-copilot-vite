@@ -8,8 +8,10 @@ import {
   getCachedEnhancedOptions,
   clearOptionsCache,
   enhanceFocusOptionsWithIntensity,
+  enhanceDetailedWorkoutFocusOptions,
   enhanceEnergyOptionsWithDots,
   enhanceDurationOptionsWithSubtitles,
+  enhanceDetailedDurationOptionsWithSubtitles,
   enhanceEquipmentOptions,
   enhanceFocusAreaOptions,
   enhanceSleepQualityOptions,
@@ -165,6 +167,57 @@ describe('Quick Mode Option Enhancers', () => {
     });
   });
 
+  describe('enhanceDetailedWorkoutFocusOptions', () => {
+    it('should enhance detailed workout focus options', () => {
+      const enhanced = enhanceDetailedWorkoutFocusOptions();
+
+      expect(enhanced).toHaveLength(6); // All detailed focus options
+      enhanced.forEach((option) => {
+        expect(option).toHaveProperty('id');
+        expect(option).toHaveProperty('title');
+        expect(option).toHaveProperty('description');
+        // No tertiary content for detailed focus options (no intensity dots)
+        expect(option).not.toHaveProperty('tertiary');
+      });
+    });
+
+    it('should provide session intent-based options', () => {
+      const enhanced = enhanceDetailedWorkoutFocusOptions();
+
+      // Check that we have the expected session intent options
+      const optionIds = enhanced.map((option) => option.id);
+      expect(optionIds).toContain('general_fitness_maintenance');
+      expect(optionIds).toContain('strength_power_development');
+      expect(optionIds).toContain('muscle_building_hypertrophy');
+      expect(optionIds).toContain('endurance_conditioning');
+      expect(optionIds).toContain('mobility_movement_quality');
+      expect(optionIds).toContain('recovery_restoration');
+    });
+
+    it('should have descriptive titles and descriptions', () => {
+      const enhanced = enhanceDetailedWorkoutFocusOptions();
+
+      const generalFitness = enhanced.find(
+        (opt) => opt.id === 'general_fitness_maintenance'
+      );
+      const strengthPower = enhanced.find(
+        (opt) => opt.id === 'strength_power_development'
+      );
+
+      expect(generalFitness?.title).toBe('General Fitness Maintenance');
+      expect(generalFitness?.description).toContain('balanced session');
+      expect(strengthPower?.title).toBe('Strength & Power Development');
+      expect(strengthPower?.description).toContain('maximal force');
+    });
+
+    it('should cache results for performance', () => {
+      const result1 = enhanceDetailedWorkoutFocusOptions();
+      const result2 = enhanceDetailedWorkoutFocusOptions();
+
+      expect(result1).toBe(result2); // Same reference due to caching
+    });
+  });
+
   describe('enhanceEnergyOptionsWithDots', () => {
     it('should enhance energy options with level dots', () => {
       const enhanced = enhanceEnergyOptionsWithDots();
@@ -196,6 +249,37 @@ describe('Quick Mode Option Enhancers', () => {
         expect(option).toHaveProperty('tertiary');
         expect(typeof option.tertiary).toBe('string'); // Subtitle is a string
       });
+    });
+  });
+
+  describe('enhanceDetailedDurationOptionsWithSubtitles', () => {
+    it('should enhance detailed duration options with comprehensive descriptions', () => {
+      const enhanced = enhanceDetailedDurationOptionsWithSubtitles();
+
+      expect(enhanced).toHaveLength(6); // All detailed duration options
+
+      enhanced.forEach((option) => {
+        expect(option).toHaveProperty('id');
+        expect(option).toHaveProperty('title');
+        expect(option).toHaveProperty('description');
+        expect(option).toHaveProperty('tertiary');
+        expect(typeof option.tertiary).toBe('string'); // Subtitle is a string
+      });
+    });
+
+    it('should provide comprehensive duration options for detailed setup', () => {
+      const enhanced = enhanceDetailedDurationOptionsWithSubtitles();
+
+      // Check that we have the full range of detailed options
+      const durations = enhanced.map((option) => parseInt(option.id, 10));
+      expect(durations).toEqual([20, 30, 45, 60, 75, 90]);
+
+      // Check that descriptions are comprehensive
+      const option20 = enhanced.find((opt) => opt.id === '20');
+      const option90 = enhanced.find((opt) => opt.id === '90');
+
+      expect(option20?.description).toContain('HIIT, mobility flows');
+      expect(option90?.description).toContain('Full powerlifting splits');
     });
   });
 
@@ -316,21 +400,30 @@ describe('Performance and Caching', () => {
   });
 
   it('should cache all enhanced options independently', () => {
+    // Define all enhancer functions to call
+    const enhancerFunctions = [
+      enhanceFocusOptionsWithIntensity,
+      enhanceDetailedWorkoutFocusOptions,
+      enhanceEnergyOptionsWithDots,
+      enhanceDurationOptionsWithSubtitles,
+      enhanceDetailedDurationOptionsWithSubtitles,
+      enhanceEquipmentOptions,
+      enhanceFocusAreaOptions,
+      enhanceSleepQualityOptions,
+      enhanceStressLevelOptions,
+      enhanceSorenessAreaOptions,
+    ];
+
     // Call all enhancer functions
-    enhanceFocusOptionsWithIntensity();
-    enhanceEnergyOptionsWithDots();
-    enhanceDurationOptionsWithSubtitles();
-    enhanceEquipmentOptions();
-    enhanceFocusAreaOptions();
-    enhanceSleepQualityOptions();
-    enhanceStressLevelOptions();
-    enhanceSorenessAreaOptions();
+    enhancerFunctions.forEach((enhancer) => enhancer());
 
     const stats = getCacheStats();
-    expect(stats.size).toBe(8); // All 8 option types cached
+    expect(stats.size).toBe(enhancerFunctions.length); // Dynamic count based on actual functions
     expect(stats.keys).toContain('focusWithIntensity');
+    expect(stats.keys).toContain('detailedWorkoutFocus');
     expect(stats.keys).toContain('energyWithDots');
     expect(stats.keys).toContain('durationWithSubtitles');
+    expect(stats.keys).toContain('detailedDurationWithSubtitles');
     expect(stats.keys).toContain('equipment');
     expect(stats.keys).toContain('focusAreas');
     expect(stats.keys).toContain('sleepQuality');

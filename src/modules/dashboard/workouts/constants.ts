@@ -106,6 +106,93 @@ export const QUICK_WORKOUT_DURATION_OPTIONS: WorkoutDurationOption[] = [
   },
 ];
 
+// Detailed workout focus options - session intent-based for comprehensive customization
+export const DETAILED_WORKOUT_FOCUS_OPTIONS: WorkoutFocusOption[] = [
+  {
+    id: 'general_fitness_maintenance',
+    title: 'General Fitness Maintenance',
+    description:
+      'A balanced session to support overall health, movement, and energy',
+  },
+  {
+    id: 'strength_power_development',
+    title: 'Strength & Power Development',
+    description:
+      'Focus on building maximal force and explosive movement through resistance',
+  },
+  {
+    id: 'muscle_building_hypertrophy',
+    title: 'Muscle Building (Hypertrophy)',
+    description:
+      'Targeted muscle development using moderate-to-high volume training',
+  },
+  {
+    id: 'endurance_conditioning',
+    title: 'Endurance & Conditioning',
+    description:
+      'Improve cardiovascular fitness, stamina, and muscular endurance',
+  },
+  {
+    id: 'mobility_movement_quality',
+    title: 'Mobility & Movement Quality',
+    description:
+      'Emphasize joint range of motion, control, and injury resilience',
+  },
+  {
+    id: 'recovery_restoration',
+    title: 'Recovery & Restoration',
+    description:
+      'Gentle, supportive movement to aid recovery, reduce tension, and restore balance',
+  },
+];
+
+// Detailed workout duration options - broader range for comprehensive customization
+export const DETAILED_WORKOUT_DURATION_OPTIONS: WorkoutDurationOption[] = [
+  {
+    id: '20',
+    title: '20 min',
+    description:
+      'HIIT, mobility flows, EMOM/AMRAP circuits, bodyweight conditioning',
+    subtitle: 'Great for low-energy days, warm-ups, or time-crunched routines',
+  },
+  {
+    id: '30',
+    title: '30 min',
+    description:
+      'Full-body dumbbell or kettlebell workouts, short cardio/strength combos',
+    subtitle: 'Efficient option for consistency and busy users',
+  },
+  {
+    id: '45',
+    title: '45 min',
+    description:
+      'Balanced strength splits, cardio intervals + accessory work, functional circuits',
+    subtitle: 'Sweet spot for general fitness – warm-up to cool-down included',
+  },
+  {
+    id: '60',
+    title: '60 min',
+    description:
+      'Hypertrophy splits, strength + cardio combos, skill practice + accessories',
+    subtitle: 'Traditional full training session; good rest-to-work balance',
+  },
+  {
+    id: '75',
+    title: '75 min',
+    description:
+      'Powerbuilding, Olympic lift work, strength splits with long rest, mobility + core work',
+    subtitle: 'Advanced sessions with more complexity or mixed modalities',
+  },
+  {
+    id: '90',
+    title: '90 min',
+    description:
+      'Full powerlifting splits, CrossFit WOD + skill blocks, athlete-specific periodization',
+    subtitle:
+      'Rare use—advanced or competitive athletes needing full recovery blocks',
+  },
+];
+
 // Quick workout equipment options
 export const QUICK_WORKOUT_EQUIPMENT_OPTIONS: WorkoutEquipmentOption[] = [
   {
@@ -167,6 +254,12 @@ export const getWorkoutFocusById = (
   id: string
 ): WorkoutFocusOption | undefined => {
   return QUICK_WORKOUT_FOCUS_OPTIONS.find((option) => option.id === id);
+};
+
+export const getDetailedWorkoutFocusById = (
+  id: string
+): WorkoutFocusOption | undefined => {
+  return DETAILED_WORKOUT_FOCUS_OPTIONS.find((option) => option.id === id);
 };
 
 export const getWorkoutDurationById = (

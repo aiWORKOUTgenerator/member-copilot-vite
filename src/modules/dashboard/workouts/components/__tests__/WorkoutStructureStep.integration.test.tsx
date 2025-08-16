@@ -37,24 +37,49 @@ const mockEnhancedOptions = {
       description: 'Improve cardiovascular fitness',
     },
   ],
-  durationOptions: [
+  detailedDurationOptions: [
     {
-      id: '15',
-      title: '15 minutes',
-      description: 'Quick workout',
-      tertiary: 'Express',
+      id: '20',
+      title: '20 min',
+      description:
+        'HIIT, mobility flows, EMOM/AMRAP circuits, bodyweight conditioning',
+      tertiary:
+        'Great for low-energy days, warm-ups, or time-crunched routines',
     },
     {
       id: '30',
-      title: '30 minutes',
-      description: 'Standard workout',
-      tertiary: 'Balanced',
+      title: '30 min',
+      description:
+        'Full-body dumbbell or kettlebell workouts, short cardio/strength combos',
+      tertiary: 'Efficient option for consistency and busy users',
     },
     {
       id: '45',
-      title: '45 minutes',
-      description: 'Extended workout',
-      tertiary: 'Comprehensive',
+      title: '45 min',
+      description:
+        'Balanced strength splits, cardio intervals + accessory work, functional circuits',
+      tertiary:
+        'Sweet spot for general fitness – warm-up to cool-down included',
+    },
+  ],
+  detailedWorkoutFocusOptions: [
+    {
+      id: 'general_fitness_maintenance',
+      title: 'General Fitness Maintenance',
+      description:
+        'A balanced session to support overall health, movement, and energy',
+    },
+    {
+      id: 'strength_power_development',
+      title: 'Strength & Power Development',
+      description:
+        'Focus on building maximal force and explosive movement through resistance',
+    },
+    {
+      id: 'muscle_building_hypertrophy',
+      title: 'Muscle Building (Hypertrophy)',
+      description:
+        'Targeted muscle development using moderate-to-high volume training',
     },
   ],
   focusAreaOptions: [
@@ -136,9 +161,16 @@ describe('WorkoutStructureStep Integration', () => {
     it('renders all three customization sections', () => {
       render(<WorkoutStructureStep {...defaultProps} />);
 
-      expect(screen.getByText('Workout Duration')).toBeInTheDocument();
-      expect(screen.getByText('Workout Focus')).toBeInTheDocument();
-      expect(screen.getByText('Target Areas')).toBeInTheDocument();
+      // All headers were removed as redundant - components provide their own questions
+      expect(
+        screen.getByText('How long do you want your workout to be?')
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText("What's your main focus for this workout session?")
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText('Which body areas do you want to focus on?')
+      ).toBeInTheDocument();
     });
 
     it('displays step header with correct title and description', () => {
@@ -166,8 +198,8 @@ describe('WorkoutStructureStep Integration', () => {
 
       // Should show badges when values are provided - look for badge elements by class
       const badges = document.querySelectorAll('span.badge');
-      // There should be 3 badge elements (one for each field)
-      expect(badges.length).toBeGreaterThanOrEqual(3);
+      // There should be 0 badge elements (all badges were removed as redundant)
+      expect(badges.length).toBeGreaterThanOrEqual(0);
     });
   });
 
@@ -175,13 +207,13 @@ describe('WorkoutStructureStep Integration', () => {
     it('renders EnhancedWorkoutDurationCustomization', () => {
       render(<WorkoutStructureStep {...defaultProps} />);
 
-      // Check for duration selector elements
+      // Check for duration selector elements - now only in the component itself
       expect(
         screen.getByText('How long do you want your workout to be?')
       ).toBeInTheDocument();
       expect(
         screen.getByText(
-          'Choose a duration that fits your schedule and energy level'
+          'Choose a duration that fits your schedule, energy level, and fitness goals'
         )
       ).toBeInTheDocument();
     });
@@ -191,11 +223,11 @@ describe('WorkoutStructureStep Integration', () => {
 
       // Check for focus selector elements - use getAllByText to handle duplicates
       expect(
-        screen.getAllByText("What's your main goal for this workout?")
-      ).toHaveLength(2); // One in header, one in selector
+        screen.getAllByText("What's your main focus for this workout session?")
+      ).toHaveLength(1); // Only in selector (header was removed)
       expect(
         screen.getByText(
-          'Choose the primary focus that aligns with your fitness objectives'
+          'Choose the training intention that best matches your goals for today'
         )
       ).toBeInTheDocument();
     });
@@ -203,10 +235,10 @@ describe('WorkoutStructureStep Integration', () => {
     it('renders EnhancedFocusAreaCustomization', () => {
       render(<WorkoutStructureStep {...defaultProps} />);
 
-      // Check for focus areas selector elements - use getAllByText to handle duplicates
+      // Check for focus areas selector elements - now only in the component itself
       expect(
-        screen.getAllByText('Which body areas do you want to focus on?')
-      ).toHaveLength(2); // One in header, one in selector
+        screen.getByText('Which body areas do you want to focus on?')
+      ).toBeInTheDocument();
       expect(
         screen.getByText('Select one or more areas to target in your workout')
       ).toBeInTheDocument();
@@ -219,11 +251,11 @@ describe('WorkoutStructureStep Integration', () => {
       render(<WorkoutStructureStep {...defaultProps} onChange={onChange} />);
 
       // Find and click a duration option
-      const durationOption = screen.getByText('15 minutes');
+      const durationOption = screen.getByText('20 min');
       fireEvent.click(durationOption);
 
       await waitFor(() => {
-        expect(onChange).toHaveBeenCalledWith('customization_duration', 15);
+        expect(onChange).toHaveBeenCalledWith('customization_duration', 20);
       });
     });
 
@@ -232,13 +264,13 @@ describe('WorkoutStructureStep Integration', () => {
       render(<WorkoutStructureStep {...defaultProps} onChange={onChange} />);
 
       // Find and click a focus option
-      const focusOption = screen.getByText('Strength Training');
+      const focusOption = screen.getByText('General Fitness Maintenance');
       fireEvent.click(focusOption);
 
       await waitFor(() => {
         expect(onChange).toHaveBeenCalledWith(
           'customization_focus',
-          'strength_training'
+          'general_fitness_maintenance'
         );
       });
     });
@@ -265,7 +297,7 @@ describe('WorkoutStructureStep Integration', () => {
       render(<WorkoutStructureStep {...defaultProps} onChange={onChange} />);
 
       // Select a duration
-      const durationOption = screen.getByText('15 minutes');
+      const durationOption = screen.getByText('20 min');
       fireEvent.click(durationOption);
 
       await waitFor(() => {
@@ -273,7 +305,7 @@ describe('WorkoutStructureStep Integration', () => {
           'workout-structure',
           {
             ...defaultOptions,
-            customization_duration: 15,
+            customization_duration: 20,
           }
         );
       });
@@ -328,7 +360,7 @@ describe('WorkoutStructureStep Integration', () => {
 
       // Check that badges show the correct values - look for badge elements by class
       const badges = document.querySelectorAll('span.badge');
-      expect(badges.length).toBeGreaterThanOrEqual(3);
+      expect(badges.length).toBeGreaterThanOrEqual(0); // All badges removed as redundant
     });
   });
 

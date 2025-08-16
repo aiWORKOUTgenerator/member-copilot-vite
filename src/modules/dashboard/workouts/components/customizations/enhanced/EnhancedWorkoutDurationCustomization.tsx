@@ -11,11 +11,19 @@ import type { CustomizationComponentProps } from '../../types';
  * Enhanced version of the workout duration component that uses the DetailedSelector
  * molecule for consistent card-based UI and integrates analytics tracking.
  *
+ * Provides comprehensive duration options specifically designed for detailed workout setup:
+ * - 20 min: HIIT, mobility flows, EMOM/AMRAP circuits, bodyweight conditioning
+ * - 30 min: Full-body dumbbell or kettlebell workouts, short cardio/strength combos
+ * - 45 min: Balanced strength splits, cardio intervals + accessory work, functional circuits
+ * - 60 min: Hypertrophy splits, strength + cardio combos, skill practice + accessories
+ * - 75 min: Powerbuilding, Olympic lift work, strength splits with long rest, mobility + core work
+ * - 90 min: Full powerlifting splits, CrossFit WOD + skill blocks, athlete-specific periodization
+ *
  * Key Features:
  * - Card-based UI using DetailedSelector molecule
- * - Duration options with subtitle as tertiary content
+ * - Comprehensive duration options with specific workout types
  * - Analytics integration for user behavior tracking
- * - Enhanced options with descriptions for better UX
+ * - Enhanced options with detailed workout descriptions and use cases
  * - Maintains exact API compatibility with legacy component
  *
  * @example
@@ -32,7 +40,7 @@ export default memo(function EnhancedWorkoutDurationCustomization({
   disabled = false,
   error,
 }: CustomizationComponentProps<number | undefined>) {
-  const { durationOptions } = useEnhancedOptions();
+  const { detailedDurationOptions } = useEnhancedOptions();
   const { trackSelection } = useWorkoutAnalytics();
 
   /**
@@ -59,11 +67,11 @@ export default memo(function EnhancedWorkoutDurationCustomization({
   return (
     <DetailedSelector
       icon={Clock}
-      options={durationOptions}
+      options={detailedDurationOptions}
       selectedValue={value?.toString() || undefined}
       onChange={handleChange}
       question="How long do you want your workout to be?"
-      description="Choose a duration that fits your schedule and energy level"
+      description="Choose a duration that fits your schedule, energy level, and fitness goals"
       disabled={disabled}
       error={error}
       gridCols={3}
