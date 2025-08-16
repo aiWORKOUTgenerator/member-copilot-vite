@@ -8,15 +8,15 @@ import type { CustomizationComponentProps } from '../../types';
 /**
  * Enhanced Workout Focus Customization Component
  *
- * Enhanced version of the workout focus component that uses the DetailedSelector
- * molecule for consistent card-based UI and integrates analytics tracking.
+ * Session intent-based workout focus selector for detailed workout setup.
+ * Provides 6 training methodology options that avoid overlap with Focus Areas
+ * and Equipment fields.
  *
- * Key Features:
- * - Card-based UI using DetailedSelector molecule
- * - Focus options with intensity LevelDots as tertiary content
- * - Analytics integration for user behavior tracking
- * - Enhanced options with descriptions for better UX
- * - Maintains exact API compatibility with legacy component
+ * Key Differentiators from Quick Workout:
+ * - Session intent focus (training philosophy vs. specific modalities)
+ * - No overlap with other customization fields
+ * - Broader scope suitable for detailed setup workflows
+ * - Enhanced analytics tracking for detailed mode
  *
  * @example
  * <EnhancedWorkoutFocusCustomization
@@ -32,7 +32,7 @@ export default memo(function EnhancedWorkoutFocusCustomization({
   disabled = false,
   error,
 }: CustomizationComponentProps<string | undefined>) {
-  const { focusOptions } = useEnhancedOptions();
+  const { detailedWorkoutFocusOptions } = useEnhancedOptions();
   const { trackSelection } = useWorkoutAnalytics();
 
   /**
@@ -59,14 +59,14 @@ export default memo(function EnhancedWorkoutFocusCustomization({
   return (
     <DetailedSelector
       icon={Heart}
-      options={focusOptions}
+      options={detailedWorkoutFocusOptions}
       selectedValue={value || undefined}
       onChange={handleChange}
-      question="What's your main goal for this workout?"
-      description="Choose the primary focus that aligns with your fitness objectives"
+      question="What's your main focus for this workout session?"
+      description="Choose the training intention that best matches your goals for today"
       disabled={disabled}
       error={error}
-      gridCols={3}
+      gridCols={2}
       colorScheme="primary"
       required={false}
       variant="detailed"

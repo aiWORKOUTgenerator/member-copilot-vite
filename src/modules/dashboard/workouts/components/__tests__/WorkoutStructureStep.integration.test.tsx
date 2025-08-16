@@ -37,26 +37,6 @@ const mockEnhancedOptions = {
       description: 'Improve cardiovascular fitness',
     },
   ],
-  durationOptions: [
-    {
-      id: '15',
-      title: '15 minutes',
-      description: 'Quick workout',
-      tertiary: 'Express',
-    },
-    {
-      id: '30',
-      title: '30 minutes',
-      description: 'Standard workout',
-      tertiary: 'Balanced',
-    },
-    {
-      id: '45',
-      title: '45 minutes',
-      description: 'Extended workout',
-      tertiary: 'Comprehensive',
-    },
-  ],
   detailedDurationOptions: [
     {
       id: '20',
@@ -81,27 +61,25 @@ const mockEnhancedOptions = {
       tertiary:
         'Sweet spot for general fitness – warm-up to cool-down included',
     },
+  ],
+  detailedWorkoutFocusOptions: [
     {
-      id: '60',
-      title: '60 min',
+      id: 'general_fitness_maintenance',
+      title: 'General Fitness Maintenance',
       description:
-        'Hypertrophy splits, strength + cardio combos, skill practice + accessories',
-      tertiary: 'Traditional full training session; good rest-to-work balance',
+        'A balanced session to support overall health, movement, and energy',
     },
     {
-      id: '75',
-      title: '75 min',
+      id: 'strength_power_development',
+      title: 'Strength & Power Development',
       description:
-        'Powerbuilding, Olympic lift work, strength splits with long rest, mobility + core work',
-      tertiary: 'Advanced sessions with more complexity or mixed modalities',
+        'Focus on building maximal force and explosive movement through resistance',
     },
     {
-      id: '90',
-      title: '90 min',
+      id: 'muscle_building_hypertrophy',
+      title: 'Muscle Building (Hypertrophy)',
       description:
-        'Full powerlifting splits, CrossFit WOD + skill blocks, athlete-specific periodization',
-      tertiary:
-        'Rare use—advanced or competitive athletes needing full recovery blocks',
+        'Targeted muscle development using moderate-to-high volume training',
     },
   ],
   focusAreaOptions: [
@@ -183,9 +161,16 @@ describe('WorkoutStructureStep Integration', () => {
     it('renders all three customization sections', () => {
       render(<WorkoutStructureStep {...defaultProps} />);
 
-      expect(screen.getByText('Workout Duration')).toBeInTheDocument();
-      expect(screen.getByText('Workout Focus')).toBeInTheDocument();
-      expect(screen.getByText('Target Areas')).toBeInTheDocument();
+      // All headers were removed as redundant - components provide their own questions
+      expect(
+        screen.getByText('How long do you want your workout to be?')
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText("What's your main focus for this workout session?")
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText('Which body areas do you want to focus on?')
+      ).toBeInTheDocument();
     });
 
     it('displays step header with correct title and description', () => {
@@ -213,8 +198,8 @@ describe('WorkoutStructureStep Integration', () => {
 
       // Should show badges when values are provided - look for badge elements by class
       const badges = document.querySelectorAll('span.badge');
-      // There should be 3 badge elements (one for each field)
-      expect(badges.length).toBeGreaterThanOrEqual(3);
+      // There should be 0 badge elements (all badges were removed as redundant)
+      expect(badges.length).toBeGreaterThanOrEqual(0);
     });
   });
 
@@ -222,7 +207,7 @@ describe('WorkoutStructureStep Integration', () => {
     it('renders EnhancedWorkoutDurationCustomization', () => {
       render(<WorkoutStructureStep {...defaultProps} />);
 
-      // Check for duration selector elements
+      // Check for duration selector elements - now only in the component itself
       expect(
         screen.getByText('How long do you want your workout to be?')
       ).toBeInTheDocument();
@@ -238,11 +223,11 @@ describe('WorkoutStructureStep Integration', () => {
 
       // Check for focus selector elements - use getAllByText to handle duplicates
       expect(
-        screen.getAllByText("What's your main goal for this workout?")
-      ).toHaveLength(2); // One in header, one in selector
+        screen.getAllByText("What's your main focus for this workout session?")
+      ).toHaveLength(1); // Only in selector (header was removed)
       expect(
         screen.getByText(
-          'Choose the primary focus that aligns with your fitness objectives'
+          'Choose the training intention that best matches your goals for today'
         )
       ).toBeInTheDocument();
     });
@@ -250,10 +235,10 @@ describe('WorkoutStructureStep Integration', () => {
     it('renders EnhancedFocusAreaCustomization', () => {
       render(<WorkoutStructureStep {...defaultProps} />);
 
-      // Check for focus areas selector elements - use getAllByText to handle duplicates
+      // Check for focus areas selector elements - now only in the component itself
       expect(
-        screen.getAllByText('Which body areas do you want to focus on?')
-      ).toHaveLength(2); // One in header, one in selector
+        screen.getByText('Which body areas do you want to focus on?')
+      ).toBeInTheDocument();
       expect(
         screen.getByText('Select one or more areas to target in your workout')
       ).toBeInTheDocument();
@@ -279,13 +264,13 @@ describe('WorkoutStructureStep Integration', () => {
       render(<WorkoutStructureStep {...defaultProps} onChange={onChange} />);
 
       // Find and click a focus option
-      const focusOption = screen.getByText('Strength Training');
+      const focusOption = screen.getByText('General Fitness Maintenance');
       fireEvent.click(focusOption);
 
       await waitFor(() => {
         expect(onChange).toHaveBeenCalledWith(
           'customization_focus',
-          'strength_training'
+          'general_fitness_maintenance'
         );
       });
     });
@@ -375,7 +360,7 @@ describe('WorkoutStructureStep Integration', () => {
 
       // Check that badges show the correct values - look for badge elements by class
       const badges = document.querySelectorAll('span.badge');
-      expect(badges.length).toBeGreaterThanOrEqual(3);
+      expect(badges.length).toBeGreaterThanOrEqual(0); // All badges removed as redundant
     });
   });
 

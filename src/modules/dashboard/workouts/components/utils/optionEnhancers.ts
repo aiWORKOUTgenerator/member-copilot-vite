@@ -10,6 +10,7 @@ import { useMemo, createElement } from 'react';
 import { LevelDots } from '@/ui/shared/atoms';
 import {
   QUICK_WORKOUT_FOCUS_OPTIONS,
+  DETAILED_WORKOUT_FOCUS_OPTIONS,
   ENERGY_LEVEL_OPTIONS,
   QUICK_WORKOUT_DURATION_OPTIONS,
   DETAILED_WORKOUT_DURATION_OPTIONS,
@@ -80,6 +81,19 @@ export const enhanceFocusOptionsWithIntensity = () => {
         }),
       };
     })
+  );
+};
+
+/**
+ * Enhanced detailed workout focus options for session intent
+ */
+export const enhanceDetailedWorkoutFocusOptions = () => {
+  return getCachedEnhancedOptions('detailedWorkoutFocus', () =>
+    DETAILED_WORKOUT_FOCUS_OPTIONS.map((option) => ({
+      id: option.id,
+      title: option.title,
+      description: option.description,
+    }))
   );
 };
 
@@ -256,6 +270,7 @@ export const useEnhancedOptions = () => {
       stressLevelOptions: enhanceStressLevelOptions(),
       sorenessAreaOptions: enhanceSorenessAreaOptions(),
       detailedDurationOptions: enhanceDetailedDurationOptionsWithSubtitles(),
+      detailedWorkoutFocusOptions: enhanceDetailedWorkoutFocusOptions(),
     }),
     []
   );

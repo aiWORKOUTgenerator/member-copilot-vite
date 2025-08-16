@@ -106,6 +106,46 @@ export const QUICK_WORKOUT_DURATION_OPTIONS: WorkoutDurationOption[] = [
   },
 ];
 
+// Detailed workout focus options - session intent-based for comprehensive customization
+export const DETAILED_WORKOUT_FOCUS_OPTIONS: WorkoutFocusOption[] = [
+  {
+    id: 'general_fitness_maintenance',
+    title: 'General Fitness Maintenance',
+    description:
+      'A balanced session to support overall health, movement, and energy',
+  },
+  {
+    id: 'strength_power_development',
+    title: 'Strength & Power Development',
+    description:
+      'Focus on building maximal force and explosive movement through resistance',
+  },
+  {
+    id: 'muscle_building_hypertrophy',
+    title: 'Muscle Building (Hypertrophy)',
+    description:
+      'Targeted muscle development using moderate-to-high volume training',
+  },
+  {
+    id: 'endurance_conditioning',
+    title: 'Endurance & Conditioning',
+    description:
+      'Improve cardiovascular fitness, stamina, and muscular endurance',
+  },
+  {
+    id: 'mobility_movement_quality',
+    title: 'Mobility & Movement Quality',
+    description:
+      'Emphasize joint range of motion, control, and injury resilience',
+  },
+  {
+    id: 'recovery_restoration',
+    title: 'Recovery & Restoration',
+    description:
+      'Gentle, supportive movement to aid recovery, reduce tension, and restore balance',
+  },
+];
+
 // Detailed workout duration options - broader range for comprehensive customization
 export const DETAILED_WORKOUT_DURATION_OPTIONS: WorkoutDurationOption[] = [
   {
@@ -214,6 +254,12 @@ export const getWorkoutFocusById = (
   id: string
 ): WorkoutFocusOption | undefined => {
   return QUICK_WORKOUT_FOCUS_OPTIONS.find((option) => option.id === id);
+};
+
+export const getDetailedWorkoutFocusById = (
+  id: string
+): WorkoutFocusOption | undefined => {
+  return DETAILED_WORKOUT_FOCUS_OPTIONS.find((option) => option.id === id);
 };
 
 export const getWorkoutDurationById = (
