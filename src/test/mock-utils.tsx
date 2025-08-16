@@ -19,6 +19,9 @@ export const setupAuthMock = () => {
   vi.doMock('../hooks/auth', () => ({
     useAuth: () => mockAuth,
   }));
+  vi.doMock('@/hooks/auth', () => ({
+    useAuth: () => mockAuth,
+  }));
 
   return mockAuth;
 };
@@ -31,6 +34,9 @@ export const setupAnalyticsMock = () => {
   };
 
   vi.doMock('../hooks/useAnalytics', () => ({
+    useAnalytics: () => mockAnalytics,
+  }));
+  vi.doMock('@/hooks/useAnalytics', () => ({
     useAnalytics: () => mockAnalytics,
   }));
 
