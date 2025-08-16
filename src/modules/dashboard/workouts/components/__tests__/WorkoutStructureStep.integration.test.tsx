@@ -161,10 +161,16 @@ describe('WorkoutStructureStep Integration', () => {
     it('renders all three customization sections', () => {
       render(<WorkoutStructureStep {...defaultProps} />);
 
-      expect(screen.getByText('Workout Duration')).toBeInTheDocument();
-      // Workout Focus header is now handled by the EnhancedWorkoutFocusCustomization component
-      // No separate header needed since the component provides its own question and description
-      expect(screen.getByText('Target Areas')).toBeInTheDocument();
+      // All headers were removed as redundant - components provide their own questions
+      expect(
+        screen.getByText('How long do you want your workout to be?')
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText("What's your main focus for this workout session?")
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText('Which body areas do you want to focus on?')
+      ).toBeInTheDocument();
     });
 
     it('displays step header with correct title and description', () => {
