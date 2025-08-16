@@ -41,14 +41,21 @@ The Detailed Workout Setup is an advanced, multi-step interface designed for use
 - **75 min**: Powerbuilding, Olympic lift work, strength splits with long rest, mobility + core work (Advanced sessions with more complexity or mixed modalities)
 - **90 min**: Full powerlifting splits, CrossFit WOD + skill blocks, athlete-specific periodization (Rare use—advanced or competitive athletes needing full recovery blocks)
 
-#### Workout Focus
+#### Workout Focus ✅ **UPDATED - Session Intent-Based**
 
-- **Energizing Boost**: Get an energy boost to power through your day
-- **Improve Posture**: Relieve desk-related tension and improve alignment
-- **Stress Reduction**: Calm your mind and release tension
-- **Quick Sweat**: High-intensity calorie-burning workout
-- **Gentle Recovery**: Gentle stretching and mobility work for recovery
-- **Core & Abs**: Target your core muscles for strength and stability
+- **General Fitness Maintenance**: A balanced session to support overall health, movement, and energy
+- **Strength & Power Development**: Focus on building maximal force and explosive movement through resistance
+- **Muscle Building (Hypertrophy)**: Targeted muscle development using moderate-to-high volume training
+- **Endurance & Conditioning**: Improve cardiovascular fitness, stamina, and muscular endurance
+- **Mobility & Movement Quality**: Emphasize joint range of motion, control, and injury resilience
+- **Recovery & Restoration**: Gentle, supportive movement to aid recovery, reduce tension, and restore balance
+
+**Key Improvements:**
+- **No Overlap**: These options don't duplicate Focus Areas, Equipment, or Duration fields
+- **Session Intent Focus**: Reflects training methodology and philosophy rather than specific modalities
+- **Appropriate Scope**: Covers beginner to advanced without being too niche
+- **Clear Differentiation**: Each option provides meaningful guidance for workout generation
+- **Detailed Setup Aligned**: Broader training philosophies that complement comprehensive customization
 
 #### Target Areas (Multi-Select, up to 5)
 

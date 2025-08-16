@@ -8,14 +8,23 @@ import type { CustomizationComponentProps } from '../../types';
 /**
  * Enhanced Workout Focus Customization Component
  *
- * Enhanced version of the workout focus component that uses the DetailedSelector
- * molecule for consistent card-based UI and integrates analytics tracking.
+ * Enhanced version of the workout focus component specifically designed for detailed
+ * workout setup. Uses session intent-based options that reflect training methodology
+ * and philosophy rather than specific modalities or outcomes.
+ *
+ * Features 6 refined focus options:
+ * - General Fitness Maintenance: Balanced health and energy support
+ * - Strength & Power Development: Maximal force and explosive movement
+ * - Muscle Building (Hypertrophy): Targeted muscle development
+ * - Endurance & Conditioning: Cardiovascular fitness and stamina
+ * - Mobility & Movement Quality: Joint range of motion and control
+ * - Recovery & Restoration: Gentle, supportive recovery movement
  *
  * Key Features:
  * - Card-based UI using DetailedSelector molecule
- * - Focus options with intensity LevelDots as tertiary content
+ * - Session intent-based options (no overlap with Focus Areas/Equipment)
  * - Analytics integration for user behavior tracking
- * - Enhanced options with descriptions for better UX
+ * - Detailed descriptions for better UX
  * - Maintains exact API compatibility with legacy component
  *
  * @example
@@ -32,7 +41,7 @@ export default memo(function EnhancedWorkoutFocusCustomization({
   disabled = false,
   error,
 }: CustomizationComponentProps<string | undefined>) {
-  const { focusOptions } = useEnhancedOptions();
+  const { detailedWorkoutFocusOptions } = useEnhancedOptions();
   const { trackSelection } = useWorkoutAnalytics();
 
   /**
@@ -59,14 +68,14 @@ export default memo(function EnhancedWorkoutFocusCustomization({
   return (
     <DetailedSelector
       icon={Heart}
-      options={focusOptions}
+      options={detailedWorkoutFocusOptions}
       selectedValue={value || undefined}
       onChange={handleChange}
-      question="What's your main goal for this workout?"
-      description="Choose the primary focus that aligns with your fitness objectives"
+      question="What's your main focus for this workout session?"
+      description="Choose the training intention that best matches your goals for today"
       disabled={disabled}
       error={error}
-      gridCols={3}
+      gridCols={2}
       colorScheme="primary"
       required={false}
       variant="detailed"
