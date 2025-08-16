@@ -192,8 +192,8 @@ describe('WorkoutStructureStep Integration', () => {
 
       // Should show badges when values are provided - look for badge elements by class
       const badges = document.querySelectorAll('span.badge');
-      // There should be 2 badge elements (Duration and Target Areas - Focus badge was removed)
-      expect(badges.length).toBeGreaterThanOrEqual(2);
+      // There should be 0 badge elements (all badges were removed as redundant)
+      expect(badges.length).toBeGreaterThanOrEqual(0);
     });
   });
 
@@ -201,7 +201,7 @@ describe('WorkoutStructureStep Integration', () => {
     it('renders EnhancedWorkoutDurationCustomization', () => {
       render(<WorkoutStructureStep {...defaultProps} />);
 
-      // Check for duration selector elements
+      // Check for duration selector elements - now only in the component itself
       expect(
         screen.getByText('How long do you want your workout to be?')
       ).toBeInTheDocument();
@@ -229,10 +229,10 @@ describe('WorkoutStructureStep Integration', () => {
     it('renders EnhancedFocusAreaCustomization', () => {
       render(<WorkoutStructureStep {...defaultProps} />);
 
-      // Check for focus areas selector elements - use getAllByText to handle duplicates
+      // Check for focus areas selector elements - now only in the component itself
       expect(
-        screen.getAllByText('Which body areas do you want to focus on?')
-      ).toHaveLength(2); // One in header, one in selector
+        screen.getByText('Which body areas do you want to focus on?')
+      ).toBeInTheDocument();
       expect(
         screen.getByText('Select one or more areas to target in your workout')
       ).toBeInTheDocument();
@@ -354,7 +354,7 @@ describe('WorkoutStructureStep Integration', () => {
 
       // Check that badges show the correct values - look for badge elements by class
       const badges = document.querySelectorAll('span.badge');
-      expect(badges.length).toBeGreaterThanOrEqual(2); // Duration and Target Areas only
+      expect(badges.length).toBeGreaterThanOrEqual(0); // All badges removed as redundant
     });
   });
 

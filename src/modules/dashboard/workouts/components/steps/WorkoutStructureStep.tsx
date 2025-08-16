@@ -1,8 +1,6 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import { CUSTOMIZATION_FIELD_KEYS } from '../../constants/fieldKeys';
 import type { PerWorkoutOptions } from '../types';
-import { SelectionBadge } from '@/ui/shared/atoms';
-import { formatSelectionValue } from '../../utils/selectionFormatters';
 import { validateDetailedStep } from '../../validation/detailedValidation';
 import { useWorkoutAnalytics } from '../../hooks/useWorkoutAnalytics';
 import {
@@ -92,24 +90,6 @@ export const WorkoutStructureStep: React.FC<WorkoutStructureStepProps> = ({
       <div className="space-y-8">
         {/* Duration Selection */}
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h4 className="font-medium text-base-content">
-                Workout Duration
-              </h4>
-              <p className="text-sm text-base-content/70">
-                Choose how long you want your workout to be
-              </p>
-            </div>
-            <SelectionBadge
-              value={formatSelectionValue(
-                CUSTOMIZATION_FIELD_KEYS.DURATION,
-                options.customization_duration
-              )}
-              size="sm"
-            />
-          </div>
-
           <EnhancedWorkoutDurationCustomization
             value={options.customization_duration}
             onChange={(duration) =>
@@ -134,22 +114,6 @@ export const WorkoutStructureStep: React.FC<WorkoutStructureStepProps> = ({
 
         {/* Focus Areas */}
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h4 className="font-medium text-base-content">Target Areas</h4>
-              <p className="text-sm text-base-content/70">
-                Which body areas do you want to focus on?
-              </p>
-            </div>
-            <SelectionBadge
-              value={formatSelectionValue(
-                CUSTOMIZATION_FIELD_KEYS.AREAS,
-                options.customization_areas
-              )}
-              size="sm"
-            />
-          </div>
-
           <EnhancedFocusAreaCustomization
             value={options.customization_areas}
             onChange={(areas) =>
