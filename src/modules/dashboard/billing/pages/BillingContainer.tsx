@@ -90,7 +90,7 @@ export default function BillingLayout() {
   return (
     <BillingContext.Provider value={contextValue}>
       <StripeProvider>
-        <div className="p-6">
+        <div className="p-2 sm:p-6">
           {/* Success message alert */}
           {successMessage && (
             <div className="alert alert-success mb-6">
@@ -141,12 +141,12 @@ export default function BillingLayout() {
             selectedTab={selectedTab}
             onTabChange={handleTabChange}
             tabs={tabs}
-            className="mb-6"
+            className="mb-2 sm:mb-6"
             backgroundClassName="bg-base-200"
           />
 
           <div className="card bg-base-100 shadow-md border border-base-200">
-            <div className="card-body p-6">
+            <div className="card-body p-2 sm:p-6">
               <Outlet />
             </div>
           </div>
