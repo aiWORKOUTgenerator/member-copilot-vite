@@ -126,7 +126,7 @@ export const WorkoutStructureStep: React.FC<WorkoutStructureStepProps> = ({
             <div>
               <h4 className="font-medium text-base-content">Workout Focus</h4>
               <p className="text-sm text-base-content/70">
-                What's your main goal for this workout?
+                What's your main focus for this workout session?
               </p>
             </div>
             <SelectionBadge

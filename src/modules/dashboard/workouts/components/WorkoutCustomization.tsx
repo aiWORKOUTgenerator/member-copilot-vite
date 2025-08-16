@@ -526,8 +526,8 @@ export default function WorkoutCustomization({
                     focus
                   )
                 }
-                question="What's your main goal for this workout?"
-                description="Choose the primary focus that best matches your current needs and goals"
+                question="What's your main focus for this workout session?"
+                description="Choose the training intention that best matches your goals for today"
                 disabled={disabled}
                 error={undefined}
                 gridCols={3}
@@ -892,7 +892,7 @@ export default function WorkoutCustomization({
                                 {config.key === 'customization_areas' &&
                                   'Select the body parts or workout types you want to focus on'}
                                 {config.key === 'customization_focus' &&
-                                  "What's your main goal for this workout?"}
+                                  "What's your main focus for this workout session?"}
                                 {config.key === 'customization_equipment' &&
                                   'Tell us what equipment you have available'}
                                 {config.key === 'customization_include' &&
