@@ -122,22 +122,6 @@ export const WorkoutStructureStep: React.FC<WorkoutStructureStepProps> = ({
 
         {/* Focus Selection */}
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h4 className="font-medium text-base-content">Workout Focus</h4>
-              <p className="text-sm text-base-content/70">
-                What's your main focus for this workout session?
-              </p>
-            </div>
-            <SelectionBadge
-              value={formatSelectionValue(
-                CUSTOMIZATION_FIELD_KEYS.FOCUS,
-                options.customization_focus
-              )}
-              size="sm"
-            />
-          </div>
-
           <EnhancedWorkoutFocusCustomization
             value={options.customization_focus}
             onChange={(focus) =>

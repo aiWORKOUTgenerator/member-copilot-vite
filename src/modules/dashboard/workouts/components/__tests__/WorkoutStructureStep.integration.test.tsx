@@ -162,7 +162,8 @@ describe('WorkoutStructureStep Integration', () => {
       render(<WorkoutStructureStep {...defaultProps} />);
 
       expect(screen.getByText('Workout Duration')).toBeInTheDocument();
-      expect(screen.getByText('Workout Focus')).toBeInTheDocument();
+      // Workout Focus header is now handled by the EnhancedWorkoutFocusCustomization component
+      // No separate header needed since the component provides its own question and description
       expect(screen.getByText('Target Areas')).toBeInTheDocument();
     });
 
