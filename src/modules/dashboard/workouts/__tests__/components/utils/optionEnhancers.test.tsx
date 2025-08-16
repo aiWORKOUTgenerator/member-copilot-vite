@@ -400,20 +400,25 @@ describe('Performance and Caching', () => {
   });
 
   it('should cache all enhanced options independently', () => {
+    // Define all enhancer functions to call
+    const enhancerFunctions = [
+      enhanceFocusOptionsWithIntensity,
+      enhanceDetailedWorkoutFocusOptions,
+      enhanceEnergyOptionsWithDots,
+      enhanceDurationOptionsWithSubtitles,
+      enhanceDetailedDurationOptionsWithSubtitles,
+      enhanceEquipmentOptions,
+      enhanceFocusAreaOptions,
+      enhanceSleepQualityOptions,
+      enhanceStressLevelOptions,
+      enhanceSorenessAreaOptions,
+    ];
+
     // Call all enhancer functions
-    enhanceFocusOptionsWithIntensity();
-    enhanceDetailedWorkoutFocusOptions();
-    enhanceEnergyOptionsWithDots();
-    enhanceDurationOptionsWithSubtitles();
-    enhanceDetailedDurationOptionsWithSubtitles();
-    enhanceEquipmentOptions();
-    enhanceFocusAreaOptions();
-    enhanceSleepQualityOptions();
-    enhanceStressLevelOptions();
-    enhanceSorenessAreaOptions();
+    enhancerFunctions.forEach((enhancer) => enhancer());
 
     const stats = getCacheStats();
-    expect(stats.size).toBe(10); // All 10 option types cached
+    expect(stats.size).toBe(enhancerFunctions.length); // Dynamic count based on actual functions
     expect(stats.keys).toContain('focusWithIntensity');
     expect(stats.keys).toContain('detailedWorkoutFocus');
     expect(stats.keys).toContain('energyWithDots');
