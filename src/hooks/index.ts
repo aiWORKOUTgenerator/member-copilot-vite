@@ -14,6 +14,8 @@ export { usePromptService } from './usePromptService';
 export { useAttributeTypeService } from './useAttributeTypeService';
 export { useAttributeService } from './useAttributeService';
 export { useContactService } from './useContactService';
+export { useLocationService } from './useLocationService';
+export * from './useLocation';
 export { useVerificationService } from './useVerificationService';
 export { usePhoneVerificationService } from './usePhoneVerificationService';
 export * from './usePhoneVerification';

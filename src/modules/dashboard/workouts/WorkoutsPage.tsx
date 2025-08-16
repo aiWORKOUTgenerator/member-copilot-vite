@@ -87,7 +87,7 @@ export default function AIWorkouts() {
 
   if (workouts.length === 0) {
     return (
-      <div className="absolute inset-0 flex items-center justify-center">
+      <div className="flex items-center justify-center h-64">
         <EmptyStateBasic
           title="No workouts found yet"
           description={

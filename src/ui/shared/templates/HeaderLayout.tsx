@@ -230,9 +230,9 @@ export const HeaderLayout: React.FC<HeaderLayoutProps> = ({
       </nav>
 
       {/* Main Content */}
-      <main className="h-full bg-base-100 p-4">
-        <div className="mx-auto max-w-7xl w-full py-4 sm:px-6 lg:px-8 bg-base-200 rounded-xl p-4 shadow-lg">
-          <div className="min-h-96">{children}</div>
+      <main className="h-full bg-base-100 p-0 sm:p-4">
+        <div className="mx-auto max-w-7xl w-full bg-base-200 rounded-none sm:rounded-xl p-2 sm:py-4 sm:px-6 lg:px-8 shadow-lg">
+          <div className=" min-h-96">{children}</div>
         </div>
       </main>
     </div>

@@ -74,7 +74,7 @@ export const MobileNavDropdown: React.FC<MobileNavDropdownProps> = ({
       <div
         role="menu"
         tabIndex={0}
-        className="dropdown-content z-50 mt-3 w-screen max-w-sm -translate-x-4"
+        className="dropdown-content z-50 mt-3 w-screen max-w-xs -translate-x-4"
       >
         <div className="overflow-hidden rounded-3xl bg-base-100 shadow-2xl border border-base-300">
           <div className="p-2">
@@ -89,12 +89,14 @@ export const MobileNavDropdown: React.FC<MobileNavDropdownProps> = ({
                     to={item.href}
                     onClick={handleLinkClick}
                     className={classNames(
-                      'group relative flex items-center gap-x-4 rounded-2xl p-4 transition-all duration-200',
+                      // Always apply padding, even if DaisyUI btn overrides
+                      'group relative flex items-center gap-x-4 rounded-2xl transition-all duration-200',
+                      'px-4 py-3', // Explicit padding for all cases
                       isCurrentPage
-                        ? 'bg-primary text-primary-content shadow-md'
+                        ? 'bg-primary text-secondary-content shadow-md'
                         : 'hover:bg-base-200 active:bg-base-300',
                       item.isUpgrade
-                        ? 'bg-gradient-to-r from-accent to-warning text-accent-content font-bold shadow-lg hover:shadow-xl hover:scale-[1.02] border-2 border-warning/30'
+                        ? 'btn btn-warning btn-lg w-full font-bold shadow-lg hover:shadow-xl hover:scale-[1.02] border-2 border-warning/40 text-warning-content px-4 py-3'
                         : '',
                       item.enhanced && !item.isUpgrade && !isCurrentPage
                         ? 'ring-2 ring-secondary/30 hover:ring-secondary/50'
