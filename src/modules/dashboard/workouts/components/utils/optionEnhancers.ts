@@ -238,7 +238,8 @@ const getFocusAreaDescription = (areaValue: string): string => {
     pull: 'Compound pull-day training',
     chest_back:
       'Chest and upper-back training for a balanced push/pull workout',
-    arms_only: 'Focused training for biceps, triceps, and forearms',
+    arms_only:
+      'Focused training for all arm muscles (biceps, triceps, and forearms)',
     back: 'Upper and lower back muscles',
     shoulders: 'Deltoids and rotator cuff',
     mobility_flexibility: 'Joint mobility and muscle flexibility',
