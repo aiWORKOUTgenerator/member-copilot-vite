@@ -227,16 +227,19 @@ export const enhanceSorenessAreaOptions = () => {
 const getAreaDescription = (areaValue: string): string => {
   const descriptions: Record<string, string> = {
     // Focus areas
-    upper_body: 'Chest, shoulders, arms, and back',
-    lower_body: 'Legs, glutes, and calves',
-    core: 'Abdominals and lower back',
-    back: 'Upper and lower back muscles',
-    shoulders: 'Deltoids and rotator cuff',
-    chest: 'Pectorals and surrounding muscles',
-    arms: 'Biceps, triceps, and forearms',
-    mobility_flexibility: 'Joint mobility and muscle flexibility',
-    cardio: 'Cardiovascular endurance',
-    recovery_stretching: 'Gentle recovery and stretching',
+    full_body: 'Balanced training across all major muscle groups',
+    upper_body: 'Chest, shoulders, back, arms',
+    lower_body: 'Quads, hamstrings, glutes, calves',
+    core: 'Abdominals, obliques, lower back',
+    chest_triceps: 'Classic push-day split',
+    back_biceps: 'Classic pull-day split',
+    legs: 'Dedicated lower-body day (quads, glutes, hamstrings, calves)',
+    shoulders_arms: 'Delts, biceps, triceps, forearms',
+    push: 'Compound push-day training',
+    pull: 'Compound pull-day training',
+    chest_back:
+      'Chest and upper-back training for a balanced push/pull workout',
+    arms_only: 'Focused training for biceps, triceps, and forearms',
 
     // Soreness areas
     neck_shoulders: 'Neck and shoulder region',
