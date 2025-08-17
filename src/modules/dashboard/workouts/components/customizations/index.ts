@@ -13,8 +13,7 @@ import {
 import { CustomizationConfig } from '../types';
 import WorkoutDurationCustomization from './WorkoutDurationCustomization';
 import WorkoutFocusCustomization from './WorkoutFocusCustomization';
-// Keeping legacy import for backward compatibility
-import EnergyLevelCustomization from './EnergyLevelCustomization';
+// Enhanced components from PR #3, PR #4, and PR #5 modularization effort
 import AvailableEquipmentCustomization from './AvailableEquipmentCustomization';
 import IncludeExercisesCustomization from './IncludeExercisesCustomization';
 import ExcludeExercisesCustomization from './ExcludeExercisesCustomization';
@@ -25,13 +24,12 @@ import {
   EnhancedSleepQualityCustomization,
   EnhancedStressLevelCustomization,
   EnhancedSorenessCustomization,
-  // EnhancedEnergyLevelCustomization, // Not used in CUSTOMIZATION_CONFIG yet
+  EnhancedEnergyLevelCustomization,
 } from './enhanced';
 
 // Export individual components
 export { default as WorkoutDurationCustomization } from './WorkoutDurationCustomization';
 export { default as WorkoutFocusCustomization } from './WorkoutFocusCustomization';
-export { default as EnergyLevelCustomization } from './EnergyLevelCustomization';
 export { default as AvailableEquipmentCustomization } from './AvailableEquipmentCustomization';
 export { default as IncludeExercisesCustomization } from './IncludeExercisesCustomization';
 export { default as ExcludeExercisesCustomization } from './ExcludeExercisesCustomization';
@@ -42,7 +40,7 @@ export {
   EnhancedSleepQualityCustomization,
   EnhancedStressLevelCustomization,
   EnhancedSorenessCustomization,
-  // EnhancedEnergyLevelCustomization, // Available but not used in main config yet
+  EnhancedEnergyLevelCustomization,
 } from './enhanced';
 
 // Configuration for all available customizations
@@ -98,7 +96,7 @@ export const CUSTOMIZATION_CONFIG: CustomizationConfig[] = [
   },
   {
     key: 'customization_energy',
-    component: EnergyLevelCustomization, // Keep legacy for now to avoid import issues
+    component: EnhancedEnergyLevelCustomization,
     label: 'Energy Level',
     icon: Zap,
     category: 'Current State & Wellness',
