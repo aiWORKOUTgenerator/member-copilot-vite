@@ -178,10 +178,10 @@ describe('EnhancedFocusAreaCustomization', () => {
 
     expect(screen.getByTestId('detailed-selector')).toBeInTheDocument();
     expect(screen.getByTestId('selector-question')).toHaveTextContent(
-      'Which body areas do you want to focus on?'
+      'Which muscle groups do you want to focus on?'
     );
     expect(screen.getByTestId('selector-description')).toHaveTextContent(
-      'Select one or more areas to target in your workout'
+      'Select one or more muscle groups to target.'
     );
     expect(screen.getByTestId('selector-props')).toHaveTextContent(
       'disabled: false, multiple: true, gridCols: 3, colorScheme: primary, required: false, variant: detailed'

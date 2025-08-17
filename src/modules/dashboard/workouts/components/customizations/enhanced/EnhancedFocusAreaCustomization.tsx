@@ -61,8 +61,8 @@ export default memo(function EnhancedFocusAreaCustomization({
       selectedValue={value || []}
       multiple={true}
       onChange={handleChange}
-      question="Which body areas do you want to focus on?"
-      description="Select one or more areas to target in your workout"
+      question="Which muscle groups do you want to focus on?"
+      description="Select one or more muscle groups to target."
       disabled={disabled}
       error={error}
       gridCols={3}
