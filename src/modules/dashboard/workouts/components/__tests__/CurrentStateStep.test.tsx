@@ -182,7 +182,7 @@ describe('CurrentStateStep Enhanced Components', () => {
     expect(screen.getByTestId('current-state-step')).toBeInTheDocument();
   });
 
-  it('displays selection badges for selected values', async () => {
+  it('renders all enhanced components with correct questions', async () => {
     const { CurrentStateStep } = await import('../steps/CurrentStateStep');
     const optionsWithValues: PerWorkoutOptions = {
       customization_energy: 4,
@@ -193,7 +193,18 @@ describe('CurrentStateStep Enhanced Components', () => {
 
     render(<CurrentStateStep {...defaultProps} options={optionsWithValues} />);
 
-    // Verify selection badges are rendered
-    expect(screen.getAllByTestId('selection-badge').length).toBeGreaterThan(0);
+    // Verify all enhanced components are rendered with their questions
+    expect(
+      screen.getByText('How energetic are you feeling today?')
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('How well did you sleep last night?')
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("What's your current stress level?")
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('Are you experiencing any soreness?')
+    ).toBeInTheDocument();
   });
 });

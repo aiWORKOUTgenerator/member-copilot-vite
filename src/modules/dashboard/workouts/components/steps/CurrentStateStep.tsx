@@ -1,8 +1,6 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import { CUSTOMIZATION_FIELD_KEYS } from '../../constants/fieldKeys';
 import type { PerWorkoutOptions } from '../types';
-import { SelectionBadge } from '@/ui/shared/atoms';
-import { formatSelectionValue } from '../../utils/selectionFormatters';
 import { validateDetailedStep } from '../../validation/detailedValidation';
 import { useWorkoutAnalytics } from '../../hooks/useWorkoutAnalytics';
 import {
@@ -116,22 +114,6 @@ export const CurrentStateStep: React.FC<CurrentStateStepProps> = ({
 
         {/* Sleep Quality */}
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h4 className="font-medium text-base-content">Sleep Quality</h4>
-              <p className="text-sm text-base-content/70">
-                How well did you sleep last night?
-              </p>
-            </div>
-            <SelectionBadge
-              value={formatSelectionValue(
-                CUSTOMIZATION_FIELD_KEYS.SLEEP,
-                options.customization_sleep
-              )}
-              size="sm"
-            />
-          </div>
-
           <EnhancedSleepQualityCustomization
             value={options.customization_sleep}
             onChange={(sleep) =>
@@ -145,22 +127,6 @@ export const CurrentStateStep: React.FC<CurrentStateStepProps> = ({
 
         {/* Stress Level */}
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h4 className="font-medium text-base-content">Stress Level</h4>
-              <p className="text-sm text-base-content/70">
-                What's your current stress level?
-              </p>
-            </div>
-            <SelectionBadge
-              value={formatSelectionValue(
-                CUSTOMIZATION_FIELD_KEYS.STRESS,
-                options.customization_stress
-              )}
-              size="sm"
-            />
-          </div>
-
           <EnhancedStressLevelCustomization
             value={options.customization_stress}
             onChange={(stress) =>
@@ -174,24 +140,6 @@ export const CurrentStateStep: React.FC<CurrentStateStepProps> = ({
 
         {/* Soreness */}
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h4 className="font-medium text-base-content">
-                Current Soreness
-              </h4>
-              <p className="text-sm text-base-content/70">
-                Are you experiencing any soreness?
-              </p>
-            </div>
-            <SelectionBadge
-              value={formatSelectionValue(
-                CUSTOMIZATION_FIELD_KEYS.SORENESS,
-                options.customization_soreness
-              )}
-              size="sm"
-            />
-          </div>
-
           <EnhancedSorenessCustomization
             value={options.customization_soreness}
             onChange={(soreness) =>
