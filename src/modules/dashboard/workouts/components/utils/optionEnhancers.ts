@@ -230,7 +230,6 @@ const getAreaDescription = (areaValue: string): string => {
     full_body: 'Balanced training across all major muscle groups',
     upper_body: 'Chest, shoulders, back, arms',
     lower_body: 'Quads, hamstrings, glutes, calves',
-    core: 'Abdominals, obliques, lower back',
     chest_triceps: 'Classic push-day split',
     back_biceps: 'Classic pull-day split',
     legs: 'Dedicated lower-body day (quads, glutes, hamstrings, calves)',
