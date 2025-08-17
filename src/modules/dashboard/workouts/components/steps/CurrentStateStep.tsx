@@ -103,22 +103,6 @@ export const CurrentStateStep: React.FC<CurrentStateStepProps> = ({
       <div className="space-y-8">
         {/* Energy Level */}
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h4 className="font-medium text-base-content">Energy Level</h4>
-              <p className="text-sm text-base-content/70">
-                How energetic are you feeling today?
-              </p>
-            </div>
-            <SelectionBadge
-              value={formatSelectionValue(
-                CUSTOMIZATION_FIELD_KEYS.ENERGY,
-                options.customization_energy
-              )}
-              size="sm"
-            />
-          </div>
-
           <EnhancedEnergyLevelCustomization
             value={options.customization_energy}
             onChange={(energy) =>
