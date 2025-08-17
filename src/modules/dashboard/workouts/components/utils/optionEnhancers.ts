@@ -165,7 +165,7 @@ export const enhanceFocusAreaOptions = () => {
     FOCUS_AREA_OPTIONS.map((option) => ({
       id: option.value,
       title: option.label,
-      description: getAreaDescription(option.value),
+      description: getFocusAreaDescription(option.value),
       // No tertiary content needed for areas
     }))
   );
@@ -215,21 +215,21 @@ export const enhanceSorenessAreaOptions = () => {
     SORENESS_AREA_OPTIONS.map((option) => ({
       id: option.value,
       title: option.label,
-      description: getAreaDescription(option.value),
+      description: getSorenessAreaDescription(option.value),
       // No tertiary content for body areas
     }))
   );
 };
 
 /**
- * Get area descriptions for focus areas and soreness areas
+ * Get descriptions for focus areas
  */
-const getAreaDescription = (areaValue: string): string => {
+const getFocusAreaDescription = (areaValue: string): string => {
   const descriptions: Record<string, string> = {
-    // Focus areas
     full_body: 'Balanced training across all major muscle groups',
     upper_body: 'Chest, shoulders, back, arms',
     lower_body: 'Quads, hamstrings, glutes, calves',
+    core: 'Abdominals, obliques, lower back',
     chest_triceps: 'Classic push-day split',
     back_biceps: 'Classic pull-day split',
     legs: 'Dedicated lower-body day (quads, glutes, hamstrings, calves)',
@@ -244,8 +244,16 @@ const getAreaDescription = (areaValue: string): string => {
     mobility_flexibility: 'Joint mobility and muscle flexibility',
     cardio: 'Cardiovascular endurance',
     recovery_stretching: 'Gentle recovery and stretching',
+  };
 
-    // Soreness areas
+  return descriptions[areaValue] || '';
+};
+
+/**
+ * Get descriptions for soreness areas
+ */
+const getSorenessAreaDescription = (areaValue: string): string => {
+  const descriptions: Record<string, string> = {
     neck_shoulders: 'Neck and shoulder region (traps, delts)',
     upper_back: 'Upper back and trapezius',
     lower_back: 'Lumbar region and spinal erectors',
