@@ -165,7 +165,7 @@ export const enhanceFocusAreaOptions = () => {
     FOCUS_AREA_OPTIONS.map((option) => ({
       id: option.value,
       title: option.label,
-      description: getAreaDescription(option.value),
+      description: getFocusAreaDescription(option.value),
       // No tertiary content needed for areas
     }))
   );
@@ -215,18 +215,17 @@ export const enhanceSorenessAreaOptions = () => {
     SORENESS_AREA_OPTIONS.map((option) => ({
       id: option.value,
       title: option.label,
-      description: getAreaDescription(option.value),
+      description: getSorenessAreaDescription(option.value),
       // No tertiary content for body areas
     }))
   );
 };
 
 /**
- * Get area descriptions for focus areas and soreness areas
+ * Get descriptions for focus areas
  */
-const getAreaDescription = (areaValue: string): string => {
+const getFocusAreaDescription = (areaValue: string): string => {
   const descriptions: Record<string, string> = {
-    // Focus areas
     full_body: 'Balanced training across all major muscle groups',
     upper_body: 'Chest, shoulders, back, arms',
     lower_body: 'Quads, hamstrings, glutes, calves',
@@ -239,15 +238,34 @@ const getAreaDescription = (areaValue: string): string => {
     pull: 'Compound pull-day training',
     chest_back:
       'Chest and upper-back training for a balanced push/pull workout',
-    arms_only: 'Focused training for biceps, triceps, and forearms',
+    arms_only:
+      'Focused training for all arm muscles (biceps, triceps, and forearms)',
+    back: 'Upper and lower back muscles',
+    shoulders: 'Deltoids and rotator cuff',
+    mobility_flexibility: 'Joint mobility and muscle flexibility',
+    cardio: 'Cardiovascular endurance',
+    recovery_stretching: 'Gentle recovery and stretching',
+  };
 
-    // Soreness areas
-    neck_shoulders: 'Neck and shoulder region',
+  return descriptions[areaValue] || '';
+};
+
+/**
+ * Get descriptions for soreness areas
+ */
+const getSorenessAreaDescription = (areaValue: string): string => {
+  const descriptions: Record<string, string> = {
+    neck_shoulders: 'Neck and shoulder region (traps, delts)',
     upper_back: 'Upper back and trapezius',
-    lower_back: 'Lower back and lumbar region',
+    lower_back: 'Lumbar region and spinal erectors',
+    chest: 'Pectoral muscles',
+    arms_biceps_triceps: 'Front and back of upper arms',
+    forearms: 'Lower arm muscles and grip',
+    core: 'Abdominals, obliques, and deep core stabilizers',
     glutes: 'Gluteal muscles',
     quads: 'Front of thighs',
     hamstrings: 'Back of thighs',
+    adductors: 'Groin and inner thigh muscles',
     calves: 'Lower leg muscles',
   };
 

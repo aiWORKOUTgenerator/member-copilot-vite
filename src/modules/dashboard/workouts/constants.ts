@@ -355,17 +355,19 @@ export const STRESS_LEVEL_OPTIONS: StressLevelOption[] = [
   },
 ];
 
-// Soreness area options
+// Soreness area options - 12 intuitive areas that 90% of gym-goers recognize
 export const SORENESS_AREA_OPTIONS: SorenessAreaOption[] = [
   { value: 'neck_shoulders', label: 'Neck & Shoulders' },
   { value: 'upper_back', label: 'Upper Back' },
   { value: 'lower_back', label: 'Lower Back' },
   { value: 'chest', label: 'Chest' },
-  { value: 'arms', label: 'Arms' },
+  { value: 'arms_biceps_triceps', label: 'Arms (Biceps & Triceps)' },
+  { value: 'forearms', label: 'Forearms' },
   { value: 'core', label: 'Core' },
   { value: 'glutes', label: 'Glutes' },
   { value: 'quads', label: 'Quadriceps' },
   { value: 'hamstrings', label: 'Hamstrings' },
+  { value: 'adductors', label: 'Adductors (Inner Thighs)' },
   { value: 'calves', label: 'Calves' },
 ];
 
