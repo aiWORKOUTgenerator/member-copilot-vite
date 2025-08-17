@@ -332,8 +332,16 @@ export default function WorkoutCustomization({
 
       case CUSTOMIZATION_FIELD_KEYS.ENERGY: {
         const rating = value as number;
-        const labels = ['', 'Very Low', 'Low', 'Moderate', 'High', 'Very High'];
-        return `${labels[rating]} (${rating}/5)`;
+        const labels = [
+          '',
+          'Very Low',
+          'Low',
+          'Moderate',
+          'Somewhat High',
+          'High',
+          'Very High',
+        ];
+        return `${labels[rating]} (${rating}/6)`;
       }
 
       case CUSTOMIZATION_FIELD_KEYS.STRESS: {
