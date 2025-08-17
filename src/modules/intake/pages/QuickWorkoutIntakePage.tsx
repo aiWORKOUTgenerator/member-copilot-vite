@@ -8,9 +8,11 @@ import { useAnalytics } from '@/hooks/useAnalytics';
 import { AuthRequired, Button } from '@/ui';
 import { IntakeFullScreenLayout } from '../components/IntakeFullScreenLayout';
 import { RadioCardGroupInput } from '@/ui/shared/molecules/RadioCardGroupInput';
+import { useGeneratedWorkouts } from '@/hooks/useGeneratedWorkouts';
+import type { WorkoutParams } from '@/domain/entities/workoutParams';
 import type {
   AgeRange,
-  EnergyLevel,
+  DurationIntensity,
   ExperienceLevel,
   QuickWorkoutIntake,
   StepDescriptor,
@@ -18,13 +20,34 @@ import type {
 
 type StepKey = StepDescriptor['key'];
 
-const AGE_OPTIONS: AgeRange[] = ['18-24', '25-34', '35-44', '45+'];
-const EXPERIENCE_OPTIONS: ExperienceLevel[] = [
-  'beginner',
-  'intermediate',
-  'advanced',
+const AGE_OPTIONS: AgeRange[] = [
+  'Male 18-34',
+  'Male 35-54',
+  'Male 55+',
+  'Female 18-34',
+  'Female 35-54',
+  'Female 55+',
 ];
-const ENERGY_OPTIONS: EnergyLevel[] = ['low', 'moderate', 'high'];
+const EXPERIENCE_OPTIONS: ExperienceLevel[] = [
+  'goal_fatloss_low',
+  'goal_fatloss_mod',
+  'goal_fatloss_high',
+  'goal_muscle_low',
+  'goal_muscle_mod',
+  'goal_muscle_high',
+  'goal_endurance_low_mod',
+  'goal_endurance_high',
+  'goal_strength_mod_high',
+];
+const DURATION_INTENSITY_OPTIONS: DurationIntensity[] = [
+  'dur30_low',
+  'dur30_mod',
+  'dur30_high',
+  'dur45_low',
+  'dur45_mod',
+  'dur45_high',
+  'dur60_low',
+];
 
 export default function QuickWorkoutIntakePage() {
   const { isLoaded, isSignedIn } = useAuth();
@@ -32,6 +55,11 @@ export default function QuickWorkoutIntakePage() {
   const navigate = useNavigate();
   const { locationId } = useParams<{ locationId: string }>();
   const appConfig = useAppConfig();
+  const {
+    createWorkout,
+    isLoading: isGenerating,
+    error: generationError,
+  } = useGeneratedWorkouts();
 
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
   const [attemptedNext, setAttemptedNext] = useState<boolean>(false);
@@ -47,7 +75,7 @@ export default function QuickWorkoutIntakePage() {
       { key: 'welcome', title: 'Welcome' },
       { key: 'ageRange', title: 'Your Age Range' },
       { key: 'experience', title: 'Fitness Experience' },
-      { key: 'energy', title: "Today's Energy" },
+      { key: 'energy', title: 'Duration & Intensity' },
       { key: 'complete', title: 'All Set' },
     ],
     []
@@ -117,7 +145,35 @@ export default function QuickWorkoutIntakePage() {
         ...responses,
         tracked_at: new Date().toISOString(),
       });
+
+      // Move to completion screen while generating
       setCurrentStepIndex(stepOrder.findIndex((s) => s.key === 'complete'));
+
+      // Build workout params from intake responses
+      const params: WorkoutParams = {
+        targetMuscleGroups: responses.energy || undefined,
+        includeExercises: [
+          responses.ageRange ? `ageRange:${responses.ageRange}` : null,
+          responses.experience ? `experience:${responses.experience}` : null,
+          responses.energy ? `energy:${responses.energy}` : null,
+        ]
+          .filter(Boolean)
+          .join('; '),
+      };
+      const configId = import.meta.env
+        .VITE_QUICK_WORKOUT_CONFIGURATION_ID as string;
+
+      createWorkout(configId, params, '')
+        .then((workout) => {
+          analytics.track('Workout Generated from Intake', {
+            workoutId: workout.id,
+            tracked_at: new Date().toISOString(),
+          });
+          navigate(`/dashboard/workouts/${workout.id}`);
+        })
+        .catch((err) => {
+          console.error('Failed to generate workout from intake:', err);
+        });
       return;
     }
 
@@ -156,6 +212,7 @@ export default function QuickWorkoutIntakePage() {
               size="md"
               onClick={goBack}
               aria-label="Back"
+              disabled={isGenerating}
             >
               Back
             </Button>
@@ -166,7 +223,7 @@ export default function QuickWorkoutIntakePage() {
               size="lg"
               onClick={goNext}
               aria-label="Next"
-              disabled={nextDisabled}
+              disabled={nextDisabled || isGenerating}
             >
               Next
             </Button>
@@ -224,7 +281,7 @@ export default function QuickWorkoutIntakePage() {
               <RadioCardGroupInput
                 id="age-range"
                 name="ageRange"
-                legend="What is your age range?"
+                legend=""
                 legendRef={legendRef}
                 options={AGE_OPTIONS.map((opt) => ({
                   id: opt,
@@ -232,9 +289,16 @@ export default function QuickWorkoutIntakePage() {
                   title: opt,
                 }))}
                 value={responses.ageRange}
-                onChange={(value) =>
-                  setResponses((r) => ({ ...r, ageRange: value as AgeRange }))
-                }
+                onChange={(value) => {
+                  setResponses((r) => ({ ...r, ageRange: value as AgeRange }));
+                  setAttemptedNext(false);
+                  setCurrentStepIndex((idx) =>
+                    Math.min(stepOrder.length - 1, idx + 1)
+                  );
+                  analytics.track('QuickWorkoutIntake Step Next', {
+                    stepName: 'ageRange',
+                  });
+                }}
                 isValid={!attemptedNext || Boolean(responses.ageRange)}
                 validationMessage="Please select an age range."
               />
@@ -247,43 +311,118 @@ export default function QuickWorkoutIntakePage() {
               <RadioCardGroupInput
                 id="experience"
                 name="experience"
-                legend="What is your fitness experience?"
+                legend="What is your goal and activity level?"
                 legendRef={legendRef}
                 options={EXPERIENCE_OPTIONS.map((opt) => ({
                   id: opt,
                   value: opt,
-                  title: opt.charAt(0).toUpperCase() + opt.slice(1),
+                  title:
+                    opt === 'goal_fatloss_low'
+                      ? 'Fat loss • Low activity'
+                      : opt === 'goal_fatloss_mod'
+                        ? 'Fat loss • Somewhat active'
+                        : opt === 'goal_fatloss_high'
+                          ? 'Fat loss • Consistently active'
+                          : opt === 'goal_muscle_low'
+                            ? 'Build muscle • Low activity'
+                            : opt === 'goal_muscle_mod'
+                              ? 'Build muscle • Somewhat active'
+                              : opt === 'goal_muscle_high'
+                                ? 'Build muscle • Consistently active'
+                                : opt === 'goal_endurance_low_mod'
+                                  ? 'Endurance • Light/Moderate activity'
+                                  : opt === 'goal_endurance_high'
+                                    ? 'Endurance • Consistently active'
+                                    : 'Strength/Power • Regular training',
                 }))}
                 value={responses.experience}
-                onChange={(value) =>
+                onChange={(value) => {
                   setResponses((r) => ({
                     ...r,
                     experience: value as ExperienceLevel,
-                  }))
-                }
+                  }));
+                  setAttemptedNext(false);
+                  setCurrentStepIndex((idx) =>
+                    Math.min(stepOrder.length - 1, idx + 1)
+                  );
+                  analytics.track('QuickWorkoutIntake Step Next', {
+                    stepName: 'experience',
+                  });
+                }}
                 isValid={!attemptedNext || Boolean(responses.experience)}
                 validationMessage="Please select your experience."
               />
             </section>
           )}
 
-          {/* Energy */}
+          {/* Duration & Intensity */}
           {currentStep === 'energy' && (
             <section>
               <RadioCardGroupInput
-                id="energy"
+                id="duration-intensity"
                 name="energy"
-                legend="How is your energy level today?"
+                legend="How much time do you have and at what intensity?"
                 legendRef={legendRef}
-                options={ENERGY_OPTIONS.map((opt) => ({
+                options={DURATION_INTENSITY_OPTIONS.map((opt) => ({
                   id: opt,
                   value: opt,
-                  title: opt.charAt(0).toUpperCase() + opt.slice(1),
+                  title:
+                    opt === 'dur30_low'
+                      ? '30 min • Low intensity'
+                      : opt === 'dur30_mod'
+                        ? '30 min • Moderate intensity'
+                        : opt === 'dur30_high'
+                          ? '30 min • High intensity'
+                          : opt === 'dur45_low'
+                            ? '45 min • Low intensity'
+                            : opt === 'dur45_mod'
+                              ? '45 min • Moderate intensity'
+                              : opt === 'dur45_high'
+                                ? '45 min • High intensity'
+                                : '60 min • Low intensity',
                 }))}
                 value={responses.energy}
-                onChange={(value) =>
-                  setResponses((r) => ({ ...r, energy: value as EnergyLevel }))
-                }
+                onChange={(value) => {
+                  setResponses((r) => ({
+                    ...r,
+                    energy: value as DurationIntensity,
+                  }));
+                  setAttemptedNext(false);
+                  // Auto-complete and start generation
+                  console.log('QuickWorkoutIntake Completed', {
+                    ...responses,
+                    energy: value,
+                  });
+                  analytics.track('QuickWorkoutIntake Completed', {
+                    ...responses,
+                    energy: value,
+                    tracked_at: new Date().toISOString(),
+                  });
+                  setCurrentStepIndex(
+                    stepOrder.findIndex((s) => s.key === 'complete')
+                  );
+
+                  const params: WorkoutParams = {
+                    targetMuscleGroups: (value as string) || undefined,
+                  };
+                  const configId = import.meta.env
+                    .VITE_QUICK_WORKOUT_CONFIGURATION_ID;
+
+                  createWorkout(configId, params, '')
+                    .then((workout) => {
+                      analytics.track('Workout Generated from Intake', {
+                        workoutId: workout.id,
+                        tracked_at: new Date().toISOString(),
+                      });
+                      navigate(`/dashboard/workouts/${workout.id}`);
+                    })
+                    .catch((err) => {
+                      console.error(
+                        'Failed to generate workout from intake:',
+                        err
+                      );
+                    });
+                }}
                 isValid={!attemptedNext || Boolean(responses.energy)}
                 validationMessage="Please select your energy level."
               />
@@ -298,6 +437,22 @@ export default function QuickWorkoutIntakePage() {
                 We’ve captured your preferences. Your workout will be tailored
                 accordingly.
               </p>
+              {isGenerating && (
+                <div className="flex items-center justify-center gap-3">
+                  <span
+                    className="loading loading-spinner"
+                    aria-label="Generating"
+                  />
+                  <span className="text-sm text-base-content/70">
+                    Generating your workout…
+                  </span>
+                </div>
+              )}
+              {generationError && (
+                <p className="text-error text-sm" role="alert">
+                  {generationError}
+                </p>
+              )}
               <Button
                 variant="primary"
                 size="lg"
