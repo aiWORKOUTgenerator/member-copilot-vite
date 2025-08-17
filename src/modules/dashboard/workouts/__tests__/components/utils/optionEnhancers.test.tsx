@@ -373,7 +373,7 @@ describe('Detailed Mode Option Enhancers', () => {
     it('should enhance soreness area options', () => {
       const enhanced = enhanceSorenessAreaOptions();
 
-      expect(enhanced).toHaveLength(10); // All soreness areas
+      expect(enhanced).toHaveLength(12); // All soreness areas (updated to 12)
 
       enhanced.forEach((option) => {
         expect(option).toHaveProperty('id');
@@ -388,8 +388,10 @@ describe('Detailed Mode Option Enhancers', () => {
       const neckShoulders = enhanced.find((opt) => opt.id === 'neck_shoulders');
       const lowerBack = enhanced.find((opt) => opt.id === 'lower_back');
 
-      expect(neckShoulders?.description).toBe('Neck and shoulder region');
-      expect(lowerBack?.description).toBe('Lower back and lumbar region');
+      expect(neckShoulders?.description).toBe(
+        'Neck and shoulder region (traps, delts)'
+      );
+      expect(lowerBack?.description).toBe('Lumbar region and spinal erectors');
     });
   });
 });

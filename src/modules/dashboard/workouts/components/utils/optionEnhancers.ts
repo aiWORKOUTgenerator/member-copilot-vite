@@ -240,14 +240,24 @@ const getAreaDescription = (areaValue: string): string => {
     chest_back:
       'Chest and upper-back training for a balanced push/pull workout',
     arms_only: 'Focused training for biceps, triceps, and forearms',
+    back: 'Upper and lower back muscles',
+    shoulders: 'Deltoids and rotator cuff',
+    mobility_flexibility: 'Joint mobility and muscle flexibility',
+    cardio: 'Cardiovascular endurance',
+    recovery_stretching: 'Gentle recovery and stretching',
 
     // Soreness areas
-    neck_shoulders: 'Neck and shoulder region',
+    neck_shoulders: 'Neck and shoulder region (traps, delts)',
     upper_back: 'Upper back and trapezius',
-    lower_back: 'Lower back and lumbar region',
+    lower_back: 'Lumbar region and spinal erectors',
+    chest: 'Pectoral muscles',
+    arms_biceps_triceps: 'Front and back of upper arms',
+    forearms: 'Lower arm muscles and grip',
+    core: 'Abdominals, obliques, and deep core stabilizers',
     glutes: 'Gluteal muscles',
     quads: 'Front of thighs',
     hamstrings: 'Back of thighs',
+    adductors: 'Groin and inner thigh muscles',
     calves: 'Lower leg muscles',
   };
 
