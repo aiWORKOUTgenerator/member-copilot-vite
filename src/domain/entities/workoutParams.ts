@@ -21,4 +21,8 @@ export interface WorkoutParams {
   targetMuscleGroups?: string;
   includeExercises?: string;
   excludeExercises?: string;
+  /** LLM-friendly fields for Quick Workout intake */
+  sex_and_age?: string;
+  goal_and_activity?: string;
+  duration_and_intensity?: string;
 }
