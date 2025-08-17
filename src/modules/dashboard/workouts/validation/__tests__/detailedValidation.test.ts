@@ -275,17 +275,24 @@ describe('validateDetailedStep', () => {
         customization_stress: 2,
         customization_soreness: [
           'lower_back',
-          'shoulders',
-          'neck',
+          'neck_shoulders',
           'upper_back',
           'glutes',
           'quads',
+          'hamstrings',
+          'calves',
+          'chest',
+          'arms_biceps_triceps',
+          'forearms',
+          'core',
+          'adductors',
+          'test_area_13', // This will trigger the validation error
         ],
       };
 
       const result = validateDetailedStep('current-state', options);
       expect(result.isValid).toBe(false);
-      expect(result.errors.customization_soreness).toContain('up to 5');
+      expect(result.errors.customization_soreness).toContain('up to 12');
     });
 
     it('should validate individual wellness field values', () => {

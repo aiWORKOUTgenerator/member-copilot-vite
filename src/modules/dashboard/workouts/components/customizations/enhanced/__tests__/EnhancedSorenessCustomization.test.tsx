@@ -18,7 +18,7 @@ const mockSorenessAreaOptions = [
   {
     id: 'neck_shoulders',
     title: 'Neck & Shoulders',
-    description: 'Neck and shoulder region',
+    description: 'Neck and shoulder region (traps, delts)',
   },
   {
     id: 'upper_back',
@@ -28,22 +28,27 @@ const mockSorenessAreaOptions = [
   {
     id: 'lower_back',
     title: 'Lower Back',
-    description: 'Lower back and lumbar region',
+    description: 'Lumbar region and spinal erectors',
   },
   {
     id: 'chest',
     title: 'Chest',
-    description: 'Chest muscles',
+    description: 'Pectoral muscles',
   },
   {
-    id: 'arms',
-    title: 'Arms',
-    description: 'Biceps, triceps, and forearms',
+    id: 'arms_biceps_triceps',
+    title: 'Arms (Biceps & Triceps)',
+    description: 'Front and back of upper arms',
+  },
+  {
+    id: 'forearms',
+    title: 'Forearms',
+    description: 'Lower arm muscles and grip',
   },
   {
     id: 'core',
     title: 'Core',
-    description: 'Abdominals and lower back',
+    description: 'Abdominals, obliques, and deep core stabilizers',
   },
   {
     id: 'glutes',
@@ -59,6 +64,11 @@ const mockSorenessAreaOptions = [
     id: 'hamstrings',
     title: 'Hamstrings',
     description: 'Back of thighs',
+  },
+  {
+    id: 'adductors',
+    title: 'Adductors (Inner Thighs)',
+    description: 'Groin and inner thigh muscles',
   },
   {
     id: 'calves',
@@ -196,12 +206,18 @@ describe('EnhancedSorenessCustomization', () => {
       'Lower Back'
     );
     expect(screen.getByTestId('option-chest')).toHaveTextContent('Chest');
-    expect(screen.getByTestId('option-arms')).toHaveTextContent('Arms');
+    expect(screen.getByTestId('option-arms_biceps_triceps')).toHaveTextContent(
+      'Arms (Biceps & Triceps)'
+    );
+    expect(screen.getByTestId('option-forearms')).toHaveTextContent('Forearms');
     expect(screen.getByTestId('option-core')).toHaveTextContent('Core');
     expect(screen.getByTestId('option-glutes')).toHaveTextContent('Glutes');
     expect(screen.getByTestId('option-quads')).toHaveTextContent('Quadriceps');
     expect(screen.getByTestId('option-hamstrings')).toHaveTextContent(
       'Hamstrings'
+    );
+    expect(screen.getByTestId('option-adductors')).toHaveTextContent(
+      'Adductors (Inner Thighs)'
     );
     expect(screen.getByTestId('option-calves')).toHaveTextContent('Calves');
   });

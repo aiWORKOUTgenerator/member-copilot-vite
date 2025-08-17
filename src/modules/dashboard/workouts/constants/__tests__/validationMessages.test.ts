@@ -31,7 +31,7 @@ describe('DETAILED_VALIDATION_MESSAGES', () => {
       'Select up to 5 focus areas'
     );
     expect(DETAILED_VALIDATION_MESSAGES.SORENESS_MAX).toBe(
-      'Select up to 5 soreness areas'
+      'Select up to 12 soreness areas'
     );
   });
 

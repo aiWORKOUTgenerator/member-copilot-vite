@@ -257,7 +257,7 @@ export const validateDetailedStep = (
     // Validate soreness areas count
     if (
       options.customization_soreness &&
-      options.customization_soreness.length > 5
+      options.customization_soreness.length > 12
     ) {
       errors.customization_soreness = DETAILED_VALIDATION_MESSAGES.SORENESS_MAX;
     }

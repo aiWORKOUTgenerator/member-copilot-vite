@@ -33,7 +33,7 @@ export const DETAILED_VALIDATION_MESSAGES = {
   // Selection count validation messages
   AREAS_MAX: 'Select up to 5 focus areas',
   AREAS_MIN: 'Select at least 1 focus area',
-  SORENESS_MAX: 'Select up to 5 soreness areas',
+  SORENESS_MAX: 'Select up to 12 soreness areas',
   EQUIPMENT_MAX: 'Select up to 10 equipment items',
   EQUIPMENT_MIN: 'Select at least 1 equipment option',
 

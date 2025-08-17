@@ -225,12 +225,12 @@ export const enhanceSorenessAreaOptions = () => {
  * Get area descriptions for focus areas and soreness areas
  */
 const getAreaDescription = (areaValue: string): string => {
-  const descriptions: Record<string, string> = {
-    // Focus areas
+  // Focus area descriptions
+  const focusAreaDescriptions: Record<string, string> = {
     full_body: 'Balanced training across all major muscle groups',
     upper_body: 'Chest, shoulders, back, arms',
     lower_body: 'Quads, hamstrings, glutes, calves',
-    core: 'Abdominals, obliques, lower back',
+    core: 'Abdominals, obliques, and lower back',
     chest_triceps: 'Classic push-day split',
     back_biceps: 'Classic pull-day split',
     legs: 'Dedicated lower-body day (quads, glutes, hamstrings, calves)',
@@ -240,18 +240,30 @@ const getAreaDescription = (areaValue: string): string => {
     chest_back:
       'Chest and upper-back training for a balanced push/pull workout',
     arms_only: 'Focused training for biceps, triceps, and forearms',
+  };
 
-    // Soreness areas
-    neck_shoulders: 'Neck and shoulder region',
+  // Soreness area descriptions
+  const sorenessAreaDescriptions: Record<string, string> = {
+    neck_shoulders: 'Neck and shoulder region (traps, delts)',
     upper_back: 'Upper back and trapezius',
-    lower_back: 'Lower back and lumbar region',
+    lower_back: 'Lumbar region and spinal erectors',
+    chest: 'Pectoral muscles',
+    arms_biceps_triceps: 'Front and back of upper arms',
+    forearms: 'Lower arm muscles and grip',
+    core: 'Abdominals, obliques, and deep core stabilizers',
     glutes: 'Gluteal muscles',
     quads: 'Front of thighs',
     hamstrings: 'Back of thighs',
+    adductors: 'Groin and inner thigh muscles',
     calves: 'Lower leg muscles',
   };
 
-  return descriptions[areaValue] || '';
+  // Check both description objects
+  return (
+    focusAreaDescriptions[areaValue] ||
+    sorenessAreaDescriptions[areaValue] ||
+    ''
+  );
 };
 
 /**

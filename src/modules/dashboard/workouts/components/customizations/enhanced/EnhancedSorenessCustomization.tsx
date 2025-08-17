@@ -15,7 +15,7 @@ import type { CustomizationComponentProps } from '../../types';
  *
  * Key Features:
  * - Card-based UI using DetailedSelector molecule
- * - Multi-select functionality with up to 5 area selections
+ * - Multi-select functionality with up to 12 area selections
  * - Analytics integration for user behavior tracking
  * - Enhanced options with descriptions for better UX
  * - Warning color scheme to indicate soreness areas
