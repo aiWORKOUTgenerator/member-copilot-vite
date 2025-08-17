@@ -11,18 +11,8 @@ import {
   EnhancedStressLevelCustomization,
   EnhancedSorenessCustomization,
 } from '../customizations/enhanced';
-import { LegacyCurrentStateStep } from './LegacyCurrentStateStep';
-
-// Feature flag for enhanced current state step
-// Using import.meta.env for Vite environment variables
-const USE_ENHANCED_CURRENT_STATE_STEP = (() => {
-  const envValue = import.meta.env.VITE_ENHANCED_CURRENT_STATE;
-  // Default to disabled (legacy mode) if not explicitly set
-  if (envValue === undefined || envValue === '') {
-    return false;
-  }
-  return envValue === 'true';
-})();
+// Enhanced current state step - no longer using feature flag
+// All enhanced components are stable and ready for production
 
 export interface CurrentStateStepProps {
   options: PerWorkoutOptions;
@@ -70,10 +60,6 @@ export const CurrentStateStep: React.FC<CurrentStateStepProps> = ({
 
   // Track step completion on unmount
   useEffect(() => {
-    if (!USE_ENHANCED_CURRENT_STATE_STEP) {
-      return; // Don't track for legacy component
-    }
-
     const currentStartTime = startTime.current; // Copy ref value to avoid stale closure
 
     return () => {
@@ -101,18 +87,6 @@ export const CurrentStateStep: React.FC<CurrentStateStepProps> = ({
     options.customization_stress,
     options.customization_soreness,
   ]);
-
-  // Feature flag check - return legacy implementation if enhanced features are disabled
-  if (!USE_ENHANCED_CURRENT_STATE_STEP) {
-    return (
-      <LegacyCurrentStateStep
-        options={options}
-        onChange={onChange}
-        errors={errors}
-        disabled={disabled}
-      />
-    );
-  }
 
   return (
     <div className="space-y-8" data-testid="current-state-step">
