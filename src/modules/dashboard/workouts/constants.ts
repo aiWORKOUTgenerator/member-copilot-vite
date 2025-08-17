@@ -305,16 +305,18 @@ export interface SorenessAreaOption {
 
 // Focus area options for detailed setup
 export const FOCUS_AREA_OPTIONS: FocusAreaOption[] = [
+  { value: 'full_body', label: 'Full Body' },
   { value: 'upper_body', label: 'Upper Body' },
   { value: 'lower_body', label: 'Lower Body' },
   { value: 'core', label: 'Core' },
-  { value: 'back', label: 'Back' },
-  { value: 'shoulders', label: 'Shoulders' },
-  { value: 'chest', label: 'Chest' },
-  { value: 'arms', label: 'Arms' },
-  { value: 'mobility_flexibility', label: 'Mobility/Flexibility' },
-  { value: 'cardio', label: 'Cardio' },
-  { value: 'recovery_stretching', label: 'Recovery/Stretching' },
+  { value: 'chest_triceps', label: 'Chest & Triceps (Push Focus)' },
+  { value: 'back_biceps', label: 'Back & Biceps (Pull Focus)' },
+  { value: 'legs', label: 'Legs' },
+  { value: 'shoulders_arms', label: 'Shoulders & Arms' },
+  { value: 'push', label: 'Push (Chest, Shoulders, Triceps)' },
+  { value: 'pull', label: 'Pull (Back, Biceps)' },
+  { value: 'chest_back', label: 'Chest & Back' },
+  { value: 'arms_only', label: 'Arms Only' },
 ];
 
 // Sleep quality options (1-6 scale)

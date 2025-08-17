@@ -308,7 +308,7 @@ describe('Detailed Mode Option Enhancers', () => {
     it('should enhance focus area options', () => {
       const enhanced = enhanceFocusAreaOptions();
 
-      expect(enhanced).toHaveLength(10); // All focus areas
+      expect(enhanced).toHaveLength(12); // All focus areas (updated to 12)
 
       enhanced.forEach((option) => {
         expect(option).toHaveProperty('id');
@@ -324,8 +324,8 @@ describe('Detailed Mode Option Enhancers', () => {
       const upperBody = enhanced.find((opt) => opt.id === 'upper_body');
       const core = enhanced.find((opt) => opt.id === 'core');
 
-      expect(upperBody?.description).toBe('Chest, shoulders, arms, and back');
-      expect(core?.description).toBe('Abdominals and lower back');
+      expect(upperBody?.description).toBe('Chest, shoulders, back, arms');
+      expect(core?.description).toBe('Abdominals, obliques, lower back');
     });
   });
 

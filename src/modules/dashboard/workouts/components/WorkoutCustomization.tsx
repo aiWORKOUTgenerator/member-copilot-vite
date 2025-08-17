@@ -8,7 +8,7 @@ import {
   SimpleDetailedViewSelector,
   ProgressBar,
 } from '@/ui/shared/molecules';
-import { LevelDots, SelectionBadge, ScrollTarget } from '@/ui/shared/atoms';
+import { SelectionBadge, ScrollTarget } from '@/ui/shared/atoms';
 import { FieldValidationMessage } from './FieldValidationMessage';
 import { useDetailedWorkoutSteps } from './hooks/useDetailedWorkoutSteps';
 import { useQuickWorkoutProgress } from './hooks/useQuickWorkoutProgress';
@@ -18,70 +18,17 @@ import {
   EquipmentPreferencesStep,
   CurrentStateStep,
 } from './steps';
-
-import {
-  QUICK_WORKOUT_FOCUS_OPTIONS,
-  ENERGY_LEVEL_OPTIONS,
-  QUICK_WORKOUT_DURATION_OPTIONS,
-  QUICK_WORKOUT_EQUIPMENT_OPTIONS,
-} from '../constants';
 import { CUSTOMIZATION_FIELD_KEYS } from '../constants/fieldKeys';
 
-// Focus options with intensity indicators
-const FOCUS_OPTIONS_WITH_INTENSITY = QUICK_WORKOUT_FOCUS_OPTIONS.map(
-  (option) => {
-    // Assign intensity levels based on workout type
-    let intensityLevel: number;
-    switch (option.id) {
-      case 'gentle_recovery':
-      case 'stress_reduction':
-        intensityLevel = 2; // Low intensity
-        break;
-      case 'improve_posture':
-      case 'core_abs':
-        intensityLevel = 4; // Medium intensity
-        break;
-      case 'energizing_boost':
-      case 'quick_sweat':
-        intensityLevel = 6; // High intensity
-        break;
-      default:
-        intensityLevel = 3; // Default medium
-    }
+// Import enhanced options hook for consistent option transformations
+import { useEnhancedOptions } from './utils/optionEnhancers';
 
-    return {
-      ...option,
-      tertiary: (
-        <LevelDots count={6} activeIndex={intensityLevel - 1} size="sm" />
-      ),
-    };
-  }
-);
-
-// Energy options with LevelDots indicators
-const ENERGY_OPTIONS_WITH_DOTS = ENERGY_LEVEL_OPTIONS.map((option) => ({
-  ...option,
-  tertiary: (
-    <LevelDots count={6} activeIndex={parseInt(option.id) - 1} size="sm" />
-  ),
-}));
-
-// Duration options with subtitle as tertiary content
-const DURATION_OPTIONS_WITH_SUBTITLE = QUICK_WORKOUT_DURATION_OPTIONS.map(
-  (option) => ({
-    id: option.id,
-    title: option.title,
-    description: option.description,
-    tertiary: option.subtitle,
-  })
-);
-
-// Equipment options (no tertiary content needed)
-const EQUIPMENT_OPTIONS = QUICK_WORKOUT_EQUIPMENT_OPTIONS.map((option) => ({
-  id: option.id,
-  title: option.title,
-  description: option.description,
-}));
+// Enhanced options with consistent transformations
+const useQuickWorkoutOptions = () => {
+  const { focusOptions, energyOptions, durationOptions, equipmentOptions } =
+    useEnhancedOptions();
+  return { focusOptions, energyOptions, durationOptions, equipmentOptions };
+};
 
 export default function WorkoutCustomization({
   options,
@@ -100,6 +47,10 @@ export default function WorkoutCustomization({
     'focus-energy' | 'duration-equipment'
   >('focus-energy');
   const [viewMode, setViewMode] = useState<'simple' | 'detailed'>('detailed');
+
+  // Use enhanced options for consistent transformations
+  const { focusOptions, energyOptions, durationOptions, equipmentOptions } =
+    useQuickWorkoutOptions();
 
   // Use global auto-scroll preferences
   const { enabled: autoScrollEnabled, setEnabled: setAutoScrollEnabled } =
@@ -518,7 +469,7 @@ export default function WorkoutCustomization({
             >
               <DetailedSelector
                 icon={Target}
-                options={FOCUS_OPTIONS_WITH_INTENSITY}
+                options={focusOptions}
                 selectedValue={options.customization_focus || undefined}
                 onChange={(focus) =>
                   handleSelectionWithAutoScroll(
@@ -550,7 +501,7 @@ export default function WorkoutCustomization({
             >
               <DetailedSelector
                 icon={Battery}
-                options={ENERGY_OPTIONS_WITH_DOTS}
+                options={energyOptions}
                 selectedValue={options.customization_energy || undefined}
                 onChange={(energy) =>
                   handleSelectionWithAutoScroll(
@@ -586,7 +537,7 @@ export default function WorkoutCustomization({
             >
               <DetailedSelector
                 icon={Clock}
-                options={DURATION_OPTIONS_WITH_SUBTITLE}
+                options={durationOptions}
                 selectedValue={
                   options.customization_duration?.toString() || undefined
                 }
@@ -629,7 +580,7 @@ export default function WorkoutCustomization({
             >
               <DetailedSelector
                 icon={Dumbbell}
-                options={EQUIPMENT_OPTIONS}
+                options={equipmentOptions}
                 selectedValue={
                   options.customization_equipment?.[0] || undefined
                 }
@@ -890,7 +841,7 @@ export default function WorkoutCustomization({
                                 {config.key === 'customization_duration' &&
                                   'Choose how long you want your workout to be'}
                                 {config.key === 'customization_areas' &&
-                                  'Select the body parts or workout types you want to focus on'}
+                                  'Select the body areas you want to focus on in your workout'}
                                 {config.key === 'customization_focus' &&
                                   "What's your main focus for this workout session?"}
                                 {config.key === 'customization_equipment' &&
