@@ -1,4 +1,3 @@
-import { createContext } from 'react';
 import { GeneratedWorkout } from '@/domain/entities/generatedWorkout';
 import { WorkoutParams } from '@/domain/entities/workoutParams';
 
@@ -21,6 +20,4 @@ export interface GeneratedWorkoutState {
  * Create the context with a default undefined value.
  * This forces consumers to use the useGeneratedWorkouts hook which performs a null check.
  */
-export const GeneratedWorkoutContext = createContext<
-  GeneratedWorkoutState | undefined
->(undefined);
+export {};
