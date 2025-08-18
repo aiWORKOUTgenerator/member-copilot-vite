@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { DetailedSelector } from '@/ui/shared/molecules';
-import { Battery } from 'lucide-react';
+import { Zap } from 'lucide-react';
 import { useWorkoutAnalytics } from '../../../hooks/useWorkoutAnalytics';
 import { useEnhancedOptions } from '../../utils/optionEnhancers';
 import type { CustomizationComponentProps } from '../../types';
@@ -63,7 +63,7 @@ export default memo(function EnhancedEnergyLevelCustomization({
 
   return (
     <DetailedSelector
-      icon={Battery}
+      icon={Zap}
       options={energyOptions}
       selectedValue={value?.toString() || undefined}
       onChange={handleChange}

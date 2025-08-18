@@ -1,8 +1,6 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import { CUSTOMIZATION_FIELD_KEYS } from '../../constants/fieldKeys';
 import type { PerWorkoutOptions } from '../types';
-import { SelectionBadge } from '@/ui/shared/atoms';
-import { formatSelectionValue } from '../../utils/selectionFormatters';
 import { validateDetailedStep } from '../../validation/detailedValidation';
 import { useWorkoutAnalytics } from '../../hooks/useWorkoutAnalytics';
 import {
@@ -11,18 +9,8 @@ import {
   EnhancedStressLevelCustomization,
   EnhancedSorenessCustomization,
 } from '../customizations/enhanced';
-import { LegacyCurrentStateStep } from './LegacyCurrentStateStep';
-
-// Feature flag for enhanced current state step
-// Using import.meta.env for Vite environment variables
-const USE_ENHANCED_CURRENT_STATE_STEP = (() => {
-  const envValue = import.meta.env.VITE_ENHANCED_CURRENT_STATE;
-  // Default to disabled (legacy mode) if not explicitly set
-  if (envValue === undefined || envValue === '') {
-    return false;
-  }
-  return envValue === 'true';
-})();
+// Enhanced current state step - no longer using feature flag
+// All enhanced components are stable and ready for production
 
 export interface CurrentStateStepProps {
   options: PerWorkoutOptions;
@@ -70,10 +58,6 @@ export const CurrentStateStep: React.FC<CurrentStateStepProps> = ({
 
   // Track step completion on unmount
   useEffect(() => {
-    if (!USE_ENHANCED_CURRENT_STATE_STEP) {
-      return; // Don't track for legacy component
-    }
-
     const currentStartTime = startTime.current; // Copy ref value to avoid stale closure
 
     return () => {
@@ -102,18 +86,6 @@ export const CurrentStateStep: React.FC<CurrentStateStepProps> = ({
     options.customization_soreness,
   ]);
 
-  // Feature flag check - return legacy implementation if enhanced features are disabled
-  if (!USE_ENHANCED_CURRENT_STATE_STEP) {
-    return (
-      <LegacyCurrentStateStep
-        options={options}
-        onChange={onChange}
-        errors={errors}
-        disabled={disabled}
-      />
-    );
-  }
-
   return (
     <div className="space-y-8" data-testid="current-state-step">
       {/* Step Header */}
@@ -129,22 +101,6 @@ export const CurrentStateStep: React.FC<CurrentStateStepProps> = ({
       <div className="space-y-8">
         {/* Energy Level */}
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h4 className="font-medium text-base-content">Energy Level</h4>
-              <p className="text-sm text-base-content/70">
-                How energetic are you feeling today?
-              </p>
-            </div>
-            <SelectionBadge
-              value={formatSelectionValue(
-                CUSTOMIZATION_FIELD_KEYS.ENERGY,
-                options.customization_energy
-              )}
-              size="sm"
-            />
-          </div>
-
           <EnhancedEnergyLevelCustomization
             value={options.customization_energy}
             onChange={(energy) =>
@@ -158,22 +114,6 @@ export const CurrentStateStep: React.FC<CurrentStateStepProps> = ({
 
         {/* Sleep Quality */}
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h4 className="font-medium text-base-content">Sleep Quality</h4>
-              <p className="text-sm text-base-content/70">
-                How well did you sleep last night?
-              </p>
-            </div>
-            <SelectionBadge
-              value={formatSelectionValue(
-                CUSTOMIZATION_FIELD_KEYS.SLEEP,
-                options.customization_sleep
-              )}
-              size="sm"
-            />
-          </div>
-
           <EnhancedSleepQualityCustomization
             value={options.customization_sleep}
             onChange={(sleep) =>
@@ -187,22 +127,6 @@ export const CurrentStateStep: React.FC<CurrentStateStepProps> = ({
 
         {/* Stress Level */}
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h4 className="font-medium text-base-content">Stress Level</h4>
-              <p className="text-sm text-base-content/70">
-                What's your current stress level?
-              </p>
-            </div>
-            <SelectionBadge
-              value={formatSelectionValue(
-                CUSTOMIZATION_FIELD_KEYS.STRESS,
-                options.customization_stress
-              )}
-              size="sm"
-            />
-          </div>
-
           <EnhancedStressLevelCustomization
             value={options.customization_stress}
             onChange={(stress) =>
@@ -216,24 +140,6 @@ export const CurrentStateStep: React.FC<CurrentStateStepProps> = ({
 
         {/* Soreness */}
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h4 className="font-medium text-base-content">
-                Current Soreness
-              </h4>
-              <p className="text-sm text-base-content/70">
-                Are you experiencing any soreness?
-              </p>
-            </div>
-            <SelectionBadge
-              value={formatSelectionValue(
-                CUSTOMIZATION_FIELD_KEYS.SORENESS,
-                options.customization_soreness
-              )}
-              size="sm"
-            />
-          </div>
-
           <EnhancedSorenessCustomization
             value={options.customization_soreness}
             onChange={(soreness) =>

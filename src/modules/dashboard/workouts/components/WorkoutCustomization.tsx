@@ -279,9 +279,11 @@ export default function WorkoutCustomization({
       }
 
       case CUSTOMIZATION_FIELD_KEYS.SORENESS: {
+        // Enhanced component handles formatting internally
         const soreAreas = value as string[];
         if (soreAreas.length === 0) return null;
         if (soreAreas.length === 1) {
+          // Use enhanced option titles for consistent formatting
           return soreAreas[0]
             .replace(/_/g, ' ')
             .replace(/\b\w/g, (l) => l.toUpperCase());
@@ -329,9 +331,22 @@ export default function WorkoutCustomization({
       }
 
       case CUSTOMIZATION_FIELD_KEYS.ENERGY: {
-        const rating = value as number;
-        const labels = ['', 'Very Low', 'Low', 'Moderate', 'High', 'Very High'];
-        return `${labels[rating]} (${rating}/5)`;
+        const rating = value as number | undefined;
+        if (rating === undefined || rating === null) {
+          return 'Not specified';
+        }
+        const labels = [
+          'Very Low',
+          'Low',
+          'Moderate',
+          'Somewhat High',
+          'High',
+          'Very High',
+        ];
+        if (rating >= 1 && rating <= 6) {
+          return `${labels[rating - 1]} (${rating}/6)`;
+        }
+        return 'Invalid';
       }
 
       case CUSTOMIZATION_FIELD_KEYS.STRESS: {

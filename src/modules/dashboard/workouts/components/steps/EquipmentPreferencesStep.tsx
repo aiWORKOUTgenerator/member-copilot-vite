@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useRef } from 'react';
 import { CUSTOMIZATION_FIELD_KEYS } from '../../constants/fieldKeys';
 import type { PerWorkoutOptions } from '../types';
 import { SelectionBadge } from '@/ui/shared/atoms';
-import { formatSelectionValue } from '../../utils/selectionFormatters';
 import { useWorkoutAnalytics } from '../../hooks/useWorkoutAnalytics';
 import { EnhancedAvailableEquipmentCustomization } from '../customizations/enhanced';
 // Keep legacy components for text input fields
@@ -95,24 +94,6 @@ export const EquipmentPreferencesStep: React.FC<
       <div className="space-y-8">
         {/* Equipment - Enhanced Component */}
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h4 className="font-medium text-base-content">
-                Available Equipment
-              </h4>
-              <p className="text-sm text-base-content/70">
-                What equipment do you have available?
-              </p>
-            </div>
-            <SelectionBadge
-              value={formatSelectionValue(
-                CUSTOMIZATION_FIELD_KEYS.EQUIPMENT,
-                options.customization_equipment
-              )}
-              size="sm"
-            />
-          </div>
-
           <EnhancedAvailableEquipmentCustomization
             value={options.customization_equipment}
             onChange={(equipment) =>
