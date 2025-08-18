@@ -7,6 +7,7 @@ import {
   DetailedSelector,
   SimpleDetailedViewSelector,
   ProgressBar,
+  HeroTitle,
 } from '@/ui/shared/molecules';
 import { SelectionBadge, ScrollTarget } from '@/ui/shared/atoms';
 import { FieldValidationMessage } from './FieldValidationMessage';
@@ -464,14 +465,15 @@ export default function WorkoutCustomization({
 
         {/* Workout Structure Section - matching Detailed mode */}
         <div className="mt-section mb-6">
-          <h3 className="text-xl font-semibold text-base-content mb-2">
-            Workout Structure
-          </h3>
-          <p className="text-base-content/70">
-            Define your workout's core parameters: what your main focus is, how
-            you are feeling today, how long you want to work out, and what
-            equipment you have available.
-          </p>
+          <HeroTitle
+            title="Workout Structure"
+            subtitle="Define your workout's core parameters: what your main focus is, how you are feeling today, how long you want to work out, and what equipment you have available."
+            align="left"
+            variant="default"
+            size="lg"
+            subtitleSize="sm"
+            showBackground={false}
+          />
         </div>
 
         {/* Step content */}
