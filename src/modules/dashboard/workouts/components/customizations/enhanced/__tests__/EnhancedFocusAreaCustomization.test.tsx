@@ -16,54 +16,65 @@ vi.mock('../../../hooks/useWorkoutAnalytics', () => ({
 // Mock the enhanced options hook with all focus area options
 const mockFocusAreaOptions = [
   {
+    id: 'full_body',
+    title: 'Full Body',
+    description: 'Balanced training across all major muscle groups',
+  },
+  {
     id: 'upper_body',
     title: 'Upper Body',
-    description: 'Chest, shoulders, arms, and back',
+    description: 'Chest, shoulders, back, arms',
   },
   {
     id: 'lower_body',
     title: 'Lower Body',
-    description: 'Legs, glutes, and calves',
+    description: 'Quads, hamstrings, glutes, calves',
   },
   {
     id: 'core',
     title: 'Core',
-    description: 'Abdominals and lower back',
+    description: 'Abdominals, obliques, lower back',
   },
   {
-    id: 'back',
-    title: 'Back',
-    description: 'Upper and lower back muscles',
+    id: 'chest_triceps',
+    title: 'Chest & Triceps (Push Focus)',
+    description: 'Classic push-day split',
   },
   {
-    id: 'shoulders',
-    title: 'Shoulders',
-    description: 'Deltoids and rotator cuff',
+    id: 'back_biceps',
+    title: 'Back & Biceps (Pull Focus)',
+    description: 'Classic pull-day split',
   },
   {
-    id: 'chest',
-    title: 'Chest',
-    description: 'Pectorals and surrounding muscles',
+    id: 'legs',
+    title: 'Legs',
+    description: 'Dedicated lower-body day (quads, glutes, hamstrings, calves)',
   },
   {
-    id: 'arms',
-    title: 'Arms',
-    description: 'Biceps, triceps, and forearms',
+    id: 'shoulders_arms',
+    title: 'Shoulders & Arms',
+    description: 'Delts, biceps, triceps, forearms',
   },
   {
-    id: 'mobility_flexibility',
-    title: 'Mobility/Flexibility',
-    description: 'Joint mobility and muscle flexibility',
+    id: 'push',
+    title: 'Push (Chest, Shoulders, Triceps)',
+    description: 'Compound push-day training',
   },
   {
-    id: 'cardio',
-    title: 'Cardio',
-    description: 'Cardiovascular endurance',
+    id: 'pull',
+    title: 'Pull (Back, Biceps)',
+    description: 'Compound pull-day training',
   },
   {
-    id: 'recovery_stretching',
-    title: 'Recovery/Stretching',
-    description: 'Gentle recovery and stretching',
+    id: 'chest_back',
+    title: 'Chest & Back',
+    description:
+      'Chest and upper-back training for a balanced push/pull workout',
+  },
+  {
+    id: 'arms_only',
+    title: 'Arms Only',
+    description: 'Focused training for biceps, triceps, and forearms',
   },
 ];
 
@@ -167,10 +178,10 @@ describe('EnhancedFocusAreaCustomization', () => {
 
     expect(screen.getByTestId('detailed-selector')).toBeInTheDocument();
     expect(screen.getByTestId('selector-question')).toHaveTextContent(
-      'Which body areas do you want to focus on?'
+      'Which muscle groups do you want to focus on?'
     );
     expect(screen.getByTestId('selector-description')).toHaveTextContent(
-      'Select one or more areas to target in your workout'
+      'Select one or more muscle groups to target.'
     );
     expect(screen.getByTestId('selector-props')).toHaveTextContent(
       'disabled: false, multiple: true, gridCols: 3, colorScheme: primary, required: false, variant: detailed'

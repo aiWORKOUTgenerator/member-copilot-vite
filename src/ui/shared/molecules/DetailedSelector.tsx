@@ -1,6 +1,7 @@
 import React from 'react';
 import { RadioGroupOfCards, SelectableItem } from './RadioGroupOfCards';
 import { ValidationMessage } from '../atoms/ValidationMessage';
+import { HeroTitle } from './HeroTitle';
 import type { ComponentType } from 'react';
 
 export interface DetailedSelectorProps<T> {
@@ -158,17 +159,20 @@ export function DetailedSelector<T>({
   return (
     <div className="w-full">
       {/* Label + Icon */}
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-base-content mb-2 flex items-center gap-2">
-          <Icon className="w-4 h-4" />
-          <span>{question}</span>
-          {/** Show required indicator if required or if there's an error */}
-          {(required || error != null) && <span className="text-error">*</span>}
-        </label>
-        {description && (
-          <p className="text-xs text-base-content/70 mb-3">{description}</p>
-        )}
-      </div>
+      <HeroTitle
+        title={question}
+        subtitle={description}
+        icon={Icon}
+        align="left"
+        variant="default"
+        size="md"
+        subtitleSize="sm"
+        badge={
+          required || error != null ? (
+            <span className="text-error">*</span>
+          ) : undefined
+        }
+      />
 
       {/* Choice grid */}
       <div className={disabled ? 'opacity-50 pointer-events-none' : ''}>

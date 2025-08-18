@@ -169,7 +169,7 @@ describe('WorkoutStructureStep Integration', () => {
         screen.getByText("What's your main focus for this workout session?")
       ).toBeInTheDocument();
       expect(
-        screen.getByText('Which body areas do you want to focus on?')
+        screen.getByText('Which muscle groups do you want to focus on?')
       ).toBeInTheDocument();
     });
 
@@ -237,10 +237,10 @@ describe('WorkoutStructureStep Integration', () => {
 
       // Check for focus areas selector elements - now only in the component itself
       expect(
-        screen.getByText('Which body areas do you want to focus on?')
+        screen.getByText('Which muscle groups do you want to focus on?')
       ).toBeInTheDocument();
       expect(
-        screen.getByText('Select one or more areas to target in your workout')
+        screen.getByText('Select one or more muscle groups to target.')
       ).toBeInTheDocument();
     });
   });

@@ -308,7 +308,7 @@ describe('Detailed Mode Option Enhancers', () => {
     it('should enhance focus area options', () => {
       const enhanced = enhanceFocusAreaOptions();
 
-      expect(enhanced).toHaveLength(10); // All focus areas
+      expect(enhanced).toHaveLength(12); // All focus areas (updated to 12)
 
       enhanced.forEach((option) => {
         expect(option).toHaveProperty('id');
@@ -324,8 +324,8 @@ describe('Detailed Mode Option Enhancers', () => {
       const upperBody = enhanced.find((opt) => opt.id === 'upper_body');
       const core = enhanced.find((opt) => opt.id === 'core');
 
-      expect(upperBody?.description).toBe('Chest, shoulders, arms, and back');
-      expect(core?.description).toBe('Abdominals and lower back');
+      expect(upperBody?.description).toBe('Chest, shoulders, back, arms');
+      expect(core?.description).toBe('Abdominals, obliques, lower back');
     });
   });
 
@@ -373,7 +373,7 @@ describe('Detailed Mode Option Enhancers', () => {
     it('should enhance soreness area options', () => {
       const enhanced = enhanceSorenessAreaOptions();
 
-      expect(enhanced).toHaveLength(10); // All soreness areas
+      expect(enhanced).toHaveLength(12); // All soreness areas (updated to 12)
 
       enhanced.forEach((option) => {
         expect(option).toHaveProperty('id');
@@ -388,8 +388,10 @@ describe('Detailed Mode Option Enhancers', () => {
       const neckShoulders = enhanced.find((opt) => opt.id === 'neck_shoulders');
       const lowerBack = enhanced.find((opt) => opt.id === 'lower_back');
 
-      expect(neckShoulders?.description).toBe('Neck and shoulder region');
-      expect(lowerBack?.description).toBe('Lower back and lumbar region');
+      expect(neckShoulders?.description).toBe(
+        'Neck and shoulder region (traps, delts)'
+      );
+      expect(lowerBack?.description).toBe('Lumbar region and spinal erectors');
     });
   });
 });
