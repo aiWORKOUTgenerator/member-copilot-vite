@@ -331,9 +331,11 @@ export default function WorkoutCustomization({
       }
 
       case CUSTOMIZATION_FIELD_KEYS.ENERGY: {
-        const rating = value as number;
+        const rating = value as number | undefined;
+        if (rating === undefined || rating === null) {
+          return 'Not specified';
+        }
         const labels = [
-          '',
           'Very Low',
           'Low',
           'Moderate',
@@ -341,7 +343,10 @@ export default function WorkoutCustomization({
           'High',
           'Very High',
         ];
-        return `${labels[rating]} (${rating}/6)`;
+        if (rating >= 1 && rating <= 6) {
+          return `${labels[rating - 1]} (${rating}/6)`;
+        }
+        return 'Invalid';
       }
 
       case CUSTOMIZATION_FIELD_KEYS.STRESS: {
