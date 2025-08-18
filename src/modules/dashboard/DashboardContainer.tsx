@@ -1,9 +1,7 @@
 import { ContactLoadedGuard } from '@/components/ContactLoadedGuard';
-import { AttributeTypeProvider } from '@/contexts/AttributeTypeContext';
 import { CombinedProviders } from '@/contexts/CombinedProviders';
 import { CurrentWorkoutInstanceProvider } from '@/contexts/CurrentWorkoutInstanceContext';
 import { LocationProvider } from '@/contexts/LocationContext';
-import { PromptProvider } from '@/contexts/PromptContext';
 import { UserAccessProvider } from '@/contexts/UserAccessContext';
 import { HeaderLayout } from '@/ui';
 import { Route, Routes } from 'react-router';
@@ -46,66 +44,59 @@ export default function DashboardContainer() {
         <Route
           path="*"
           element={
-            <PromptProvider>
-              <AttributeTypeProvider>
-                <HeaderLayout>
-                  <ContactLoadedGuard fallback={<ContactLoadingIndicator />}>
-                    <CombinedProviders>
-                      <LocationProvider>
-                        <Routes>
-                          <Route path="/" element={<DashboardPage />} />
-                          <Route path="/billing" element={<BillingContainer />}>
-                            <Route
-                              path="/billing"
-                              element={<BillingSubscriptionTab />}
-                            />
-                            <Route
-                              path="/billing/payment"
-                              element={<BillingPaymentTab />}
-                            />
-                            <Route
-                              path="/billing/usage"
-                              element={<BillingUsageTab />}
-                            />
-                            <Route
-                              path="/billing/history"
-                              element={<BillingHistoryTab />}
-                            />
-                          </Route>
-                          <Route path="/workouts" element={<WorkoutsPage />} />
-                          <Route
-                            path="/workouts/history"
-                            element={<WorkoutHistoryPage />}
-                          />
-                          <Route
-                            path="/workouts/generate"
-                            element={<GeneratePage />}
-                          />
-                          <Route
-                            path="/workouts/:id"
-                            element={<WorkoutDetailPage />}
-                          />
-                          <Route path="/profile" element={<ProfileContainer />}>
-                            <Route
-                              path="/profile/:attributeTypeId"
-                              element={<AttributeDetailPage />}
-                            />
-                          </Route>
-                          <Route
-                            path="/trainer"
-                            element={<MyAITrainerPage />}
-                          />
-                          <Route
-                            path="/trainer/generating"
-                            element={<GeneratingTrainerPage />}
-                          />
-                        </Routes>
-                      </LocationProvider>
-                    </CombinedProviders>
-                  </ContactLoadedGuard>
-                </HeaderLayout>
-              </AttributeTypeProvider>
-            </PromptProvider>
+            <HeaderLayout>
+              <ContactLoadedGuard fallback={<ContactLoadingIndicator />}>
+                <CombinedProviders>
+                  <LocationProvider>
+                    <Routes>
+                      <Route path="/" element={<DashboardPage />} />
+                      <Route path="/billing" element={<BillingContainer />}>
+                        <Route
+                          path="/billing"
+                          element={<BillingSubscriptionTab />}
+                        />
+                        <Route
+                          path="/billing/payment"
+                          element={<BillingPaymentTab />}
+                        />
+                        <Route
+                          path="/billing/usage"
+                          element={<BillingUsageTab />}
+                        />
+                        <Route
+                          path="/billing/history"
+                          element={<BillingHistoryTab />}
+                        />
+                      </Route>
+                      <Route path="/workouts" element={<WorkoutsPage />} />
+                      <Route
+                        path="/workouts/history"
+                        element={<WorkoutHistoryPage />}
+                      />
+                      <Route
+                        path="/workouts/generate"
+                        element={<GeneratePage />}
+                      />
+                      <Route
+                        path="/workouts/:id"
+                        element={<WorkoutDetailPage />}
+                      />
+                      <Route path="/profile" element={<ProfileContainer />}>
+                        <Route
+                          path="/profile/:attributeTypeId"
+                          element={<AttributeDetailPage />}
+                        />
+                      </Route>
+                      <Route path="/trainer" element={<MyAITrainerPage />} />
+                      <Route
+                        path="/trainer/generating"
+                        element={<GeneratingTrainerPage />}
+                      />
+                    </Routes>
+                  </LocationProvider>
+                </CombinedProviders>
+              </ContactLoadedGuard>
+            </HeaderLayout>
           }
         />
       </Routes>
