@@ -1,5 +1,5 @@
 import { ContactLoadedGuard } from '@/components/ContactLoadedGuard';
-import { CombinedProviders } from '@/contexts/CombinedProviders';
+import { AutoScrollProvider } from '@/contexts/AutoScrollContext';
 import { CurrentWorkoutInstanceProvider } from '@/contexts/CurrentWorkoutInstanceContext';
 import { UserAccessProvider } from '@/contexts/UserAccessContext';
 import { HeaderLayout } from '@/ui';
@@ -45,7 +45,7 @@ export default function DashboardContainer() {
           element={
             <HeaderLayout>
               <ContactLoadedGuard fallback={<ContactLoadingIndicator />}>
-                <CombinedProviders>
+                <AutoScrollProvider>
                   <Routes>
                     <Route path="/" element={<DashboardPage />} />
                     <Route path="/billing" element={<BillingContainer />}>
@@ -91,7 +91,7 @@ export default function DashboardContainer() {
                       element={<GeneratingTrainerPage />}
                     />
                   </Routes>
-                </CombinedProviders>
+                </AutoScrollProvider>
               </ContactLoadedGuard>
             </HeaderLayout>
           }

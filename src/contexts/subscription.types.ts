@@ -1,6 +1,5 @@
 import { StripeSubscription } from '@/domain/entities/StripeSubscription';
 import { PortalConfiguration } from '@/domain/interfaces/services/SubscriptionService';
-import { createContext } from 'react';
 
 export interface SubscriptionTier {
   id: string;
@@ -26,6 +25,4 @@ export interface SubscriptionContextType {
   refreshSubscriptionData: () => Promise<void>;
 }
 
-export const SubscriptionContext = createContext<
-  SubscriptionContextType | undefined
->(undefined);
+export {};
