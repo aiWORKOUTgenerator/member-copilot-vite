@@ -4,7 +4,6 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router';
 import App from './App.tsx';
 import { AnalyticsProvider } from './contexts/AnalyticsContext.tsx';
-import { ConfigurationProvider } from './contexts/ConfigurationContext.tsx';
 import { ServiceProvider } from './contexts/ServiceContext.tsx';
 import { VerificationProvider } from './contexts/VerificationContext.tsx';
 import { ConfigurationGuard } from './ui/shared/organisms/ConfigurationGuard.tsx';
@@ -40,21 +39,19 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={qc}>
       <BrowserRouter>
-        <ConfigurationProvider>
-          <ConfigurationGuard>
-            <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
-              <ServiceProvider>
-                <VerificationProvider>
-                  <TitleProvider>
-                    <AnalyticsProvider>
-                      <App />
-                    </AnalyticsProvider>
-                  </TitleProvider>
-                </VerificationProvider>
-              </ServiceProvider>
-            </ClerkProvider>
-          </ConfigurationGuard>
-        </ConfigurationProvider>
+        <ConfigurationGuard>
+          <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
+            <ServiceProvider>
+              <VerificationProvider>
+                <TitleProvider>
+                  <AnalyticsProvider>
+                    <App />
+                  </AnalyticsProvider>
+                </TitleProvider>
+              </VerificationProvider>
+            </ServiceProvider>
+          </ClerkProvider>
+        </ConfigurationGuard>
       </BrowserRouter>
     </QueryClientProvider>
   </StrictMode>

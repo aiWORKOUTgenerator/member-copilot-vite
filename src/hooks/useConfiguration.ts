@@ -1,29 +1,48 @@
-import { useContext } from 'react';
+import { useEffect } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   AppConfiguration,
   AppColors,
   AppConfig,
   ColorScheme,
 } from '@/domain/entities/appConfiguration';
-import {
-  ConfigurationContext,
-  ConfigurationState,
-} from '@/contexts/configuration.types';
+import { ConfigurationState } from '@/contexts/configuration.types';
+import { useConfigurationService } from '@/hooks/useConfigurationService';
 
 /**
- * Custom hook to access the configuration data from the ConfigurationContext.
- * Throws an error if used outside of a ConfigurationProvider.
+ * Hook to access app configuration using React Query
  */
 export function useConfiguration(): ConfigurationState {
-  const context = useContext(ConfigurationContext);
+  const configurationService = useConfigurationService();
+  const queryClient = useQueryClient();
 
-  if (context === undefined) {
-    throw new Error(
-      'useConfiguration must be used within a ConfigurationProvider'
-    );
-  }
+  const query = useQuery({
+    queryKey: ['configuration'],
+    queryFn: async () => {
+      const domain = window.location.hostname;
+      return configurationService.getConfiguration(domain);
+    },
+    staleTime: 60_000,
+  });
 
-  return context;
+  const refetch = async (): Promise<void> => {
+    await query.refetch();
+  };
+
+  useEffect(() => {
+    // Optional: clear on navigation domain change if that can happen
+    return () => {
+      // keep cache by default
+    };
+  }, [queryClient]);
+
+  return {
+    configuration: query.data ?? null,
+    isLoading: query.isFetching,
+    isLoaded: query.isFetched,
+    error: query.error instanceof Error ? query.error.message : null,
+    refetch,
+  };
 }
 
 /**
