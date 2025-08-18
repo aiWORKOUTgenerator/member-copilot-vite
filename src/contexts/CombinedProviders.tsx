@@ -1,14 +1,11 @@
 'use client';
 
 import { ReactNode } from 'react';
-import { AttributeProvider } from './AttributeContext';
-import { AttributeTypeProvider } from './AttributeTypeContext';
-import { GeneratedWorkoutProvider } from './GeneratedWorkoutContext';
-import { PromptProvider } from './PromptContext';
-import { SubscriptionProvider } from './SubscriptionContext';
-import { WorkoutFeedbackProvider } from './WorkoutFeedbackContext';
 import { AnnouncementProvider } from './AnnouncementContext';
 import { AutoScrollProvider } from './AutoScrollContext';
+import { GeneratedWorkoutProvider } from './GeneratedWorkoutContext';
+import { SubscriptionProvider } from './SubscriptionContext';
+import { WorkoutFeedbackProvider } from './WorkoutFeedbackContext';
 
 interface CombinedProvidersProps {
   children: ReactNode;
@@ -22,19 +19,13 @@ interface CombinedProvidersProps {
 export function CombinedProviders({ children }: CombinedProvidersProps) {
   return (
     <AutoScrollProvider>
-      <AttributeTypeProvider>
-        <PromptProvider>
-          <GeneratedWorkoutProvider>
-            <WorkoutFeedbackProvider>
-              <SubscriptionProvider>
-                <AnnouncementProvider>
-                  <AttributeProvider>{children}</AttributeProvider>
-                </AnnouncementProvider>
-              </SubscriptionProvider>
-            </WorkoutFeedbackProvider>
-          </GeneratedWorkoutProvider>
-        </PromptProvider>
-      </AttributeTypeProvider>
+      <GeneratedWorkoutProvider>
+        <WorkoutFeedbackProvider>
+          <SubscriptionProvider>
+            <AnnouncementProvider>{children}</AnnouncementProvider>
+          </SubscriptionProvider>
+        </WorkoutFeedbackProvider>
+      </GeneratedWorkoutProvider>
     </AutoScrollProvider>
   );
 }

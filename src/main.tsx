@@ -8,6 +8,10 @@ import { ConfigurationProvider } from './contexts/ConfigurationContext.tsx';
 import { ServiceProvider } from './contexts/ServiceContext.tsx';
 import { VerificationProvider } from './contexts/VerificationContext.tsx';
 import { ConfigurationGuard } from './ui/shared/organisms/ConfigurationGuard.tsx';
+import { TitleProvider } from './contexts/TitleContext.tsx';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const qc = new QueryClient();
 
 // Load dynamic theme CSS
 const currentDomain = window.location.hostname;
@@ -34,20 +38,24 @@ if (!PUBLISHABLE_KEY) {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter>
-      <ConfigurationProvider>
-        <ConfigurationGuard>
-          <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
-            <ServiceProvider>
-              <VerificationProvider>
-                <AnalyticsProvider>
-                  <App />
-                </AnalyticsProvider>
-              </VerificationProvider>
-            </ServiceProvider>
-          </ClerkProvider>
-        </ConfigurationGuard>
-      </ConfigurationProvider>
-    </BrowserRouter>
+    <QueryClientProvider client={qc}>
+      <BrowserRouter>
+        <ConfigurationProvider>
+          <ConfigurationGuard>
+            <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
+              <ServiceProvider>
+                <VerificationProvider>
+                  <TitleProvider>
+                    <AnalyticsProvider>
+                      <App />
+                    </AnalyticsProvider>
+                  </TitleProvider>
+                </VerificationProvider>
+              </ServiceProvider>
+            </ClerkProvider>
+          </ConfigurationGuard>
+        </ConfigurationProvider>
+      </BrowserRouter>
+    </QueryClientProvider>
   </StrictMode>
 );

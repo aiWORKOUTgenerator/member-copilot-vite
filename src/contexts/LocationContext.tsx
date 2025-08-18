@@ -42,9 +42,6 @@ export function LocationProvider({ children }: LocationProviderProps) {
   }, [locationService]);
 
   useEffect(() => {
-    console.log('isSignedIn', isSignedIn);
-    console.log('isLoaded', isLoaded);
-    console.log('fetching locations', fetchLocations);
     if (!isSignedIn) {
       setLocations([]);
       setIsLoaded(false);
