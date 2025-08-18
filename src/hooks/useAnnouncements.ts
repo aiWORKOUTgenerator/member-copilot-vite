@@ -1,24 +1,41 @@
-import { useContext } from 'react';
+import { useEffect } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Announcement } from '@/domain/entities/announcement';
-import {
-  AnnouncementContext,
-  AnnouncementState,
-} from '@/contexts/announcement.types';
+import { AnnouncementState } from '@/contexts/announcement.types';
+import { useAnnouncementsService } from '@/hooks/useAnnouncementsService';
+import { useAuth } from '@/hooks/auth';
 
 /**
- * Custom hook to access the announcement data from the AnnouncementContext.
- * Throws an error if used outside of an AnnouncementProvider.
+ * Hook to access announcement data using React Query
  */
 export function useAnnouncements(): AnnouncementState {
-  const context = useContext(AnnouncementContext);
+  const announcementService = useAnnouncementsService();
+  const { isSignedIn } = useAuth();
+  const queryClient = useQueryClient();
 
-  if (context === undefined) {
-    throw new Error(
-      'useAnnouncements must be used within an AnnouncementProvider'
-    );
-  }
+  const query = useQuery<Announcement[], unknown>({
+    queryKey: ['announcements'],
+    queryFn: () => announcementService.getAnnouncements(),
+    enabled: isSignedIn === true,
+    staleTime: 30_000,
+  });
 
-  return context;
+  useEffect(() => {
+    if (isSignedIn === false) {
+      queryClient.removeQueries({ queryKey: ['announcements'] });
+    }
+  }, [isSignedIn, queryClient]);
+
+  const refetch = async (): Promise<void> => {
+    await query.refetch();
+  };
+
+  return {
+    announcements: query.data ?? [],
+    isLoading: query.isFetching,
+    error: query.error instanceof Error ? query.error.message : null,
+    refetch,
+  };
 }
 
 /**

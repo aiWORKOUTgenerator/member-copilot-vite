@@ -1,7 +1,6 @@
 'use client';
 
 import { ReactNode } from 'react';
-import { AnnouncementProvider } from './AnnouncementContext';
 import { AutoScrollProvider } from './AutoScrollContext';
 import { GeneratedWorkoutProvider } from './GeneratedWorkoutContext';
 import { SubscriptionProvider } from './SubscriptionContext';
@@ -21,9 +20,7 @@ export function CombinedProviders({ children }: CombinedProvidersProps) {
     <AutoScrollProvider>
       <GeneratedWorkoutProvider>
         <WorkoutFeedbackProvider>
-          <SubscriptionProvider>
-            <AnnouncementProvider>{children}</AnnouncementProvider>
-          </SubscriptionProvider>
+          <SubscriptionProvider>{children}</SubscriptionProvider>
         </WorkoutFeedbackProvider>
       </GeneratedWorkoutProvider>
     </AutoScrollProvider>
