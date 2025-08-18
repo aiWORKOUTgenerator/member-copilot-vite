@@ -1,24 +1,57 @@
-import { useContext } from 'react';
+import { useEffect } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { TrainerPersona } from '@/domain/entities/trainerPersona';
-import {
-  TrainerPersonaContext,
-  TrainerPersonaState,
-} from '@/contexts/trainer-persona.types';
+import { TrainerPersonaState } from '@/contexts/trainer-persona.types';
+import { useTrainerPersonaService } from '@/hooks/useTrainerPersonaService';
+import { useAuth } from '@/hooks/auth';
 
 /**
- * Custom hook to access the trainer persona data from the TrainerPersonaContext.
- * Throws an error if used outside of a TrainerPersonaProvider.
+ * Hook to access trainer persona data using React Query
  */
 export function useTrainerPersona(): TrainerPersonaState {
-  const context = useContext(TrainerPersonaContext);
+  const trainerPersonaService = useTrainerPersonaService();
+  const { isSignedIn } = useAuth();
+  const queryClient = useQueryClient();
 
-  if (context === undefined) {
-    throw new Error(
-      'useTrainerPersona must be used within a TrainerPersonaProvider'
-    );
-  }
+  const query = useQuery<TrainerPersona, unknown>({
+    queryKey: ['trainerPersona'],
+    queryFn: () => trainerPersonaService.getTrainerPersona(),
+    enabled: isSignedIn === true,
+    staleTime: 30_000,
+  });
 
-  return context;
+  const generateMutation = useMutation<void, unknown, void>({
+    mutationFn: () => trainerPersonaService.generateTrainerPersona(),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['trainerPersona'] });
+    },
+  });
+
+  // Clear cache when user signs out
+  useEffect(() => {
+    if (isSignedIn === false) {
+      queryClient.removeQueries({ queryKey: ['trainerPersona'] });
+    }
+  }, [isSignedIn, queryClient]);
+
+  const refetch = async (): Promise<void> => {
+    await query.refetch();
+  };
+
+  const generateTrainerPersona = async (): Promise<void> => {
+    await generateMutation.mutateAsync();
+    await query.refetch();
+  };
+
+  return {
+    trainerPersona: query.data ?? null,
+    isLoading: query.isFetching,
+    error: query.error instanceof Error ? query.error.message : null,
+    isLoaded: query.isFetched,
+    hasNoPersona: query.isError === true,
+    refetch,
+    generateTrainerPersona,
+  };
 }
 
 /**
