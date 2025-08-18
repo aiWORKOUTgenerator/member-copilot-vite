@@ -136,7 +136,11 @@ export const HeroTitle: React.FC<HeroTitleProps> = ({
   );
 
   if (!showBackground) {
-    return <div className={`${currentAlign} ${className}`}>{content}</div>;
+    return (
+      <div className={`${currentAlign} ${currentSize.container} ${className}`}>
+        {content}
+      </div>
+    );
   }
 
   return (
