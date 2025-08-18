@@ -133,7 +133,7 @@ export function RadioGroupOfCards<T extends SelectableItem>({
 
   return (
     <fieldset className="w-full">
-      {legend && legend.trim() !== '' && (
+      {legend && (
         <div className="hero bg-base-200 rounded-box mb-6">
           <div className="hero-content text-center">
             <div>
