@@ -1,4 +1,3 @@
-import { createContext } from 'react';
 import {
   WorkoutFeedback,
   CreateWorkoutFeedbackRequest,
@@ -28,6 +27,4 @@ export interface WorkoutFeedbackState {
  * Create the context with a default undefined value.
  * This forces consumers to use the useWorkoutFeedback hook which performs a null check.
  */
-export const WorkoutFeedbackContext = createContext<
-  WorkoutFeedbackState | undefined
->(undefined);
+export {};

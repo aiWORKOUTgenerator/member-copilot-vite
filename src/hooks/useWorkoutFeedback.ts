@@ -1,24 +1,110 @@
-import { useContext } from 'react';
-import { WorkoutFeedback } from '@/domain/entities/workoutFeedback';
+import { WorkoutFeedbackState } from '@/contexts/workout-feedback.types';
 import {
-  WorkoutFeedbackContext,
-  WorkoutFeedbackState,
-} from '@/contexts/workout-feedback.types';
+  CreateWorkoutFeedbackRequest,
+  WorkoutFeedback,
+} from '@/domain/entities/workoutFeedback';
+import { useAuth } from '@/hooks/auth';
+import { useWorkoutFeedbackService } from '@/hooks/useWorkoutFeedbackService';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useEffect } from 'react';
 
 /**
- * Custom hook to access the workout feedback data from the WorkoutFeedbackContext.
- * Throws an error if used outside of a WorkoutFeedbackProvider.
+ * Hook to access workout feedback using React Query
  */
 export function useWorkoutFeedback(): WorkoutFeedbackState {
-  const context = useContext(WorkoutFeedbackContext);
+  const workoutFeedbackService = useWorkoutFeedbackService();
+  const { isSignedIn } = useAuth();
+  const queryClient = useQueryClient();
 
-  if (context === undefined) {
-    throw new Error(
-      'useWorkoutFeedback must be used within a WorkoutFeedbackProvider'
-    );
-  }
+  const feedbackQuery = useQuery<WorkoutFeedback[], unknown>({
+    queryKey: ['workoutFeedback'],
+    queryFn: () => workoutFeedbackService.getUserFeedback(),
+    enabled: isSignedIn === true,
+    staleTime: 30_000,
+  });
 
-  return context;
+  const submitMutation = useMutation<
+    WorkoutFeedback,
+    unknown,
+    CreateWorkoutFeedbackRequest
+  >({
+    mutationFn: (request) => workoutFeedbackService.submitFeedback(request),
+    onSuccess: (newFeedback) => {
+      queryClient.setQueryData<WorkoutFeedback[] | undefined>(
+        ['workoutFeedback'],
+        (prev) => (prev ? [...prev, newFeedback] : [newFeedback])
+      );
+    },
+  });
+
+  const updateMutation = useMutation<
+    WorkoutFeedback,
+    unknown,
+    { feedbackId: string; request: CreateWorkoutFeedbackRequest }
+  >({
+    mutationFn: ({ feedbackId, request }) =>
+      workoutFeedbackService.updateFeedback(feedbackId, request),
+    onSuccess: (updated) => {
+      queryClient.setQueryData<WorkoutFeedback[] | undefined>(
+        ['workoutFeedback'],
+        (prev) =>
+          prev ? prev.map((f) => (f.id === updated.id ? updated : f)) : prev
+      );
+    },
+  });
+
+  useEffect(() => {
+    if (isSignedIn === false) {
+      queryClient.removeQueries({ queryKey: ['workoutFeedback'] });
+    }
+  }, [isSignedIn, queryClient]);
+
+  const refetch = async (): Promise<void> => {
+    await feedbackQuery.refetch();
+  };
+
+  const submitFeedback = async (
+    request: CreateWorkoutFeedbackRequest
+  ): Promise<WorkoutFeedback> => {
+    return submitMutation.mutateAsync(request);
+  };
+
+  const getFeedbackForWorkout = async (
+    workoutId: string
+  ): Promise<WorkoutFeedback | null> => {
+    const list = feedbackQuery.data ?? [];
+    return list.find((f) => f.workoutId === workoutId) ?? null;
+  };
+
+  const updateFeedback = async (
+    feedbackId: string,
+    request: CreateWorkoutFeedbackRequest
+  ): Promise<WorkoutFeedback> => {
+    return updateMutation.mutateAsync({ feedbackId, request });
+  };
+
+  const clearError = () => {
+    // Errors are held in mutation/query states; nothing to clear globally.
+  };
+
+  return {
+    userFeedback: feedbackQuery.data ?? [],
+    isLoading: feedbackQuery.isFetching,
+    isSubmitting: submitMutation.isPending || updateMutation.isPending,
+    error:
+      feedbackQuery.error instanceof Error
+        ? feedbackQuery.error.message
+        : submitMutation.error instanceof Error
+          ? submitMutation.error.message
+          : updateMutation.error instanceof Error
+            ? updateMutation.error.message
+            : null,
+    refetch,
+    submitFeedback,
+    getFeedbackForWorkout,
+    updateFeedback,
+    clearError,
+  };
 }
 
 /**

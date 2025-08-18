@@ -3,7 +3,6 @@
 import { ReactNode } from 'react';
 import { AutoScrollProvider } from './AutoScrollContext';
 import { SubscriptionProvider } from './SubscriptionContext';
-import { WorkoutFeedbackProvider } from './WorkoutFeedbackContext';
 
 interface CombinedProvidersProps {
   children: ReactNode;
@@ -17,9 +16,7 @@ interface CombinedProvidersProps {
 export function CombinedProviders({ children }: CombinedProvidersProps) {
   return (
     <AutoScrollProvider>
-      <WorkoutFeedbackProvider>
-        <SubscriptionProvider>{children}</SubscriptionProvider>
-      </WorkoutFeedbackProvider>
+      <SubscriptionProvider>{children}</SubscriptionProvider>
     </AutoScrollProvider>
   );
 }
