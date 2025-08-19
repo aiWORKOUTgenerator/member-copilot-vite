@@ -28,12 +28,7 @@ export function ensureWorkoutChunkBinding(
       typeof (data as { chunk: unknown }).chunk === 'string'
     ) {
       const chunk = (data as { chunk: string }).chunk;
-      // Debug logging
-      console.log('[WorkoutChunkBinding] chunk received', {
-        workoutId,
-        length: chunk.length,
-        preview: chunk.slice(0, 120),
-      });
+
       queryClient.setQueryData<string[]>(
         ['generatedWorkoutChunks', workoutId],
         (prev = []) => [...prev, chunk]
