@@ -284,17 +284,16 @@ function WorkoutDetailContent() {
               {existingFeedback ? 'Rated' : 'Rate'}
             </span>
           </button>
-          <div className="flex-1 sm:flex-initial">
-            <WebShareButton
-              disabled={!verySimpleFormat && !simpleFormat}
-              title="Workout Plan"
-              text={verySimpleFormat || simpleFormat || ''}
-            >
-              <ShareIcon className="w-4 h-4 mr-2" />
-              <span className="hidden sm:inline">Share Workout</span>
-              <span className="sm:hidden">Share</span>
-            </WebShareButton>
-          </div>
+          <WebShareButton
+            className="flex-1 sm:flex-initial w-full sm:w-auto"
+            disabled={!verySimpleFormat && !simpleFormat}
+            title="Workout Plan"
+            text={verySimpleFormat || simpleFormat || ''}
+          >
+            <ShareIcon className="w-4 h-4 mr-2" />
+            <span className="hidden sm:inline">Share Workout</span>
+            <span className="sm:hidden">Share</span>
+          </WebShareButton>
         </div>
       </div>
 

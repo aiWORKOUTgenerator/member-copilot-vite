@@ -7,9 +7,16 @@ interface WebShareProps {
   text: string;
   children: React.ReactNode;
   disabled?: boolean;
+  className?: string;
 }
 
-const WebShareButton = ({ title, text, children, disabled }: WebShareProps) => {
+const WebShareButton = ({
+  title,
+  text,
+  children,
+  disabled,
+  className,
+}: WebShareProps) => {
   const [copied, setCopied] = useState(false);
 
   const handleShare = async () => {
@@ -38,15 +45,13 @@ const WebShareButton = ({ title, text, children, disabled }: WebShareProps) => {
   };
 
   return (
-    <div className="flex items-center w-full">
-      <button
-        onClick={handleShare}
-        className={`btn btn-secondary w-full ${disabled ? 'opacity-50' : ''}`}
-        disabled={disabled}
-      >
-        {copied ? 'Copied!' : children}
-      </button>
-    </div>
+    <button
+      onClick={handleShare}
+      className={`btn btn-secondary ${className ?? ''} ${disabled ? 'opacity-50' : ''}`}
+      disabled={disabled}
+    >
+      {copied ? 'Copied!' : children}
+    </button>
   );
 };
 
