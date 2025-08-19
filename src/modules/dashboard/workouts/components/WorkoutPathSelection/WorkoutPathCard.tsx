@@ -30,9 +30,14 @@ export function WorkoutPathCard({
 
   const currentColors = colorClasses[colorScheme];
 
+  // Break down className for better readability
+  const cardBaseClasses =
+    'card shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer border-2';
+  const cardClassName = `${cardBaseClasses} ${currentColors.card}`;
+
   return (
     <div
-      className={`card ${currentColors.card} shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer border-2`}
+      className={cardClassName}
       onClick={onClick}
       role="button"
       tabIndex={0}
