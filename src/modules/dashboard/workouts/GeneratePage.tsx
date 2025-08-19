@@ -12,7 +12,6 @@ import {
   PromptInputWithExamples,
 } from '@/ui/shared/molecules';
 import { WORKOUT_PROMPT_EXAMPLES } from './constants/promptExamples';
-import { useConfiguration } from '@/hooks/useConfiguration';
 
 export default function GenerateWorkoutPage() {
   const [activeTab, setActiveTab] = useState<'quick' | 'detailed'>('quick');
@@ -35,7 +34,6 @@ export default function GenerateWorkoutPage() {
   const { createWorkout } = useGeneratedWorkouts();
   const navigate = useNavigate();
   const analytics = useAnalytics();
-  const { configuration } = useConfiguration();
 
   // Selection summary for Quick Workout Setup
   const { selections, hasSelections } = useSelectionSummary(perWorkoutOptions);
@@ -87,16 +85,6 @@ export default function GenerateWorkoutPage() {
         setIsGenerating(true);
 
         try {
-          const configId =
-            configuration?.appConfig.generatedWorkoutConfigurationId;
-          if (!configId) {
-            console.error(
-              'Missing generatedWorkoutConfigurationId from configuration'
-            );
-            setIsGenerating(false);
-            handleGenerationError('Configuration not loaded');
-            return;
-          }
           // Convert per-workout options to string format
           const stringOptions = convertOptionsToStrings(perWorkoutOptions);
 
@@ -104,7 +92,7 @@ export default function GenerateWorkoutPage() {
           const combinedParams = stringOptions;
 
           const response = await createWorkout(
-            configId,
+            import.meta.env.VITE_GENERATED_WORKOUT_CONFIGURATION_ID,
             combinedParams,
             '' // No prompt for quick workout
           );
@@ -132,16 +120,6 @@ export default function GenerateWorkoutPage() {
       setIsGenerating(true);
 
       try {
-        const configId =
-          configuration?.appConfig.generatedWorkoutConfigurationId;
-        if (!configId) {
-          console.error(
-            'Missing generatedWorkoutConfigurationId from configuration'
-          );
-          setIsGenerating(false);
-          handleGenerationError('Configuration not loaded');
-          return;
-        }
         // Convert per-workout options to string format
         const stringOptions = convertOptionsToStrings(perWorkoutOptions);
 
@@ -149,7 +127,7 @@ export default function GenerateWorkoutPage() {
         const combinedParams = stringOptions;
 
         const response = await createWorkout(
-          configId,
+          import.meta.env.VITE_GENERATED_WORKOUT_CONFIGURATION_ID,
           combinedParams,
           workoutPrompt
         );

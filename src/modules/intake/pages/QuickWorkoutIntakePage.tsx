@@ -469,7 +469,11 @@ export default function QuickWorkoutIntakePage() {
                       energy: value as DurationIntensity,
                     }));
                     setAttemptedNext(false);
-
+                    // Auto-complete and start generation
+                    console.log('QuickWorkoutIntake Completed', {
+                      ...responses,
+                      energy: value,
+                    });
                     analytics.track('QuickWorkoutIntake Completed', {
                       ...responses,
                       energy: value,
@@ -488,13 +492,8 @@ export default function QuickWorkoutIntakePage() {
                         value as DurationIntensity
                       ),
                     };
-                    const configId = appConfig?.quickWorkoutConfigurationId;
-                    if (!configId) {
-                      console.error(
-                        'Missing quickWorkoutConfigurationId from configuration'
-                      );
-                      return;
-                    }
+                    const configId = import.meta.env
+                      .VITE_QUICK_WORKOUT_CONFIGURATION_ID;
 
                     createWorkout(configId, params, '')
                       .then((workout) => {
