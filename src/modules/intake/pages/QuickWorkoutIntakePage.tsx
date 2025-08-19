@@ -10,6 +10,8 @@ import { IntakeFullScreenLayout } from '../components/IntakeFullScreenLayout';
 import { StepTransition } from '../components/StepTransition';
 import { RadioCardGroupInput } from '@/ui/shared/molecules/RadioCardGroupInput';
 import { useGeneratedWorkouts } from '@/hooks/useGeneratedWorkouts';
+import { useQueryClient } from '@tanstack/react-query';
+import { useLocation as useLocationState } from '@/hooks/useLocation';
 import type { WorkoutParams } from '@/domain/entities/workoutParams';
 import type {
   AgeRange,
@@ -57,10 +59,17 @@ export default function QuickWorkoutIntakePage() {
   const { locationId } = useParams<{ locationId: string }>();
   const appConfig = useAppConfig();
   const {
+    locations,
+    isLoading: isLocationsLoading,
+    isLoaded: isLocationsLoaded,
+    error: locationsError,
+  } = useLocationState();
+  const {
     createWorkout,
     isLoading: isGenerating,
     error: generationError,
   } = useGeneratedWorkouts();
+  const queryClient = useQueryClient();
 
   const mapSexAgeToText = (age: AgeRange | null): string | undefined => {
     return age || undefined;
@@ -148,13 +157,20 @@ export default function QuickWorkoutIntakePage() {
     });
   }, [analytics]);
 
-  // Location validation (Phase 6)
-  const isLocationValid = Boolean(locationId && locationId.trim().length > 0);
+  // Location validation & retrieval
+  const hasLocationId = Boolean(locationId && locationId.trim().length > 0);
+  const selectedLocation = useMemo(
+    () => locations.find((loc) => loc.id === locationId) ?? null,
+    [locations, locationId]
+  );
   useEffect(() => {
-    if (!isLocationValid) {
+    if (!hasLocationId) {
       console.warn('Invalid or missing locationId for quick workout intake');
     }
-  }, [isLocationValid]);
+    if (hasLocationId && isLocationsLoaded && !selectedLocation) {
+      console.warn('Location not found for id:', locationId);
+    }
+  }, [hasLocationId, isLocationsLoaded, selectedLocation, locationId]);
 
   // Focus management on step change (must be before any early returns)
   useEffect(() => {
@@ -215,6 +231,11 @@ export default function QuickWorkoutIntakePage() {
 
       createWorkout(configId, params, '')
         .then((workout) => {
+          // Pre-subscribe to workout chunk stream immediately to avoid missing early messages
+          queryClient.setQueryData<string[]>(
+            ['generatedWorkoutChunks', workout.id],
+            (prev) => prev ?? []
+          );
           analytics.track('Workout Generated from Intake', {
             workoutId: workout.id,
             tracked_at: new Date().toISOString(),
@@ -287,7 +308,8 @@ export default function QuickWorkoutIntakePage() {
       title={stepOrder[currentStepIndex]?.title || 'Quick Workout'}
       footer={footer}
     >
-      {!isLocationValid && (
+      {/* Location state handling */}
+      {!hasLocationId && (
         <section className="text-center space-y-4">
           <h2 className="text-xl font-semibold">Invalid Link</h2>
           <p className="text-base-content/70">
@@ -296,7 +318,31 @@ export default function QuickWorkoutIntakePage() {
         </section>
       )}
 
-      {isLocationValid && (
+      {hasLocationId && isLocationsLoading && (
+        <section className="min-h-[50vh] flex items-center justify-center">
+          <span
+            className="loading loading-ring loading-lg"
+            aria-label="Loading locations"
+          ></span>
+        </section>
+      )}
+
+      {hasLocationId && !isLocationsLoading && !selectedLocation && (
+        <section className="text-center space-y-4">
+          <h2 className="text-xl font-semibold">Location Not Found</h2>
+          <p className="text-base-content/70">
+            We could not find the location for this link. Please check the link
+            and try again.
+          </p>
+          {locationsError && (
+            <p className="text-error text-sm" role="alert">
+              {locationsError}
+            </p>
+          )}
+        </section>
+      )}
+
+      {hasLocationId && !isLocationsLoading && selectedLocation && (
         <>
           {/* Welcome */}
           {currentStep === 'welcome' && (
@@ -312,6 +358,9 @@ export default function QuickWorkoutIntakePage() {
                 <h1 className="text-2xl font-bold">
                   Get An AI Powered Workout For Today
                 </h1>
+                <p className="text-base-content/70">
+                  at {selectedLocation.name}
+                </p>
                 <p className="text-base-content/70">
                   Answer a few quick questions and we will tailor a workout for
                   you.
@@ -504,8 +553,8 @@ export default function QuickWorkoutIntakePage() {
               <section className="text-center space-y-4">
                 <h2 className="text-2xl font-semibold">You’re all set!</h2>
                 <p className="text-base-content/70">
-                  We’ve captured your preferences. Your workout will be tailored
-                  accordingly.
+                  Thanks! We’re generating your workout now. You’ll be
+                  redirected automatically to your workout.
                 </p>
                 {isGenerating && (
                   <div className="flex items-center justify-center gap-3">
@@ -523,14 +572,6 @@ export default function QuickWorkoutIntakePage() {
                     {generationError}
                   </p>
                 )}
-                <Button
-                  variant="primary"
-                  size="lg"
-                  fullWidth
-                  onClick={() => navigate('/dashboard')}
-                >
-                  Go to Dashboard
-                </Button>
               </section>
             </StepTransition>
           )}
