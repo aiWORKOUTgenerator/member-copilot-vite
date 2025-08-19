@@ -24,18 +24,18 @@ export const FormContainer: React.FC<FormContainerProps> = ({
   altAuthLinkText,
 }) => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-base-400 px-4 py-12">
+    <div className="min-h-screen flex items-center justify-center bg-base-100 px-4 py-12">
       <div className="w-full max-w-md">
         <Card
           title={title}
           subtitle={subtitle}
           footer={footer}
-          className="w-full bg-white"
+          className="w-full bg-base-300 text-base-content"
         >
           {children}
 
           {altAuthText && altAuthLink && altAuthLinkText && (
-            <div className="mt-6 text-center text-sm">
+            <div className="mt-6 text-center text-sm text-base-content">
               {altAuthText}{' '}
               <Link
                 to={altAuthLink}

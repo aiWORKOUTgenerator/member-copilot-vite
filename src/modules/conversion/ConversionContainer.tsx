@@ -3,6 +3,7 @@ import ConversionPage from './pages/ConversionPage';
 import SignUpPage from './pages/SignUpPage';
 import VerifyPage from './pages/VerifyPage';
 import EmailOtpPage from './pages/EmailOtpPage';
+import PhoneOtpPage from './pages/PhoneOtpPage';
 
 export default function ConversionContainer() {
   return (
@@ -11,6 +12,7 @@ export default function ConversionContainer() {
       <Route path="/signup" element={<SignUpPage />} />
       <Route path="/verify" element={<VerifyPage />} />
       <Route path="/email-otp" element={<EmailOtpPage />} />
+      <Route path="/phone-otp" element={<PhoneOtpPage />} />
     </Routes>
   );
 }
