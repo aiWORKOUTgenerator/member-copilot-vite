@@ -1,4 +1,5 @@
 import { useGeneratedWorkouts } from '@/hooks/useGeneratedWorkouts';
+import { useConfiguration } from '@/hooks/useConfiguration';
 import { ArrowBigLeft } from 'lucide-react';
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router';
@@ -15,6 +16,7 @@ import { WORKOUT_PROMPT_EXAMPLES } from './constants/promptExamples';
 
 export default function GenerateWorkoutPage() {
   const { mode } = useParams<{ mode: string }>();
+  const { configuration } = useConfiguration();
   const [activeTab, setActiveTab] = useState<'quick' | 'detailed'>(
     mode === 'detailed' ? 'detailed' : 'quick'
   );
@@ -97,11 +99,11 @@ export default function GenerateWorkoutPage() {
         setIsGenerating(true);
 
         try {
-          const configId = import.meta.env
-            .VITE_GENERATED_WORKOUT_CONFIGURATION_ID;
+          const configId =
+            configuration?.appConfig.generatedWorkoutConfigurationId;
           if (!configId) {
             console.error(
-              'Missing VITE_GENERATED_WORKOUT_CONFIGURATION_ID environment variable'
+              'Missing generatedWorkoutConfigurationId from configuration'
             );
             setIsGenerating(false);
             handleGenerationError('Configuration not loaded');
@@ -142,11 +144,11 @@ export default function GenerateWorkoutPage() {
       setIsGenerating(true);
 
       try {
-        const configId = import.meta.env
-          .VITE_GENERATED_WORKOUT_CONFIGURATION_ID;
+        const configId =
+          configuration?.appConfig.generatedWorkoutConfigurationId;
         if (!configId) {
           console.error(
-            'Missing VITE_GENERATED_WORKOUT_CONFIGURATION_ID environment variable'
+            'Missing generatedWorkoutConfigurationId from configuration'
           );
           setIsGenerating(false);
           handleGenerationError('Configuration not loaded');
