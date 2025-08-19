@@ -20,6 +20,7 @@ import WorkoutDetailPage from './workouts/WorkoutDetailPage';
 import WorkoutHistoryPage from './workouts/WorkoutHistoryPage';
 import WorkoutInstancePage from './workouts/WorkoutInstancePage';
 import WorkoutsPage from './workouts/WorkoutsPage';
+import WorkoutPathSelectionPage from './workouts/pages/WorkoutPathSelectionPage';
 
 export default function DashboardContainer() {
   return (
@@ -73,6 +74,10 @@ export default function DashboardContainer() {
                     />
                     <Route
                       path="/workouts/generate"
+                      element={<WorkoutPathSelectionPage />}
+                    />
+                    <Route
+                      path="/workouts/generate/:mode"
                       element={<GeneratePage />}
                     />
                     <Route
