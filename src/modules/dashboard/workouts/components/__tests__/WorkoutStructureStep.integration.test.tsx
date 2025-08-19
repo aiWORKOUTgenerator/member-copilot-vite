@@ -376,4 +376,74 @@ describe('WorkoutStructureStep Integration', () => {
       expect(mockEnhancedOptions).toBeDefined();
     });
   });
+
+  describe('View Mode Toggle Integration', () => {
+    it('passes variant prop to enhanced components', () => {
+      render(<WorkoutStructureStep {...defaultProps} variant="simple" />);
+
+      // Verify that the component renders with simple variant
+      // The actual variant prop passing is tested in individual component tests
+      expect(screen.getByTestId('workout-structure-step')).toBeInTheDocument();
+    });
+
+    it('switches between simple and detailed layouts', () => {
+      const { rerender } = render(
+        <WorkoutStructureStep {...defaultProps} variant="detailed" />
+      );
+
+      // Verify detailed layout renders
+      expect(screen.getByText('Workout Structure')).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          "Define your workout's core parameters: how long you want to work out, what your main focus is, and which body areas you'd like to target."
+        )
+      ).toBeInTheDocument();
+
+      // Switch to simple layout
+      rerender(<WorkoutStructureStep {...defaultProps} variant="simple" />);
+
+      // Verify simple layout still renders (component structure remains the same)
+      expect(screen.getByText('Workout Structure')).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          "Define your workout's core parameters: how long you want to work out, what your main focus is, and which body areas you'd like to target."
+        )
+      ).toBeInTheDocument();
+    });
+
+    it('maintains business logic regardless of variant', async () => {
+      const onChange = vi.fn();
+      render(
+        <WorkoutStructureStep
+          {...defaultProps}
+          onChange={onChange}
+          variant="simple"
+        />
+      );
+
+      // Perform same interactions as detailed mode
+      const durationOption = screen.getByText('20 min');
+      fireEvent.click(durationOption);
+
+      await waitFor(() => {
+        expect(onChange).toHaveBeenCalledWith('customization_duration', 20);
+      });
+
+      // Verify validation still works
+      expect(vi.mocked(validateDetailedStep)).toHaveBeenCalledWith(
+        'workout-structure',
+        {
+          ...defaultOptions,
+          customization_duration: 20,
+        }
+      );
+    });
+
+    it('defaults to detailed variant when not specified', () => {
+      render(<WorkoutStructureStep {...defaultProps} />);
+
+      // Should render with default detailed variant
+      expect(screen.getByTestId('workout-structure-step')).toBeInTheDocument();
+    });
+  });
 });

@@ -18,12 +18,14 @@ import type { CustomizationComponentProps } from '../../types';
  * - Broader scope suitable for detailed setup workflows
  * - Enhanced analytics tracking for detailed mode
  *
+ * @param variant - Controls visual density: 'simple' for compact layout, 'detailed' for full layout
  * @example
  * <EnhancedWorkoutFocusCustomization
  *   value={selectedFocus}
  *   onChange={handleFocusChange}
  *   disabled={false}
  *   error={validationError}
+ *   variant="simple" // Compact layout
  * />
  */
 export default memo(function EnhancedWorkoutFocusCustomization({
@@ -31,7 +33,10 @@ export default memo(function EnhancedWorkoutFocusCustomization({
   onChange,
   disabled = false,
   error,
-}: CustomizationComponentProps<string | undefined>) {
+  variant = 'detailed',
+}: CustomizationComponentProps<string | undefined> & {
+  variant?: 'simple' | 'detailed';
+}) {
   const { detailedWorkoutFocusOptions } = useEnhancedOptions();
   const { trackSelection } = useWorkoutAnalytics();
 
@@ -53,7 +58,9 @@ export default memo(function EnhancedWorkoutFocusCustomization({
     onChange(focusValue);
 
     // Track user selection for analytics and AI learning
-    trackSelection('customization_focus', focusValue, 'detailed');
+    // Map component variant to analytics mode ('simple' -> 'quick', 'detailed' -> 'detailed')
+    const analyticsMode = variant === 'simple' ? 'quick' : 'detailed';
+    trackSelection('customization_focus', focusValue, analyticsMode);
   };
 
   return (
@@ -69,7 +76,9 @@ export default memo(function EnhancedWorkoutFocusCustomization({
       gridCols={2}
       colorScheme="primary"
       required={false}
-      variant="detailed"
+      variant={variant}
+      showDescription={variant === 'detailed'}
+      showTertiary={variant === 'detailed'}
     />
   );
 });

@@ -19,12 +19,14 @@ import type { CustomizationComponentProps } from '../../types';
  * - Enhanced options with descriptions for better UX
  * - Maintains exact API compatibility with legacy component
  *
+ * @param variant - Controls visual density: 'simple' for compact layout, 'detailed' for full layout
  * @example
  * <EnhancedFocusAreaCustomization
  *   value={selectedAreas}
  *   onChange={handleAreasChange}
  *   disabled={false}
  *   error={validationError}
+ *   variant="simple" // Compact layout
  * />
  */
 export default memo(function EnhancedFocusAreaCustomization({
@@ -32,7 +34,10 @@ export default memo(function EnhancedFocusAreaCustomization({
   onChange,
   disabled = false,
   error,
-}: CustomizationComponentProps<string[] | undefined>) {
+  variant = 'detailed',
+}: CustomizationComponentProps<string[] | undefined> & {
+  variant?: 'simple' | 'detailed';
+}) {
   const { focusAreaOptions } = useEnhancedOptions();
   const { trackSelection } = useWorkoutAnalytics();
 
@@ -51,7 +56,9 @@ export default memo(function EnhancedFocusAreaCustomization({
     onChange(finalValue);
 
     // Track user selection for analytics and AI learning
-    trackSelection('customization_areas', finalValue || [], 'detailed');
+    // Map component variant to analytics mode ('simple' -> 'quick', 'detailed' -> 'detailed')
+    const analyticsMode = variant === 'simple' ? 'quick' : 'detailed';
+    trackSelection('customization_areas', finalValue || [], analyticsMode);
   };
 
   return (
@@ -68,7 +75,9 @@ export default memo(function EnhancedFocusAreaCustomization({
       gridCols={3}
       colorScheme="primary"
       required={false}
-      variant="detailed"
+      variant={variant}
+      showDescription={variant === 'detailed'}
+      showTertiary={variant === 'detailed'}
     />
   );
 });

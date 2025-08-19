@@ -14,6 +14,7 @@ export interface WorkoutStructureStepProps {
   onChange: (key: keyof PerWorkoutOptions, value: unknown) => void;
   errors: Partial<Record<keyof PerWorkoutOptions, string>>;
   disabled?: boolean;
+  variant?: 'simple' | 'detailed';
 }
 
 export const WorkoutStructureStep: React.FC<WorkoutStructureStepProps> = ({
@@ -21,6 +22,7 @@ export const WorkoutStructureStep: React.FC<WorkoutStructureStepProps> = ({
   onChange,
   errors,
   disabled = false,
+  variant = 'detailed',
 }) => {
   // Analytics integration for tracking user interactions
   const { trackStepCompletion, trackValidationError } = useWorkoutAnalytics();
@@ -97,6 +99,7 @@ export const WorkoutStructureStep: React.FC<WorkoutStructureStepProps> = ({
             }
             disabled={disabled}
             error={errors.customization_duration}
+            variant={variant}
           />
         </div>
 
@@ -109,6 +112,7 @@ export const WorkoutStructureStep: React.FC<WorkoutStructureStepProps> = ({
             }
             disabled={disabled}
             error={errors.customization_focus}
+            variant={variant}
           />
         </div>
 
@@ -121,6 +125,7 @@ export const WorkoutStructureStep: React.FC<WorkoutStructureStepProps> = ({
             }
             disabled={disabled}
             error={errors.customization_areas}
+            variant={variant}
           />
         </div>
       </div>

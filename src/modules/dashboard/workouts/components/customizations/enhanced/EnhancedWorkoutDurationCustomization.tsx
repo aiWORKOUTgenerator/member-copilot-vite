@@ -26,12 +26,14 @@ import type { CustomizationComponentProps } from '../../types';
  * - Enhanced options with detailed workout descriptions and use cases
  * - Maintains exact API compatibility with legacy component
  *
+ * @param variant - Controls visual density: 'simple' for compact layout, 'detailed' for full layout
  * @example
  * <EnhancedWorkoutDurationCustomization
  *   value={selectedDuration}
  *   onChange={handleDurationChange}
  *   disabled={false}
  *   error={validationError}
+ *   variant="simple" // Compact layout
  * />
  */
 export default memo(function EnhancedWorkoutDurationCustomization({
@@ -39,7 +41,10 @@ export default memo(function EnhancedWorkoutDurationCustomization({
   onChange,
   disabled = false,
   error,
-}: CustomizationComponentProps<number | undefined>) {
+  variant = 'detailed',
+}: CustomizationComponentProps<number | undefined> & {
+  variant?: 'simple' | 'detailed';
+}) {
   const { detailedDurationOptions } = useEnhancedOptions();
   const { trackSelection } = useWorkoutAnalytics();
 
@@ -61,7 +66,9 @@ export default memo(function EnhancedWorkoutDurationCustomization({
     onChange(durationValue);
 
     // Track user selection for analytics and AI learning
-    trackSelection('customization_duration', durationValue, 'detailed');
+    // Map component variant to analytics mode ('simple' -> 'quick', 'detailed' -> 'detailed')
+    const analyticsMode = variant === 'simple' ? 'quick' : 'detailed';
+    trackSelection('customization_duration', durationValue, analyticsMode);
   };
 
   return (
@@ -77,7 +84,9 @@ export default memo(function EnhancedWorkoutDurationCustomization({
       gridCols={3}
       colorScheme="primary"
       required={false}
-      variant="detailed"
+      variant={variant}
+      showDescription={variant === 'detailed'}
+      showTertiary={variant === 'detailed'}
     />
   );
 });
