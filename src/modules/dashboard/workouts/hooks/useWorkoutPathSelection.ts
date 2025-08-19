@@ -6,13 +6,21 @@ export function useWorkoutPathSelection() {
 
   const selectPath = useCallback(
     (path: 'quick' | 'detailed') => {
-      analytics.track('Workout Path Selected', {
+      analytics.track('workout_path_selected', {
         path,
         timestamp: new Date().toISOString(),
+        userAgent: navigator.userAgent,
+        screenSize: `${window.innerWidth}x${window.innerHeight}`,
       });
     },
     [analytics]
   );
 
-  return { selectPath };
+  const trackPageView = useCallback(() => {
+    analytics.track('workout_path_page_viewed', {
+      timestamp: new Date().toISOString(),
+    });
+  }, [analytics]);
+
+  return { selectPath, trackPageView };
 }

@@ -8,6 +8,7 @@ export function WorkoutPathCard({
   icon: Icon,
   colorScheme,
   onClick,
+  isSelected = false,
 }: WorkoutPathCardProps) {
   const colorClasses = {
     quick: {
@@ -32,21 +33,25 @@ export function WorkoutPathCard({
 
   // Break down className for better readability
   const cardBaseClasses =
-    'card shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer border-2';
-  const cardClassName = `${cardBaseClasses} ${currentColors.card}`;
+    'card shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer border-2';
+  const cardClassName = `${cardBaseClasses} ${currentColors.card} ${
+    isSelected ? 'ring-2 ring-primary' : ''
+  }`;
 
   return (
     <div
       className={cardClassName}
       onClick={onClick}
-      role="button"
-      tabIndex={0}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
           onClick();
         }
       }}
+      role="button"
+      tabIndex={0}
+      aria-label={`Select ${title} workout path`}
+      aria-describedby={`${colorScheme}-description`}
     >
       <div className="card-body p-6">
         {/* Header with Icon and Title */}
@@ -64,8 +69,11 @@ export function WorkoutPathCard({
           </div>
         </div>
 
-        {/* Description */}
-        <p className="text-base-content/70 mb-6 leading-relaxed">
+        {/* Description with ARIA ID */}
+        <p
+          id={`${colorScheme}-description`}
+          className="text-base-content/70 mb-6 leading-relaxed"
+        >
           {description}
         </p>
 

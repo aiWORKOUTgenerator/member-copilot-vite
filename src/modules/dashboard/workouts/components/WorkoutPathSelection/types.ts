@@ -6,6 +6,7 @@ export interface WorkoutPathCardProps {
   icon: React.ComponentType<{ className?: string }>;
   colorScheme: 'quick' | 'detailed';
   onClick: () => void;
+  isSelected?: boolean; // NEW: For focus management
 }
 
 export interface WorkoutPathSelectionProps {
