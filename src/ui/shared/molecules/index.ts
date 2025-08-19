@@ -15,4 +15,5 @@ export * from './SimpleDetailedViewSelector';
 export * from './SelectionSummary';
 export * from './ProgressBar';
 export * from './ContentCard';
+export * from './RadioCardGroupInput';
 export * from './HeroTitle';

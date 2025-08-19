@@ -1,24 +1,46 @@
-import { useContext } from 'react';
+import { useEffect } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { AttributeType } from '@/domain/entities/attributeType';
-import {
-  AttributeTypeContext,
-  AttributeTypeState,
-} from '@/contexts/attribute-type.types';
+import { AttributeTypeState } from '@/contexts/attribute-type.types';
+import { useAttributeTypeService } from '@/hooks';
+import { useAuth } from '@/hooks/auth';
 
 /**
- * Custom hook to access the attribute type data from the AttributeTypeContext.
- * Throws an error if used outside of an AttributeTypeProvider.
+ * Hook to access attribute types using React Query
  */
 export function useAttributeTypes(): AttributeTypeState {
-  const context = useContext(AttributeTypeContext);
+  const attributeTypeService = useAttributeTypeService();
+  const { isSignedIn } = useAuth();
+  const queryClient = useQueryClient();
 
-  if (context === undefined) {
-    throw new Error(
-      'useAttributeTypes must be used within an AttributeTypeProvider'
-    );
-  }
+  const query = useQuery<AttributeType[], unknown>({
+    queryKey: ['attributeTypes'],
+    queryFn: async () => {
+      const data = await attributeTypeService.getAllAttributeTypes();
+      // Sort attribute types by display_order to preserve existing behavior
+      return [...data].sort((a, b) => a.display_order - b.display_order);
+    },
+    enabled: isSignedIn === true,
+    staleTime: 30_000,
+  });
 
-  return context;
+  useEffect(() => {
+    if (isSignedIn === false) {
+      queryClient.removeQueries({ queryKey: ['attributeTypes'] });
+    }
+  }, [isSignedIn, queryClient]);
+
+  const refetch = async (): Promise<void> => {
+    await query.refetch();
+  };
+
+  return {
+    attributeTypes: query.data ?? [],
+    isLoading: query.isFetching,
+    error: query.error instanceof Error ? query.error.message : null,
+    refetch,
+    isLoaded: query.isFetched,
+  };
 }
 
 /**

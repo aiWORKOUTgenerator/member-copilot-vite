@@ -1,12 +1,12 @@
 'use client';
 
-import { useCurrentWorkoutInstance } from '@/hooks/useCurrentWorkoutInstance';
-import { RecommendedExercise } from '@/domain/interfaces/services/WorkoutInstanceService';
-import { useWorkoutInstances } from '@/hooks/useWorkoutInstances';
-import { useTrainerPersonaData } from '@/hooks/useTrainerPersona';
 import { Exercise, Section } from '@/domain/entities/generatedWorkout';
 import { ExerciseInstance } from '@/domain/entities/workoutInstance';
+import { RecommendedExercise } from '@/domain/interfaces/services/WorkoutInstanceService';
 import { useAnalytics } from '@/hooks/useAnalytics';
+import { useCurrentWorkoutInstance } from '@/hooks/useCurrentWorkoutInstance';
+import { useTrainerPersonaData } from '@/hooks/useTrainerPersona';
+import { useWorkoutInstances } from '@/hooks/useWorkoutInstances';
 import { Check, Clock, Target, X } from 'lucide-react';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -1961,7 +1961,6 @@ function ExerciseCard({
   const exerciseInstance = exercise as ExerciseInstance;
   const isCompleted = exerciseInstance.completed || false;
   const notes = exerciseInstance.notes || '';
-  const analytics = useAnalytics();
 
   // Local state for notes editing
   const [isEditingNotes, setIsEditingNotes] = useState(false);
@@ -1970,13 +1969,8 @@ function ExerciseCard({
 
   // Update local notes when exercise notes change
   useEffect(() => {
-    analytics.track('Exercise Notes Updated', {
-      exerciseId,
-      notes,
-      tracked_at: new Date().toISOString(),
-    });
     setLocalNotes(notes);
-  }, [notes, exerciseId, analytics]);
+  }, [notes]);
 
   // Focus textarea when editing starts
   useEffect(() => {

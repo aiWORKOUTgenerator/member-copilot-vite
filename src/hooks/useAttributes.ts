@@ -1,19 +1,42 @@
-import { useContext } from 'react';
+import { useEffect } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Attribute } from '@/domain/entities/attribute';
-import { AttributeContext, AttributeState } from '@/contexts/attribute.types';
+import { AttributeState } from '@/contexts/attribute.types';
+import { useAttributeService } from '@/hooks';
+import { useAuth } from '@/hooks/auth';
 
 /**
- * Custom hook to access the attribute data from the AttributeContext.
- * Throws an error if used outside of an AttributeProvider.
+ * Hook to access attributes using React Query
  */
 export function useAttributes(): AttributeState {
-  const context = useContext(AttributeContext);
+  const attributeService = useAttributeService();
+  const { isSignedIn } = useAuth();
+  const queryClient = useQueryClient();
 
-  if (context === undefined) {
-    throw new Error('useAttributes must be used within an AttributeProvider');
-  }
+  const query = useQuery<Attribute[], unknown>({
+    queryKey: ['attributes'],
+    queryFn: () => attributeService.getAllAttributes(),
+    enabled: isSignedIn === true,
+    staleTime: 30_000,
+  });
 
-  return context;
+  useEffect(() => {
+    if (isSignedIn === false) {
+      queryClient.removeQueries({ queryKey: ['attributes'] });
+    }
+  }, [isSignedIn, queryClient]);
+
+  const refetch = async (): Promise<void> => {
+    await query.refetch();
+  };
+
+  return {
+    attributes: query.data ?? [],
+    isLoading: query.isFetching,
+    error: query.error instanceof Error ? query.error.message : null,
+    refetch,
+    isLoaded: query.isFetched,
+  };
 }
 
 /**

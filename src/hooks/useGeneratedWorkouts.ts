@@ -1,24 +1,75 @@
-import { useContext } from 'react';
+import { GeneratedWorkoutState } from '@/contexts/generated-workout.types';
 import { GeneratedWorkout } from '@/domain/entities/generatedWorkout';
-import {
-  GeneratedWorkoutContext,
-  GeneratedWorkoutState,
-} from '@/contexts/generated-workout.types';
+import { WorkoutParams } from '@/domain/entities/workoutParams';
+import { useAuth } from '@/hooks/auth';
+import { useGeneratedWorkoutService } from '@/hooks/useGeneratedWorkoutService';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useEffect } from 'react';
 
 /**
- * Custom hook to access the generated workout data from the GeneratedWorkoutContext.
- * Throws an error if used outside of a GeneratedWorkoutProvider.
+ * Hook to access generated workouts using React Query
  */
 export function useGeneratedWorkouts(): GeneratedWorkoutState {
-  const context = useContext(GeneratedWorkoutContext);
+  const generatedWorkoutService = useGeneratedWorkoutService();
+  const { isSignedIn } = useAuth();
+  const queryClient = useQueryClient();
 
-  if (context === undefined) {
-    throw new Error(
-      'useGeneratedWorkouts must be used within a GeneratedWorkoutProvider'
-    );
-  }
+  const query = useQuery<GeneratedWorkout[], unknown>({
+    queryKey: ['generatedWorkouts'],
+    queryFn: () => generatedWorkoutService.getGeneratedWorkouts(),
+    enabled: isSignedIn === true,
+    staleTime: 30_000,
+  });
 
-  return context;
+  const createMutation = useMutation<
+    GeneratedWorkout,
+    unknown,
+    { configId: string; workoutParams: WorkoutParams; prompt: string }
+  >({
+    mutationFn: ({ configId, workoutParams, prompt }) =>
+      generatedWorkoutService.createGeneratedWorkout(
+        configId,
+        workoutParams,
+        prompt
+      ),
+    onSuccess: (newWorkout) => {
+      queryClient.setQueryData<GeneratedWorkout[] | undefined>(
+        ['generatedWorkouts'],
+        (prev) => (prev ? [...prev, newWorkout] : [newWorkout])
+      );
+    },
+  });
+
+  useEffect(() => {
+    if (isSignedIn === false) {
+      queryClient.removeQueries({ queryKey: ['generatedWorkouts'] });
+    }
+  }, [isSignedIn, queryClient]);
+
+  const refetch = async (): Promise<void> => {
+    await query.refetch();
+  };
+
+  const createWorkout = async (
+    configId: string,
+    workoutParams: WorkoutParams,
+    prompt: string
+  ): Promise<GeneratedWorkout> => {
+    const result = await createMutation.mutateAsync({
+      configId,
+      workoutParams,
+      prompt,
+    });
+    return result;
+  };
+
+  return {
+    workouts: query.data ?? [],
+    isLoading: query.isFetching,
+    error: query.error instanceof Error ? query.error.message : null,
+    refetch,
+    createWorkout,
+  };
 }
 
 /**

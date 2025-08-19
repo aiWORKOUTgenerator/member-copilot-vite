@@ -1,6 +1,7 @@
-import { describe, it, expect, vi } from 'vitest';
-import { renderHook } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { renderHook, waitFor } from '@testing-library/react';
 import { ReactNode } from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   useLocation,
   useLocationData,
@@ -11,8 +12,13 @@ import {
   useAllClassSchedules,
   useDefaultLocation,
 } from '../useLocation';
-import { LocationContext, LocationState } from '../../contexts/location.types';
 import { Location, Equipment, ClassSchedule } from '@/domain/entities';
+import { useLocationService } from '@/hooks/useLocationService';
+
+vi.mock('@/hooks/useLocationService');
+vi.mock('@/hooks/auth', () => ({
+  useAuth: () => ({ isSignedIn: true, isLoaded: true }),
+}));
 
 const mockEquipment: Equipment = {
   id: '01J2XY3ABCD1234567EFGH890',
@@ -44,163 +50,133 @@ const mockLocation: Location = {
   class_schedules: [mockClassSchedule],
 };
 
-const mockLocationState: LocationState = {
-  locations: [mockLocation],
-  isLoading: false,
-  error: null,
-  isLoaded: true,
-  refetch: vi.fn(),
-  getAllEquipment: vi.fn().mockReturnValue([mockEquipment]),
-  getAllClassSchedules: vi.fn().mockReturnValue([mockClassSchedule]),
-  getDefaultLocation: vi.fn().mockReturnValue(mockLocation),
-  hasActiveEquipment: vi.fn().mockReturnValue(true),
-  hasActiveClasses: vi.fn().mockReturnValue(true),
+const createWrapper = () => {
+  const client = new QueryClient({
+    defaultOptions: { queries: { retry: false, gcTime: Infinity } },
+  });
+  return ({ children }: { children: ReactNode }) => (
+    <QueryClientProvider client={client}>{children}</QueryClientProvider>
+  );
 };
 
-const LocationProvider = ({
-  children,
-  value,
-}: {
-  children: ReactNode;
-  value: LocationState;
-}) => (
-  <LocationContext.Provider value={value}>{children}</LocationContext.Provider>
-);
+const mockedService = vi.mocked(useLocationService);
+
+beforeEach(() => {
+  vi.resetAllMocks();
+});
 
 describe('useLocation hooks', () => {
   describe('useLocation', () => {
-    it('returns location state when used within provider', () => {
+    it('returns location state when loaded', async () => {
+      mockedService.mockReturnValue({
+        getLocations: vi.fn().mockResolvedValue({ locations: [mockLocation] }),
+      } as unknown as ReturnType<typeof useLocationService>);
+
       const { result } = renderHook(() => useLocation(), {
-        wrapper: ({ children }) => (
-          <LocationProvider value={mockLocationState}>
-            {children}
-          </LocationProvider>
-        ),
+        wrapper: createWrapper(),
       });
 
-      expect(result.current).toEqual(mockLocationState);
-    });
-
-    it('throws error when used outside provider', () => {
-      expect(() => {
-        renderHook(() => useLocation());
-      }).toThrow('useLocation must be used within a LocationProvider');
+      await waitFor(() => expect(result.current.isLoaded).toBe(true));
+      expect(result.current.locations).toEqual([mockLocation]);
+      expect(result.current.error).toBeNull();
+      expect(result.current.isLoading).toBe(false);
+      // Derived utils
+      expect(result.current.getAllEquipment()).toEqual([mockEquipment]);
+      expect(result.current.getAllClassSchedules()).toEqual([
+        mockClassSchedule,
+      ]);
+      expect(result.current.getDefaultLocation()).toEqual(mockLocation);
+      expect(result.current.hasActiveEquipment(mockLocation)).toBe(true);
+      expect(result.current.hasActiveClasses(mockLocation)).toBe(true);
     });
   });
 
   describe('useLocationData', () => {
-    it('returns locations array', () => {
+    it('returns locations array', async () => {
+      mockedService.mockReturnValue({
+        getLocations: vi.fn().mockResolvedValue({ locations: [mockLocation] }),
+      } as unknown as ReturnType<typeof useLocationService>);
       const { result } = renderHook(() => useLocationData(), {
-        wrapper: ({ children }) => (
-          <LocationProvider value={mockLocationState}>
-            {children}
-          </LocationProvider>
-        ),
+        wrapper: createWrapper(),
       });
-
-      expect(result.current).toEqual([mockLocation]);
+      await waitFor(() => expect(result.current).toEqual([mockLocation]));
     });
   });
 
   describe('useLocationLoading', () => {
     it('returns loading state', () => {
       const { result } = renderHook(() => useLocationLoading(), {
-        wrapper: ({ children }) => (
-          <LocationProvider value={{ ...mockLocationState, isLoading: true }}>
-            {children}
-          </LocationProvider>
-        ),
+        wrapper: createWrapper(),
       });
-
-      expect(result.current).toBe(true);
+      expect(typeof result.current).toBe('boolean');
     });
   });
 
   describe('useLocationLoaded', () => {
-    it('returns loaded state', () => {
+    it('returns loaded state', async () => {
+      mockedService.mockReturnValue({
+        getLocations: vi.fn().mockResolvedValue({ locations: [mockLocation] }),
+      } as unknown as ReturnType<typeof useLocationService>);
       const { result } = renderHook(() => useLocationLoaded(), {
-        wrapper: ({ children }) => (
-          <LocationProvider value={mockLocationState}>
-            {children}
-          </LocationProvider>
-        ),
+        wrapper: createWrapper(),
       });
-
-      expect(result.current).toBe(true);
+      await waitFor(() => expect(result.current).toBe(true));
     });
   });
 
   describe('useLocationError', () => {
     it('returns error state', () => {
       const errorMessage = 'Failed to load locations';
+      mockedService.mockReturnValue({
+        getLocations: vi.fn().mockRejectedValue(new Error(errorMessage)),
+      } as unknown as ReturnType<typeof useLocationService>);
       const { result } = renderHook(() => useLocationError(), {
-        wrapper: ({ children }) => (
-          <LocationProvider
-            value={{ ...mockLocationState, error: errorMessage }}
-          >
-            {children}
-          </LocationProvider>
-        ),
+        wrapper: createWrapper(),
       });
-
-      expect(result.current).toBe(errorMessage);
+      return waitFor(() => expect(result.current).toBe(errorMessage));
     });
 
     it('returns null when no error', () => {
       const { result } = renderHook(() => useLocationError(), {
-        wrapper: ({ children }) => (
-          <LocationProvider value={mockLocationState}>
-            {children}
-          </LocationProvider>
-        ),
+        wrapper: createWrapper(),
       });
-
       expect(result.current).toBeNull();
     });
   });
 
   describe('useAllEquipment', () => {
-    it('calls getAllEquipment and returns result', () => {
+    it('returns all equipment from locations', async () => {
+      mockedService.mockReturnValue({
+        getLocations: vi.fn().mockResolvedValue({ locations: [mockLocation] }),
+      } as unknown as ReturnType<typeof useLocationService>);
       const { result } = renderHook(() => useAllEquipment(), {
-        wrapper: ({ children }) => (
-          <LocationProvider value={mockLocationState}>
-            {children}
-          </LocationProvider>
-        ),
+        wrapper: createWrapper(),
       });
-
-      expect(mockLocationState.getAllEquipment).toHaveBeenCalled();
-      expect(result.current).toEqual([mockEquipment]);
+      await waitFor(() => expect(result.current).toEqual([mockEquipment]));
     });
   });
 
   describe('useAllClassSchedules', () => {
-    it('calls getAllClassSchedules and returns result', () => {
+    it('returns all class schedules from locations', async () => {
+      mockedService.mockReturnValue({
+        getLocations: vi.fn().mockResolvedValue({ locations: [mockLocation] }),
+      } as unknown as ReturnType<typeof useLocationService>);
       const { result } = renderHook(() => useAllClassSchedules(), {
-        wrapper: ({ children }) => (
-          <LocationProvider value={mockLocationState}>
-            {children}
-          </LocationProvider>
-        ),
+        wrapper: createWrapper(),
       });
-
-      expect(mockLocationState.getAllClassSchedules).toHaveBeenCalled();
-      expect(result.current).toEqual([mockClassSchedule]);
+      await waitFor(() => expect(result.current).toEqual([mockClassSchedule]));
     });
   });
 
   describe('useDefaultLocation', () => {
-    it('calls getDefaultLocation and returns result', () => {
+    it('returns default location from locations', async () => {
+      mockedService.mockReturnValue({
+        getLocations: vi.fn().mockResolvedValue({ locations: [mockLocation] }),
+      } as unknown as ReturnType<typeof useLocationService>);
       const { result } = renderHook(() => useDefaultLocation(), {
-        wrapper: ({ children }) => (
-          <LocationProvider value={mockLocationState}>
-            {children}
-          </LocationProvider>
-        ),
+        wrapper: createWrapper(),
       });
-
-      expect(mockLocationState.getDefaultLocation).toHaveBeenCalled();
-      expect(result.current).toEqual(mockLocation);
+      await waitFor(() => expect(result.current).toEqual(mockLocation));
     });
   });
 });

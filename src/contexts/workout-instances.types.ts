@@ -1,6 +1,5 @@
 import { WorkoutInstance } from '@/domain/entities/workoutInstance';
 import { CreateWorkoutInstanceRequest } from '@/domain/interfaces/services/WorkoutInstanceService';
-import { createContext } from 'react';
 
 /**
  * WorkoutInstancesState interface for managing the list of workout instances
@@ -8,8 +7,8 @@ import { createContext } from 'react';
 export interface WorkoutInstancesState {
   instances: WorkoutInstance[];
   isLoading: boolean;
+  isLoaded: boolean;
   error: string | null;
-  fetchInstances: () => Promise<void>;
   createInstance: (
     request: CreateWorkoutInstanceRequest
   ) => Promise<WorkoutInstance>;
@@ -18,7 +17,3 @@ export interface WorkoutInstancesState {
     generatedWorkoutId: string
   ) => WorkoutInstance[];
 }
-
-export const WorkoutInstancesContext = createContext<
-  WorkoutInstancesState | undefined
->(undefined);

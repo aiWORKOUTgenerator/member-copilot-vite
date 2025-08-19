@@ -5,6 +5,7 @@ import { Route, Routes } from 'react-router';
 import ConversionContainer from './modules/conversion/ConversionContainer';
 import DashboardContainer from './modules/dashboard/DashboardContainer';
 import SignInContainer from './modules/sign-in/SignInContainer';
+import IntakeContainer from './modules/intake/IntakeContainer';
 
 export default function App() {
   return (
@@ -13,6 +14,7 @@ export default function App() {
       <Route path="/sign-in/*" element={<SignInContainer />} />
       <Route path="/conversion/*" element={<ConversionContainer />} />
       <Route path="/dashboard/*" element={<DashboardContainer />} />
+      <Route path="/intake/*" element={<IntakeContainer />} />
     </Routes>
   );
 }

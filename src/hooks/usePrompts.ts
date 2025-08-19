@@ -1,19 +1,42 @@
-import { useContext } from 'react';
+import { useEffect } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Prompt } from '@/domain/entities';
-import { PromptContext, PromptState } from '@/contexts/prompt.types';
+import { PromptState } from '@/contexts/prompt.types';
+import { usePromptService } from '@/hooks/usePromptService';
+import { useAuth } from '@/hooks/auth';
 
 /**
- * Custom hook to access the prompt data from the PromptContext.
- * Throws an error if used outside of a PromptProvider.
+ * Hook to access prompts using React Query
  */
 export function usePrompts(): PromptState {
-  const context = useContext(PromptContext);
+  const promptService = usePromptService();
+  const { isSignedIn } = useAuth();
+  const queryClient = useQueryClient();
 
-  if (context === undefined) {
-    throw new Error('usePrompts must be used within a PromptProvider');
-  }
+  const query = useQuery<Prompt[], unknown>({
+    queryKey: ['prompts'],
+    queryFn: () => promptService.getAllPrompts(),
+    enabled: isSignedIn === true,
+    staleTime: 30_000,
+  });
 
-  return context;
+  useEffect(() => {
+    if (isSignedIn === false) {
+      queryClient.removeQueries({ queryKey: ['prompts'] });
+    }
+  }, [isSignedIn, queryClient]);
+
+  const refetch = async (): Promise<void> => {
+    await query.refetch();
+  };
+
+  return {
+    prompts: query.data ?? [],
+    isLoading: query.isFetching,
+    isLoaded: query.isFetched,
+    error: query.error instanceof Error ? query.error.message : null,
+    refetch,
+  };
 }
 
 /**

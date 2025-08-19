@@ -1,19 +1,55 @@
-import { useContext } from 'react';
+import { useEffect } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Contact } from '@/domain/entities/contact';
-import { ContactContext, ContactState } from '@/contexts/contact.types';
+import { ContactState } from '@/contexts/contact.types';
+import { useContactService } from '@/hooks/useContactService';
+import { useAuth } from '@/hooks/auth';
 
 /**
- * Custom hook to access the contact data from the ContactContext.
- * Throws an error if used outside of a ContactProvider.
+ * Hook to access the authenticated user's contact using React Query
  */
 export function useContact(): ContactState {
-  const context = useContext(ContactContext);
+  const contactService = useContactService();
+  const { isSignedIn } = useAuth();
+  const queryClient = useQueryClient();
 
-  if (context === undefined) {
-    throw new Error('useContact must be used within a ContactProvider');
-  }
+  const query = useQuery<Contact, unknown>({
+    queryKey: ['contact'],
+    queryFn: () => contactService.getOrCreateContact(),
+    enabled: isSignedIn === true,
+    staleTime: 30_000,
+  });
 
-  return context;
+  useEffect(() => {
+    if (isSignedIn === false) {
+      queryClient.removeQueries({ queryKey: ['contact'] });
+    }
+  }, [isSignedIn, queryClient]);
+
+  const refetch = async (): Promise<void> => {
+    await query.refetch();
+  };
+
+  const contact: Contact | null = query.data ?? null;
+  const isPhoneVerified = Boolean(
+    contact?.phone_verified_at !== null &&
+      contact?.phone_verified_at !== undefined
+  );
+  const phoneVerificationDate = contact?.phone_verified_at
+    ? new Date(contact.phone_verified_at)
+    : null;
+  const hasPhoneNumber = Boolean(contact?.phone_number);
+
+  return {
+    contact,
+    isLoading: query.isFetching,
+    error: query.error instanceof Error ? query.error.message : null,
+    isLoaded: query.isFetched,
+    refetch,
+    isPhoneVerified,
+    phoneVerificationDate,
+    hasPhoneNumber,
+  };
 }
 
 /**

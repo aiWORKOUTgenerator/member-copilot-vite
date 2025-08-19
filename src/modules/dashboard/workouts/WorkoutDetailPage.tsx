@@ -3,6 +3,10 @@ import {
   useGeneratedWorkouts,
 } from '@/hooks/useGeneratedWorkouts';
 import { PusherEvent } from '@/contexts/PusherEvent';
+import {
+  GeneratedWorkoutChunksProvider,
+  useGeneratedWorkoutChunks,
+} from '@/contexts/GeneratedWorkoutChunksContext';
 import { useTrainerPersonaData } from '@/hooks/useTrainerPersona';
 import { useWorkoutFeedback } from '@/hooks/useWorkoutFeedback';
 import { Section, WorkoutStructure } from '@/domain/entities/generatedWorkout';
@@ -33,12 +37,9 @@ import { useWorkoutInstances } from '@/hooks/useWorkoutInstances';
 import { useAnalytics } from '@/hooks/useAnalytics';
 import { useFeedbackModal } from './components/FeedbackModal.hooks';
 
-interface WorkoutChunkData {
-  chunk: string;
-  [key: string]: unknown;
-}
+// Chunk data is now handled by GeneratedWorkoutChunksProvider
 
-export default function WorkoutDetailPage() {
+function WorkoutDetailContent() {
   const params = useParams();
   const navigate = useNavigate();
   const generatedWorkoutId = params?.id as string;
@@ -66,12 +67,13 @@ export default function WorkoutDetailPage() {
   const [workoutFormat, setWorkoutFormat] = useState<
     'plain' | 'structured' | 'step-by-step' | 'simple' | 'very-simple'
   >('plain');
-  const [workoutChunks, setWorkoutChunks] = useState<string[]>([]);
+  // chunks managed by provider
   const [isTextGenerating, setIsTextGenerating] = useState(false);
   const [isJsonFormatting, setIsJsonFormatting] = useState(false);
 
   // Combine all chunks into a single string
-  const workoutFromChunks = workoutChunks.join('');
+  const { chunks } = useGeneratedWorkoutChunks();
+  const workoutFromChunks = chunks.join('');
 
   // Display text from either the generatedWorkout or accumulated chunks
   const displayText = generatedWorkout?.textFormat || workoutFromChunks;
@@ -282,17 +284,16 @@ export default function WorkoutDetailPage() {
               {existingFeedback ? 'Rated' : 'Rate'}
             </span>
           </button>
-          <div className="flex-1 sm:flex-initial">
-            <WebShareButton
-              disabled={!verySimpleFormat && !simpleFormat}
-              title="Workout Plan"
-              text={verySimpleFormat || simpleFormat || ''}
-            >
-              <ShareIcon className="w-4 h-4 mr-2" />
-              <span className="hidden sm:inline">Share Workout</span>
-              <span className="sm:hidden">Share</span>
-            </WebShareButton>
-          </div>
+          <WebShareButton
+            className="flex-1 sm:flex-initial w-full sm:w-auto"
+            disabled={!verySimpleFormat && !simpleFormat}
+            title="Workout Plan"
+            text={verySimpleFormat || simpleFormat || ''}
+          >
+            <ShareIcon className="w-4 h-4 mr-2" />
+            <span className="hidden sm:inline">Share Workout</span>
+            <span className="sm:hidden">Share</span>
+          </WebShareButton>
         </div>
       </div>
 
@@ -360,26 +361,7 @@ export default function WorkoutDetailPage() {
         </div>
       )}
 
-      {/* Event listeners */}
-      <PusherEvent
-        channel={`${generatedWorkoutId}`}
-        event="workout-chunk-created"
-        onEvent={(data: unknown) => {
-          // Type check and safely access chunk data
-          if (
-            data &&
-            typeof data === 'object' &&
-            data !== null &&
-            'chunk' in data &&
-            typeof (data as WorkoutChunkData).chunk === 'string'
-          ) {
-            setWorkoutChunks((prev) => [
-              ...prev,
-              (data as WorkoutChunkData).chunk,
-            ]);
-          }
-        }}
-      />
+      {/* Event listeners - moved chunk accumulation into provider */}
       <PusherEvent
         channel={`${generatedWorkoutId}`}
         event="json-format-initiated"
@@ -501,5 +483,15 @@ export default function WorkoutDetailPage() {
         )}
       </FeedbackModal>
     </div>
+  );
+}
+
+export default function WorkoutDetailPage() {
+  const params = useParams();
+  const generatedWorkoutId = params?.id as string;
+  return (
+    <GeneratedWorkoutChunksProvider workoutId={generatedWorkoutId}>
+      <WorkoutDetailContent />
+    </GeneratedWorkoutChunksProvider>
   );
 }
