@@ -146,8 +146,6 @@ export class MockConfigurationService implements ConfigurationService {
         backgroundImage: 'assets/images/mock-background.jpeg',
         rudderDataPlaneUrl: 'https://mock.dataplane.rudderstack.com',
         favicon: 'https://via.placeholder.com/32x32?text=M',
-        quickWorkoutConfigurationId: 'mock-quick-workout-config-id',
-        generatedWorkoutConfigurationId: 'mock-generated-workout-config-id',
       },
       api_domain: 'tenant.aitenanttest.test',
     };
