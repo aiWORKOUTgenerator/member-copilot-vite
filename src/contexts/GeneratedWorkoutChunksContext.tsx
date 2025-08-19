@@ -7,7 +7,8 @@ import {
   useContext,
   useMemo,
 } from 'react';
-import { usePusherEvent } from '@/hooks/usePusherEvent';
+import { usePusherService } from '@/hooks/useServices';
+import { ensureWorkoutChunkBinding } from '@/services/pusher/workoutChunkBinding';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 export interface GeneratedWorkoutChunksState {
@@ -39,34 +40,46 @@ export function GeneratedWorkoutChunksProvider({
       ]);
       return existing ?? [];
     },
-    initialData: [],
+    initialData: () =>
+      queryClient.getQueryData<string[]>([
+        'generatedWorkoutChunks',
+        workoutId,
+      ]) ?? [],
     staleTime: Infinity,
+    gcTime: 30 * 60 * 1000,
   });
 
-  const handleChunkEvent = useCallback(
-    (data: unknown) => {
-      if (
-        data &&
-        typeof data === 'object' &&
-        data !== null &&
-        'chunk' in data &&
-        typeof (data as { chunk: unknown }).chunk === 'string'
-      ) {
-        queryClient.setQueryData<string[] | undefined>(
-          ['generatedWorkoutChunks', workoutId],
-          (prev) =>
-            prev
-              ? [...prev, (data as { chunk: string }).chunk]
-              : [(data as { chunk: string }).chunk]
-        );
-      }
-    },
-    [queryClient, workoutId]
-  );
+  // Debug: provider mount and cached state
+  useMemo(() => {
+    const cached = queryClient.getQueryData<string[]>([
+      'generatedWorkoutChunks',
+      workoutId,
+    ]);
+    console.log('[GeneratedWorkoutChunks] provider mounted', {
+      workoutId,
+      cachedCount: cached?.length ?? 0,
+      cached,
+    });
+    return undefined;
+  }, [queryClient, workoutId]);
 
-  usePusherEvent(`${workoutId}`, 'workout-chunk-created', handleChunkEvent);
+  const pusherService = usePusherService();
+  useMemo(() => {
+    ensureWorkoutChunkBinding(pusherService, queryClient, workoutId);
+    return undefined;
+  }, [pusherService, queryClient, workoutId]);
+
+  // Debug: react to chunk list changes
+  useMemo(() => {
+    console.log('[GeneratedWorkoutChunks] chunks updated', {
+      workoutId,
+      count: chunks.length,
+    });
+    return undefined;
+  }, [chunks, workoutId]);
 
   const clear = useCallback(() => {
+    console.log('[GeneratedWorkoutChunks] clear called', { workoutId });
     queryClient.setQueryData<string[]>(
       ['generatedWorkoutChunks', workoutId],
       []

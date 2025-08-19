@@ -12,6 +12,8 @@ import { RadioCardGroupInput } from '@/ui/shared/molecules/RadioCardGroupInput';
 import { useGeneratedWorkouts } from '@/hooks/useGeneratedWorkouts';
 import { useQueryClient } from '@tanstack/react-query';
 import { useLocation as useLocationState } from '@/hooks/useLocation';
+import { usePusherService } from '@/hooks/useServices';
+import { ensureWorkoutChunkBinding } from '@/services/pusher/workoutChunkBinding';
 import type { WorkoutParams } from '@/domain/entities/workoutParams';
 import type {
   AgeRange,
@@ -70,6 +72,7 @@ export default function QuickWorkoutIntakePage() {
     error: generationError,
   } = useGeneratedWorkouts();
   const queryClient = useQueryClient();
+  const pusherService = usePusherService();
 
   const mapSexAgeToText = (age: AgeRange | null): string | undefined => {
     return age || undefined;
@@ -211,40 +214,7 @@ export default function QuickWorkoutIntakePage() {
     setAttemptedNext(false);
 
     if (isLastQuestionStep) {
-      console.log('QuickWorkoutIntake Completed', responses);
-      analytics.track('QuickWorkoutIntake Completed', {
-        ...responses,
-        tracked_at: new Date().toISOString(),
-      });
-
-      // Move to completion screen while generating
-      setCurrentStepIndex(stepOrder.findIndex((s) => s.key === 'complete'));
-
-      // Build LLM-friendly workout params from intake responses
-      const params: WorkoutParams = {
-        sex_and_age: mapSexAgeToText(responses.ageRange),
-        goal_and_activity: mapExperienceToText(responses.experience),
-        duration_and_intensity: mapDurationIntensityToText(responses.energy),
-      };
-      const configId = import.meta.env
-        .VITE_QUICK_WORKOUT_CONFIGURATION_ID as string;
-
-      createWorkout(configId, params, '')
-        .then((workout) => {
-          // Pre-subscribe to workout chunk stream immediately to avoid missing early messages
-          queryClient.setQueryData<string[]>(
-            ['generatedWorkoutChunks', workout.id],
-            (prev) => prev ?? []
-          );
-          analytics.track('Workout Generated from Intake', {
-            workoutId: workout.id,
-            tracked_at: new Date().toISOString(),
-          });
-          navigate(`/dashboard/workouts/${workout.id}`);
-        })
-        .catch((err) => {
-          console.error('Failed to generate workout from intake:', err);
-        });
+      // Generation is handled on energy selection; nothing to do here
       return;
     }
 
@@ -527,6 +497,19 @@ export default function QuickWorkoutIntakePage() {
 
                     createWorkout(configId, params, '')
                       .then((workout) => {
+                        // Seed chunk cache immediately to avoid missing early messages
+                        queryClient.setQueryData<string[]>(
+                          ['generatedWorkoutChunks', workout.id],
+                          (prev) => prev ?? []
+                        );
+
+                        // Subscribe to real-time chunk updates ASAP (idempotent)
+                        ensureWorkoutChunkBinding(
+                          pusherService,
+                          queryClient,
+                          workout.id
+                        );
+
                         analytics.track('Workout Generated from Intake', {
                           workoutId: workout.id,
                           tracked_at: new Date().toISOString(),
