@@ -15,12 +15,16 @@ export function WorkoutPathCard({
       icon: 'bg-gradient-to-br from-blue-500 to-green-500',
       badge: 'badge-primary',
       text: 'text-blue-700',
+      bulletBg: 'bg-blue-600',
+      actionBg: 'bg-blue-600/10',
     },
     detailed: {
       card: 'bg-gradient-to-br from-purple-50 to-pink-50 border-purple-200 hover:border-purple-300',
       icon: 'bg-gradient-to-br from-purple-500 to-pink-500',
       badge: 'badge-secondary',
       text: 'text-purple-700',
+      bulletBg: 'bg-purple-600',
+      actionBg: 'bg-purple-600/10',
     },
   };
 
@@ -65,7 +69,7 @@ export function WorkoutPathCard({
           {features.map((feature, index) => (
             <div key={index} className="flex items-center gap-3">
               <div
-                className={`w-2 h-2 rounded-full ${currentColors.text} bg-current`}
+                className={`w-2 h-2 rounded-full ${currentColors.bulletBg}`}
               ></div>
               <span className="text-sm text-base-content/80">{feature}</span>
             </div>
@@ -75,7 +79,7 @@ export function WorkoutPathCard({
         {/* Action Indicator */}
         <div className="flex justify-end">
           <div
-            className={`w-8 h-8 rounded-full ${currentColors.text} bg-current/10 flex items-center justify-center`}
+            className={`w-8 h-8 rounded-full ${currentColors.text} ${currentColors.actionBg} flex items-center justify-center`}
           >
             <svg
               className="w-4 h-4"
