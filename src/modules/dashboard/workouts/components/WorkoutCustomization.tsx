@@ -700,6 +700,7 @@ export default function WorkoutCustomization({
               onChange={onChange}
               errors={errors}
               disabled={disabled}
+              variant={viewMode}
             />
           )}
 
@@ -709,6 +710,7 @@ export default function WorkoutCustomization({
               onChange={onChange}
               errors={errors}
               disabled={disabled}
+              variant={viewMode}
             />
           )}
 
@@ -718,6 +720,7 @@ export default function WorkoutCustomization({
               onChange={onChange}
               errors={errors}
               disabled={disabled}
+              variant={viewMode}
             />
           )}
         </div>
