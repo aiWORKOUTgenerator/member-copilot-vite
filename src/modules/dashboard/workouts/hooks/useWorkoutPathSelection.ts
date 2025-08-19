@@ -6,7 +6,7 @@ export function useWorkoutPathSelection() {
 
   const selectPath = useCallback(
     (path: 'quick' | 'detailed') => {
-      analytics.track('workout_path_selected', {
+      analytics.track('Workout Path Selected', {
         path,
         timestamp: new Date().toISOString(),
       });
