@@ -4,10 +4,13 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router';
 import App from './App.tsx';
 import { AnalyticsProvider } from './contexts/AnalyticsContext.tsx';
-import { ConfigurationProvider } from './contexts/ConfigurationContext.tsx';
 import { ServiceProvider } from './contexts/ServiceContext.tsx';
 import { VerificationProvider } from './contexts/VerificationContext.tsx';
 import { ConfigurationGuard } from './ui/shared/organisms/ConfigurationGuard.tsx';
+import { TitleProvider } from './contexts/TitleContext.tsx';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const qc = new QueryClient();
 
 // Load dynamic theme CSS
 const currentDomain = window.location.hostname;
@@ -34,20 +37,22 @@ if (!PUBLISHABLE_KEY) {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter>
-      <ConfigurationProvider>
+    <QueryClientProvider client={qc}>
+      <BrowserRouter>
         <ConfigurationGuard>
           <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
             <ServiceProvider>
               <VerificationProvider>
-                <AnalyticsProvider>
-                  <App />
-                </AnalyticsProvider>
+                <TitleProvider>
+                  <AnalyticsProvider>
+                    <App />
+                  </AnalyticsProvider>
+                </TitleProvider>
               </VerificationProvider>
             </ServiceProvider>
           </ClerkProvider>
         </ConfigurationGuard>
-      </ConfigurationProvider>
-    </BrowserRouter>
+      </BrowserRouter>
+    </QueryClientProvider>
   </StrictMode>
 );

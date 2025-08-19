@@ -1,9 +1,6 @@
-import {
-  ConfigurationContext,
-  ConfigurationState,
-} from '@/contexts/configuration.types';
+import React, { ReactNode } from 'react';
+import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
-import { ReactNode } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { ConfigurationGuard } from '../ConfigurationGuard';
 
@@ -24,31 +21,29 @@ vi.mock('../ConfigurationLoadingScreen', () => ({
   ),
 }));
 
-const createWrapper = (state: Partial<ConfigurationState>) => {
-  const defaultState: ConfigurationState = {
-    configuration: null,
-    isLoading: false,
-    isLoaded: false,
-    error: null,
-    refetch: vi.fn(),
-    ...state,
-  };
+// Mock the useConfiguration hook
+const mockUseConfiguration = vi.fn();
+vi.mock('@/hooks/useConfiguration', () => ({
+  useConfiguration: () => mockUseConfiguration(),
+}));
 
-  return ({ children }: { children: ReactNode }) => (
-    <ConfigurationContext.Provider value={defaultState}>
-      <ConfigurationGuard>{children}</ConfigurationGuard>
-    </ConfigurationContext.Provider>
+const createWrapper =
+  () =>
+  ({ children }: { children: ReactNode }) => (
+    <ConfigurationGuard>{children}</ConfigurationGuard>
   );
-};
 
 describe('ConfigurationGuard', () => {
   const TestComponent = () => <div data-testid="app-content">App Content</div>;
 
   it('should show loading screen when configuration is loading', () => {
-    const Wrapper = createWrapper({
+    mockUseConfiguration.mockReturnValue({
       isLoading: true,
       isLoaded: false,
+      error: null,
+      refetch: vi.fn(),
     });
+    const Wrapper = createWrapper();
 
     render(
       <Wrapper>
@@ -62,10 +57,13 @@ describe('ConfigurationGuard', () => {
   });
 
   it('should show loading screen when configuration is not loaded', () => {
-    const Wrapper = createWrapper({
+    mockUseConfiguration.mockReturnValue({
       isLoading: false,
       isLoaded: false,
+      error: null,
+      refetch: vi.fn(),
     });
+    const Wrapper = createWrapper();
 
     render(
       <Wrapper>
@@ -79,11 +77,13 @@ describe('ConfigurationGuard', () => {
 
   it('should show loading screen with error when there is an error', () => {
     const errorMessage = 'Configuration failed';
-    const Wrapper = createWrapper({
+    mockUseConfiguration.mockReturnValue({
       isLoading: false,
       isLoaded: false,
       error: errorMessage,
+      refetch: vi.fn(),
     });
+    const Wrapper = createWrapper();
 
     render(
       <Wrapper>
@@ -97,11 +97,13 @@ describe('ConfigurationGuard', () => {
   });
 
   it('should render children when configuration is loaded successfully', () => {
-    const Wrapper = createWrapper({
+    mockUseConfiguration.mockReturnValue({
       isLoading: false,
       isLoaded: true,
       error: null,
+      refetch: vi.fn(),
     });
+    const Wrapper = createWrapper();
 
     render(
       <Wrapper>
@@ -115,12 +117,13 @@ describe('ConfigurationGuard', () => {
 
   it('should pass refetch function to loading screen', () => {
     const mockRefetch = vi.fn();
-    const Wrapper = createWrapper({
+    mockUseConfiguration.mockReturnValue({
       isLoading: false,
       isLoaded: false,
       error: 'Test error',
       refetch: mockRefetch,
     });
+    const Wrapper = createWrapper();
 
     render(
       <Wrapper>
@@ -135,10 +138,13 @@ describe('ConfigurationGuard', () => {
   });
 
   it('should handle multiple children', () => {
-    const Wrapper = createWrapper({
+    mockUseConfiguration.mockReturnValue({
       isLoading: false,
       isLoaded: true,
+      error: null,
+      refetch: vi.fn(),
     });
+    const Wrapper = createWrapper();
 
     render(
       <Wrapper>

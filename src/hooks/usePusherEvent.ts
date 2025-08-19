@@ -25,14 +25,17 @@ export function usePusherEvent(
 
   useEffect(() => {
     // Subscribe to the channel
+    console.log('[Pusher] subscribing', { channel, event });
     const pusherChannel = pusherService.subscribe(channel);
 
     // Bind to the event
     pusherChannel.bind(event, onEvent);
+    console.log('[Pusher] bound', { channel, event });
 
     // Cleanup function to unbind and possibly unsubscribe when component unmounts
     return () => {
       pusherChannel.unbind(event, onEvent);
+      console.log('[Pusher] unbound', { channel, event });
 
       // Note: Not unsubscribing from the channel here to avoid breaking other
       // components that might be using the same channel

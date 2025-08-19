@@ -1,5 +1,4 @@
 import { Location, Equipment, ClassSchedule } from '@/domain/entities';
-import { createContext } from 'react';
 
 /**
  * LocationState interface defines the shape of our location context value.
@@ -22,6 +21,4 @@ export interface LocationState {
  * Create the context with a default undefined value.
  * This forces consumers to use the useLocation hook which performs a null check.
  */
-export const LocationContext = createContext<LocationState | undefined>(
-  undefined
-);
+export {};

@@ -1,5 +1,4 @@
 import { AppConfiguration } from '@/domain/entities/appConfiguration';
-import { createContext } from 'react';
 
 /**
  * Configuration state interface
@@ -20,6 +19,4 @@ export interface ConfigurationState {
 /**
  * Configuration context
  */
-export const ConfigurationContext = createContext<
-  ConfigurationState | undefined
->(undefined);
+export {};

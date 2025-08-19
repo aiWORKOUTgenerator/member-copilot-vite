@@ -1,25 +1,27 @@
 'use client';
 
-import { useTrainerPersonaData } from '@/hooks/useTrainerPersona';
-import { useWorkoutInstances } from '@/hooks/useWorkoutInstances';
 import { WorkoutInstance } from '@/domain/entities/workoutInstance';
 import { useUserAccess } from '@/hooks';
+import { useAnalytics } from '@/hooks/useAnalytics';
+import { useTrainerPersonaData } from '@/hooks/useTrainerPersona';
+import { useWorkoutInstances } from '@/hooks/useWorkoutInstances';
 import LoadingState from '@/ui/shared/atoms/LoadingState';
 import EmptyStateBasic from '@/ui/shared/molecules/EmptyState';
 import {
   Activity,
+  ArrowRight,
   Calendar,
+  CheckCircle,
+  Crown,
   Grid,
   List,
-  Crown,
-  ArrowRight,
-  CheckCircle,
   Shield,
 } from 'lucide-react';
-import { useMemo, useState, useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { TrainerPersonaDisplay } from './components/TrainerPersonaDisplay';
 import WorkoutInstanceModal from './components/WorkoutInstanceModal';
+import { useWorkoutInstanceModal } from './components/WorkoutInstanceModal.hooks';
 import { WorkoutTimeline } from './components/WorkoutTimeline';
 import {
   calculateStats,
@@ -27,8 +29,6 @@ import {
   formatDate,
   sortByDateDesc,
 } from './utils/workoutHistoryUtils';
-import { useAnalytics } from '@/hooks/useAnalytics';
-import { useWorkoutInstanceModal } from './components/WorkoutInstanceModal.hooks';
 
 /**
  * Simple workout history page showing instances from the last month
