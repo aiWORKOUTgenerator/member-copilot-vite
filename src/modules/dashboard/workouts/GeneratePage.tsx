@@ -1,7 +1,7 @@
 import { useGeneratedWorkouts } from '@/hooks/useGeneratedWorkouts';
 import { ArrowBigLeft } from 'lucide-react';
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import WorkoutCustomization from './components/WorkoutCustomization';
 import { PerWorkoutOptions } from './components/types';
 import { useAnalytics } from '@/hooks/useAnalytics';
@@ -12,10 +12,12 @@ import {
   PromptInputWithExamples,
 } from '@/ui/shared/molecules';
 import { WORKOUT_PROMPT_EXAMPLES } from './constants/promptExamples';
-import { useConfiguration } from '@/hooks/useConfiguration';
 
 export default function GenerateWorkoutPage() {
-  const [activeTab, setActiveTab] = useState<'quick' | 'detailed'>('quick');
+  const { mode } = useParams<{ mode: string }>();
+  const [activeTab, setActiveTab] = useState<'quick' | 'detailed'>(
+    mode === 'detailed' ? 'detailed' : 'quick'
+  );
   const [activeQuickStep, setActiveQuickStep] = useState<
     'focus-energy' | 'duration-equipment'
   >('focus-energy');
@@ -35,7 +37,6 @@ export default function GenerateWorkoutPage() {
   const { createWorkout } = useGeneratedWorkouts();
   const navigate = useNavigate();
   const analytics = useAnalytics();
-  const { configuration } = useConfiguration();
 
   // Selection summary for Quick Workout Setup
   const { selections, hasSelections } = useSelectionSummary(perWorkoutOptions);
@@ -46,6 +47,15 @@ export default function GenerateWorkoutPage() {
       tracked_at: new Date().toISOString(),
     });
   }, [analytics]);
+
+  // Update activeTab when mode parameter changes
+  useEffect(() => {
+    if (mode === 'detailed') {
+      setActiveTab('detailed');
+    } else {
+      setActiveTab('quick');
+    }
+  }, [mode]);
 
   // Helper function to convert options to string format for API submission
   const convertOptionsToStrings = (
@@ -87,11 +97,11 @@ export default function GenerateWorkoutPage() {
         setIsGenerating(true);
 
         try {
-          const configId =
-            configuration?.appConfig.generatedWorkoutConfigurationId;
+          const configId = import.meta.env
+            .VITE_GENERATED_WORKOUT_CONFIGURATION_ID;
           if (!configId) {
             console.error(
-              'Missing generatedWorkoutConfigurationId from configuration'
+              'Missing VITE_GENERATED_WORKOUT_CONFIGURATION_ID environment variable'
             );
             setIsGenerating(false);
             handleGenerationError('Configuration not loaded');
@@ -132,11 +142,11 @@ export default function GenerateWorkoutPage() {
       setIsGenerating(true);
 
       try {
-        const configId =
-          configuration?.appConfig.generatedWorkoutConfigurationId;
+        const configId = import.meta.env
+          .VITE_GENERATED_WORKOUT_CONFIGURATION_ID;
         if (!configId) {
           console.error(
-            'Missing generatedWorkoutConfigurationId from configuration'
+            'Missing VITE_GENERATED_WORKOUT_CONFIGURATION_ID environment variable'
           );
           setIsGenerating(false);
           handleGenerationError('Configuration not loaded');
