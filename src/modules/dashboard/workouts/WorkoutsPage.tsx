@@ -15,6 +15,7 @@ import { useNavigate } from 'react-router';
 import WorkoutList from './components/WorkoutList';
 import { useAnalytics } from '@/hooks/useAnalytics';
 import { useEffect } from 'react';
+import { FloatingClipboardFab } from '@/ui/shared/molecules';
 
 export default function AIWorkouts() {
   const { workouts } = useGeneratedWorkouts();
@@ -83,6 +84,15 @@ export default function AIWorkouts() {
       tracked_at: new Date().toISOString(),
     });
     navigate('/dashboard/workouts/history');
+  };
+
+  // Track FAB interactions
+  const handleFabClick = () => {
+    analytics.track('Floating Clipboard FAB Clicked', {
+      location: 'workouts_library',
+      existingWorkoutCount: workouts?.length || 0,
+      tracked_at: new Date().toISOString(),
+    });
   };
 
   if (workouts.length === 0) {
@@ -174,6 +184,12 @@ export default function AIWorkouts() {
         </div>
       </div>
       <WorkoutList workouts={workouts} onWorkoutClick={handleWorkoutClick} />
+
+      {/* Floating Action Button for quick workout selection */}
+      <FloatingClipboardFab
+        href="/dashboard/workouts/generate"
+        onClick={handleFabClick}
+      />
     </div>
   );
 }
