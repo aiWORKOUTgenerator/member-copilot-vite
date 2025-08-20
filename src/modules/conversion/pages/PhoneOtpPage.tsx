@@ -44,6 +44,10 @@ export default function PhoneOTPSignUnifiedPage() {
     }
   }, [searchParams]);
 
+  // Get custom title from URL params
+  const customTitle = searchParams?.get('title') || null;
+  const returnUrl = searchParams?.get('returnUrl') || null;
+
   // Validate phone input reactively
   useEffect(() => {
     if (phone && !isValidPhoneNumber(phone)) {
@@ -63,10 +67,11 @@ export default function PhoneOTPSignUnifiedPage() {
   }, [code]);
 
   const pageTitle = useMemo(() => {
+    if (customTitle) return customTitle;
     if (authMode === 'sign-in') return 'Sign in with your phone';
     if (authMode === 'sign-up') return 'Create your account';
     return 'Continue with phone';
-  }, [authMode]);
+  }, [authMode, customTitle]);
 
   async function beginSignInFlow() {
     if (!signIn) return false;
@@ -206,7 +211,8 @@ export default function PhoneOTPSignUnifiedPage() {
         if (result.status === 'complete') {
           setSuccess(true);
           await setActive({ session: result.createdSessionId });
-          setTimeout(() => navigate('/dashboard'), 1500);
+          const redirectUrl = returnUrl || '/dashboard';
+          setTimeout(() => navigate(redirectUrl), 1500);
         } else {
           setError('Verification could not be completed. Please try again.');
         }
@@ -218,7 +224,8 @@ export default function PhoneOTPSignUnifiedPage() {
         if (result.status === 'complete') {
           setSuccess(true);
           await setActive({ session: result.createdSessionId });
-          setTimeout(() => navigate('/dashboard'), 1500);
+          const redirectUrl = returnUrl || '/dashboard';
+          setTimeout(() => navigate(redirectUrl), 1500);
         } else {
           setError('Verification could not be completed. Please try again.');
         }

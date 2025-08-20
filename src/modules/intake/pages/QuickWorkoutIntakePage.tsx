@@ -5,7 +5,7 @@ import { useParams, useNavigate } from 'react-router';
 import { useAuth } from '@/hooks/auth';
 import { useAppConfig } from '@/hooks/useConfiguration';
 import { useAnalytics } from '@/hooks/useAnalytics';
-import { AuthRequired, Button } from '@/ui';
+import { Button } from '@/ui';
 import { IntakeFullScreenLayout } from '../components/IntakeFullScreenLayout';
 import { StepTransition } from '../components/StepTransition';
 import { RadioCardGroupInput } from '@/ui/shared/molecules/RadioCardGroupInput';
@@ -231,7 +231,17 @@ export default function QuickWorkoutIntakePage() {
     );
   }
   if (!isSignedIn) {
-    return <AuthRequired signInLink="/sign-in" />;
+    // Redirect to phone OTP signup with return URL and custom title
+    const returnUrl = encodeURIComponent(`/intake/quick-workout/${locationId}`);
+    const title = encodeURIComponent(
+      'Use Your Phone To Generate An AI Workout'
+    );
+    navigate(`/conversion/phone-otp?returnUrl=${returnUrl}&title=${title}`);
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <span className="loading loading-ring loading-lg"></span>
+      </div>
+    );
   }
 
   const nextDisabled =
