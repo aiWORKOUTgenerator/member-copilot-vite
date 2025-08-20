@@ -57,6 +57,15 @@ export default function SignInPage() {
           href="/sign-in/email-otp"
           ariaLabel="Sign in with verification code"
         />
+
+        <AuthMethodCard
+          title="Authenticate Via Phone"
+          description="Enter your phone number to receive a verification code via SMS"
+          buttonLabel="Continue with Phone"
+          buttonVariant="accent"
+          href="/sign-in/phone-otp"
+          ariaLabel="Authenticate via phone"
+        />
       </div>
     </FormContainer>
   );
