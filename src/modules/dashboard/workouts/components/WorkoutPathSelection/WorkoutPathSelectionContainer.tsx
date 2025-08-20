@@ -19,37 +19,43 @@ export function WorkoutPathSelectionContainer() {
     features: [
       'Fast and efficient setup',
       'AI-powered recommendations',
-      'Basic customization options',
+      'Quick customization options',
+      'Perfect for busy schedules',
     ],
     difficulty: 'Beginner' as const,
     icon: Zap,
     colorScheme: 'quick' as const,
-    onClick: () => handlePathSelect('quick'),
   };
 
   const detailedPathData = {
-    title: 'Detailed Workout Focus',
+    title: 'Detailed Workout Setup',
     description:
-      'Fine-tune every aspect of your workout with comprehensive customization options for the perfect routine.',
+      'Create a highly customized workout with advanced options and preferences.',
     features: [
-      'Complete workout customization',
-      'Equipment and exercise preferences',
-      'Advanced targeting options',
+      'Comprehensive customization',
+      'Advanced preference settings',
+      'Detailed equipment selection',
+      'Tailored to your exact needs',
     ],
     difficulty: 'Advanced' as const,
     icon: Target,
     colorScheme: 'detailed' as const,
-    onClick: () => handlePathSelect('detailed'),
   };
 
   return (
     <div
       className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto"
-      role="radiogroup"
-      aria-label="Workout path selection"
+      role="group"
+      aria-label="Workout path selection options"
     >
-      <WorkoutPathCard {...quickPathData} />
-      <WorkoutPathCard {...detailedPathData} />
+      <WorkoutPathCard
+        {...quickPathData}
+        onClick={() => handlePathSelect('quick')}
+      />
+      <WorkoutPathCard
+        {...detailedPathData}
+        onClick={() => handlePathSelect('detailed')}
+      />
     </div>
   );
 }
