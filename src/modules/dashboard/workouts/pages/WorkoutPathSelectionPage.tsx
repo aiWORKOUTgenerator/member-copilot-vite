@@ -4,6 +4,8 @@ import { PathCardSkeleton } from '@/ui/shared/molecules/PathCard';
 import { useWorkoutPathSelection } from '../hooks/useWorkoutPathSelection';
 
 // Constants
+// 300ms provides a brief, perceptible loading animation for better UX.
+// This duration was chosen to avoid a "flash" effect while keeping the wait minimal.
 const LOADING_DELAY_MS = 300;
 
 export default function WorkoutPathSelectionPage() {
