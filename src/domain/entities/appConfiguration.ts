@@ -59,6 +59,8 @@ export interface AppConfig {
   backgroundImage: string;
   rudderDataPlaneUrl: string;
   favicon: string;
+  quickWorkoutConfigurationId: string;
+  generatedWorkoutConfigurationId: string;
 }
 
 /**
