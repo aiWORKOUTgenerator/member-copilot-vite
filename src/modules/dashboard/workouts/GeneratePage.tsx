@@ -17,7 +17,9 @@ import { useConfiguration } from '@/hooks/useConfiguration';
 export default function GenerateWorkoutPage() {
   const { mode } = useParams<{ mode: string }>();
   // const { configuration } = useConfiguration(); // TODO: Use configuration when needed
-  const activeTab = mode === 'detailed' ? 'detailed' : 'quick';
+  const [activeTab, setActiveTab] = useState<'quick' | 'detailed'>(
+    mode === 'detailed' ? 'detailed' : 'quick'
+  );
   const [activeQuickStep, setActiveQuickStep] = useState<
     'focus-energy' | 'duration-equipment'
   >('focus-energy');
@@ -48,6 +50,15 @@ export default function GenerateWorkoutPage() {
       tracked_at: new Date().toISOString(),
     });
   }, [analytics]);
+
+  // Update activeTab when mode parameter changes
+  useEffect(() => {
+    if (mode === 'detailed') {
+      setActiveTab('detailed');
+    } else {
+      setActiveTab('quick');
+    }
+  }, [mode]);
 
   // Helper function to convert options to string format for API submission
   const convertOptionsToStrings = (
@@ -298,6 +309,33 @@ export default function GenerateWorkoutPage() {
       <div className="card card-border max-w-4xl mx-auto bg-base-200">
         <div className="card-body">
           <h2 className="card-title">Generate a New Workout</h2>
+
+          {/* Contextual Mode Selection - Show only the opposite option */}
+          {activeTab === 'quick' && (
+            <div className="join mb-6 w-fit">
+              <button
+                type="button"
+                className="btn btn-sm md:btn-md join-item btn-outline"
+                onClick={() =>
+                  navigate('/dashboard/workouts/generate/detailed')
+                }
+              >
+                Switch to Detailed Workout Setup
+              </button>
+            </div>
+          )}
+
+          {activeTab === 'detailed' && (
+            <div className="join mb-6 w-fit">
+              <button
+                type="button"
+                className="btn btn-sm md:btn-md join-item btn-outline"
+                onClick={() => navigate('/dashboard/workouts/generate/quick')}
+              >
+                Switch to Quick Workout Setup
+              </button>
+            </div>
+          )}
 
           <form onSubmit={handleSubmit}>
             {activeTab === 'quick' ? (
