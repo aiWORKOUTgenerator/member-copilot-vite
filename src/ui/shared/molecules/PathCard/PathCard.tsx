@@ -46,52 +46,52 @@ export function PathCard({
 }: PathCardProps) {
   const colorClasses = {
     primary: {
-      card: 'bg-gradient-to-br from-blue-50 to-green-50 border-blue-200 hover:border-blue-300',
-      icon: 'bg-gradient-to-br from-blue-500 to-green-500',
+      card: 'bg-gradient-to-br from-primary/20 to-primary/10 border-primary/30 hover:border-primary/40 bg-base-100',
+      icon: 'bg-gradient-to-br from-primary to-primary-focus',
       badge: 'badge-primary',
-      text: 'text-blue-700',
-      bulletBg: 'bg-blue-600',
-      actionBg: 'bg-blue-600/10',
+      text: 'text-primary',
+      bulletBg: 'bg-primary',
+      actionBg: 'bg-primary/20',
     },
     secondary: {
-      card: 'bg-gradient-to-br from-purple-50 to-pink-50 border-purple-200 hover:border-purple-300',
-      icon: 'bg-gradient-to-br from-purple-500 to-pink-500',
+      card: 'bg-gradient-to-br from-secondary/20 to-secondary/10 border-secondary/30 hover:border-secondary/40 bg-base-100',
+      icon: 'bg-gradient-to-br from-secondary to-secondary-focus',
       badge: 'badge-secondary',
-      text: 'text-purple-700',
-      bulletBg: 'bg-purple-600',
-      actionBg: 'bg-purple-600/10',
+      text: 'text-secondary',
+      bulletBg: 'bg-secondary',
+      actionBg: 'bg-secondary/20',
     },
     accent: {
-      card: 'bg-gradient-to-br from-orange-50 to-red-50 border-orange-200 hover:border-orange-300',
-      icon: 'bg-gradient-to-br from-orange-500 to-red-500',
+      card: 'bg-gradient-to-br from-accent/20 to-accent/10 border-accent/30 hover:border-accent/40 bg-base-100',
+      icon: 'bg-gradient-to-br from-accent to-accent-focus',
       badge: 'badge-accent',
-      text: 'text-orange-700',
-      bulletBg: 'bg-orange-600',
-      actionBg: 'bg-orange-600/10',
+      text: 'text-accent',
+      bulletBg: 'bg-accent',
+      actionBg: 'bg-accent/20',
     },
     success: {
-      card: 'bg-gradient-to-br from-green-50 to-emerald-50 border-green-200 hover:border-green-300',
-      icon: 'bg-gradient-to-br from-green-500 to-emerald-500',
+      card: 'bg-gradient-to-br from-success/20 to-success/10 border-success/30 hover:border-success/40 bg-base-100',
+      icon: 'bg-gradient-to-br from-success to-success-focus',
       badge: 'badge-success',
-      text: 'text-green-700',
-      bulletBg: 'bg-green-600',
-      actionBg: 'bg-green-600/10',
+      text: 'text-success',
+      bulletBg: 'bg-success',
+      actionBg: 'bg-success/20',
     },
     warning: {
-      card: 'bg-gradient-to-br from-yellow-50 to-amber-50 border-yellow-200 hover:border-yellow-300',
-      icon: 'bg-gradient-to-br from-yellow-500 to-amber-500',
+      card: 'bg-gradient-to-br from-warning/20 to-warning/10 border-warning/30 hover:border-warning/40 bg-base-100',
+      icon: 'bg-gradient-to-br from-warning to-warning-focus',
       badge: 'badge-warning',
-      text: 'text-yellow-700',
-      bulletBg: 'bg-yellow-600',
-      actionBg: 'bg-yellow-600/10',
+      text: 'text-warning',
+      bulletBg: 'bg-warning',
+      actionBg: 'bg-warning/20',
     },
     info: {
-      card: 'bg-gradient-to-br from-cyan-50 to-blue-50 border-cyan-200 hover:border-cyan-300',
-      icon: 'bg-gradient-to-br from-cyan-500 to-blue-500',
+      card: 'bg-gradient-to-br from-info/20 to-info/10 border-info/30 hover:border-info/40 bg-base-100',
+      icon: 'bg-gradient-to-br from-info to-info-focus',
       badge: 'badge-info',
-      text: 'text-cyan-700',
-      bulletBg: 'bg-cyan-600',
-      actionBg: 'bg-cyan-600/10',
+      text: 'text-info',
+      bulletBg: 'bg-info',
+      actionBg: 'bg-info/20',
     },
   };
 
@@ -159,11 +159,9 @@ export function PathCard({
 
         {/* Action Indicator */}
         <div className="flex justify-end">
-          <div
+          <button
             className={cn(
-              'w-8 h-8 rounded-full flex items-center justify-center',
-              currentColors.text,
-              currentColors.actionBg
+              'btn btn-primary btn-active w-8 h-8 rounded-full flex items-center justify-center p-0'
             )}
           >
             <svg
@@ -179,7 +177,7 @@ export function PathCard({
                 d="M9 5l7 7-7 7"
               />
             </svg>
-          </div>
+          </button>
         </div>
       </div>
     </div>
