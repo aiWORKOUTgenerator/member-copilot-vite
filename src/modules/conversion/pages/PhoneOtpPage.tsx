@@ -33,6 +33,7 @@ export default function PhoneOTPSignUnifiedPage() {
   const [validationError, setValidationError] = useState('');
   const [codeValidationError, setCodeValidationError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [hasSubmitted, setHasSubmitted] = useState(false);
 
   const allLoaded = isSignInLoaded && isSignUpLoaded;
 
@@ -48,14 +49,12 @@ export default function PhoneOTPSignUnifiedPage() {
   const customTitle = searchParams?.get('title') || null;
   const returnUrl = searchParams?.get('returnUrl') || null;
 
-  // Validate phone input reactively
+  // Clear validation error when phone changes (if user is actively fixing it)
   useEffect(() => {
-    if (phone && !isValidPhoneNumber(phone)) {
-      setValidationError('Please enter a valid phone number');
-    } else {
+    if (hasSubmitted && phone && validationError) {
       setValidationError('');
     }
-  }, [phone]);
+  }, [phone, hasSubmitted, validationError]);
 
   // Validate code reactively
   useEffect(() => {
@@ -113,6 +112,8 @@ export default function PhoneOTPSignUnifiedPage() {
     e.preventDefault();
     if (!allLoaded) return;
 
+    setHasSubmitted(true);
+
     if (!isValidPhoneNumber(phone)) {
       setValidationError('Please enter a valid phone number');
       return;
@@ -120,6 +121,7 @@ export default function PhoneOTPSignUnifiedPage() {
 
     setLoading(true);
     setError('');
+    setValidationError('');
 
     try {
       // Try sign-in path first; if user not found, fallback to sign-up
@@ -441,7 +443,7 @@ export default function PhoneOTPSignUnifiedPage() {
             onChange={(v) => setPhone(v || '')}
             placeholder="Enter phone number"
             required
-            error={validationError}
+            error={''}
             className=""
             aria-label="Phone number"
           />
@@ -458,7 +460,7 @@ export default function PhoneOTPSignUnifiedPage() {
           variant="primary"
           fullWidth
           isLoading={loading}
-          disabled={!!validationError || !phone || loading}
+          disabled={!phone || loading}
           aria-label="Continue with phone"
         >
           Continue with phone
