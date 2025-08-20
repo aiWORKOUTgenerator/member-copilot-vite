@@ -315,7 +315,7 @@ export default function GenerateWorkoutPage() {
             <div className="join mb-6 w-fit">
               <button
                 type="button"
-                className="btn btn-sm md:btn-md join-item btn-outline"
+                className="btn btn-sm md:btn-md join-item btn-primary btn-active"
                 onClick={() =>
                   navigate('/dashboard/workouts/generate/detailed')
                 }
@@ -329,7 +329,7 @@ export default function GenerateWorkoutPage() {
             <div className="join mb-6 w-fit">
               <button
                 type="button"
-                className="btn btn-sm md:btn-md join-item btn-outline"
+                className="btn btn-sm md:btn-md join-item btn-primary btn-active"
                 onClick={() => navigate('/dashboard/workouts/generate/quick')}
               >
                 Switch to Quick Workout Setup
@@ -416,7 +416,7 @@ export default function GenerateWorkoutPage() {
                 {/* Generate button - right side */}
                 <button
                   type="submit"
-                  className={`btn btn-primary btn-active transition-all duration-200 order-3`}
+                  className={`btn btn-primary transition-all duration-200 order-3`}
                   disabled={buttonState.disabled}
                   title={buttonState.disabled ? buttonState.text : undefined}
                 >
