@@ -98,34 +98,10 @@ export default function DashboardHomePage() {
 
   // Track dashboard page views and user state
   useEffect(() => {
-    if (attributesLoaded && attributeTypesLoaded && promptsLoaded) {
-      const totalCompletion =
-        attributeCompletions.reduce(
-          (sum, attr) => sum + attr.percentComplete,
-          0
-        ) / attributeCompletions.length || 0;
-
-      analytics.track('Dashboard Home Viewed', {
-        userTier: isOnBasicTier ? 'basic' : 'premium',
-        workoutUsage: workoutUsage.used,
-        workoutLimit: workoutUsage.limit,
-        workoutLimitReached: isWorkoutGenerationLimitReached,
-        profileCompletionPercentage: Math.round(totalCompletion),
-        incompleteAttributeCount: incompleteAttributes.length,
-        tracked_at: new Date().toISOString(),
-      });
-    }
-  }, [
-    attributesLoaded,
-    attributeTypesLoaded,
-    promptsLoaded,
-    isOnBasicTier,
-    workoutUsage,
-    isWorkoutGenerationLimitReached,
-    incompleteAttributes.length,
-    attributeCompletions,
-    analytics,
-  ]);
+    analytics.track('Dashboard Home Viewed', {
+      tracked_at: new Date().toISOString(),
+    });
+  }, [analytics]);
 
   // Handle navigation to profile section
   const navigateToProfile = (attributeId: string | number) => {

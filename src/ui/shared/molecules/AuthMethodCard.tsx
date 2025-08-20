@@ -8,7 +8,7 @@ interface AuthMethodCardProps {
   title: string;
   description: string;
   buttonLabel: string;
-  buttonVariant: 'primary' | 'secondary';
+  buttonVariant: 'primary' | 'secondary' | 'accent';
   href: string;
   ariaLabel: string;
 }

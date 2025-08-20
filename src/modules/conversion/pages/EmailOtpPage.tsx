@@ -1,15 +1,18 @@
 'use client';
 
 import { Button, FormContainer, Input } from '@/ui';
-import { useSignUp } from '@clerk/clerk-react';
+import { useSignUp, useSignIn } from '@clerk/clerk-react';
 import { isClerkAPIResponseError } from '@clerk/clerk-react/errors';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router';
 
 export default function EmailOTPSignUpPage() {
-  const { isLoaded, signUp, setActive } = useSignUp();
+  const { isLoaded: isSignUpLoaded, signUp, setActive } = useSignUp();
+  const { isLoaded: isSignInLoaded, signIn } = useSignIn();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+
+  const isLoaded = isSignUpLoaded && isSignInLoaded;
 
   const [emailAddress, setEmailAddress] = useState('');
   const [code, setCode] = useState('');
@@ -20,6 +23,7 @@ export default function EmailOTPSignUpPage() {
   const [codeValidationError, setCodeValidationError] = useState('');
   const [success, setSuccess] = useState(false);
   const [hasAutoSubmitted, setHasAutoSubmitted] = useState(false);
+  const [isExistingUser, setIsExistingUser] = useState(false);
 
   // Email validation function
   const validateEmail = (email: string): boolean => {
@@ -93,19 +97,52 @@ export default function EmailOTPSignUpPage() {
             );
 
             if (identifierExists) {
-              // If user exists, redirect to the email verification sign-in page with email prefilled
-              // This will create a fresh authentication session through the standard sign-in flow
-              console.log('User already exists, redirecting to sign-in...');
+              // If user exists, try to initiate sign-in flow and send verification code automatically
+              console.log(
+                'User already exists, attempting to send sign-in verification code...'
+              );
+              setIsExistingUser(true);
 
-              // Use a short timeout to ensure any pending state updates are complete before navigation
-              setTimeout(() => {
-                navigate(
-                  `/sign-in/email-otp?email=${encodeURIComponent(
-                    emailAddress
-                  )}&from=signup`
+              try {
+                if (!signIn) throw new Error('SignIn not available');
+
+                // Start the sign-in process
+                const signInAttempt = await signIn.create({
+                  identifier: emailAddress,
+                });
+
+                // Find email code factor
+                const emailCodeFactor =
+                  signInAttempt.supportedFirstFactors?.find(
+                    (factor) => factor.strategy === 'email_code'
+                  );
+
+                if (
+                  emailCodeFactor &&
+                  emailCodeFactor.strategy === 'email_code'
+                ) {
+                  // Send verification code automatically
+                  await signIn.prepareFirstFactor({
+                    strategy: 'email_code',
+                    emailAddressId: emailCodeFactor.emailAddressId,
+                  });
+
+                  // Switch to verification mode
+                  setVerifying(true);
+                  setError('');
+                  return;
+                } else {
+                  throw new Error(
+                    'Email verification not available for existing account'
+                  );
+                }
+              } catch (signInErr) {
+                console.error('Failed to initiate sign-in:', signInErr);
+                setError(
+                  'Unable to send verification code to existing account. Please try signing in directly.'
                 );
-              }, 100);
-              return;
+                return;
+              }
             }
 
             // For other errors, display the message
@@ -123,7 +160,7 @@ export default function EmailOTPSignUpPage() {
         setLoading(false);
       }
     },
-    [isLoaded, signUp, emailAddress, navigate]
+    [isLoaded, signUp, signIn, emailAddress, navigate]
   );
 
   // Auto-submit form if auto-submit=1 parameter is present with valid email
@@ -172,10 +209,20 @@ export default function EmailOTPSignUpPage() {
     setError('');
 
     try {
-      // Attempt to verify with the code provided by the user
-      const result = await signUp.attemptEmailAddressVerification({
-        code,
-      });
+      let result;
+
+      if (isExistingUser && signIn) {
+        // For existing users, use signIn verification
+        result = await signIn.attemptFirstFactor({
+          strategy: 'email_code',
+          code,
+        });
+      } else {
+        // For new users, use signUp verification
+        result = await signUp.attemptEmailAddressVerification({
+          code,
+        });
+      }
 
       // If verification was completed successfully
       if (result.status === 'complete') {
@@ -215,15 +262,36 @@ export default function EmailOTPSignUpPage() {
 
   // For resending the verification code
   async function resendCode() {
-    if (!isLoaded || !signUp) return;
+    if (!isLoaded) return;
 
     setLoading(true);
     setError('');
 
     try {
-      await signUp.prepareEmailAddressVerification({
-        strategy: 'email_code',
-      });
+      if (isExistingUser && signIn) {
+        // For existing users, resend using signIn
+        const signInAttempt = await signIn.create({ identifier: emailAddress });
+        const emailCodeFactor = signInAttempt.supportedFirstFactors?.find(
+          (factor) => factor.strategy === 'email_code'
+        );
+
+        if (emailCodeFactor && emailCodeFactor.strategy === 'email_code') {
+          await signIn.prepareFirstFactor({
+            strategy: 'email_code',
+            emailAddressId: emailCodeFactor.emailAddressId,
+          });
+        } else {
+          throw new Error('Email verification not available');
+        }
+      } else if (signUp) {
+        // For new users, resend using signUp
+        await signUp.prepareEmailAddressVerification({
+          strategy: 'email_code',
+        });
+      }
+
+      setCode('');
+      setCodeValidationError('');
       setError(''); // Clear any previous errors
     } catch (err) {
       console.error('Error resending code:', JSON.stringify(err, null, 2));
@@ -407,7 +475,30 @@ export default function EmailOTPSignUpPage() {
   }
 
   return (
-    <FormContainer title="Create your account">
+    <FormContainer
+      title={isExistingUser ? 'Sign in to your account' : 'Create your account'}
+    >
+      {isExistingUser && (
+        <div className="alert alert-info mb-6">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            className="stroke-current shrink-0 w-6 h-6"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <span>
+            We found an existing account with this email. We'll send you a
+            verification code to sign in.
+          </span>
+        </div>
+      )}
       <form onSubmit={handleSubmit} className="space-y-6">
         <Input
           type="email"
