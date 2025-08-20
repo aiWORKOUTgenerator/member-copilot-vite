@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router';
 import { Zap, Target } from 'lucide-react';
-import { WorkoutPathCard } from './WorkoutPathCard';
+import { PathCard } from '@/ui/shared/molecules/PathCard';
 import { useWorkoutPathSelection } from '../../hooks/useWorkoutPathSelection';
 
 export function WorkoutPathSelectionContainer() {
@@ -19,33 +19,40 @@ export function WorkoutPathSelectionContainer() {
     features: [
       'Fast and efficient setup',
       'AI-powered recommendations',
-      'Basic customization options',
+      'Quick customization options',
+      'Perfect for busy schedules',
     ],
-    difficulty: 'Beginner' as const,
+    badge: 'Beginner',
     icon: Zap,
-    colorScheme: 'quick' as const,
-    onClick: () => handlePathSelect('quick'),
+    variant: 'primary' as const,
   };
 
   const detailedPathData = {
-    title: 'Detailed Workout Focus',
+    title: 'Detailed Workout Setup',
     description:
-      'Fine-tune every aspect of your workout with comprehensive customization options for the perfect routine.',
+      'Create a highly customized workout with advanced options and preferences.',
     features: [
-      'Complete workout customization',
-      'Equipment and exercise preferences',
-      'Advanced targeting options',
+      'Comprehensive customization',
+      'Advanced preference settings',
+      'Detailed equipment selection',
+      'Tailored to your exact needs',
     ],
-    difficulty: 'Advanced' as const,
+    badge: 'Advanced',
     icon: Target,
-    colorScheme: 'detailed' as const,
-    onClick: () => handlePathSelect('detailed'),
+    variant: 'secondary' as const,
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
-      <WorkoutPathCard {...quickPathData} />
-      <WorkoutPathCard {...detailedPathData} />
+    <div
+      className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto"
+      role="group"
+      aria-label="Workout path selection options"
+    >
+      <PathCard {...quickPathData} onClick={() => handlePathSelect('quick')} />
+      <PathCard
+        {...detailedPathData}
+        onClick={() => handlePathSelect('detailed')}
+      />
     </div>
   );
 }

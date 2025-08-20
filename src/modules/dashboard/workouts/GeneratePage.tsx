@@ -1,5 +1,4 @@
 import { useGeneratedWorkouts } from '@/hooks/useGeneratedWorkouts';
-import { useConfiguration } from '@/hooks/useConfiguration';
 import { ArrowBigLeft } from 'lucide-react';
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router';
@@ -17,7 +16,7 @@ import { useConfiguration } from '@/hooks/useConfiguration';
 
 export default function GenerateWorkoutPage() {
   const { mode } = useParams<{ mode: string }>();
-  const { configuration } = useConfiguration();
+  // const { configuration } = useConfiguration(); // TODO: Use configuration when needed
   const [activeTab, setActiveTab] = useState<'quick' | 'detailed'>(
     mode === 'detailed' ? 'detailed' : 'quick'
   );
