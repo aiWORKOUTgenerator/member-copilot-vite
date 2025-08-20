@@ -46,7 +46,7 @@ export function PathCard({
 }: PathCardProps) {
   const colorClasses = {
     primary: {
-      card: 'bg-gradient-to-br from-primary/20 to-primary/10 border-primary/30 hover:border-primary/40 bg-base-100',
+      card: 'bg-gradient-to-br from-primary/20 to-primary/10 border-primary/30 hover:border-primary/40',
       icon: 'bg-gradient-to-br from-primary to-primary-focus',
       badge: 'badge-primary',
       text: 'text-primary',
@@ -54,7 +54,7 @@ export function PathCard({
       actionBg: 'bg-primary/20',
     },
     secondary: {
-      card: 'bg-gradient-to-br from-secondary/20 to-secondary/10 border-secondary/30 hover:border-secondary/40 bg-base-100',
+      card: 'bg-gradient-to-br from-secondary/20 to-secondary/10 border-secondary/30 hover:border-secondary/40',
       icon: 'bg-gradient-to-br from-secondary to-secondary-focus',
       badge: 'badge-secondary',
       text: 'text-secondary',
@@ -62,7 +62,7 @@ export function PathCard({
       actionBg: 'bg-secondary/20',
     },
     accent: {
-      card: 'bg-gradient-to-br from-accent/20 to-accent/10 border-accent/30 hover:border-accent/40 bg-base-100',
+      card: 'bg-gradient-to-br from-accent/20 to-accent/10 border-accent/30 hover:border-accent/40',
       icon: 'bg-gradient-to-br from-accent to-accent-focus',
       badge: 'badge-accent',
       text: 'text-accent',
@@ -70,7 +70,7 @@ export function PathCard({
       actionBg: 'bg-accent/20',
     },
     success: {
-      card: 'bg-gradient-to-br from-success/20 to-success/10 border-success/30 hover:border-success/40 bg-base-100',
+      card: 'bg-gradient-to-br from-success/20 to-success/10 border-success/30 hover:border-success/40',
       icon: 'bg-gradient-to-br from-success to-success-focus',
       badge: 'badge-success',
       text: 'text-success',
@@ -78,7 +78,7 @@ export function PathCard({
       actionBg: 'bg-success/20',
     },
     warning: {
-      card: 'bg-gradient-to-br from-warning/20 to-warning/10 border-warning/30 hover:border-warning/40 bg-base-100',
+      card: 'bg-gradient-to-br from-warning/20 to-warning/10 border-warning/30 hover:border-warning/40',
       icon: 'bg-gradient-to-br from-warning to-warning-focus',
       badge: 'badge-warning',
       text: 'text-warning',
@@ -86,7 +86,7 @@ export function PathCard({
       actionBg: 'bg-warning/20',
     },
     info: {
-      card: 'bg-gradient-to-br from-info/20 to-info/10 border-info/30 hover:border-info/40 bg-base-100',
+      card: 'bg-gradient-to-br from-info/20 to-info/10 border-info/30 hover:border-info/40',
       icon: 'bg-gradient-to-br from-info to-info-focus',
       badge: 'badge-info',
       text: 'text-info',
