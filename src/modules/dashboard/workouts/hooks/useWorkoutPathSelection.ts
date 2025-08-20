@@ -79,6 +79,14 @@ function getSanitizedBrowserInfo(): {
 export function useWorkoutPathSelection() {
   const analytics = useAnalytics();
 
+  // Coarse-grained screen category to avoid fingerprinting via exact dimensions
+  const getScreenCategory = (): 'mobile' | 'tablet' | 'desktop' => {
+    const width = window.innerWidth;
+    if (width < 768) return 'mobile';
+    if (width < 1024) return 'tablet';
+    return 'desktop';
+  };
+
   const selectPath = useCallback(
     (path: 'quick' | 'detailed') => {
       const browserInfo = getSanitizedBrowserInfo();
@@ -89,7 +97,7 @@ export function useWorkoutPathSelection() {
         browser: browserInfo.browser,
         browserVersion: browserInfo.version,
         platform: browserInfo.platform,
-        screenSize: `${window.innerWidth}x${window.innerHeight}`,
+        screenCategory: getScreenCategory(),
       });
     },
     [analytics]
