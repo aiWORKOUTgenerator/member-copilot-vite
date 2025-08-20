@@ -22,6 +22,7 @@ export * from './molecules/UserDropdown';
 export * from './molecules/SignOutButton';
 export * from './molecules/TrainerPersonaCard';
 export * from './molecules/ErrorBoundary';
+export * from './molecules/PathCard';
 export * from './molecules';
 
 // Organisms
