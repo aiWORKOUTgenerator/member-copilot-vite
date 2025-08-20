@@ -416,7 +416,7 @@ export default function GenerateWorkoutPage() {
                 {/* Generate button - right side */}
                 <button
                   type="submit"
-                  className={`${buttonState.className} transition-all duration-200 order-3`}
+                  className={`btn btn-primary btn-active transition-all duration-200 order-3`}
                   disabled={buttonState.disabled}
                   title={buttonState.disabled ? buttonState.text : undefined}
                 >
