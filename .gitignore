@@ -40,3 +40,4 @@ Thumbs.db
 .eslintignore
 .prettierignore
 .env
+.env.local
