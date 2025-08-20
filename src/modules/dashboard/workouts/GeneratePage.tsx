@@ -310,27 +310,32 @@ export default function GenerateWorkoutPage() {
         <div className="card-body">
           <h2 className="card-title">Generate a New Workout</h2>
 
-          {/* Mode Selection */}
-          <div className="join mb-6 w-fit">
-            <button
-              type="button"
-              className={`btn btn-sm md:btn-md join-item ${
-                activeTab === 'quick' ? 'btn-primary' : 'btn-outline'
-              }`}
-              onClick={() => setActiveTab('quick')}
-            >
-              Quick Workout Setup
-            </button>
-            <button
-              type="button"
-              className={`btn btn-sm md:btn-md join-item ${
-                activeTab === 'detailed' ? 'btn-primary' : 'btn-outline'
-              }`}
-              onClick={() => setActiveTab('detailed')}
-            >
-              Detailed Workout Setup
-            </button>
-          </div>
+          {/* Contextual Mode Selection - Show only the opposite option */}
+          {activeTab === 'quick' && (
+            <div className="join mb-6 w-fit">
+              <button
+                type="button"
+                className="btn btn-sm md:btn-md join-item btn-primary btn-active"
+                onClick={() =>
+                  navigate('/dashboard/workouts/generate/detailed')
+                }
+              >
+                Switch to Detailed Workout Setup
+              </button>
+            </div>
+          )}
+
+          {activeTab === 'detailed' && (
+            <div className="join mb-6 w-fit">
+              <button
+                type="button"
+                className="btn btn-sm md:btn-md join-item btn-primary btn-active"
+                onClick={() => navigate('/dashboard/workouts/generate/quick')}
+              >
+                Switch to Quick Workout Setup
+              </button>
+            </div>
+          )}
 
           <form onSubmit={handleSubmit}>
             {activeTab === 'quick' ? (
@@ -411,7 +416,7 @@ export default function GenerateWorkoutPage() {
                 {/* Generate button - right side */}
                 <button
                   type="submit"
-                  className={`${buttonState.className} transition-all duration-200 order-3`}
+                  className={`btn btn-primary transition-all duration-200 order-3 ${buttonState.className}`}
                   disabled={buttonState.disabled}
                   title={buttonState.disabled ? buttonState.text : undefined}
                 >

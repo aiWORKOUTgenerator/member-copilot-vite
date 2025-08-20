@@ -229,7 +229,7 @@ function WorkoutDetailContent() {
           {canStartWorkouts ? (
             <button
               onClick={handleStartWorkout}
-              className="btn btn-primary flex-1 sm:flex-initial w-full sm:w-auto"
+              className="btn btn-primary btn-active flex-1 sm:flex-initial w-full sm:w-auto"
               disabled={!generatedWorkout || isCreatingInstance}
               title="Start a new workout session"
             >

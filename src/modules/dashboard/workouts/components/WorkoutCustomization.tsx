@@ -745,7 +745,7 @@ export default function WorkoutCustomization({
 
           <button
             type="button"
-            className="btn btn-primary"
+            className="btn btn-primary btn-active"
             onClick={detailedSteps.goToNextStep}
             disabled={!detailedSteps.canGoNext || disabled}
           >
