@@ -1,5 +1,10 @@
 import React from 'react';
 
+// Utility function for conditional className concatenation
+const cn = (...classes: (string | undefined | null | false)[]): string => {
+  return classes.filter(Boolean).join(' ');
+};
+
 export interface PathCardProps {
   title: string;
   description: string;
@@ -92,12 +97,12 @@ export function PathCard({
 
   const currentColors = colorClasses[variant];
 
-  // Break down className for better readability
-  const cardBaseClasses =
-    'card shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer border-2';
-  const cardClassName = `${cardBaseClasses} ${currentColors.card} ${
-    isSelected ? 'ring-2 ring-primary' : ''
-  }`;
+  // Use utility function for cleaner className construction
+  const cardClassName = cn(
+    'card shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer border-2',
+    currentColors.card,
+    isSelected && 'ring-2 ring-primary'
+  );
 
   return (
     <div
@@ -117,7 +122,7 @@ export function PathCard({
       <div className="card-body p-6">
         {/* Header with Icon and Title */}
         <div className="flex items-start gap-4 mb-4">
-          <div className={`p-3 rounded-lg ${currentColors.icon} shadow-md`}>
+          <div className={cn('p-3 rounded-lg shadow-md', currentColors.icon)}>
             <Icon className="w-6 h-6 text-white" />
           </div>
           <div className="flex-1">
@@ -125,7 +130,7 @@ export function PathCard({
               {title}
             </h3>
             {badge && (
-              <div className={`badge ${currentColors.badge} badge-sm`}>
+              <div className={cn('badge badge-sm', currentColors.badge)}>
                 {badge}
               </div>
             )}
@@ -145,7 +150,7 @@ export function PathCard({
           {features.map((feature, index) => (
             <div key={index} className="flex items-center gap-3">
               <div
-                className={`w-2 h-2 rounded-full ${currentColors.bulletBg}`}
+                className={cn('w-2 h-2 rounded-full', currentColors.bulletBg)}
               ></div>
               <span className="text-sm text-base-content/80">{feature}</span>
             </div>
@@ -155,7 +160,11 @@ export function PathCard({
         {/* Action Indicator */}
         <div className="flex justify-end">
           <div
-            className={`w-8 h-8 rounded-full ${currentColors.text} ${currentColors.actionBg} flex items-center justify-center`}
+            className={cn(
+              'w-8 h-8 rounded-full flex items-center justify-center',
+              currentColors.text,
+              currentColors.actionBg
+            )}
           >
             <svg
               className="w-4 h-4"
