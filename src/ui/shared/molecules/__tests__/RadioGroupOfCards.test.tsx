@@ -163,7 +163,9 @@ describe('RadioGroupOfCards', () => {
     render(<RadioGroupOfCards {...defaultProps} />);
 
     // Click on first item - find the Card component that contains the text
-    const firstItem = screen.getByText('Item 1').closest('[role="button"]');
+    const firstItem = screen
+      .getByText('Item 1')
+      .closest('[data-interactive="true"]');
     fireEvent.click(firstItem!);
 
     expect(defaultProps.onChange).toHaveBeenCalledWith(mockItems[0]);
@@ -173,7 +175,9 @@ describe('RadioGroupOfCards', () => {
     render(<RadioGroupOfCards {...defaultProps} multiple={true} />);
 
     // Click on first item - find the Card component that contains the text
-    const firstItem = screen.getByText('Item 1').closest('[role="button"]');
+    const firstItem = screen
+      .getByText('Item 1')
+      .closest('[data-interactive="true"]');
     fireEvent.click(firstItem!);
 
     expect(defaultProps.onChange).toHaveBeenCalledWith([mockItems[0]]);

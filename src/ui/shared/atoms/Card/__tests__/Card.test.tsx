@@ -121,7 +121,7 @@ describe('Card', () => {
     );
 
     const card = screen.getByText('Interactive content').parentElement;
-    expect(card).toHaveAttribute('role', 'button');
+    expect(card).toHaveAttribute('data-interactive', 'true');
     expect(card).toHaveAttribute('tabIndex', '0');
   });
 
@@ -133,7 +133,7 @@ describe('Card', () => {
     );
 
     const card = screen.getByText('Non-interactive content').parentElement;
-    expect(card).not.toHaveAttribute('role');
+    expect(card).not.toHaveAttribute('data-interactive');
     expect(card).not.toHaveAttribute('tabIndex');
   });
 });

@@ -96,10 +96,10 @@ export const Card: React.FC<CardProps> = ({
       className={cardClasses}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
-      role={isInteractive ? 'button' : undefined}
       tabIndex={isInteractive ? 0 : undefined}
       aria-pressed={variant === 'selectable' ? isSelected : undefined}
       aria-disabled={disabled}
+      data-interactive={isInteractive ? 'true' : undefined}
     >
       {children}
     </div>
