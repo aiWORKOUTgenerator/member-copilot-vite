@@ -29,8 +29,9 @@ const ExerciseCardWithMedia = ({
 
   return (
     <div>
+      <ExerciseCard exercise={exercise} />
       {(imageUrl || audioUrl) && (
-        <div className="mb-4">
+        <div className="mt-4">
           <ExerciseMediaWithAudio
             imageUrl={imageUrl}
             audioUrl={audioUrl}
@@ -39,7 +40,6 @@ const ExerciseCardWithMedia = ({
           />
         </div>
       )}
-      <ExerciseCard exercise={exercise} />
     </div>
   );
 };

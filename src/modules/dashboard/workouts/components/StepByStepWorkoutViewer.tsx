@@ -382,9 +382,10 @@ const StepByStepWorkoutViewer = ({
                   Round {currentStep.round} of {currentStep.totalRounds}
                 </div>
               )}
+              <ExerciseCard exercise={currentStep.content as Exercise} />
               {(currentExerciseMedia.imageUrl ||
                 currentExerciseMedia.audioUrl) && (
-                <div className="mb-4">
+                <div className="mt-4">
                   <ExerciseMediaWithAudio
                     imageUrl={currentExerciseMedia.imageUrl}
                     audioUrl={currentExerciseMedia.audioUrl}
@@ -393,7 +394,6 @@ const StepByStepWorkoutViewer = ({
                   />
                 </div>
               )}
-              <ExerciseCard exercise={currentStep.content as Exercise} />
             </div>
           )}
 
