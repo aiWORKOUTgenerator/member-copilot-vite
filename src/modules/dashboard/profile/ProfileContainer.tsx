@@ -10,6 +10,7 @@ import {
   SimpleDetailedViewSelector,
   StepIndicator,
   ProgressBar,
+  FloatingClipboardFab,
 } from '@/ui/shared/molecules';
 import { ViewModeProvider } from '@/contexts/ViewModeContext';
 import { useEffect, useMemo, useState } from 'react';
@@ -230,6 +231,13 @@ export default function TrainingProfileLayout() {
           <Outlet />
         </ViewModeProvider>
       </div>
+
+      {/* Floating Action Button for quick workout generation from profile */}
+      <FloatingClipboardFab
+        href="/dashboard/workouts/generate"
+        ariaLabel="Generate new workout"
+        title="Generate new workout"
+      />
     </div>
   );
 }

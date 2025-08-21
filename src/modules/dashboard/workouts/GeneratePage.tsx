@@ -13,6 +13,8 @@ import {
 } from '@/ui/shared/molecules';
 import { WORKOUT_PROMPT_EXAMPLES } from './constants/promptExamples';
 import { useConfiguration } from '@/hooks/useConfiguration';
+import FloatingClipboardFab from '@/ui/shared/molecules/FloatingClipboardFab';
+import { WORKOUTS_GENERATE_ROUTE } from './constants';
 
 export default function GenerateWorkoutPage() {
   const { mode } = useParams<{ mode: string }>();
@@ -434,6 +436,20 @@ export default function GenerateWorkoutPage() {
           </form>
         </div>
       </div>
+
+      {/* Floating Action Button for Workout Generation */}
+      <FloatingClipboardFab
+        href={WORKOUTS_GENERATE_ROUTE}
+        onClick={() => {
+          analytics.track('Floating Action Button Clicked', {
+            destination: 'workout-generation-selection',
+            currentMode: activeTab,
+            tracked_at: new Date().toISOString(),
+          });
+        }}
+        ariaLabel="Generate new workout"
+        title="Generate new workout"
+      />
     </div>
   );
 }

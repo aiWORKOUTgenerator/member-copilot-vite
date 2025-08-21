@@ -20,6 +20,7 @@ import { FreePlanBanner } from '@/modules/dashboard/components/FreePlanBanner';
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router';
 import { MeteredFeature } from '@/domain/entities/meteredFeatures';
+import { FloatingClipboardFab } from '@/ui/shared/molecules';
 
 export default function DashboardHomePage() {
   const { setTitle } = useTitle();
@@ -163,6 +164,14 @@ export default function DashboardHomePage() {
     }
   }, [isOnBasicTier, workoutUsage, analytics]);
 
+  // Track FAB interactions
+  const handleFabClick = () => {
+    analytics.track('Floating Clipboard FAB Clicked', {
+      location: 'dashboard_home',
+      tracked_at: new Date().toISOString(),
+    });
+  };
+
   return (
     <div className="p-4">
       {/* Conversion Banner for Basic Tier Users */}
@@ -259,6 +268,13 @@ export default function DashboardHomePage() {
       <div className="mt-4">
         <AnnouncementsSection />
       </div>
+      {/* Floating Action Button for quick workout generation */}
+      <FloatingClipboardFab
+        href="/dashboard/workouts/generate"
+        onClick={handleFabClick}
+        ariaLabel="Generate new workout"
+        title="Generate new workout"
+      />
     </div>
   );
 }
