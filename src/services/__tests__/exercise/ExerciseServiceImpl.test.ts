@@ -1,7 +1,7 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { ExerciseServiceImpl } from '@/services/exercise/ExerciseServiceImpl';
-import { ApiService } from '@/domain/interfaces/api/ApiService';
 import { Exercise } from '@/domain/entities/exercise';
+import { ApiService } from '@/domain/interfaces/api/ApiService';
+import { ExerciseServiceImpl } from '@/services/exercise/ExerciseServiceImpl';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('ExerciseServiceImpl', () => {
   let exerciseService: ExerciseServiceImpl;
@@ -53,7 +53,7 @@ describe('ExerciseServiceImpl', () => {
         await exerciseService.getExercisesByGeneratedWorkoutId('workout-123');
 
       expect(mockApiService.get).toHaveBeenCalledWith(
-        '/api/members/exercise-list/?generatedWorkoutId=workout-123'
+        '/members/exercise-list/?generatedWorkoutId=workout-123'
       );
       expect(result).toHaveLength(1);
       expect(result[0]).toBeInstanceOf(Exercise);
@@ -102,7 +102,7 @@ describe('ExerciseServiceImpl', () => {
         await exerciseService.getExercisesByWorkoutId('template-456');
 
       expect(mockApiService.get).toHaveBeenCalledWith(
-        '/api/members/exercise-list/?workoutId=template-456'
+        '/members/exercise-list/?workoutId=template-456'
       );
       expect(result).toHaveLength(1);
       expect(result[0]).toBeInstanceOf(Exercise);

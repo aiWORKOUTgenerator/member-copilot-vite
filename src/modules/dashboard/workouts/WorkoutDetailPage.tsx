@@ -347,7 +347,10 @@ function WorkoutDetailContent() {
         )
       ) : workoutFormat === 'structured' && validJsonFormat ? (
         <div className="p-4">
-          <StructuredWorkoutViewer workout={validJsonFormat} />
+          <StructuredWorkoutViewer
+            generatedWorkoutId={generatedWorkoutId}
+            workout={validJsonFormat}
+          />
         </div>
       ) : workoutFormat === 'simple' && generatedWorkout?.simpleFormat ? (
         <div className="p-4">
@@ -364,7 +367,10 @@ function WorkoutDetailContent() {
         </div>
       ) : workoutFormat === 'step-by-step' && validJsonFormat ? (
         <div className="p-4">
-          <StepByStepWorkoutViewer workout={validJsonFormat} />
+          <StepByStepWorkoutViewer
+            generatedWorkoutId={generatedWorkoutId}
+            workout={validJsonFormat}
+          />
         </div>
       ) : (
         <div className="mt-4 p-4 bg-base-200 rounded-lg">

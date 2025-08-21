@@ -10,7 +10,7 @@ interface ExerciseListResponse {
 
 export class ExerciseServiceImpl implements ExerciseService {
   private readonly apiService: ApiService;
-  private readonly baseEndpoint = '/api/members/exercise-list';
+  private readonly baseEndpoint = '/members/exercise-list';
 
   constructor(apiService: ApiService) {
     this.apiService = apiService;

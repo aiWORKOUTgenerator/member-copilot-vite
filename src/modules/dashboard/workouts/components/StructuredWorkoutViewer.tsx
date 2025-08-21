@@ -8,14 +8,46 @@ import {
   EmptySectionsCard,
 } from './WorkoutComponents';
 import { formatTime } from '../utils/workouts.func';
+import { useExercisesForGeneratedWorkout } from '@/hooks/useExercises';
+import { useExerciseMedia } from '@/hooks/useExerciseMedia';
+import { ExerciseMedia } from '@/ui/shared/molecules';
+import { Exercise } from '@/domain/entities/generatedWorkout';
+import { Exercise as CanonicalExercise } from '@/domain/entities/exercise';
+
+// Component to render exercise with media
+const ExerciseCardWithMedia = ({
+  exercise,
+  availableExercises,
+}: {
+  exercise: Exercise;
+  availableExercises: CanonicalExercise[];
+}) => {
+  const { imageUrl } = useExerciseMedia(
+    { name: exercise.name },
+    availableExercises
+  );
+
+  return (
+    <div>
+      {imageUrl && (
+        <div className="mb-4">
+          <ExerciseMedia imageUrl={imageUrl} alt={exercise.name} size="md" />
+        </div>
+      )}
+      <ExerciseCard exercise={exercise} />
+    </div>
+  );
+};
 
 // Section component to display a group of exercises
 const SectionCard = ({
   section,
   depth = 0,
+  availableExercises = [],
 }: {
   section: Section;
   depth?: number;
+  availableExercises?: CanonicalExercise[];
 }) => {
   const [isExpanded, setIsExpanded] = useState(true);
 
@@ -105,7 +137,10 @@ const SectionCard = ({
                           {/* Exercises for this round */}
                           {exercises.map((exercise, idx) => (
                             <div key={`round-${round}-exercise-${idx}`}>
-                              <ExerciseCard exercise={exercise} />
+                              <ExerciseCardWithMedia
+                                exercise={exercise}
+                                availableExercises={availableExercises}
+                              />
                               {idx < exercises.length - 1 &&
                                 Boolean(section.rest_between_exercises) &&
                                 (section.rest_between_exercises ?? 0) > 0 && (
@@ -148,7 +183,11 @@ const SectionCard = ({
                 <div className="space-y-4">
                   {subSections.map((subSection, idx) => (
                     <div key={idx}>
-                      <SectionCard section={subSection} depth={depth + 1} />
+                      <SectionCard
+                        section={subSection}
+                        depth={depth + 1}
+                        availableExercises={availableExercises}
+                      />
                       {idx < subSections.length - 1 &&
                         Boolean(section.rest_between_exercises) &&
                         (section.rest_between_exercises ?? 0) > 0 && (
@@ -184,9 +223,15 @@ const SectionCard = ({
 // Main component to display the entire workout
 const StructuredWorkoutViewer = ({
   workout,
+  generatedWorkoutId,
 }: {
   workout: WorkoutStructure;
+  generatedWorkoutId?: string;
 }) => {
+  // Fetch exercises for media resolution if generatedWorkoutId is provided
+  const { exercises: availableExercises = [] } =
+    useExercisesForGeneratedWorkout(generatedWorkoutId || '');
+
   // Handle potentially malformed workout structure
   const isValidWorkout =
     workout &&
@@ -217,7 +262,11 @@ const StructuredWorkoutViewer = ({
         <div>
           {sections.map((section, idx) => (
             <div key={idx}>
-              <SectionCard section={section} depth={0} />
+              <SectionCard
+                section={section}
+                depth={0}
+                availableExercises={availableExercises}
+              />
               {idx < sections.length - 1 &&
                 Boolean(workout.rest_between_sections) &&
                 (workout.rest_between_sections ?? 0) > 0 && (

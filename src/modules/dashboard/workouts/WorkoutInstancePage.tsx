@@ -3,11 +3,14 @@
 import { Exercise, Section } from '@/domain/entities/generatedWorkout';
 import { ExerciseInstance } from '@/domain/entities/workoutInstance';
 import { RecommendedExercise } from '@/domain/interfaces/services/WorkoutInstanceService';
+import { Exercise as CanonicalExercise } from '@/domain/entities/exercise';
 import { useAnalytics } from '@/hooks/useAnalytics';
 import { useCurrentWorkoutInstance } from '@/hooks/useCurrentWorkoutInstance';
 import { useTrainerPersonaData } from '@/hooks/useTrainerPersona';
 import { useWorkoutInstances } from '@/hooks/useWorkoutInstances';
 import { useExercisesForGeneratedWorkout } from '@/hooks/useExercises';
+import { useExerciseMedia } from '@/hooks/useExerciseMedia';
+import { ExerciseMedia } from '@/ui/shared/molecules/ExerciseMedia';
 import { Check, Clock, Target, X } from 'lucide-react';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -993,6 +996,7 @@ export default function WorkoutInstancePage() {
               sectionIndex={sectionIndex}
               onExerciseComplete={handleExerciseComplete}
               onExerciseNotes={handleExerciseNotes}
+              availableExercises={exercises}
               onExerciseSwap={handleExerciseSwap}
               disabled={currentInstance.completed}
             />
@@ -1877,6 +1881,7 @@ const SectionCard = React.forwardRef<
       currentExercise: Exercise
     ) => void;
     disabled?: boolean;
+    availableExercises?: CanonicalExercise[];
   }
 >(
   (
@@ -1887,6 +1892,7 @@ const SectionCard = React.forwardRef<
       onExerciseNotes,
       onExerciseSwap,
       disabled = false,
+      availableExercises = [],
     },
     ref
   ) => {
@@ -1940,6 +1946,7 @@ const SectionCard = React.forwardRef<
                 onNotes={onExerciseNotes}
                 onSwap={onExerciseSwap}
                 disabled={disabled}
+                availableExercises={availableExercises}
               />
             ))}
           </div>
@@ -1959,6 +1966,7 @@ function ExerciseCard({
   onNotes,
   onSwap,
   disabled = false,
+  availableExercises = [],
 }: {
   exercise: Exercise;
   exerciseId: string;
@@ -1971,10 +1979,17 @@ function ExerciseCard({
     currentExercise: Exercise
   ) => void;
   disabled?: boolean;
+  availableExercises?: CanonicalExercise[];
 }) {
   const exerciseInstance = exercise as ExerciseInstance;
   const isCompleted = exerciseInstance.completed || false;
   const notes = exerciseInstance.notes || '';
+
+  // Resolve exercise media
+  const { imageUrl } = useExerciseMedia(
+    { name: exercise.name },
+    availableExercises
+  );
 
   // Local state for notes editing
   const [isEditingNotes, setIsEditingNotes] = useState(false);
@@ -2050,6 +2065,18 @@ function ExerciseCard({
           : 'bg-base-200 border-base-300 hover:border-primary'
       }`}
     >
+      {/* Exercise Media */}
+      {imageUrl && (
+        <div className="mb-4">
+          <ExerciseMedia
+            imageUrl={imageUrl}
+            alt={exercise.name}
+            size="md"
+            className="md:max-h-64"
+          />
+        </div>
+      )}
+
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-3 mb-2">
