@@ -12,7 +12,8 @@ export type ColorScheme =
   | 'accent'
   | 'success'
   | 'warning'
-  | 'info';
+  | 'info'
+  | 'error';
 
 // Base card styling
 const baseCardClasses = 'border-2 transition-all duration-200';
@@ -41,6 +42,8 @@ const pathCardClasses = {
   warning:
     'bg-gradient-to-br from-warning/20 to-warning/10 border-warning/30 hover:border-warning/40',
   info: 'bg-gradient-to-br from-info/20 to-info/10 border-info/30 hover:border-info/40',
+  error:
+    'bg-gradient-to-br from-error/20 to-error/10 border-error/30 hover:border-error/40',
 };
 
 // Export the complete design system
@@ -58,6 +61,7 @@ export const cardVariants = {
     success: `${baseCardClasses} ${pathCardClasses.success}`,
     warning: `${baseCardClasses} ${pathCardClasses.warning}`,
     info: `${baseCardClasses} ${pathCardClasses.info}`,
+    error: `${baseCardClasses} ${pathCardClasses.error}`,
   },
 };
 
@@ -98,5 +102,11 @@ export const colorSchemeUtilities = {
     bg: 'bg-info',
     border: 'border-info',
     gradient: 'from-info to-info-focus',
+  },
+  error: {
+    text: 'text-error',
+    bg: 'bg-error',
+    border: 'border-error',
+    gradient: 'from-error to-error-focus',
   },
 };

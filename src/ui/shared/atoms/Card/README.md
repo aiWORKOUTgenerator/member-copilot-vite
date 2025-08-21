@@ -11,7 +11,7 @@ The main card component with support for different variants, color schemes, and 
 #### Features
 
 - ✅ **Multiple Variants**: Default, selectable, and path variants
-- ✅ **Color Schemes**: Primary, secondary, accent, success, warning, info
+- ✅ **Color Schemes**: Primary, secondary, accent, success, warning, info, error
 - ✅ **Interactive States**: Hover effects, selection states, disabled states
 - ✅ **Accessibility**: Keyboard navigation, ARIA attributes, screen reader support
 - ✅ **TypeScript**: Fully typed with proper interfaces
@@ -22,7 +22,14 @@ The main card component with support for different variants, color schemes, and 
 ```typescript
 interface CardProps {
   variant?: 'default' | 'selectable' | 'path';
-  colorScheme?: 'primary' | 'secondary' | 'accent' | 'success' | 'warning' | 'info';
+  colorScheme?:
+    | 'primary'
+    | 'secondary'
+    | 'accent'
+    | 'success'
+    | 'warning'
+    | 'info'
+    | 'error';
   isSelected?: boolean;
   onClick?: () => void;
   children: ReactNode;
@@ -108,6 +115,7 @@ interface CardBodyProps {
 ### Default
 
 Basic card with clean, minimal styling:
+
 - Background: `bg-base-100`
 - Border: `border-base-300`
 - Shadow: Subtle shadow
@@ -115,6 +123,7 @@ Basic card with clean, minimal styling:
 ### Selectable
 
 Designed for selection scenarios (like RadioGroupOfCards):
+
 - **Unselected**: Subtle gradient with base colors
 - **Selected**: Gradient with color scheme and border highlight
 - Interactive hover effects
@@ -123,6 +132,7 @@ Designed for selection scenarios (like RadioGroupOfCards):
 ### Path
 
 Designed for path selection scenarios (like PathCard):
+
 - Gradient backgrounds with color scheme
 - Hover effects with border color changes
 - Consistent with existing PathCard design
@@ -133,11 +143,12 @@ Designed for path selection scenarios (like PathCard):
 All variants support the following color schemes:
 
 - **primary**: Blue/primary theme
-- **secondary**: Purple/secondary theme  
+- **secondary**: Purple/secondary theme
 - **accent**: Orange/accent theme
 - **success**: Green/success theme
 - **warning**: Yellow/warning theme
 - **info**: Cyan/info theme
+- **error**: Red/error theme
 
 ## Design System
 
@@ -149,12 +160,14 @@ export const cardVariants = {
   default: 'bg-base-100 border-base-300 shadow-sm',
   selectable: {
     unselected: 'bg-gradient-to-br from-base-200/20 to-base-200/10',
-    selected: (colorScheme) => `bg-gradient-to-br from-${colorScheme}/30 to-${colorScheme}/20`
+    selected: (colorScheme) =>
+      `bg-gradient-to-br from-${colorScheme}/30 to-${colorScheme}/20`,
   },
   path: {
-    primary: 'bg-gradient-to-br from-primary/20 to-primary/10 border-primary/30',
+    primary:
+      'bg-gradient-to-br from-primary/20 to-primary/10 border-primary/30',
     // ... other color schemes
-  }
+  },
 };
 ```
 
@@ -236,6 +249,7 @@ The Card component includes comprehensive tests covering:
 - Custom styling
 
 Run tests with:
+
 ```bash
 npm run test src/ui/shared/atoms/Card/__tests__/Card.test.tsx
 ```

@@ -11,9 +11,9 @@ describe('Card', () => {
       </Card>
     );
 
-    const card = screen.getByText('Card content').closest('.card');
+    const card = screen.getByText('Card content').parentElement;
     expect(card).toBeInTheDocument();
-    expect(card).toHaveClass('card');
+    expect(card).toHaveClass('bg-base-100', 'border-base-300');
   });
 
   it('renders selectable variant correctly', () => {
@@ -23,7 +23,7 @@ describe('Card', () => {
       </Card>
     );
 
-    const card = screen.getByText('Selectable content').closest('.card');
+    const card = screen.getByText('Selectable content').parentElement;
     expect(card).toHaveClass(
       'bg-gradient-to-br',
       'from-base-200/20',
@@ -38,7 +38,7 @@ describe('Card', () => {
       </Card>
     );
 
-    const card = screen.getByText('Selected content').closest('.card');
+    const card = screen.getByText('Selected content').parentElement;
     expect(card).toHaveClass(
       'bg-gradient-to-br',
       'from-primary/30',
@@ -54,7 +54,7 @@ describe('Card', () => {
       </Card>
     );
 
-    const card = screen.getByText('Path content').closest('.card');
+    const card = screen.getByText('Path content').parentElement;
     expect(card).toHaveClass(
       'bg-gradient-to-br',
       'from-primary/20',
@@ -70,7 +70,7 @@ describe('Card', () => {
       </Card>
     );
 
-    const card = screen.getByText('Clickable content').closest('.card');
+    const card = screen.getByText('Clickable content').parentElement;
     fireEvent.click(card!);
     expect(handleClick).toHaveBeenCalledTimes(1);
   });
@@ -83,7 +83,7 @@ describe('Card', () => {
       </Card>
     );
 
-    const card = screen.getByText('Keyboard content').closest('.card');
+    const card = screen.getByText('Keyboard content').parentElement;
     fireEvent.keyDown(card!, { key: 'Enter' });
     expect(handleClick).toHaveBeenCalledTimes(1);
   });
@@ -96,7 +96,7 @@ describe('Card', () => {
       </Card>
     );
 
-    const card = screen.getByText('Disabled content').closest('.card');
+    const card = screen.getByText('Disabled content').parentElement;
     fireEvent.click(card!);
     expect(handleClick).not.toHaveBeenCalled();
     expect(card).toHaveAttribute('aria-disabled', 'true');
@@ -109,7 +109,7 @@ describe('Card', () => {
       </Card>
     );
 
-    const card = screen.getByText('Custom content').closest('.card');
+    const card = screen.getByText('Custom content').parentElement;
     expect(card).toHaveClass('custom-class');
   });
 
@@ -120,7 +120,7 @@ describe('Card', () => {
       </Card>
     );
 
-    const card = screen.getByText('Interactive content').closest('.card');
+    const card = screen.getByText('Interactive content').parentElement;
     expect(card).toHaveAttribute('role', 'button');
     expect(card).toHaveAttribute('tabIndex', '0');
   });
@@ -132,7 +132,7 @@ describe('Card', () => {
       </Card>
     );
 
-    const card = screen.getByText('Non-interactive content').closest('.card');
+    const card = screen.getByText('Non-interactive content').parentElement;
     expect(card).not.toHaveAttribute('role');
     expect(card).not.toHaveAttribute('tabIndex');
   });

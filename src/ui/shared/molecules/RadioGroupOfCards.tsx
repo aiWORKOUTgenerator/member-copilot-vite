@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { Card, CardBody } from '@/ui/shared/atoms/Card';
 
 export interface SelectableItem {
   id: string | number;
@@ -37,6 +38,7 @@ interface RadioGroupOfCardsProps<T extends SelectableItem> {
  * This component renders a grid of selectable cards with support for controlling
  * the visibility of descriptions and tertiary content. It handles both controlled
  * and uncontrolled state, and supports single and multiple selection modes.
+ * Uses the Card atom for consistent styling and behavior.
  *
  * @example
  * // Basic usage with all content visible
@@ -149,16 +151,15 @@ export function RadioGroupOfCards<T extends SelectableItem>({
               const isSelected = isItemSelected(item);
 
               return (
-                <div
+                <Card
                   key={item.id}
-                  className={`card cursor-pointer transition-all duration-200 hover:shadow-md hover:scale-[1.02] ${
-                    isSelected
-                      ? `bg-gradient-to-br from-${colorScheme}/30 to-${colorScheme}/20 border-${colorScheme} border-2 shadow-sm`
-                      : 'bg-gradient-to-br from-base-200/20 to-base-200/10 border-base-300 border hover:border-base-400'
-                  }`}
+                  variant="selectable"
+                  colorScheme={colorScheme}
+                  isSelected={isSelected}
                   onClick={() => handleChange(item)}
+                  className="hover:scale-[1.02]"
                 >
-                  <div className="card-body p-4 flex flex-col">
+                  <CardBody padding="sm" className="flex flex-col">
                     <div className="flex-grow">
                       <h3 className="card-title text-base">{item.title}</h3>
                       {showDescription && item.description && (
@@ -173,8 +174,8 @@ export function RadioGroupOfCards<T extends SelectableItem>({
                         {item.tertiary}
                       </div>
                     )}
-                  </div>
-                </div>
+                  </CardBody>
+                </Card>
               );
             })}
           </div>
