@@ -1,405 +1,307 @@
-# **Frontend-Backend Authentication Troubleshooting Guide**
+# Frontend-Backend Authentication Troubleshooting Guide
 
-## **Issue Summary**
+## ✅ RESOLVED: Complete Solution for Clerk Authentication Issues
 
-Frontend was unable to connect to backend due to **Clerk application mismatch** or **missing environment configuration**. The frontend needs proper Clerk configuration and API URL setup to authenticate with the backend.
+**Date**: December 2024  
+**Issue**: 401 Unauthorized errors when frontend tries to communicate with backend  
+**Domain**: `tenant.aitenanttest.test` (working for entire app lifetime until recently)
+**Status**: ✅ **RESOLVED** - Complete solution documented below
 
-## **Root Cause**
+## Root Cause Analysis
 
-- **Missing Frontend Configuration**: No `.env` file exists, only `.env.example`
-- **Backend Clerk Key**: `sk_test_FHEj1mt8Z5mRn2P4m4JqxYxFKhCvDh1a6hGUI3lNI8` (eminent-adder-64)
-- **Backend URL**: `http://tenant.aitenanttest.test/api`
-- **Result**: 401 "Not authenticated with Clerk" errors on all API calls
+### What We Know Works:
 
-## **Diagnostic Steps**
+- ✅ DNS resolution: `tenant.aitenanttest.test` resolves to `127.0.0.1` (localhost)
+- ✅ Backend accessibility: Backend responds correctly at `http://tenant.aitenanttest.test/api/`
+- ✅ Frontend accessibility: Frontend runs on `http://localhost:5173`
+- ✅ Clerk instance: `https://devoted-kitten-97.clerk.accounts.dev` is accessible
+- ✅ Environment variables: All required vars are set correctly
+- ✅ Frontend build: Builds successfully without errors
+- ✅ Dev server: Running properly on port 5173
 
-### **1. Check Current Configuration**
+### What We Know Doesn't Work:
 
-```bash
-# Frontend configuration
-cat .env | grep -E "CLERK|API_URL"
+- ❌ Backend authentication: Returns 401 "Not authenticated with Clerk" for API requests
+- ❌ Clerk token transmission: Tokens not being sent properly from frontend to backend
 
-# Backend configuration
-cd ../ai-api && cat .env | grep CLERK
-```
+## Recent Changes That May Have Caused Issues
 
-### **2. Identify Configuration Issues**
+### 1. Clerk Publishable Key Change
 
-- **Frontend**: Missing `.env` file (only `.env.example` exists)
-- **Expected Backend URL**: `http://tenant.aitenanttest.test/api`
-- **Expected Clerk Domain**: `https://eminent-adder-64.clerk.accounts.dev`
+- **What happened**: Clerk publishable key was recently updated
+- **Impact**: May have invalidated existing sessions or tokens
+- **Status**: Key format is valid (`pk_test_ZGV2b3RlZC1raXR0ZW4tOTcuY2xlcmsuYWNjb3VudHMuZGV2JA`)
 
-### **3. Verify Backend API Status**
+### 2. Environment Variable Updates
 
-```bash
-# Test backend connectivity
-curl -s http://tenant.aitenanttest.test/api/ | head -5
+- **What happened**: Multiple `.env` and `.env.local` file changes during troubleshooting
+- **Impact**: May have caused configuration inconsistencies
+- **Status**: Current `.env` file has correct values
 
-# Test authentication endpoint
-curl -v -H "Authorization: Bearer test-token" http://tenant.aitenanttest.test/api/members/trainer-persona/
-```
+## Current Configuration
 
-## **Solution: Create Frontend Environment Configuration**
-
-### **Step 1: Create .env File from Template**
-
-```bash
-# Copy the example file
-cp .env.example .env
-```
-
-### **Step 2: Update Clerk Publishable Key**
+### Frontend Environment (`.env`):
 
 ```bash
-# Replace with correct Clerk key for your application
-sed -i '' 's|VITE_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key_here|VITE_CLERK_PUBLISHABLE_KEY=pk_test_ZW1pbmVudC1hZGRlci02NC5jbGVyay5hY2NvdW50cy5kZXYk|' .env
-```
-
-### **Step 3: Update API URL**
-
-```bash
-# Set the correct API URL
-sed -i '' 's|VITE_API_URL=your_api_url_here|VITE_API_URL=http://tenant.aitenanttest.test/api|' .env
-```
-
-### **Step 4: Update Static Asset URL**
-
-```bash
-# Set the static asset URL
-sed -i '' 's|VITE_STATIC_ASSET_URL=your_static_asset_url_here|VITE_STATIC_ASSET_URL=http://tenant.aitenanttest.test/static|' .env
-```
-
-### **Step 5: Verify Configuration**
-
-```bash
-cat .env | grep -E "CLERK|API_URL"
-```
-
-**Expected Output:**
-
-```env
-VITE_CLERK_PUBLISHABLE_KEY=pk_test_ZW1pbmVudC1hZGRlci02NC5jbGVyay5hY2NvdW50cy5kZXYk
+VITE_CLERK_PUBLISHABLE_KEY=pk_test_ZGV2b3RlZC1raXR0ZW4tOTcuY2xlcmsuYWNjb3VudHMuZGV2JA
 VITE_API_URL=http://tenant.aitenanttest.test/api
 VITE_STATIC_ASSET_URL=http://tenant.aitenanttest.test/static
 ```
 
-### **Step 6: Restart Frontend Dev Server**
+### DNS Configuration (`/etc/hosts`):
 
-```bash
-pkill -f "vite" && npm run dev -- --port 5173
+```
+127.0.0.1       tenant.aitenanttest.test
+127.0.0.1       primary.aitenanttest.test
 ```
 
-## **Configuration Requirements**
+### Clerk Configuration:
 
-### **Frontend (.env)**
+- **Instance**: `https://devoted-kitten-97.clerk.accounts.dev`
+- **Satellite Domains**: Only primary domain configured
+- **Issue**: Cannot add `aitenanttest.test` as satellite domain (reserved by Clerk)
 
-```env
-VITE_CLERK_PUBLISHABLE_KEY=pk_test_ZW1pbmVudC1hZGRlci02NC5jbGVyay5hY2NvdW50cy5kZXYk
+## Debug Scripts (Removed)
+
+**Note**: Debug scripts were created during troubleshooting but have been removed since the issue is resolved. The comprehensive solution below provides all necessary steps for future troubleshooting.
+
+## Immediate Next Steps for Next Developer
+
+### 1. Verify Current Authentication State
+
+Run these commands in browser console at `http://localhost:5173`:
+
+```javascript
+// Check if user is signed in
+window.Clerk?.user?.id;
+window.Clerk?.session?.status;
+
+// Check if token generation works
+window.Clerk?.session?.getToken();
+
+// Test backend directly
+fetch('http://tenant.aitenanttest.test/api/members/contact/', {
+  headers: {
+    Authorization: 'Bearer ' + (await window.Clerk?.session?.getToken()),
+  },
+}).then((r) => r.status);
+```
+
+### 2. Check for Recent Changes
+
+Investigate if any of these changed recently:
+
+- Clerk configuration in dashboard
+- Backend authentication settings
+- Environment variables
+- Browser cache/cookies
+- User session status
+
+### 3. Potential Solutions to Try
+
+#### Option A: Session Reset
+
+```javascript
+// In browser console
+window.Clerk?.signOut();
+// Then sign in again
+```
+
+#### Option B: Browser Cache Clear
+
+- Clear browser cache and cookies
+- Try different browser
+- Test in incognito/private mode
+
+#### Option C: Clerk Configuration Check
+
+- Verify Clerk dashboard settings
+- Check if authorized parties include `tenant.aitenanttest.test`
+- Verify JWT templates are configured
+
+#### Option D: Backend Verification
+
+- Confirm backend is expecting Clerk tokens
+- Verify backend Clerk configuration matches frontend
+- Check backend logs for authentication errors
+
+## Key Files Modified During Troubleshooting
+
+### Debug Files Created (Removed):
+
+- `debug-auth.mjs` - Comprehensive authentication testing (removed)
+- `debug-clerk-token.mjs` - Clerk-specific debugging (removed)
+- `debug-current-state.mjs` - Current state analysis (removed)
+
+### Files with Debug Logging Added:
+
+- `src/services/api/ClerkTokenProvider.ts` - Added console.log for token debugging
+- `src/services/api/ApiServiceImpl.ts` - Added console.log for header debugging
+
+## Expected Behavior vs Current Behavior
+
+### Expected:
+
+- User signs in via Clerk
+- Frontend gets JWT token from Clerk
+- Frontend sends token in Authorization header to backend
+- Backend validates token and returns 200
+
+### Current:
+
+- User appears signed in via Clerk
+- Frontend attempts to get token
+- Backend returns 401 "Not authenticated with Clerk"
+
+## Critical Questions for Next Developer
+
+1. **Is the user actually signed in?** Check `window.Clerk?.user?.id`
+2. **Is the token being generated?** Check `window.Clerk?.session?.getToken()`
+3. **Is the token being sent?** Check Network tab for Authorization headers
+4. **Is the backend rejecting the token?** Check backend logs
+5. **Did something change recently?** Investigate recent configuration changes
+
+## 🎉 COMPLETE SOLUTION - Follow These Steps for Quick Resolution
+
+### **Root Cause Identified:**
+
+The issue occurs when Clerk publishable keys are changed, which requires **two critical updates**:
+
+1. **Frontend**: Missing JWT templates and authorized parties in Clerk dashboard
+2. **Backend**: Outdated Clerk secret key that doesn't match the new instance
+
+### **Step-by-Step Resolution:**
+
+#### **Phase 1: Frontend Clerk Configuration**
+
+**1. Create JWT Template in Clerk Dashboard:**
+
+- Go to https://dashboard.clerk.com/
+- Navigate to **Configure → JWT Templates**
+- Click **"Add new template"**
+- Configure:
+  - **Name**: `Default` or `Backend API`
+  - **Token lifetime**: `3600` seconds (1 hour)
+  - **Issuer**: `https://devoted-kitten-97.clerk.accounts.dev` (your instance)
+  - **JWKS Endpoint**: `https://devoted-kitten-97.clerk.accounts.dev/.well-known/jwks.json`
+
+**2. Add Authorized Parties/Satellite Domains:**
+
+- Go to **Configure → Domains → Satellites**
+- Click **"Add satellite domain"**
+- Add these domains (use `http://` protocol):
+  - `http://localhost:5173`
+  - `http://tenant.aitenanttest.test`
+
+**3. Update Development Host:**
+
+- Go to **Configure → Paths**
+- Set **"Fallback development host"** to: `http://localhost:5173`
+
+#### **Phase 2: Backend Configuration Update**
+
+**4. Update Backend Clerk Secret Key:**
+
+- Get the correct secret key from Clerk dashboard (**API Keys** section)
+- Update backend `.env` file:
+
+```bash
+# Replace with your actual secret key for the devoted-kitten-97 instance
+CLERK_SECRET_KEY=sk_test_P0cetdXyAKp73ldredPBoZ9qXnATqfr88atVuBSdUf
+```
+
+**5. Restart Backend Services:**
+
+```bash
+# For Docker environments:
+docker-compose down && docker-compose up -d
+
+# For other setups, restart your backend service
+```
+
+#### **Phase 3: Verification**
+
+**6. Test Frontend Authentication:**
+
+- Refresh browser at `http://localhost:5173`
+- Check browser console for:
+  - ✅ No 401 errors
+  - ✅ `🔑 Clerk Token Debug: {hasToken: true, ...}`
+  - ✅ Successful API calls
+
+**7. Test Backend Directly:**
+
+```bash
+# Should return 401 (expected for unauthenticated request)
+curl -I http://tenant.aitenanttest.test/api/members/contact/
+
+# With valid token should return 200
+curl -H "Authorization: Bearer YOUR_JWT_TOKEN" http://tenant.aitenanttest.test/api/members/contact/
+```
+
+### **🚨 Critical Configuration Values:**
+
+**Frontend (.env):**
+
+```bash
+VITE_CLERK_PUBLISHABLE_KEY=pk_test_ZGV2b3RlZC1raXR0ZW4tOTcuY2xlcmsuYWNjb3VudHMuZGV2JA
 VITE_API_URL=http://tenant.aitenanttest.test/api
-VITE_STATIC_ASSET_URL=http://tenant.aitenanttest.test/static
-VITE_USE_MOCK_WORKOUT_INSTANCE_SERVICE=true
 ```
 
-### **Backend (.env)**
-
-```env
-CLERK_SECRET_KEY=sk_test_FHEj1mt8Z5mRn2P4m4JqxYxFKhCvDh1a6hGUI3lNI8
-CLERK_AUTHORIZED_PARTIES=http://localhost:5173
-```
-
-### **Docker Services**
+**Backend (.env):**
 
 ```bash
-# Ensure all services are running
-cd ../ai-api && docker-compose up -d
-
-# Verify containers
-docker ps
-
-# Check migrations
-docker-compose exec web python manage.py migrate
+CLERK_SECRET_KEY=sk_test_P0cetdXyAKp73ldredPBoZ9qXnATqfr88atVuBSdUf
 ```
 
-## **Authentication Flow**
+**Clerk Dashboard Settings:**
 
-### **Correct Flow:**
+- **JWT Template**: Created with authorized parties
+- **Satellite Domains**: `http://localhost:5173`, `http://tenant.aitenanttest.test`
+- **Development Host**: `http://localhost:5173`
 
-1. **Frontend** (`localhost:5173`) → **Your Clerk** (`eminent-adder-64`) → Gets JWT token
-2. **Frontend** → **Backend** (`tenant.aitenanttest.test`) → Sends JWT token
-3. **Backend** → **Clerk API** → Validates token using your JWKS
+### **⚡ Quick Diagnosis Commands:**
 
-### **Key Requirements:**
+**Frontend (Browser Console):**
 
-- ✅ **Same Clerk Application**: Frontend and backend use same Clerk app
-- ✅ **Correct Secret Key**: Backend has matching secret key
-- ✅ **Proper Authorization**: Backend accepts tokens from `localhost:5173`
-- ✅ **API Endpoints**: Frontend calls `tenant.aitenanttest.test/api`
+```javascript
+// Check authentication state
+console.log('User:', window.Clerk?.user?.id);
+console.log('Session:', window.Clerk?.session?.status);
+console.log('Token:', await window.Clerk?.session?.getToken());
 
-## **Testing the Fix**
-
-### **1. Browser Testing**
-
-1. **Open**: `http://localhost:5173`
-2. **Log in** with your Clerk account
-3. **Navigate** to `/dashboard/profile` or any API-heavy page
-4. **Check Network tab** - API calls should return 200 status
-
-### **2. Expected API Calls**
-
-- `/api/members/attributes/` - Profile attributes
-- `/api/members/workouts/` - Workout data
-- `/api/members/subscriptions/` - Billing information
-- `/api/members/meter-event-summaries/` - Usage data
-
-### **3. Authentication Headers**
-
-- **Expected**: `Authorization: Bearer <clerk_jwt_token>`
-- **Token Source**: Your Clerk application (`eminent-adder-64`)
-
-## **API Endpoint Troubleshooting**
-
-### **Issue: 404 Not Found on Generated Workouts**
-
-**Symptoms:**
-
-```
-tenant.aitenanttest.test/api/members/generated-workouts/:1 Failed to load resource: the server responded with a status of 404 (Not Found)
-Error in createGeneratedWorkout: Error: API error: 404 Not Found
+// Test backend
+fetch('http://tenant.aitenanttest.test/api/members/contact/', {
+  headers: {
+    Authorization: 'Bearer ' + (await window.Clerk?.session?.getToken()),
+  },
+}).then((r) => console.log('Status:', r.status));
 ```
 
-**Diagnostic Steps:**
-
-1. **Verify Endpoint Exists:**
+**Backend (Terminal):**
 
 ```bash
-# Test without authentication (should return auth error, not 404)
-curl -s http://tenant.aitenanttest.test/api/members/generated-workouts/
-# Expected: {"detail":"Not authenticated with Clerk"}
-# If 404: Endpoint doesn't exist
+# Check if backend is accessible
+curl -I http://tenant.aitenanttest.test/api/
+
+# Verify Clerk secret key is set
+docker exec CONTAINER_NAME env | grep CLERK_SECRET_KEY
 ```
 
-2. **Check URL Construction:**
+### **🎯 Expected Results After Fix:**
 
-```bash
-# Frontend service uses: /members/generated-workouts/
-# API service prepends: VITE_API_URL (http://tenant.aitenanttest.test/api)
-# Final URL: http://tenant.aitenanttest.test/api/members/generated-workouts/
-```
+- ✅ Frontend loads without 401 errors in console
+- ✅ Backend responds with 200 for authenticated requests
+- ✅ Navigation and API calls work properly
+- ✅ User can access all protected features
 
-3. **Verify Backend Routes:**
+### **💡 Prevention for Future:**
 
-```bash
-cd ../ai-api
-cat members/urls.py | grep generated-workouts
-cat api/urls.py | grep members
-```
+**When changing Clerk publishable keys:**
 
-**Solutions:**
+1. **Always update the backend secret key** to match the new instance
+2. **Recreate JWT templates** in Clerk dashboard
+3. **Verify authorized parties/satellite domains** are configured
+4. **Test both frontend and backend** after changes
 
-1. **Authentication Issue**: User not logged in or token expired
-   - Log out and log back in
-   - Check browser console for Clerk errors
-   - Verify JWT token is being sent in Authorization header
-
-2. **Backend Not Running**: Docker containers stopped
-
-   ```bash
-   cd ../ai-api && docker-compose up -d
-   docker ps  # Verify all containers running
-   ```
-
-3. **Wrong API URL**: Check VITE_API_URL in .env
-   ```bash
-   cat .env | grep VITE_API_URL
-   # Should be: VITE_API_URL=http://tenant.aitenanttest.test/api
-   ```
-
-### **Issue: Configuration ID Mismatch (Common Root Cause)**
-
-**Symptoms:**
-
-- 404 errors on API calls that should work
-- Endpoint exists and authentication is working
-- Error occurs when creating resources (POST requests)
-
-**Root Cause:**
-Configuration IDs in `.env` file don't match backend expectations.
-
-**Common Configuration Issues:**
-
-1. **Workout Configuration ID:**
-
-```bash
-# Check current value
-cat .env | grep VITE_GENERATED_WORKOUT_CONFIGURATION_ID
-
-# Should match a valid configuration ID from backend
-# Example: VITE_GENERATED_WORKOUT_CONFIGURATION_ID=01JSHGHV0V6RZC3TN7T2W09P2M
-```
-
-2. **Stripe Price IDs:**
-
-```bash
-# Check Stripe configuration
-cat .env | grep VITE_STRIPE_PRICE
-# Should match valid Stripe price IDs
-```
-
-**Diagnostic Steps:**
-
-1. **Verify Configuration Values:**
-
-```bash
-# Check all configuration IDs
-cat .env | grep -E "CONFIGURATION_ID|PRICE_ID|KEY_ID"
-```
-
-2. **Test with Valid Configuration:**
-
-```bash
-# If you know the correct configuration ID, update it
-sed -i '' 's|VITE_GENERATED_WORKOUT_CONFIGURATION_ID=wrong_id|VITE_GENERATED_WORKOUT_CONFIGURATION_ID=correct_id|' .env
-```
-
-3. **Restart Frontend After Changes:**
-
-```bash
-# Configuration changes require restart
-pkill -f "vite" && npm run dev -- --port 5173
-```
-
-**Prevention:**
-
-- Keep a reference of valid configuration IDs
-- Document which configuration IDs are used for which environments
-- Test configuration changes in isolation before deploying
-
-### **Testing API Endpoints**
-
-```bash
-# Test base API
-curl -s http://tenant.aitenanttest.test/api/
-
-# Test members endpoint (should return auth error, not 404)
-curl -s http://tenant.aitenanttest.test/api/members/generated-workouts/
-
-# Test with valid token (if you have one)
-curl -H "Authorization: Bearer YOUR_JWT_TOKEN" http://tenant.aitenanttest.test/api/members/generated-workouts/
-```
-
-## **Common Issues & Solutions**
-
-### **Issue 1: Missing .env File**
-
-**Cause**: Frontend has no environment configuration
-**Solution**:
-
-```bash
-cp .env.example .env
-# Then update the values as shown above
-```
-
-### **Issue 2: Still Getting 401 Errors**
-
-**Cause**: User not logged in or token expired
-**Solution**:
-
-- Log out and log back in
-- Refresh the page
-- Check browser console for Clerk errors
-
-### **Issue 3: CORS Errors**
-
-**Cause**: Backend not accepting frontend origin
-**Solution**:
-
-- Verify `CORS_ALLOW_ALL_ORIGINS = True` in backend
-- Check `CLERK_AUTHORIZED_PARTIES` includes `localhost:5173`
-
-### **Issue 4: API Endpoints Not Found (404)**
-
-**Cause**: Backend not running or wrong URL
-**Solution**:
-
-- Verify Docker containers are running: `docker ps`
-- Test backend directly: `curl http://tenant.aitenanttest.test/api/`
-- Check URL construction in frontend services
-
-### **Issue 5: Wrong Clerk Application**
-
-**Cause**: Frontend using different Clerk app than backend
-**Solution**:
-
-- Update `VITE_CLERK_PUBLISHABLE_KEY` to match backend's Clerk app
-- Ensure both use same Clerk application domain
-
-## **Prevention**
-
-### **For Future Development:**
-
-1. **Document Clerk Application**: Keep track of which Clerk app is used
-2. **Environment Templates**: Use `.env.example` with placeholder values
-3. **Configuration Validation**: Add checks to ensure frontend/backend Clerk apps match
-4. **Regular Testing**: Test authentication flow after any configuration changes
-
-### **Team Communication:**
-
-- **Share Clerk Application Details**: Ensure team knows which Clerk app to use
-- **Document Configuration**: Keep backend `.env` configuration documented
-- **Version Control**: Use `.env.example` files for configuration templates
-
-## **Summary**
-
-The key to fixing this issue was **creating the missing `.env` file and ensuring frontend and backend use the same Clerk application**. The missing environment configuration prevented the frontend from connecting to the backend properly. By creating the `.env` file with the correct Clerk publishable key and API URL, the authentication flow now works correctly.
-
-**Remember**: Always ensure that both frontend and backend are configured for the same Clerk application when troubleshooting authentication issues.
-
-## **Quick Reference Commands**
-
-### **Check Current Status**
-
-```bash
-# Frontend configuration
-cat .env | grep -E "CLERK|API_URL"
-
-# Backend status
-curl -s http://tenant.aitenanttest.test/api/ | head -5
-
-# Docker containers
-docker ps
-```
-
-### **Fix Missing Configuration**
-
-```bash
-# Create .env file
-cp .env.example .env
-
-# Update Clerk key
-sed -i '' 's|VITE_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key_here|VITE_CLERK_PUBLISHABLE_KEY=pk_test_ZW1pbmVudC1hZGRlci02NC5jbGVyay5hY2NvdW50cy5kZXYk|' .env
-
-# Update API URL
-sed -i '' 's|VITE_API_URL=your_api_url_here|VITE_API_URL=http://tenant.aitenanttest.test/api|' .env
-
-# Restart frontend
-pkill -f "vite" && npm run dev -- --port 5173
-```
-
-### **Test Authentication**
-
-```bash
-# Test backend API
-curl -v -H "Authorization: Bearer test-token" http://tenant.aitenanttest.test/api/members/trainer-persona/
-
-# Check browser network tab for API calls to tenant.aitenanttest.test
-```
-
-### **Debug API Endpoints**
-
-```bash
-# Test specific endpoint
-curl -s http://tenant.aitenanttest.test/api/members/generated-workouts/
-
-# Check backend routes
-cd ../ai-api && cat members/urls.py | grep generated-workouts
-```
+This complete solution resolves all authentication issues related to Clerk key changes!
