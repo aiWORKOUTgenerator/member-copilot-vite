@@ -149,10 +149,10 @@ export function RadioGroupOfCards<T extends SelectableItem>({
           return (
             <div
               key={item.id}
-              className={`card cursor-pointer transition-all duration-200 hover:shadow-md hover:scale-[1.02] ${
+              className={`card shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer border-2 ${
                 isSelected
-                  ? `bg-${colorScheme}-50 border-${colorScheme} border-2 shadow-sm`
-                  : 'bg-base-200 border-base-300 border hover:border-base-400'
+                  ? `bg-gradient-to-br from-${colorScheme}/20 to-${colorScheme}/10 border-${colorScheme}/30 hover:border-${colorScheme}/40 ring-2 ring-${colorScheme}`
+                  : 'bg-gradient-to-br from-base-200/20 to-base-200/10 border-base-300/30 hover:border-base-400/40'
               }`}
               onClick={() => handleChange(item)}
             >
