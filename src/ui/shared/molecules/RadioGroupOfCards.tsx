@@ -139,46 +139,42 @@ export function RadioGroupOfCards<T extends SelectableItem>({
         </legend>
       )}
 
-      {/* Card Container for Visual Separation */}
-      <div className="card bg-base-200 shadow-sm">
-        <div className="card-body p-6">
-          <div
-            className={`grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-${gridCols}`}
-          >
-            {items.map((item) => {
-              const isSelected = isItemSelected(item);
+      {/* Cards Grid - No extra container to match PathCard pattern */}
+      <div
+        className={`grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-${gridCols}`}
+      >
+        {items.map((item) => {
+          const isSelected = isItemSelected(item);
 
-              return (
-                <div
-                  key={item.id}
-                  className={`card cursor-pointer transition-all duration-200 hover:shadow-md hover:scale-[1.02] ${
-                    isSelected
-                      ? `bg-${colorScheme}-50 border-${colorScheme} border-2 shadow-sm`
-                      : 'bg-base-100 border-base-300 border hover:border-base-400'
-                  }`}
-                  onClick={() => handleChange(item)}
-                >
-                  <div className="card-body p-4 flex flex-col">
-                    <div className="flex-grow">
-                      <h3 className="card-title text-base">{item.title}</h3>
-                      {showDescription && item.description && (
-                        <p className="text-sm text-base-content/70">
-                          {item.description}
-                        </p>
-                      )}
-                    </div>
-
-                    {showTertiary && item.tertiary && (
-                      <div className="mt-3 text-sm font-medium">
-                        {item.tertiary}
-                      </div>
-                    )}
-                  </div>
+          return (
+            <div
+              key={item.id}
+              className={`card cursor-pointer transition-all duration-200 hover:shadow-md hover:scale-[1.02] ${
+                isSelected
+                  ? `bg-${colorScheme}-50 border-${colorScheme} border-2 shadow-sm`
+                  : 'bg-base-100 border-base-300 border hover:border-base-400'
+              }`}
+              onClick={() => handleChange(item)}
+            >
+              <div className="card-body p-4 flex flex-col">
+                <div className="flex-grow">
+                  <h3 className="card-title text-base">{item.title}</h3>
+                  {showDescription && item.description && (
+                    <p className="text-sm text-base-content/70">
+                      {item.description}
+                    </p>
+                  )}
                 </div>
-              );
-            })}
-          </div>
-        </div>
+
+                {showTertiary && item.tertiary && (
+                  <div className="mt-3 text-sm font-medium">
+                    {item.tertiary}
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
       </div>
     </fieldset>
   );
