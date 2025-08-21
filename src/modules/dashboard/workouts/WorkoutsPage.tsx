@@ -189,6 +189,8 @@ export default function AIWorkouts() {
       <FloatingClipboardFab
         href="/dashboard/workouts/generate"
         onClick={handleFabClick}
+        ariaLabel="Generate new workout"
+        title="Generate new workout"
       />
     </div>
   );
