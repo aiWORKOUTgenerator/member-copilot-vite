@@ -13,9 +13,6 @@ import {
   InvalidWorkoutCard,
 } from './WorkoutComponents';
 import { formatTime } from '../utils/workouts.func';
-import { useExercisesForGeneratedWorkout } from '@/hooks/useExercises';
-import { useExerciseMedia } from '@/hooks/useExerciseMedia';
-import { ExerciseMediaWithAudio } from '@/ui/shared/molecules';
 
 // Type for a flattened workout step
 type WorkoutStep = {
@@ -31,10 +28,8 @@ type WorkoutStep = {
 
 const StepByStepWorkoutViewer = ({
   workout,
-  generatedWorkoutId,
 }: {
   workout: WorkoutStructure;
-  generatedWorkoutId?: string;
 }) => {
   // Handle potentially malformed workout structure
   const isValidWorkout = useMemo(
@@ -52,10 +47,6 @@ const StepByStepWorkoutViewer = ({
     [workout?.sections]
   );
 
-  // Fetch exercises for media resolution if generatedWorkoutId is provided
-  const { exercises: availableExercises = [] } =
-    useExercisesForGeneratedWorkout(generatedWorkoutId || '');
-
   // Flatten workout into a sequence of steps
   const [steps, setSteps] = useState<WorkoutStep[]>([]);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
@@ -72,14 +63,6 @@ const StepByStepWorkoutViewer = ({
         ? Math.round(((currentStepIndex + 1) / steps.length) * 100)
         : 0,
     [currentStepIndex, steps.length]
-  );
-
-  // Resolve media for the current exercise step
-  const currentExerciseMedia = useExerciseMedia(
-    currentStep?.type === 'exercise'
-      ? { name: (currentStep.content as Exercise).name }
-      : null,
-    availableExercises
   );
 
   // Recursive function to flatten sections and subsections
@@ -380,17 +363,6 @@ const StepByStepWorkoutViewer = ({
               {currentStep.round && currentStep.totalRounds && (
                 <div className="badge badge-info mb-3">
                   Round {currentStep.round} of {currentStep.totalRounds}
-                </div>
-              )}
-              {(currentExerciseMedia.imageUrl ||
-                currentExerciseMedia.audioUrl) && (
-                <div className="mb-4">
-                  <ExerciseMediaWithAudio
-                    imageUrl={currentExerciseMedia.imageUrl}
-                    audioUrl={currentExerciseMedia.audioUrl}
-                    exerciseName={(currentStep.content as Exercise).name}
-                    size="lg"
-                  />
                 </div>
               )}
               <ExerciseCard exercise={currentStep.content as Exercise} />

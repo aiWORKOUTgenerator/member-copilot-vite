@@ -40,5 +40,3 @@ export { useAutoScrollPreferences } from './useAutoScrollPreferences';
 export { useConditionalAnalytics } from './useConditionalAnalytics';
 export { useAutoScrollTiming } from './useAutoScrollTiming';
 export { useFormAutoScroll } from './useFormAutoScroll';
-export { useExerciseService } from './useExerciseService';
-export * from './useExercises';

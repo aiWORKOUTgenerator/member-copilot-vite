@@ -36,7 +36,6 @@ import WorkoutFeedbackForm from './components/WorkoutFeedbackForm';
 import { useWorkoutInstances } from '@/hooks/useWorkoutInstances';
 import { useAnalytics } from '@/hooks/useAnalytics';
 import { useFeedbackModal } from './components/FeedbackModal.hooks';
-import { useExercisesForGeneratedWorkout } from '@/hooks/useExercises';
 
 // Chunk data is now handled by GeneratedWorkoutChunksProvider
 
@@ -55,9 +54,6 @@ function WorkoutDetailContent() {
   const [isCreatingInstance, setIsCreatingInstance] = useState(false);
   const { canAccessFeature } = useUserAccess();
   const analytics = useAnalytics();
-
-  // Load exercises for this generated workout
-  const { exercises } = useExercisesForGeneratedWorkout(generatedWorkoutId);
 
   // Check if user has access to start workouts
   const canStartWorkouts = canAccessFeature('generate_workout_instances');
@@ -105,13 +101,6 @@ function WorkoutDetailContent() {
       });
     }
   }, [generatedWorkout, analytics]);
-
-  // Handle exercises loading
-  useEffect(() => {
-    if (exercises.length > 0) {
-      console.log('Loaded exercises for workout:', exercises);
-    }
-  }, [exercises]);
 
   // Track workout start from detail page
   const handleStartWorkout = async () => {
@@ -347,10 +336,7 @@ function WorkoutDetailContent() {
         )
       ) : workoutFormat === 'structured' && validJsonFormat ? (
         <div className="p-4">
-          <StructuredWorkoutViewer
-            generatedWorkoutId={generatedWorkoutId}
-            workout={validJsonFormat}
-          />
+          <StructuredWorkoutViewer workout={validJsonFormat} />
         </div>
       ) : workoutFormat === 'simple' && generatedWorkout?.simpleFormat ? (
         <div className="p-4">
@@ -367,10 +353,7 @@ function WorkoutDetailContent() {
         </div>
       ) : workoutFormat === 'step-by-step' && validJsonFormat ? (
         <div className="p-4">
-          <StepByStepWorkoutViewer
-            generatedWorkoutId={generatedWorkoutId}
-            workout={validJsonFormat}
-          />
+          <StepByStepWorkoutViewer workout={validJsonFormat} />
         </div>
       ) : (
         <div className="mt-4 p-4 bg-base-200 rounded-lg">

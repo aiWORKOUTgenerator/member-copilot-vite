@@ -17,4 +17,3 @@ export * from './workoutFeedback';
 export * from './location';
 export * from './equipment';
 export * from './classSchedule';
-export * from './exercise';

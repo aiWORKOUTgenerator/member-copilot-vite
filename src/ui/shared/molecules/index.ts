@@ -17,7 +17,4 @@ export * from './ProgressBar';
 export * from './ContentCard';
 export * from './RadioCardGroupInput';
 export * from './HeroTitle';
-export * from './ExerciseMedia';
-export * from './ExerciseAudio';
-export * from './ExerciseMediaWithAudio';
 export { default as FloatingClipboardFab } from './FloatingClipboardFab';
