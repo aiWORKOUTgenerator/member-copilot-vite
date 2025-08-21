@@ -94,14 +94,14 @@ export default function DashboardHomePage() {
 
   useEffect(() => {
     setTitle('Dashboard');
-  }, []); // Remove setTitle dependency to prevent infinite loop
+  }, [setTitle]);
 
   // Track dashboard page views and user state
   useEffect(() => {
     analytics.track('Dashboard Home Viewed', {
       tracked_at: new Date().toISOString(),
     });
-  }, []); // Remove analytics dependency to prevent infinite loop
+  }, [analytics]);
 
   // Handle navigation to profile section
   const navigateToProfile = (attributeId: string | number) => {
@@ -161,7 +161,7 @@ export default function DashboardHomePage() {
         workoutLimit: workoutUsage.limit,
       });
     }
-  }, [isOnBasicTier, workoutUsage]); // Remove analytics dependency
+  }, [isOnBasicTier, workoutUsage, analytics]);
 
   return (
     <div className="p-4">

@@ -22,8 +22,8 @@ export default function FloatingClipboardFab({
   return (
     <div
       className={classNames(
-        // simple fixed positioning
-        'fixed right-6 bottom-6 z-50',
+        // safe area aware position, with sensible fallback
+        'fixed right-6 bottom-[calc(env(safe-area-inset-bottom,0px)+1.5rem)] z-50',
         className
       )}
     >
