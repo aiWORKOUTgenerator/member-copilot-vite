@@ -16,8 +16,8 @@ export default function FloatingClipboardFab({
   href = '/select-workout',
   className = '',
   onClick,
-  ariaLabel = 'Select workout',
-  title = 'Select workout',
+  ariaLabel = 'Generate new workout',
+  title = 'Generate new workout',
 }: Props) {
   return (
     <div
