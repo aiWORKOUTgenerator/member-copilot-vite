@@ -30,5 +30,6 @@ export * from './services/AttributeService';
 export * from './services/ConfigurationService';
 export * from './services/PromptService';
 export * from './services/WorkoutFeedbackService';
+export * from './services/ExerciseService';
 
 export * from './license/LicenseService';

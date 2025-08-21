@@ -7,6 +7,7 @@ import { useAnalytics } from '@/hooks/useAnalytics';
 import { useCurrentWorkoutInstance } from '@/hooks/useCurrentWorkoutInstance';
 import { useTrainerPersonaData } from '@/hooks/useTrainerPersona';
 import { useWorkoutInstances } from '@/hooks/useWorkoutInstances';
+import { useExercisesForGeneratedWorkout } from '@/hooks/useExercises';
 import { Check, Clock, Target, X } from 'lucide-react';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -61,6 +62,12 @@ export default function WorkoutInstancePage() {
   const analytics = useAnalytics();
   const workoutStartTime = useRef<number>(Date.now());
 
+  // Load exercises for the current workout instance
+  const generatedWorkoutId = currentInstance?.generatedWorkoutId;
+  const { exercises } = useExercisesForGeneratedWorkout(
+    generatedWorkoutId || ''
+  );
+
   // Track workout instance start
   useEffect(() => {
     if (currentInstance) {
@@ -73,6 +80,13 @@ export default function WorkoutInstancePage() {
       workoutStartTime.current = Date.now();
     }
   }, [currentInstance, analytics]);
+
+  // Handle exercises loading for workout instance
+  useEffect(() => {
+    if (exercises.length > 0 && currentInstance) {
+      console.log('Loaded exercises for workout instance:', exercises);
+    }
+  }, [exercises, currentInstance]);
 
   // Direct API call to complete workout immediately
   const completeWorkoutImmediately = async () => {
