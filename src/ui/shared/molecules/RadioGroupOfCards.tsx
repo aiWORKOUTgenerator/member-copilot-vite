@@ -152,7 +152,7 @@ export function RadioGroupOfCards<T extends SelectableItem>({
               className={`card cursor-pointer transition-all duration-200 hover:shadow-md hover:scale-[1.02] ${
                 isSelected
                   ? `bg-${colorScheme}-50 border-${colorScheme} border-2 shadow-sm`
-                  : 'bg-base-100 border-base-300 border hover:border-base-400'
+                  : 'bg-base-200 border-base-300 border hover:border-base-400'
               }`}
               onClick={() => handleChange(item)}
             >
