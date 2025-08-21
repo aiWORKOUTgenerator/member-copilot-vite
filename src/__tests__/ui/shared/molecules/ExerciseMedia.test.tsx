@@ -1,4 +1,5 @@
 import React from 'react';
+import '@testing-library/jest-dom';
 import { describe, it, expect, afterEach } from 'vitest';
 import { act, render, screen, waitFor, cleanup } from '@testing-library/react';
 import { ExerciseMedia } from '../../../../ui/shared/molecules/ExerciseMedia';
@@ -42,32 +43,35 @@ describe('ExerciseMedia Component', () => {
       expect(image).toHaveAttribute('alt', defaultProps.alt);
     });
 
-    it('does not crop or stretch the image (uses object-contain + h-auto)', () => {
+    it('does not crop or stretch the image (uses object-contain within fixed box)', () => {
       render(<ExerciseMedia {...defaultProps} imageUrl={imageUrl} />);
 
       const image = screen.getByRole('img');
       expect(image).toHaveClass('object-contain');
-      expect(image).toHaveClass('h-auto');
-      // Ensure we are not using object-cover / h-full anymore
+      expect(image).toHaveClass('w-full');
+      expect(image).toHaveClass('h-full');
+      // Ensure we are not using object-cover
       expect(image).not.toHaveClass('object-cover');
-      expect(image).not.toHaveClass('h-full');
     });
 
-    it('applies correct size classes (max height caps)', () => {
+    it('applies correct fixed size classes', () => {
       const { rerender } = render(
         <ExerciseMedia {...defaultProps} imageUrl={imageUrl} size="sm" />
       );
-      expect(screen.getByRole('img').parentElement).toHaveClass('max-h-40');
+      expect(screen.getByRole('img').parentElement).toHaveClass('w-64');
+      expect(screen.getByRole('img').parentElement).toHaveClass('h-40');
 
       rerender(
         <ExerciseMedia {...defaultProps} imageUrl={imageUrl} size="md" />
       );
-      expect(screen.getByRole('img').parentElement).toHaveClass('max-h-56');
+      expect(screen.getByRole('img').parentElement).toHaveClass('w-80');
+      expect(screen.getByRole('img').parentElement).toHaveClass('h-56');
 
       rerender(
         <ExerciseMedia {...defaultProps} imageUrl={imageUrl} size="lg" />
       );
-      expect(screen.getByRole('img').parentElement).toHaveClass('max-h-72');
+      expect(screen.getByRole('img').parentElement).toHaveClass('w-96');
+      expect(screen.getByRole('img').parentElement).toHaveClass('h-72');
     });
 
     it('applies correct rounded classes', () => {
