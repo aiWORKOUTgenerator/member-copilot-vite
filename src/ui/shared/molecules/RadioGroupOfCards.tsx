@@ -134,47 +134,51 @@ export function RadioGroupOfCards<T extends SelectableItem>({
   return (
     <fieldset className="w-full">
       {legend && (
-        <legend className="text-2xl font-bold text-base-content mb-6 bg-base-200 rounded-box p-6 text-center">
+        <legend className="text-2xl font-bold text-base-content mb-6 bg-base-300/70 rounded-box p-6 text-center">
           {legend}
         </legend>
       )}
 
-      {/* Cards Grid - No extra container to match PathCard pattern */}
-      <div
-        className={`grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-${gridCols}`}
-      >
-        {items.map((item) => {
-          const isSelected = isItemSelected(item);
+      {/* Card Container for Visual Separation */}
+      <div className="card bg-base-200/50 shadow-sm">
+        <div className="card-body p-6">
+          <div
+            className={`grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-${gridCols}`}
+          >
+            {items.map((item) => {
+              const isSelected = isItemSelected(item);
 
-          return (
-            <div
-              key={item.id}
-              className={`card shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer border-2 ${
-                isSelected
-                  ? `bg-gradient-to-br from-${colorScheme}/20 to-${colorScheme}/10 border-${colorScheme}/30 hover:border-${colorScheme}/40 ring-2 ring-${colorScheme}`
-                  : 'bg-gradient-to-br from-base-200/20 to-base-200/10 border-base-300/30 hover:border-base-400/40'
-              }`}
-              onClick={() => handleChange(item)}
-            >
-              <div className="card-body p-4 flex flex-col">
-                <div className="flex-grow">
-                  <h3 className="card-title text-base">{item.title}</h3>
-                  {showDescription && item.description && (
-                    <p className="text-sm text-base-content/70">
-                      {item.description}
-                    </p>
-                  )}
-                </div>
+              return (
+                <div
+                  key={item.id}
+                  className={`card cursor-pointer transition-all duration-200 hover:shadow-md hover:scale-[1.02] ${
+                    isSelected
+                      ? `bg-gradient-to-br from-${colorScheme}/30 to-${colorScheme}/20 border-${colorScheme} border-2 shadow-sm`
+                      : 'bg-gradient-to-br from-base-200/20 to-base-200/10 border-base-300 border hover:border-base-400'
+                  }`}
+                  onClick={() => handleChange(item)}
+                >
+                  <div className="card-body p-4 flex flex-col">
+                    <div className="flex-grow">
+                      <h3 className="card-title text-base">{item.title}</h3>
+                      {showDescription && item.description && (
+                        <p className="text-sm text-base-content/70">
+                          {item.description}
+                        </p>
+                      )}
+                    </div>
 
-                {showTertiary && item.tertiary && (
-                  <div className="mt-3 text-sm font-medium">
-                    {item.tertiary}
+                    {showTertiary && item.tertiary && (
+                      <div className="mt-3 text-sm font-medium">
+                        {item.tertiary}
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            </div>
-          );
-        })}
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </div>
     </fieldset>
   );
