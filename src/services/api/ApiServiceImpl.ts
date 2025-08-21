@@ -58,6 +58,9 @@ export class ApiServiceImpl implements ApiService {
       const token = await this.tokenProvider.getToken();
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
+        // Debug logging removed - authentication issue resolved
+      } else {
+        // No token available
       }
     }
 

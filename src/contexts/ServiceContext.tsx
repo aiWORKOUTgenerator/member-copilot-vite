@@ -12,6 +12,17 @@ import { ServiceContext, ServiceContainer } from './service.types';
  * Determine if we should use mocks based on environment or query params
  */
 const shouldUseMocks = (): boolean => {
+  // Check for environment variable to force mock mode
+  if (import.meta.env.VITE_USE_MOCK_SERVICES === 'true') {
+    return true;
+  }
+
+  // Check if we're in development and backend is unavailable
+  if (import.meta.env.DEV) {
+    // For now, use mocks in development to avoid backend dependency
+    return true;
+  }
+
   return false;
 };
 
