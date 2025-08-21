@@ -10,7 +10,7 @@ import { useTrainerPersonaData } from '@/hooks/useTrainerPersona';
 import { useWorkoutInstances } from '@/hooks/useWorkoutInstances';
 import { useExercisesForGeneratedWorkout } from '@/hooks/useExercises';
 import { useExerciseMedia } from '@/hooks/useExerciseMedia';
-import { ExerciseMedia } from '@/ui/shared/molecules/ExerciseMedia';
+import { ExerciseMediaWithAudio } from '@/ui/shared/molecules/ExerciseMediaWithAudio';
 import { Check, Clock, Target, X } from 'lucide-react';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -1986,7 +1986,7 @@ function ExerciseCard({
   const notes = exerciseInstance.notes || '';
 
   // Resolve exercise media
-  const { imageUrl } = useExerciseMedia(
+  const { imageUrl, audioUrl } = useExerciseMedia(
     { name: exercise.name },
     availableExercises
   );
@@ -2066,11 +2066,12 @@ function ExerciseCard({
       }`}
     >
       {/* Exercise Media */}
-      {imageUrl && (
+      {(imageUrl || audioUrl) && (
         <div className="mb-4">
-          <ExerciseMedia
+          <ExerciseMediaWithAudio
             imageUrl={imageUrl}
-            alt={exercise.name}
+            audioUrl={audioUrl}
+            exerciseName={exercise.name}
             size="md"
             className="md:max-h-64"
           />

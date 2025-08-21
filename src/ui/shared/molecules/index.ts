@@ -18,3 +18,5 @@ export * from './ContentCard';
 export * from './RadioCardGroupInput';
 export * from './HeroTitle';
 export * from './ExerciseMedia';
+export * from './ExerciseAudio';
+export * from './ExerciseMediaWithAudio';

@@ -10,7 +10,7 @@ import {
 import { formatTime } from '../utils/workouts.func';
 import { useExercisesForGeneratedWorkout } from '@/hooks/useExercises';
 import { useExerciseMedia } from '@/hooks/useExerciseMedia';
-import { ExerciseMedia } from '@/ui/shared/molecules';
+import { ExerciseMediaWithAudio } from '@/ui/shared/molecules';
 import { Exercise } from '@/domain/entities/generatedWorkout';
 import { Exercise as CanonicalExercise } from '@/domain/entities/exercise';
 
@@ -22,16 +22,21 @@ const ExerciseCardWithMedia = ({
   exercise: Exercise;
   availableExercises: CanonicalExercise[];
 }) => {
-  const { imageUrl } = useExerciseMedia(
+  const { imageUrl, audioUrl } = useExerciseMedia(
     { name: exercise.name },
     availableExercises
   );
 
   return (
     <div>
-      {imageUrl && (
+      {(imageUrl || audioUrl) && (
         <div className="mb-4">
-          <ExerciseMedia imageUrl={imageUrl} alt={exercise.name} size="md" />
+          <ExerciseMediaWithAudio
+            imageUrl={imageUrl}
+            audioUrl={audioUrl}
+            exerciseName={exercise.name}
+            size="md"
+          />
         </div>
       )}
       <ExerciseCard exercise={exercise} />

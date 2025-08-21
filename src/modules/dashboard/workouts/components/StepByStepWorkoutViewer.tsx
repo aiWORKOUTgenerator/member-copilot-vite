@@ -15,7 +15,7 @@ import {
 import { formatTime } from '../utils/workouts.func';
 import { useExercisesForGeneratedWorkout } from '@/hooks/useExercises';
 import { useExerciseMedia } from '@/hooks/useExerciseMedia';
-import { ExerciseMedia } from '@/ui/shared/molecules';
+import { ExerciseMediaWithAudio } from '@/ui/shared/molecules';
 
 // Type for a flattened workout step
 type WorkoutStep = {
@@ -382,11 +382,13 @@ const StepByStepWorkoutViewer = ({
                   Round {currentStep.round} of {currentStep.totalRounds}
                 </div>
               )}
-              {currentExerciseMedia.imageUrl && (
+              {(currentExerciseMedia.imageUrl ||
+                currentExerciseMedia.audioUrl) && (
                 <div className="mb-4">
-                  <ExerciseMedia
+                  <ExerciseMediaWithAudio
                     imageUrl={currentExerciseMedia.imageUrl}
-                    alt={(currentStep.content as Exercise).name}
+                    audioUrl={currentExerciseMedia.audioUrl}
+                    exerciseName={(currentStep.content as Exercise).name}
                     size="lg"
                   />
                 </div>
