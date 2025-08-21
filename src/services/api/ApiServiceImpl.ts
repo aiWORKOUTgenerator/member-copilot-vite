@@ -60,7 +60,7 @@ export class ApiServiceImpl implements ApiService {
         headers['Authorization'] = `Bearer ${token}`;
         // Debug logging removed - authentication issue resolved
       } else {
-        console.log('🔑 API Request Headers: No token available');
+        // No token available
       }
     }
 
