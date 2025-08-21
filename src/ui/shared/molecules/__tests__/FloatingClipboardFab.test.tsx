@@ -21,14 +21,14 @@ describe('FloatingClipboardFab', () => {
     render(<FloatingClipboardFab />);
 
     const link = screen.getByRole('link');
-    expect(link).toHaveAttribute('aria-label', 'Select workout');
+    expect(link).toHaveAttribute('aria-label', 'Generate new workout');
   });
 
   it('has correct title attribute', () => {
     render(<FloatingClipboardFab />);
 
     const link = screen.getByRole('link');
-    expect(link).toHaveAttribute('title', 'Select workout');
+    expect(link).toHaveAttribute('title', 'Generate new workout');
   });
 
   it('calls onClick when clicked', () => {
