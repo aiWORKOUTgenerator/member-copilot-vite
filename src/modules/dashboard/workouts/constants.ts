@@ -2,10 +2,13 @@
  * Workout customization constants
  *
  * This file contains all the options and configurations for workout customization,
- * including quick workout focus options, duration presets, and equipment choices.
+ * including quick workout focus options, duration presets, equipment choices, and routes.
  * These constants are used throughout the workout generation system to provide
  * consistent, user-friendly options for workout personalization.
  */
+
+// Route constants for workout generation
+export const WORKOUTS_GENERATE_ROUTE = '/dashboard/workouts/generate';
 
 export interface WorkoutFocusOption {
   id: string;
