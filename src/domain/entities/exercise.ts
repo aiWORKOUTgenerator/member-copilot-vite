@@ -81,7 +81,7 @@ export class Exercise extends BaseEntity<string> {
     return this._exerciseType;
   }
 
-  get audioUrl(): string | null {
+  get audioUrl(): string | null | undefined {
     return this._audioUrl;
   }
 
