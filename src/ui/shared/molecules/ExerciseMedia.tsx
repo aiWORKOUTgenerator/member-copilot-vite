@@ -21,11 +21,11 @@ export const ExerciseMedia: React.FC<ExerciseMediaProps> = ({
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
 
-  // Size classes
+  // Fixed container dimensions per size (image uses object-contain inside)
   const sizeClasses = {
-    sm: 'aspect-video max-h-40',
-    md: 'aspect-video max-h-56',
-    lg: 'aspect-video max-h-72',
+    sm: 'w-64 h-40',
+    md: 'w-80 h-56',
+    lg: 'w-96 h-72',
   };
 
   // Rounded classes
@@ -36,14 +36,15 @@ export const ExerciseMedia: React.FC<ExerciseMediaProps> = ({
   };
 
   const containerClasses = `
-    overflow-hidden 
-    bg-base-200/50 
-    backdrop-blur-xl 
-    border 
-    border-base-300 
-    ${roundedClasses[rounded]} 
-    shadow-sm 
-    ${sizeClasses[size]} 
+    relative
+    overflow-hidden
+    bg-base-200/50
+    backdrop-blur-xl
+    border
+    border-base-300
+    ${roundedClasses[rounded]}
+    shadow-sm
+    ${sizeClasses[size]}
     ${className}
   `
     .trim()
@@ -77,7 +78,7 @@ export const ExerciseMedia: React.FC<ExerciseMediaProps> = ({
     <div className={containerClasses}>
       {/* Loading skeleton */}
       {isLoading && showSkeleton && (
-        <div className="skeleton w-full h-full absolute inset-0" />
+        <div className="skeleton absolute inset-0" />
       )}
 
       {/* Error state */}
@@ -99,10 +100,10 @@ export const ExerciseMedia: React.FC<ExerciseMediaProps> = ({
           decoding="async"
           sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
           className={`
-            w-full 
-            h-full 
-            object-cover 
-            transition-opacity 
+            w-full
+            h-full
+            object-contain
+            transition-opacity
             duration-300
             ${isLoading ? 'opacity-0' : 'opacity-100'}
           `
@@ -110,7 +111,6 @@ export const ExerciseMedia: React.FC<ExerciseMediaProps> = ({
             .replace(/\s+/g, ' ')}
           onLoad={handleImageLoad}
           onError={handleImageError}
-          role="img"
         />
       )}
     </div>

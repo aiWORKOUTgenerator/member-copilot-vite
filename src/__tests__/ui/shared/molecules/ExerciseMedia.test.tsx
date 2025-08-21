@@ -1,5 +1,11 @@
-import { render, screen, waitFor, act } from '@testing-library/react';
-import { ExerciseMedia } from '@/ui/shared/molecules/ExerciseMedia';
+import React from 'react';
+import { describe, it, expect, afterEach } from 'vitest';
+import { act, render, screen, waitFor, cleanup } from '@testing-library/react';
+import { ExerciseMedia } from '../../../../ui/shared/molecules/ExerciseMedia';
+
+afterEach(() => {
+  cleanup();
+});
 
 describe('ExerciseMedia Component', () => {
   const defaultProps = {
@@ -36,7 +42,18 @@ describe('ExerciseMedia Component', () => {
       expect(image).toHaveAttribute('alt', defaultProps.alt);
     });
 
-    it('applies correct size classes', () => {
+    it('does not crop or stretch the image (uses object-contain + h-auto)', () => {
+      render(<ExerciseMedia {...defaultProps} imageUrl={imageUrl} />);
+
+      const image = screen.getByRole('img');
+      expect(image).toHaveClass('object-contain');
+      expect(image).toHaveClass('h-auto');
+      // Ensure we are not using object-cover / h-full anymore
+      expect(image).not.toHaveClass('object-cover');
+      expect(image).not.toHaveClass('h-full');
+    });
+
+    it('applies correct size classes (max height caps)', () => {
       const { rerender } = render(
         <ExerciseMedia {...defaultProps} imageUrl={imageUrl} size="sm" />
       );
@@ -167,12 +184,6 @@ describe('ExerciseMedia Component', () => {
         'sizes',
         '(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw'
       );
-    });
-
-    it('maintains aspect ratio', () => {
-      render(<ExerciseMedia {...defaultProps} imageUrl={imageUrl} />);
-
-      expect(screen.getByRole('img').parentElement).toHaveClass('aspect-video');
     });
   });
 });
