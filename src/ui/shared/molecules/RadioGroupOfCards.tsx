@@ -134,13 +134,13 @@ export function RadioGroupOfCards<T extends SelectableItem>({
   return (
     <fieldset className="w-full">
       {legend && (
-        <legend className="text-2xl font-bold text-base-content mb-6 bg-base-300/70 rounded-box p-6 text-center">
+        <legend className="text-2xl font-bold text-base-content mb-6 bg-base-300 rounded-box p-6 text-center">
           {legend}
         </legend>
       )}
 
       {/* Card Container for Visual Separation */}
-      <div className="card bg-base-200/50 shadow-sm">
+      <div className="card bg-base-200 shadow-sm">
         <div className="card-body p-6">
           <div
             className={`grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-${gridCols}`}
