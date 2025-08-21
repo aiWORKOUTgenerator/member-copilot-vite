@@ -140,7 +140,7 @@ export function RadioGroupOfCards<T extends SelectableItem>({
       )}
 
       {/* Card Container for Visual Separation */}
-      <div className="card bg-base-100 shadow-sm">
+      <div className="card bg-base-200 shadow-sm">
         <div className="card-body p-6">
           <div
             className={`grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-${gridCols}`}
