@@ -10,9 +10,9 @@ export const AutoScrollSettings: React.FC = () => {
   const { enabled, delay, setEnabled, setDelay } = useAutoScrollPreferences();
 
   return (
-    <div className="card bg-base-100 shadow-sm border border-base-200">
-      <div className="card-body">
-        <h3 className="card-title text-base flex items-center gap-2">
+    <div className="bg-base-100 shadow-sm border border-base-200 rounded-lg">
+      <div className="p-4">
+        <h3 className="text-base font-semibold flex items-center gap-2">
           <Settings className="w-4 h-4" />
           Auto-Scroll Settings
         </h3>

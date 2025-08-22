@@ -161,7 +161,7 @@ describe('CardBody', () => {
     const body = screen
       .getByText('Large padding content')
       .closest('.card-body');
-    expect(body).toHaveClass('p-6');
+    expect(body).toHaveClass('p-5');
   });
 
   it('applies custom className', () => {

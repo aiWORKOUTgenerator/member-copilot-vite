@@ -49,10 +49,10 @@ export const InfoCard: React.FC<InfoCardProps> = ({
 
   return (
     <div
-      className={`card ${bgColorMap[variant]} border ${borderColorMap[variant]} ${className}`}
+      className={`${bgColorMap[variant]} border ${borderColorMap[variant]} rounded-lg ${className}`}
     >
-      <div className="card-body">
-        <h2 className="card-title">{title}</h2>
+      <div className="p-4">
+        <h2 className="text-lg font-semibold">{title}</h2>
         <div className="space-y-2">{children}</div>
       </div>
     </div>

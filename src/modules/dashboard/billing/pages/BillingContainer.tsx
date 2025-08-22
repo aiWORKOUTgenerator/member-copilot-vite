@@ -145,8 +145,8 @@ export default function BillingLayout() {
             backgroundClassName="bg-base-200"
           />
 
-          <div className="card bg-base-100 shadow-md border border-base-200">
-            <div className="card-body p-2 sm:p-6">
+          <div className="bg-base-100 shadow-md border border-base-200 rounded-lg">
+            <div className="p-2 sm:p-6">
               <Outlet />
             </div>
           </div>

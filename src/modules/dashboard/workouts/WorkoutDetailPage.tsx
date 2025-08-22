@@ -325,7 +325,7 @@ function WorkoutDetailContent() {
 
       {workoutFormat === 'plain' ? (
         displayText ? (
-          <div className="bg-base-100 mt-4 p-4 prose-lg dark:prose-invert">
+          <div className="bg-base-100 mt-4 p-4 prose-lg dark:prose-invert rounded-lg">
             <ReactMarkdown>{displayText}</ReactMarkdown>
           </div>
         ) : (

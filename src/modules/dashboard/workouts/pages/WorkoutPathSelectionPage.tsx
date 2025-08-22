@@ -23,8 +23,8 @@ export default function WorkoutPathSelectionPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-base-100">
-        <header className="bg-base-200 p-6">
+      <div className="min-h-screen bg-base-200">
+        <header className="bg-base-200 p-6 rounded-lg">
           <div className="container mx-auto">
             <h1 className="text-3xl font-bold text-base-content">
               Choose Your Workout Path
@@ -35,14 +35,14 @@ export default function WorkoutPathSelectionPage() {
           </div>
         </header>
 
-        <main className="container mx-auto px-4 py-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+        <main className="py-8">
+          <div className="bg-base-200/30 rounded-xl p-8 max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
             <PathCardSkeleton />
             <PathCardSkeleton />
           </div>
         </main>
 
-        <footer className="bg-base-200 p-6 mt-auto">
+        <footer className="bg-base-200 p-6 mt-auto rounded-lg">
           <div className="container mx-auto text-center text-base-content/70">
             <p>Loading your workout options...</p>
           </div>
@@ -52,8 +52,8 @@ export default function WorkoutPathSelectionPage() {
   }
 
   return (
-    <div className="min-h-screen bg-base-100">
-      <header className="bg-base-200 p-6">
+    <div className="min-h-screen bg-base-200">
+      <header className="bg-base-200 p-6 rounded-lg">
         <div className="container mx-auto">
           <h1 className="text-3xl font-bold text-base-content">
             Choose Your Workout Path
@@ -64,11 +64,11 @@ export default function WorkoutPathSelectionPage() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="py-8">
         <WorkoutPathSelectionContainer />
       </main>
 
-      <footer className="bg-base-200 p-6 mt-auto">
+      <footer className="bg-base-200 p-6 mt-auto rounded-lg">
         <div className="container mx-auto text-center text-base-content/70">
           <p>Choose the path that best fits your preferences and time</p>
         </div>

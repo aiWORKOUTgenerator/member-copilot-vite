@@ -1,4 +1,5 @@
 import React from 'react';
+import { Card, CardBody, colorSchemeUtilities } from '@/ui/shared/atoms/Card';
 
 // Utility function for conditional className concatenation
 const cn = (...classes: (string | undefined | null | false)[]): string => {
@@ -44,82 +45,18 @@ export function PathCard({
   onClick,
   isSelected = false,
 }: PathCardProps) {
-  const colorClasses = {
-    primary: {
-      card: 'bg-gradient-to-br from-primary/20 to-primary/10 border-primary/30 hover:border-primary/40',
-      icon: 'bg-gradient-to-br from-primary to-primary-focus',
-      badge: 'badge-primary',
-      text: 'text-primary',
-      bulletBg: 'bg-primary',
-      actionBg: 'bg-primary/20',
-    },
-    secondary: {
-      card: 'bg-gradient-to-br from-secondary/20 to-secondary/10 border-secondary/30 hover:border-secondary/40',
-      icon: 'bg-gradient-to-br from-secondary to-secondary-focus',
-      badge: 'badge-secondary',
-      text: 'text-secondary',
-      bulletBg: 'bg-secondary',
-      actionBg: 'bg-secondary/20',
-    },
-    accent: {
-      card: 'bg-gradient-to-br from-accent/20 to-accent/10 border-accent/30 hover:border-accent/40',
-      icon: 'bg-gradient-to-br from-accent to-accent-focus',
-      badge: 'badge-accent',
-      text: 'text-accent',
-      bulletBg: 'bg-accent',
-      actionBg: 'bg-accent/20',
-    },
-    success: {
-      card: 'bg-gradient-to-br from-success/20 to-success/10 border-success/30 hover:border-success/40',
-      icon: 'bg-gradient-to-br from-success to-success-focus',
-      badge: 'badge-success',
-      text: 'text-success',
-      bulletBg: 'bg-success',
-      actionBg: 'bg-success/20',
-    },
-    warning: {
-      card: 'bg-gradient-to-br from-warning/20 to-warning/10 border-warning/30 hover:border-warning/40',
-      icon: 'bg-gradient-to-br from-warning to-warning-focus',
-      badge: 'badge-warning',
-      text: 'text-warning',
-      bulletBg: 'bg-warning',
-      actionBg: 'bg-warning/20',
-    },
-    info: {
-      card: 'bg-gradient-to-br from-info/20 to-info/10 border-info/30 hover:border-info/40',
-      icon: 'bg-gradient-to-br from-info to-info-focus',
-      badge: 'badge-info',
-      text: 'text-info',
-      bulletBg: 'bg-info',
-      actionBg: 'bg-info/20',
-    },
-  };
-
-  const currentColors = colorClasses[variant];
-
-  // Use utility function for cleaner className construction
-  const cardClassName = cn(
-    'card shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer border-2',
-    currentColors.card,
-    isSelected && 'ring-2 ring-primary'
-  );
+  const currentColors = colorSchemeUtilities[variant];
 
   return (
-    <div
-      className={cardClassName}
+    <Card
+      variant="path"
+      colorScheme={variant}
+      isSelected={isSelected}
       onClick={onClick}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          onClick();
-        }
-      }}
-      role="button"
-      tabIndex={0}
       aria-label={`Select ${title} path`}
       aria-describedby={`${variant}-description`}
     >
-      <div className="card-body p-6">
+      <CardBody padding="lg">
         {/* Header with Icon and Title */}
         <div className="flex items-start gap-4 mb-4">
           <div className={cn('p-3 rounded-lg shadow-md', currentColors.icon)}>
@@ -179,7 +116,7 @@ export function PathCard({
             </svg>
           </button>
         </div>
-      </div>
-    </div>
+      </CardBody>
+    </Card>
   );
 }

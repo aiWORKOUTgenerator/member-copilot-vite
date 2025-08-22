@@ -18,12 +18,10 @@ export const Card: React.FC<CardProps> = ({
   footer,
 }) => {
   return (
-    <div className={`card bg-base-100 shadow-lg ${className}`}>
-      <div className="card-body">
+    <div className={`bg-base-100 shadow-lg rounded-lg ${className}`}>
+      <div className="p-6">
         {title && (
-          <h2 className="card-title text-2xl font-bold text-center mb-1">
-            {title}
-          </h2>
+          <h2 className="text-2xl font-bold text-center mb-1">{title}</h2>
         )}
         {subtitle && (
           <p className="text-center text-base-content/70 mb-6">{subtitle}</p>

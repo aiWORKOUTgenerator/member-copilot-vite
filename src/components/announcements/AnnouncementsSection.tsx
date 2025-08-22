@@ -30,7 +30,7 @@ export function AnnouncementsSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Loading skeletons */}
           {Array.from({ length: 4 }).map((_, index) => (
-            <div key={index} className="card bg-base-200 shadow-md">
+            <div key={index} className="bg-base-200 shadow-md rounded-lg">
               <div className="card-body p-4">
                 <div className="flex justify-between items-start mb-2">
                   <div className="skeleton h-4 w-16"></div>

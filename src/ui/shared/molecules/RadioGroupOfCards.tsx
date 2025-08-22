@@ -133,44 +133,44 @@ export function RadioGroupOfCards<T extends SelectableItem>({
         </legend>
       )}
 
-      {/* Card Container for Visual Separation */}
-      <div className="card bg-base-200/50 shadow-sm">
-        <div className="card-body p-6">
-          <div
-            className={`grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-${gridCols}`}
-          >
-            {items.map((item) => {
-              const isSelected = isItemSelected(item);
+      {/* Card Container for Visual Separation - with subtle rounded corners and background */}
+      <div className="bg-base-200/30 rounded-xl p-6">
+        <div
+          className={`grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-${gridCols}`}
+        >
+          {items.map((item) => {
+            const isSelected = isItemSelected(item);
 
-              return (
-                <Card
-                  key={item.id}
-                  variant="path"
-                  colorScheme={colorScheme}
-                  isSelected={isSelected}
-                  onClick={() => handleChange(item)}
-                  className="hover:scale-[1.02]"
-                >
-                  <CardBody padding="sm" className="flex flex-col">
-                    <div className="flex-grow">
-                      <h3 className="card-title text-base">{item.title}</h3>
-                      {showDescription && item.description && (
-                        <p className="text-sm text-base-content/70">
-                          {item.description}
-                        </p>
-                      )}
-                    </div>
-
-                    {showTertiary && item.tertiary && (
-                      <div className="mt-3 text-sm font-medium">
-                        {item.tertiary}
-                      </div>
+            return (
+              <Card
+                key={item.id}
+                variant="path"
+                colorScheme={colorScheme}
+                isSelected={isSelected}
+                onClick={() => handleChange(item)}
+                className="hover:scale-[1.02]"
+              >
+                <CardBody padding="md" className="flex flex-col">
+                  <div className="flex-grow">
+                    <h3 className="text-base font-semibold text-base-content mb-2">
+                      {item.title}
+                    </h3>
+                    {showDescription && item.description && (
+                      <p className="text-sm text-base-content/70 mb-4 leading-relaxed">
+                        {item.description}
+                      </p>
                     )}
-                  </CardBody>
-                </Card>
-              );
-            })}
-          </div>
+                  </div>
+
+                  {showTertiary && item.tertiary && (
+                    <div className="mt-3 text-sm font-medium">
+                      {item.tertiary}
+                    </div>
+                  )}
+                </CardBody>
+              </Card>
+            );
+          })}
         </div>
       </div>
     </fieldset>

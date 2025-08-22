@@ -323,8 +323,8 @@ const StepByStepWorkoutViewer = ({
       </div>
 
       {/* Current step content */}
-      <div className="card bg-base-100 shadow-sm">
-        <div className="card-body">
+      <div className="bg-base-100 shadow-sm rounded-lg">
+        <div className="p-4">
           {currentStep.type === 'section-intro' && (
             <div>
               <h2 className="card-title text-xl">

@@ -15,6 +15,8 @@ export type ColorScheme =
   | 'info'
   | 'error';
 
+export type CardSize = 'sm' | 'md' | 'lg' | 'xl';
+
 // Base card styling
 const baseCardClasses = 'border-2 transition-all duration-200';
 
@@ -32,18 +34,42 @@ const selectableCardClasses = {
 // Path card variants - matching the existing PathCard design exactly
 const pathCardClasses = {
   primary:
-    'bg-gradient-to-br from-primary/20 to-primary/10 border-primary/30 hover:border-primary/40 shadow-lg hover:shadow-xl',
+    'card rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer border-2 bg-gradient-to-br from-primary/20 to-primary/10 border-primary/30 hover:border-primary/40',
   secondary:
-    'bg-gradient-to-br from-secondary/20 to-secondary/10 border-secondary/30 hover:border-secondary/40 shadow-lg hover:shadow-xl',
+    'card rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer border-2 bg-gradient-to-br from-secondary/20 to-secondary/10 border-secondary/30 hover:border-secondary/40',
   accent:
-    'bg-gradient-to-br from-accent/20 to-accent/10 border-accent/30 hover:border-accent/40 shadow-lg hover:shadow-xl',
+    'card rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer border-2 bg-gradient-to-br from-accent/20 to-accent/10 border-accent/30 hover:border-accent/40',
   success:
-    'bg-gradient-to-br from-success/20 to-success/10 border-success/30 hover:border-success/40 shadow-lg hover:shadow-xl',
+    'card rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer border-2 bg-gradient-to-br from-success/20 to-success/10 border-success/30 hover:border-success/40',
   warning:
-    'bg-gradient-to-br from-warning/20 to-warning/10 border-warning/30 hover:border-warning/40 shadow-lg hover:shadow-xl',
-  info: 'bg-gradient-to-br from-info/20 to-info/10 border-info/30 hover:border-info/40 shadow-lg hover:shadow-xl',
+    'card rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer border-2 bg-gradient-to-br from-warning/20 to-warning/10 border-warning/30 hover:border-warning/40',
+  info: 'card rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer border-2 bg-gradient-to-br from-info/20 to-info/10 border-info/30 hover:border-info/40',
   error:
-    'bg-gradient-to-br from-error/20 to-error/10 border-error/30 hover:border-error/40 shadow-lg hover:shadow-xl',
+    'card rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer border-2 bg-gradient-to-br from-error/20 to-error/10 border-error/30 hover:border-error/40',
+};
+
+// Size variants for text and spacing
+export const cardSizeVariants = {
+  sm: {
+    title: 'text-sm font-semibold',
+    description: 'text-xs',
+    padding: 'p-3',
+  },
+  md: {
+    title: 'text-base font-semibold',
+    description: 'text-sm',
+    padding: 'p-4',
+  },
+  lg: {
+    title: 'text-lg font-bold',
+    description: 'text-base',
+    padding: 'p-5',
+  },
+  xl: {
+    title: 'text-xl font-bold',
+    description: 'text-base',
+    padding: 'p-6',
+  },
 };
 
 // Export the complete design system
@@ -72,41 +98,69 @@ export const colorSchemeUtilities = {
     bg: 'bg-primary',
     border: 'border-primary',
     gradient: 'from-primary to-primary-focus',
+    icon: 'bg-gradient-to-br from-primary to-primary-focus',
+    badge: 'badge-primary',
+    bulletBg: 'bg-primary',
+    actionBg: 'bg-primary/20',
   },
   secondary: {
     text: 'text-secondary',
     bg: 'bg-secondary',
     border: 'border-secondary',
     gradient: 'from-secondary to-secondary-focus',
+    icon: 'bg-gradient-to-br from-secondary to-secondary-focus',
+    badge: 'badge-secondary',
+    bulletBg: 'bg-secondary',
+    actionBg: 'bg-secondary/20',
   },
   accent: {
     text: 'text-accent',
     bg: 'bg-accent',
     border: 'border-accent',
     gradient: 'from-accent to-accent-focus',
+    icon: 'bg-gradient-to-br from-accent to-accent-focus',
+    badge: 'badge-accent',
+    bulletBg: 'bg-accent',
+    actionBg: 'bg-accent/20',
   },
   success: {
     text: 'text-success',
     bg: 'bg-success',
     border: 'border-success',
     gradient: 'from-success to-success-focus',
+    icon: 'bg-gradient-to-br from-success to-success-focus',
+    badge: 'badge-success',
+    bulletBg: 'bg-success',
+    actionBg: 'bg-success/20',
   },
   warning: {
     text: 'text-warning',
     bg: 'bg-warning',
     border: 'border-warning',
     gradient: 'from-warning to-warning-focus',
+    icon: 'bg-gradient-to-br from-warning to-warning-focus',
+    badge: 'badge-warning',
+    bulletBg: 'bg-warning',
+    actionBg: 'bg-warning/20',
   },
   info: {
     text: 'text-info',
     bg: 'bg-info',
     border: 'border-info',
     gradient: 'from-info to-info-focus',
+    icon: 'bg-gradient-to-br from-info to-info-focus',
+    badge: 'badge-info',
+    bulletBg: 'bg-info',
+    actionBg: 'bg-info/20',
   },
   error: {
     text: 'text-error',
     bg: 'bg-error',
     border: 'border-error',
     gradient: 'from-error to-error-focus',
+    icon: 'bg-gradient-to-br from-error to-error-focus',
+    badge: 'badge-error',
+    bulletBg: 'bg-error',
+    actionBg: 'bg-error/20',
   },
 };

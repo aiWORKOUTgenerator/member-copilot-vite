@@ -8,13 +8,17 @@
  * @example
  * <PathCardSkeleton />
  */
+import { Card, CardBody } from '@/ui/shared/atoms/Card';
+
 export function PathCardSkeleton() {
   return (
-    <div
-      className="card bg-base-100 shadow-lg animate-pulse"
+    <Card
+      variant="path"
+      colorScheme="primary"
+      className="animate-pulse"
       data-testid="path-card-skeleton"
     >
-      <div className="card-body">
+      <CardBody padding="lg">
         <div className="w-12 h-12 bg-base-300 rounded-lg mb-4" />
         <div className="h-6 bg-base-300 rounded mb-2" />
         <div className="h-4 bg-base-300 rounded mb-4" />
@@ -26,7 +30,7 @@ export function PathCardSkeleton() {
             </div>
           ))}
         </div>
-      </div>
-    </div>
+      </CardBody>
+    </Card>
   );
 }

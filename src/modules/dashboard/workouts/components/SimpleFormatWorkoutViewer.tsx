@@ -28,7 +28,7 @@ const SimpleFormatWorkoutViewer = ({
   }
 
   return (
-    <div className="bg-base-100 p-4">
+    <div className="bg-base-100 p-4 rounded-lg">
       <div className="prose prose-sm sm:prose lg:prose-lg w-full whitespace-pre-wrap">
         {content}
       </div>

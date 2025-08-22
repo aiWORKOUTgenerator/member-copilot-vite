@@ -5,8 +5,8 @@ import React, { ReactNode } from 'react';
 export interface CardBodyProps {
   /** Card body content */
   children: ReactNode;
-  /** Padding size */
-  padding?: 'sm' | 'md' | 'lg';
+  /** Padding size - maps to card size variants */
+  padding?: 'sm' | 'md' | 'lg' | 'xl';
   /** Additional CSS classes */
   className?: string;
 }
@@ -36,10 +36,15 @@ export const CardBody: React.FC<CardBodyProps> = ({
   const paddingClasses = {
     sm: 'p-3',
     md: 'p-4',
-    lg: 'p-6',
+    lg: 'p-5',
+    xl: 'p-6',
   };
 
-  const bodyClasses = ['card-body', paddingClasses[padding], className]
+  const bodyClasses = [
+    'card-body rounded-lg',
+    paddingClasses[padding],
+    className,
+  ]
     .filter(Boolean)
     .join(' ');
 

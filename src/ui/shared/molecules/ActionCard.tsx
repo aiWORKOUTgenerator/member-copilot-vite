@@ -23,9 +23,9 @@ export function ActionCard({
   actionCardIsDisabled = false,
 }: ActionCardProps) {
   return (
-    <div className="card bg-base-100 shadow-sm">
-      <div className="card-body">
-        <h2 className="card-title flex justify-between items-center">
+    <div className="bg-base-100 shadow-sm rounded-lg">
+      <div className="p-4">
+        <h2 className="text-lg font-semibold flex justify-between items-center">
           <div className="flex items-center">
             {icon && <span className="mr-2">{icon}</span>}
             {title}

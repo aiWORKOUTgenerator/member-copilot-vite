@@ -22,9 +22,9 @@ export const AuthMethodCard: React.FC<AuthMethodCardProps> = ({
   ariaLabel,
 }) => {
   return (
-    <div className="card bg-base-200 shadow-sm">
-      <div className="card-body p-4">
-        <h3 className="card-title text-lg">{title}</h3>
+    <div className="bg-base-200 shadow-sm rounded-lg">
+      <div className="p-4">
+        <h3 className="text-lg font-semibold">{title}</h3>
         <p className="text-sm text-base-content/70 mb-2">{description}</p>
         <Link to={href} className="block w-full">
           <Button variant={buttonVariant} fullWidth aria-label={ariaLabel}>

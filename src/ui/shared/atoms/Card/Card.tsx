@@ -52,11 +52,10 @@ export const Card: React.FC<CardProps> = ({
       }
     }
 
-    // Add interactive classes
-    if (isInteractive) {
+    // Add interactive classes (path variant handles its own cursor and effects)
+    if (isInteractive && variant !== 'path') {
       baseClasses.push('cursor-pointer');
-      if (hover && variant !== 'path') {
-        // Path variant handles its own hover effects
+      if (hover) {
         baseClasses.push('hover:shadow-md');
       }
     }

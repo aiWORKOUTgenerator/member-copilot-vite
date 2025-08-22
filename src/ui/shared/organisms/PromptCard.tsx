@@ -68,8 +68,8 @@ export const PromptCard: React.FC<PromptCardProps> = ({
       : undefined;
 
   return (
-    <div className="card bg-base-100 shadow-sm border border-base-300 w-full">
-      <div className="card-body">
+    <div className="bg-base-100 shadow-sm border border-base-300 w-full rounded-lg">
+      <div className="p-4">
         <PromptHeader
           text={prompt.text}
           hintText={prompt.hintText}

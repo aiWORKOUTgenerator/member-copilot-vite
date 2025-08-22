@@ -24,10 +24,10 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
   return (
     <div className={`min-h-screen py-section ${bgColor} ${className}`}>
       {withContainer ? (
-        <div className="container mx-auto px-4">
+        <div className="max-w-7xl mx-auto px-4">
           {withCard ? (
-            <div className="card bg-base-100 shadow-lg">
-              <div className="card-body">
+            <div className="bg-base-100 shadow-lg rounded-lg">
+              <div className="p-6">
                 {header && (
                   <>
                     {header}

@@ -96,7 +96,7 @@ A component for consistent card content layout with standardized padding.
 ```typescript
 interface CardBodyProps {
   children: ReactNode;
-  padding?: 'sm' | 'md' | 'lg';
+  padding?: 'sm' | 'md' | 'lg' | 'xl';
   className?: string;
 }
 ```
@@ -109,6 +109,15 @@ interface CardBodyProps {
   <p>Card content with large padding and centered text.</p>
 </CardBody>
 ```
+
+#### Padding Sizes
+
+The CardBody component supports different padding sizes:
+
+- **sm**: `p-3` (12px) - Compact padding
+- **md**: `p-4` (16px) - Standard padding (default)
+- **lg**: `p-5` (20px) - Large padding
+- **xl**: `p-6` (24px) - Extra large padding
 
 ## Variants
 
@@ -260,6 +269,6 @@ Potential improvements for the Card atom:
 
 1. **Additional Variants**: More specialized card types
 2. **Animation Options**: Configurable animations and transitions
-3. **Size Variants**: Different card sizes (sm, md, lg, xl)
-4. **Header/Footer Components**: Dedicated CardHeader and CardFooter atoms
-5. **Image Support**: Built-in image handling for card media
+3. **Header/Footer Components**: Dedicated CardHeader and CardFooter atoms
+4. **Image Support**: Built-in image handling for card media
+5. **Advanced Size System**: More granular control over text and spacing

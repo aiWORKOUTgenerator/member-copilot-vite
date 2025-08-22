@@ -1,6 +1,7 @@
 'use client';
 
 import { ReactNode, Ref } from 'react';
+import { Card, CardBody } from '@/ui/shared/atoms/Card';
 
 export interface RadioCardOption {
   id: string;
@@ -67,19 +68,20 @@ export function RadioCardGroupInput({
                 className="peer sr-only"
               />
 
-              <div
-                className={
-                  `card border transition-colors duration-150 ` +
-                  `border-base-300 hover:border-base-400 ` +
-                  `peer-checked:border-primary peer-checked:ring-2 peer-checked:ring-primary/20 ` +
-                  `bg-base-100`
-                }
+              <Card
+                variant="path"
+                colorScheme="primary"
+                isSelected={checked}
+                disabled={option.disabled}
+                className="w-full"
               >
-                <div className="card-body p-4 flex items-center gap-4">
+                <CardBody padding="md" className="flex items-center gap-4">
                   <div className="flex-1">
-                    <h3 className="card-title text-base">{option.title}</h3>
+                    <h3 className="text-base font-semibold text-base-content mb-2">
+                      {option.title}
+                    </h3>
                     {option.description && (
-                      <p className="text-sm text-base-content/70">
+                      <p className="text-sm text-base-content/70 mb-4 leading-relaxed">
                         {option.description}
                       </p>
                     )}
@@ -89,8 +91,8 @@ export function RadioCardGroupInput({
                       {option.metaRight}
                     </div>
                   )}
-                </div>
-              </div>
+                </CardBody>
+              </Card>
             </label>
           );
         })}
