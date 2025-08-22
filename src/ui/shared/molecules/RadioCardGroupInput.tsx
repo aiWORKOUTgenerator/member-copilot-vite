@@ -81,7 +81,9 @@ export function RadioCardGroupInput({
                       {option.title}
                     </h3>
                     {option.description && (
-                      <p className="text-sm text-base-content/70 mb-4 leading-relaxed">
+                      <p
+                        className={`text-sm text-base-content/70 leading-relaxed${option.metaRight ? ' mb-4' : ''}`}
+                      >
                         {option.description}
                       </p>
                     )}

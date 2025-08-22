@@ -113,7 +113,7 @@ export const ChoiceGroup: React.FC<ChoiceGroupProps> = ({
                     {title}
                   </h3>
                   {viewMode === 'detailed' && hasDelimiter && description && (
-                    <p className="text-sm text-base-content/70 mb-4 leading-relaxed">
+                    <p className="text-sm text-base-content/70 leading-relaxed">
                       {description}
                     </p>
                   )}
