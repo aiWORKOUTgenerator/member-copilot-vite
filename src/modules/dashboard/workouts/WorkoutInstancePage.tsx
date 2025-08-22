@@ -1187,7 +1187,7 @@ function SwapExerciseModal({
 
         {/* Current Exercise Info */}
         {currentExercise && (
-          <div className="p-4 bg-base-200 border-b border-base-300">
+          <div className="p-4 bg-base-200 border-b border-base-300 rounded-lg">
             <h3 className="font-medium text-base-content/70 text-sm mb-1">
               Replacing:
             </h3>

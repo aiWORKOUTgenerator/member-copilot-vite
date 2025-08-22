@@ -175,7 +175,9 @@ export function DetailedSelector<T>({
       />
 
       {/* Choice grid */}
-      <div className={disabled ? 'opacity-50 pointer-events-none' : ''}>
+      <div
+        className={`bg-base-100 rounded-lg p-4 ${disabled ? 'opacity-50 pointer-events-none' : ''}`}
+      >
         <RadioGroupOfCards
           items={items}
           legend=""

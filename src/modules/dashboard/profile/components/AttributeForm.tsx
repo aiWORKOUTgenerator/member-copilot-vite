@@ -102,8 +102,8 @@ export function AttributeForm({
 
   if (!attributeType) {
     return (
-      <div className="card bg-base-100 shadow-xl">
-        <div className="card-body">
+      <div className="bg-base-100 shadow-xl rounded-lg">
+        <div className="p-6">
           <h2 className="card-title text-error">Attribute Type Not Found</h2>
           <p>The attribute type you&apos;re looking for doesn&apos;t exist.</p>
           <div className="card-actions justify-end mt-4">

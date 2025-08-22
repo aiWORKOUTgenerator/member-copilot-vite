@@ -44,7 +44,7 @@ export function WorkoutPathSelectionContainer() {
 
   return (
     <div
-      className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto"
+      className="bg-base-200/30 rounded-xl p-8 max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8"
       role="group"
       aria-label="Workout path selection options"
     >

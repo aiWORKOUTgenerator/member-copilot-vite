@@ -308,9 +308,9 @@ export default function GenerateWorkoutPage() {
         Back to workouts
       </button>
 
-      <div className="card card-border max-w-4xl mx-auto bg-base-200">
-        <div className="card-body">
-          <h2 className="card-title">Generate a New Workout</h2>
+      <div className="bg-base-200 rounded-lg max-w-4xl mx-auto border border-base-300">
+        <div className="p-6">
+          <h2 className="text-2xl font-bold">Generate a New Workout</h2>
 
           {/* Contextual Mode Selection - Show only the opposite option */}
           {activeTab === 'quick' && (

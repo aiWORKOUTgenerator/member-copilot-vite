@@ -99,8 +99,8 @@ const GeneratingTrainerPage = () => {
   if (hasTimedOut) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="card bg-base-100 shadow-xl max-w-md w-full">
-          <div className="card-body text-center">
+        <div className="bg-base-100 shadow-xl max-w-md w-full rounded-lg">
+          <div className="p-6 text-center">
             <div className="mx-auto w-16 h-16 bg-warning/10 rounded-full flex items-center justify-center mb-4">
               <Clock className="w-8 h-8 text-warning" />
             </div>
@@ -144,8 +144,8 @@ const GeneratingTrainerPage = () => {
   if (trainerPersona && !error) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="card bg-base-100 shadow-xl max-w-md w-full">
-          <div className="card-body text-center">
+        <div className="bg-base-100 shadow-xl max-w-md w-full rounded-lg">
+          <div className="p-6 text-center">
             <div className="mx-auto w-16 h-16 bg-success/10 rounded-full flex items-center justify-center mb-4">
               <CheckCircle className="w-8 h-8 text-success animate-bounce" />
             </div>
@@ -169,8 +169,8 @@ const GeneratingTrainerPage = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="card bg-base-100 shadow-xl max-w-md w-full">
-        <div className="card-body text-center">
+      <div className="bg-base-100 shadow-xl max-w-md w-full rounded-lg">
+        <div className="p-6 text-center">
           <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
             <Bot className="w-8 h-8 text-primary animate-pulse" />
           </div>

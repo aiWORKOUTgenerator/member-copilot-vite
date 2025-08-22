@@ -266,13 +266,13 @@ export default function WorkoutHistoryPage() {
               type="button"
               key={workout.id}
               onClick={() => handleWorkoutClick(workout)}
-              className={`card bg-base-100 shadow-lg border transition-all duration-200 cursor-pointer text-left w-full ${
+              className={`bg-base-100 shadow-lg border transition-all duration-200 cursor-pointer text-left w-full rounded-lg ${
                 workout.completed
                   ? 'border-primary hover:bg-primary/5 hover:shadow-xl'
                   : 'border-base-300 hover:bg-base-100/80 hover:shadow-xl'
               }`}
             >
-              <div className="card-body">
+              <div className="p-4">
                 {/* Top row: title + checkbox */}
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1 min-w-0">

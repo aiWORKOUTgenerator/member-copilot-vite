@@ -19,11 +19,9 @@ export const AuthRequired: React.FC<AuthRequiredProps> = ({
   return (
     <div className="min-h-screen flex items-center justify-center bg-base-200">
       <div className="w-full max-w-md">
-        <div className="card bg-base-100 shadow-lg w-full">
-          <div className="card-body">
-            <h2 className="card-title text-2xl font-bold text-center mb-1">
-              {title}
-            </h2>
+        <div className="bg-base-100 shadow-lg w-full rounded-lg">
+          <div className="p-6">
+            <h2 className="text-2xl font-bold text-center mb-1">{title}</h2>
             <p className="text-center text-base-content/70 mb-6">{subtitle}</p>
             <div className="space-y-4">
               <Link to={signInLink} className="block w-full">

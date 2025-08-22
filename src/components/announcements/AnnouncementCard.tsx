@@ -57,7 +57,7 @@ export function AnnouncementCard({
 
   return (
     <div
-      className={`card bg-base-100 shadow-md hover:shadow-lg transition-shadow ${priorityStyles.cardClass} w-full`}
+      className={`bg-base-100 shadow-md hover:shadow-lg transition-shadow rounded-lg ${priorityStyles.cardClass} w-full`}
     >
       <div className="card-body p-4">
         <div className="flex justify-between items-start mb-2">

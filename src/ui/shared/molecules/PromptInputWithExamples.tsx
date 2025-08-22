@@ -65,8 +65,10 @@ export const PromptInputWithExamples: React.FC<
   };
 
   return (
-    <div className={`card bg-base-100 border border-base-300 ${className}`}>
-      <div className="card-body">
+    <div
+      className={`bg-base-100 border border-base-300 rounded-lg ${className}`}
+    >
+      <div className="p-4">
         {/* Label */}
         <label className="block mb-2 font-medium flex justify-between items-center">
           <span>

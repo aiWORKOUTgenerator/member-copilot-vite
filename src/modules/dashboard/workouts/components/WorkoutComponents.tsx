@@ -82,8 +82,8 @@ export const ExerciseCard = ({ exercise }: { exercise: Exercise }) => {
 
 // Error display component for invalid workout data
 export const InvalidWorkoutCard = ({ title }: { title?: string }) => (
-  <div className="card bg-base-100 border border-error">
-    <div className="card-body">
+  <div className="bg-base-100 border border-error rounded-lg">
+    <div className="p-4">
       <h2 className="card-title text-error">
         {title || 'Oops! Something went wrong'}
       </h2>
@@ -103,8 +103,8 @@ export const EmptySectionsCard = ({
   title?: string;
   description?: string;
 }) => (
-  <div className="card bg-base-100 border border-warning">
-    <div className="card-body">
+  <div className="bg-base-100 border border-warning rounded-lg">
+    <div className="p-4">
       <h2 className="card-title">{title || 'Workout'}</h2>
       {description && <p>{description}</p>}
       <div className="alert alert-warning mt-4">

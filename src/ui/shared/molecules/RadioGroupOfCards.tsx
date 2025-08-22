@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { Card, CardBody } from '@/ui/shared/atoms/Card';
 
 export interface SelectableItem {
   id: string | number;
@@ -32,56 +33,49 @@ interface RadioGroupOfCardsProps<T extends SelectableItem> {
 }
 
 /**
- * RadioGroupOfCards - A card-based selection component with visibility control
+ * RadioGroupOfCards - A card-based selection component
  *
- * This component renders a grid of selectable cards with support for controlling
- * the visibility of descriptions and tertiary content. It handles both controlled
- * and uncontrolled state, and supports single and multiple selection modes.
+ * This component renders a group of selectable cards with support for both
+ * single and multiple selection modes. It provides a visually appealing
+ * interface for choosing between different options.
  *
  * @example
- * // Basic usage with all content visible
+ * // Single selection
  * <RadioGroupOfCards
- *   items={options}
- *   onChange={handleSelection}
+ *   items={[
+ *     { id: '1', title: 'Option 1', description: 'Description 1' },
+ *     { id: '2', title: 'Option 2', description: 'Description 2' }
+ *   ]}
+ *   onChange={(selected) => console.log(selected)}
  *   legend="Choose an option"
  * />
  *
  * @example
- * // Hide descriptions, show tertiary content
+ * // Multiple selection
  * <RadioGroupOfCards
- *   items={options}
- *   onChange={handleSelection}
- *   showDescription={false}
- *   showTertiary={true}
- * />
- *
- * @example
- * // Multiple selection with custom styling
- * <RadioGroupOfCards
- *   items={options}
- *   onChange={handleSelection}
+ *   items={items}
+ *   onChange={(selected) => console.log(selected)}
  *   multiple={true}
- *   gridCols={2}
- *   colorScheme="accent"
+ *   legend="Choose multiple options"
  * />
  *
- * @template T - The type extending SelectableItem
+ * @template T - The type of the selectable items
  * @param props - Component props
- * @returns A grid of selectable cards
+ * @returns A card-based selection component
  */
 export function RadioGroupOfCards<T extends SelectableItem>({
   items,
   onChange,
   defaultSelected,
   selected: controlledSelected,
-  legend = 'Select an option',
+  legend,
   multiple = false,
   gridCols = 3,
   colorScheme = 'primary',
   showDescription = true,
   showTertiary = true,
 }: RadioGroupOfCardsProps<T>) {
-  // Initialize internal state based on whether it's controlled or uncontrolled
+  // Internal state for uncontrolled component
   const [internalSelected, setInternalSelected] = useState<T | T[] | undefined>(
     defaultSelected
   );
@@ -139,45 +133,44 @@ export function RadioGroupOfCards<T extends SelectableItem>({
         </legend>
       )}
 
-      {/* Card Container for Visual Separation */}
-      <div className="card bg-base-200/50 shadow-sm">
-        <div className="card-body p-6">
-          <div
-            className={`grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-${gridCols}`}
-          >
-            {items.map((item) => {
-              const isSelected = isItemSelected(item);
+      {/* Card Container for Visual Separation - with subtle rounded corners and background */}
+      <div className="bg-base-200/30 rounded-xl p-6">
+        <div
+          className={`grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-${gridCols}`}
+        >
+          {items.map((item) => {
+            const isSelected = isItemSelected(item);
 
-              return (
-                <div
-                  key={item.id}
-                  className={`card cursor-pointer transition-all duration-200 hover:shadow-md hover:scale-[1.02] ${
-                    isSelected
-                      ? `bg-${colorScheme}-50 border-${colorScheme} border-2 shadow-sm`
-                      : 'bg-base-100 border-base-300 border hover:border-base-400'
-                  }`}
-                  onClick={() => handleChange(item)}
-                >
-                  <div className="card-body p-4 flex flex-col">
-                    <div className="flex-grow">
-                      <h3 className="card-title text-base">{item.title}</h3>
-                      {showDescription && item.description && (
-                        <p className="text-sm text-base-content/70">
-                          {item.description}
-                        </p>
-                      )}
-                    </div>
-
-                    {showTertiary && item.tertiary && (
-                      <div className="mt-3 text-sm font-medium">
-                        {item.tertiary}
-                      </div>
+            return (
+              <Card
+                key={item.id}
+                variant="path"
+                colorScheme={colorScheme}
+                isSelected={isSelected}
+                onClick={() => handleChange(item)}
+                className="hover:scale-[1.02]"
+              >
+                <CardBody padding="md" className="flex flex-col">
+                  <div className="flex-grow">
+                    <h3 className="text-base font-semibold text-base-content mb-2">
+                      {item.title}
+                    </h3>
+                    {showDescription && item.description && (
+                      <p className="text-sm text-base-content/70 mb-4 leading-relaxed">
+                        {item.description}
+                      </p>
                     )}
                   </div>
-                </div>
-              );
-            })}
-          </div>
+
+                  {showTertiary && item.tertiary && (
+                    <div className="mt-3 text-sm font-medium">
+                      {item.tertiary}
+                    </div>
+                  )}
+                </CardBody>
+              </Card>
+            );
+          })}
         </div>
       </div>
     </fieldset>

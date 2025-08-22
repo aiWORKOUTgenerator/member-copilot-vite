@@ -154,8 +154,8 @@ const MyAITrainerPage = () => {
           className="mt-12"
         />
 
-        <div className="card bg-base-100 shadow-sm border border-base-300">
-          <div className="card-body">
+        <div className="bg-base-100 shadow-sm border border-base-300 rounded-lg">
+          <div className="p-4">
             <h3 className="card-title text-lg">
               What is an AI Trainer Persona?
             </h3>
@@ -246,7 +246,7 @@ const MyAITrainerPage = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {Object.entries(trainerPersona.personality_traits).map(
                       ([key, value]) => (
-                        <div key={key} className="card bg-base-200">
+                        <div key={key} className="bg-base-200 rounded-lg">
                           <div className="card-body p-4">
                             <h4 className="card-title text-sm opacity-80">
                               {key

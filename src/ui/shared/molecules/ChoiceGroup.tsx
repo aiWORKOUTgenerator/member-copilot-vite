@@ -6,6 +6,7 @@ import { CheckboxChoice } from '../atoms/CheckboxChoice';
 import { ValidationMessage } from '../atoms/ValidationMessage';
 import { TextInput } from '../atoms/TextInput';
 import { CheckboxCardGroup } from './CheckboxCardGroup';
+import { Card, CardBody } from '@/ui/shared/atoms/Card';
 import { Choice } from '@/domain/entities';
 import { ViewMode } from '@/contexts/ViewModeContext';
 import { parseChoiceText } from '@/utils/textParsing';
@@ -90,38 +91,36 @@ export const ChoiceGroup: React.FC<ChoiceGroupProps> = ({
         />
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {choices.map((choice) => (
-            <div
-              key={choice.id}
-              className={`card cursor-pointer transition-all duration-200 hover:shadow-md hover:scale-[1.02] ${
-                selectedValues.includes(choice.text)
-                  ? `bg-${colorScheme} text-${colorScheme}-content border-${colorScheme} border-2 shadow-sm`
-                  : 'bg-base-100 border-base-300 border hover:border-base-400'
-              }`}
-              onClick={() => handleSingleChange(choice.text)}
-            >
-              <div className="card-body p-4">
-                {(() => {
-                  const { title, description, hasDelimiter } = parseChoiceText(
-                    choice.text,
-                    viewMode
-                  );
-                  return (
-                    <>
-                      <h3 className="card-title text-base">{title}</h3>
-                      {viewMode === 'detailed' &&
-                        hasDelimiter &&
-                        description && (
-                          <p className="text-sm text-base-content/70 mt-2">
-                            {description}
-                          </p>
-                        )}
-                    </>
-                  );
-                })()}
-              </div>
-            </div>
-          ))}
+          {choices.map((choice) => {
+            const { title, description, hasDelimiter } = parseChoiceText(
+              choice.text,
+              viewMode
+            );
+            const isSelected = selectedValues.includes(choice.text);
+
+            return (
+              <Card
+                key={choice.id}
+                variant="path"
+                colorScheme={colorScheme}
+                isSelected={isSelected}
+                onClick={() => handleSingleChange(choice.text)}
+                disabled={disabled}
+                className="hover:scale-[1.02]"
+              >
+                <CardBody padding="md">
+                  <h3 className="text-base font-semibold text-base-content mb-2">
+                    {title}
+                  </h3>
+                  {viewMode === 'detailed' && hasDelimiter && description && (
+                    <p className="text-sm text-base-content/70 leading-relaxed">
+                      {description}
+                    </p>
+                  )}
+                </CardBody>
+              </Card>
+            );
+          })}
         </div>
       )}
 
