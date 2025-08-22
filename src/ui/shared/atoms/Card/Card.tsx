@@ -27,7 +27,8 @@ export const Card: React.FC<CardProps> = ({
   shadow = true,
 }) => {
   // Determine if the card is interactive
-  const isInteractive = !disabled && (onClick || variant === 'selectable');
+  const isInteractive =
+    !disabled && (onClick || variant === 'selectable' || variant === 'path');
 
   // Generate card classes based on variant and state
   const getCardClasses = (): string => {
@@ -44,18 +45,24 @@ export const Card: React.FC<CardProps> = ({
     } else if (variant === 'path') {
       const pathClasses = cardVariants.path[colorScheme];
       baseClasses.push(pathClasses);
+
+      // Add ring effect for selected path cards (matching PathCard behavior)
+      if (isSelected) {
+        baseClasses.push('ring-2 ring-primary');
+      }
     }
 
     // Add interactive classes
     if (isInteractive) {
       baseClasses.push('cursor-pointer');
-      if (hover) {
+      if (hover && variant !== 'path') {
+        // Path variant handles its own hover effects
         baseClasses.push('hover:shadow-md');
       }
     }
 
-    // Add shadow classes
-    if (shadow) {
+    // Add shadow classes (only for non-path variants since path handles its own shadows)
+    if (shadow && variant !== 'path') {
       baseClasses.push('shadow-sm');
     }
 

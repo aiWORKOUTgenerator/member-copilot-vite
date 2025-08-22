@@ -29,21 +29,21 @@ const selectableCardClasses = {
     `bg-gradient-to-br from-${colorScheme}/30 to-${colorScheme}/20 border-${colorScheme} shadow-sm`,
 };
 
-// Path card variants - matching the existing PathCard design
+// Path card variants - matching the existing PathCard design exactly
 const pathCardClasses = {
   primary:
-    'bg-gradient-to-br from-primary/20 to-primary/10 border-primary/30 hover:border-primary/40',
+    'bg-gradient-to-br from-primary/20 to-primary/10 border-primary/30 hover:border-primary/40 shadow-lg hover:shadow-xl',
   secondary:
-    'bg-gradient-to-br from-secondary/20 to-secondary/10 border-secondary/30 hover:border-secondary/40',
+    'bg-gradient-to-br from-secondary/20 to-secondary/10 border-secondary/30 hover:border-secondary/40 shadow-lg hover:shadow-xl',
   accent:
-    'bg-gradient-to-br from-accent/20 to-accent/10 border-accent/30 hover:border-accent/40',
+    'bg-gradient-to-br from-accent/20 to-accent/10 border-accent/30 hover:border-accent/40 shadow-lg hover:shadow-xl',
   success:
-    'bg-gradient-to-br from-success/20 to-success/10 border-success/30 hover:border-success/40',
+    'bg-gradient-to-br from-success/20 to-success/10 border-success/30 hover:border-success/40 shadow-lg hover:shadow-xl',
   warning:
-    'bg-gradient-to-br from-warning/20 to-warning/10 border-warning/30 hover:border-warning/40',
-  info: 'bg-gradient-to-br from-info/20 to-info/10 border-info/30 hover:border-info/40',
+    'bg-gradient-to-br from-warning/20 to-warning/10 border-warning/30 hover:border-warning/40 shadow-lg hover:shadow-xl',
+  info: 'bg-gradient-to-br from-info/20 to-info/10 border-info/30 hover:border-info/40 shadow-lg hover:shadow-xl',
   error:
-    'bg-gradient-to-br from-error/20 to-error/10 border-error/30 hover:border-error/40',
+    'bg-gradient-to-br from-error/20 to-error/10 border-error/30 hover:border-error/40 shadow-lg hover:shadow-xl',
 };
 
 // Export the complete design system
