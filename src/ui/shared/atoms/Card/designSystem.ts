@@ -34,18 +34,18 @@ const selectableCardClasses = {
 // Path card variants - matching the existing PathCard design exactly
 const pathCardClasses = {
   primary:
-    'card rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer border-2 bg-gradient-to-br from-primary/20 to-primary/10 border-primary/30 hover:border-primary/40',
+    'rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer border-2 bg-gradient-to-br from-primary/20 to-primary/10 border-primary/30 hover:border-primary/40',
   secondary:
-    'card rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer border-2 bg-gradient-to-br from-secondary/20 to-secondary/10 border-secondary/30 hover:border-secondary/40',
+    'rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer border-2 bg-gradient-to-br from-secondary/20 to-secondary/10 border-secondary/30 hover:border-secondary/40',
   accent:
-    'card rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer border-2 bg-gradient-to-br from-accent/20 to-accent/10 border-accent/30 hover:border-accent/40',
+    'rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer border-2 bg-gradient-to-br from-accent/20 to-accent/10 border-accent/30 hover:border-accent/40',
   success:
-    'card rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer border-2 bg-gradient-to-br from-success/20 to-success/10 border-success/30 hover:border-success/40',
+    'rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer border-2 bg-gradient-to-br from-success/20 to-success/10 border-success/30 hover:border-success/40',
   warning:
-    'card rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer border-2 bg-gradient-to-br from-warning/20 to-warning/10 border-warning/30 hover:border-warning/40',
-  info: 'card rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer border-2 bg-gradient-to-br from-info/20 to-info/10 border-info/30 hover:border-info/40',
+    'rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer border-2 bg-gradient-to-br from-warning/20 to-warning/10 border-warning/30 hover:border-warning/40',
+  info: 'rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer border-2 bg-gradient-to-br from-info/20 to-info/10 border-info/30 hover:border-info/40',
   error:
-    'card rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer border-2 bg-gradient-to-br from-error/20 to-error/10 border-error/30 hover:border-error/40',
+    'rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer border-2 bg-gradient-to-br from-error/20 to-error/10 border-error/30 hover:border-error/40',
 };
 
 // Size variants for text and spacing
