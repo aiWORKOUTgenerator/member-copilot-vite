@@ -5,7 +5,7 @@ import {
   useDefaultLocation,
   useLocation,
 } from '@/hooks/useLocation';
-import { createWorkoutParamsWithLocation } from '../components/utils/locationBasedEquipmentOptions';
+import { createWorkoutParamsWithLocation } from '../components/utils/locationBasedWorkoutUtils';
 import { PerWorkoutOptions } from '../components/types';
 
 /**

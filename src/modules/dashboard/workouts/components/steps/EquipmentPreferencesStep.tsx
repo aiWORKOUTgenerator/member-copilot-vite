@@ -3,15 +3,13 @@ import { CUSTOMIZATION_FIELD_KEYS } from '../../constants/fieldKeys';
 import type { PerWorkoutOptions } from '../types';
 import { SelectionBadge } from '@/ui/shared/atoms';
 import { useWorkoutAnalytics } from '../../hooks/useWorkoutAnalytics';
-// import { EnhancedAvailableEquipmentCustomization } from '../customizations/enhanced';
-// import LocationAwareEquipmentCustomization from '../enhanced/LocationAwareEquipmentCustomization';
 import ProgressiveEquipmentCustomization from '../enhanced/ProgressiveEquipmentCustomization';
 // Keep legacy components for text input fields
 import {
   IncludeExercisesCustomization,
   ExcludeExercisesCustomization,
 } from '../customizations';
-import { useLocationBasedEquipmentOptions } from '../utils/locationBasedEquipmentOptions';
+import { useLocationBasedEquipmentOptions } from '../utils/locationBasedWorkoutUtils';
 
 export interface EquipmentPreferencesStepProps {
   options: PerWorkoutOptions;

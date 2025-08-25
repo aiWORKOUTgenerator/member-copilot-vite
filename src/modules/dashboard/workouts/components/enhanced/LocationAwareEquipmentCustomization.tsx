@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { DetailedSelector } from '@/ui/shared/molecules';
 import { Dumbbell, MapPin } from 'lucide-react';
-import { useLocationBasedEquipmentOptions } from '../utils/locationBasedEquipmentOptions';
+import { useLocationBasedEquipmentOptions } from '../utils/locationBasedWorkoutUtils';
 import { useWorkoutAnalytics } from '../../hooks/useWorkoutAnalytics';
 import type { CustomizationComponentProps } from '../types';
 

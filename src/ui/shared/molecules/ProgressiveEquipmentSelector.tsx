@@ -2,7 +2,6 @@ import { useState, useMemo } from 'react';
 import { ChevronDown, ChevronRight, Dumbbell, Settings } from 'lucide-react';
 import { Card, CardBody } from '@/ui/shared/atoms/Card';
 import { Button } from '@/ui/shared/atoms/Button';
-// import { SelectionBadge } from '@/ui/shared/atoms/SelectionBadge';
 
 interface EquipmentItem {
   id: string;

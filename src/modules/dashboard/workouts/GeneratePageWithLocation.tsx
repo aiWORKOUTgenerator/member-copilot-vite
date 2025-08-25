@@ -5,8 +5,6 @@ import { useAnalytics } from '@/hooks/useAnalytics';
 import { useLocationAwareWorkoutGeneration } from './hooks/useLocationAwareWorkoutGeneration';
 import { LocationLoadedGuard } from '@/components/LocationLoadedGuard';
 import WorkoutCustomization from './components/WorkoutCustomization';
-// import { LocationAwareEquipmentCustomization } from './components/enhanced/LocationAwareEquipmentCustomization';
-// import { WORKOUTS_GENERATE_ROUTE } from './constants';
 import type { PerWorkoutOptions } from './components/types';
 
 /**
