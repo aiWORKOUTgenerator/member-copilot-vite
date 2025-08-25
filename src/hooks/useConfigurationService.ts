@@ -17,7 +17,7 @@ export function useConfigurationService(): ConfigurationService {
     const hasConfigApiUrl = !!import.meta.env.VITE_CONFIG_API_URL;
 
     if (isDevelopment && !hasConfigApiUrl) {
-      console.log('🔧 Using MockConfigurationService for development');
+      // console.log('🔧 Using MockConfigurationService for development');
       return new MockConfigurationService();
     }
 

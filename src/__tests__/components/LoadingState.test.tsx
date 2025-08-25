@@ -1,3 +1,4 @@
+import '@testing-library/jest-dom/vitest';
 import { render } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import LoadingState from '@/ui/shared/atoms/LoadingState';

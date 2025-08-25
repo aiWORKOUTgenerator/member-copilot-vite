@@ -1,4 +1,5 @@
 import { useGeneratedWorkouts } from '@/hooks/useGeneratedWorkouts';
+// import { useLocationAwareWorkoutGeneration } from './hooks/useLocationAwareWorkoutGeneration';
 import { ArrowBigLeft } from 'lucide-react';
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router';
@@ -39,6 +40,14 @@ export default function GenerateWorkoutPage() {
   const [isGenerating, setIsGenerating] = useState(false);
 
   const { createWorkout } = useGeneratedWorkouts();
+  // Location-aware workout generation hook - currently not used but available for future enhancement
+  // const {
+  //   generateLocationAwareWorkout,
+  //   validateEquipmentSelection,
+  //   isLocationLoading,
+  //   hasLocationData,
+  //   defaultLocation,
+  // } = useLocationAwareWorkoutGeneration();
   const navigate = useNavigate();
   const analytics = useAnalytics();
   const { configuration } = useConfiguration();

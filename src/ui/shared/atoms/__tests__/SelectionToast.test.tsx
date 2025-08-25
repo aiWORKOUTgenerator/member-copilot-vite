@@ -1,3 +1,4 @@
+import '@testing-library/jest-dom/vitest';
 import { render, screen, waitFor, act } from '@testing-library/react';
 import { vi } from 'vitest';
 import { SelectionToast } from '../SelectionToast';

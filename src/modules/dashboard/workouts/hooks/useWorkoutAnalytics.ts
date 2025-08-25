@@ -102,7 +102,7 @@ export const useWorkoutAnalytics = () => {
           value: Array.isArray(value) ? value.length : value,
           valueType,
           mode,
-          timestamp: Date.now(),
+          eventTimestamp: Date.now(),
         });
       } catch (error) {
         console.warn('Failed to track workout field selection:', error);
@@ -129,7 +129,7 @@ export const useWorkoutAnalytics = () => {
           mode,
           completionRate,
           fieldCount,
-          timestamp: Date.now(),
+          eventTimestamp: Date.now(),
         });
       } catch (error) {
         console.warn('Failed to track workout step completion:', error);
@@ -154,7 +154,7 @@ export const useWorkoutAnalytics = () => {
           error: errorMessage,
           mode,
           value: Array.isArray(value) ? value.length : value,
-          timestamp: Date.now(),
+          eventTimestamp: Date.now(),
         });
       } catch (error) {
         console.warn('Failed to track workout validation error:', error);
@@ -183,7 +183,7 @@ export const useWorkoutAnalytics = () => {
           fieldsCompleted,
           totalFields,
           completionRate,
-          timestamp: Date.now(),
+          eventTimestamp: Date.now(),
         });
       } catch (error) {
         console.warn('Failed to track workout setup completion:', error);
@@ -214,7 +214,7 @@ export const useWorkoutAnalytics = () => {
           fieldsCompleted,
           totalFields,
           completionRate,
-          timestamp: Date.now(),
+          eventTimestamp: Date.now(),
         });
       } catch (error) {
         console.warn('Failed to track workout setup abandonment:', error);

@@ -57,7 +57,7 @@ describe('useWorkoutAnalytics', () => {
           value: 4,
           valueType: 'rating',
           mode: 'detailed',
-          timestamp: 1234567890,
+          eventTimestamp: 1234567890,
         }
       );
     });
@@ -80,7 +80,7 @@ describe('useWorkoutAnalytics', () => {
           value: 30,
           valueType: 'duration',
           mode: 'detailed',
-          timestamp: 1234567890,
+          eventTimestamp: 1234567890,
         }
       );
     });
@@ -103,7 +103,7 @@ describe('useWorkoutAnalytics', () => {
           value: 'pushups, squats',
           valueType: 'text',
           mode: 'detailed',
-          timestamp: 1234567890,
+          eventTimestamp: 1234567890,
         }
       );
     });
@@ -126,7 +126,7 @@ describe('useWorkoutAnalytics', () => {
           value: 'strength',
           valueType: 'single-select',
           mode: 'detailed',
-          timestamp: 1234567890,
+          eventTimestamp: 1234567890,
         }
       );
     });
@@ -149,7 +149,7 @@ describe('useWorkoutAnalytics', () => {
           value: 2, // Array length for multi-select
           valueType: 'multi-select',
           mode: 'detailed',
-          timestamp: 1234567890,
+          eventTimestamp: 1234567890,
         }
       );
     });
@@ -172,7 +172,7 @@ describe('useWorkoutAnalytics', () => {
           value: 'some_value',
           valueType: 'single-select',
           mode: 'detailed',
-          timestamp: 1234567890,
+          eventTimestamp: 1234567890,
         }
       );
     });
@@ -197,7 +197,7 @@ describe('useWorkoutAnalytics', () => {
           value: 'strength',
           valueType: 'single-select',
           mode: 'quick',
-          timestamp: 1234567890,
+          eventTimestamp: 1234567890,
         }
       );
     });
@@ -220,7 +220,7 @@ describe('useWorkoutAnalytics', () => {
           value: 2, // Array length
           valueType: 'multi-select',
           mode: 'detailed',
-          timestamp: 1234567890,
+          eventTimestamp: 1234567890,
         }
       );
     });
@@ -239,7 +239,7 @@ describe('useWorkoutAnalytics', () => {
           value: 4,
           valueType: 'rating',
           mode: 'quick',
-          timestamp: 1234567890,
+          eventTimestamp: 1234567890,
         }
       );
     });
@@ -258,7 +258,7 @@ describe('useWorkoutAnalytics', () => {
           value: 30,
           valueType: 'duration',
           mode: 'quick',
-          timestamp: 1234567890,
+          eventTimestamp: 1234567890,
         }
       );
     });
@@ -281,7 +281,7 @@ describe('useWorkoutAnalytics', () => {
           value: 'push-ups, squats',
           valueType: 'text',
           mode: 'detailed',
-          timestamp: 1234567890,
+          eventTimestamp: 1234567890,
         }
       );
     });
@@ -335,7 +335,7 @@ describe('useWorkoutAnalytics', () => {
           mode: 'detailed',
           completionRate: 75,
           fieldCount: 3,
-          timestamp: 1234567890,
+          eventTimestamp: 1234567890,
         }
       );
     });
@@ -389,7 +389,7 @@ describe('useWorkoutAnalytics', () => {
           error: 'Energy level must be between 1 and 6',
           mode: 'detailed',
           value: 7,
-          timestamp: 1234567890,
+          eventTimestamp: 1234567890,
         }
       );
     });
@@ -413,7 +413,7 @@ describe('useWorkoutAnalytics', () => {
           error: 'Select up to 5 areas',
           mode: 'detailed',
           value: 6, // Array length
-          timestamp: 1234567890,
+          eventTimestamp: 1234567890,
         }
       );
     });
@@ -436,7 +436,7 @@ describe('useWorkoutAnalytics', () => {
           error: 'This field is required',
           mode: 'quick',
           value: null,
-          timestamp: 1234567890,
+          eventTimestamp: 1234567890,
         }
       );
     });
@@ -458,7 +458,7 @@ describe('useWorkoutAnalytics', () => {
           fieldsCompleted: 8,
           totalFields: 10,
           completionRate: 80,
-          timestamp: 1234567890,
+          eventTimestamp: 1234567890,
         }
       );
     });
@@ -478,7 +478,7 @@ describe('useWorkoutAnalytics', () => {
           fieldsCompleted: 0,
           totalFields: 0,
           completionRate: 0,
-          timestamp: 1234567890,
+          eventTimestamp: 1234567890,
         }
       );
     });
@@ -507,7 +507,7 @@ describe('useWorkoutAnalytics', () => {
           fieldsCompleted: 3,
           totalFields: 10,
           completionRate: 30,
-          timestamp: 1234567890,
+          eventTimestamp: 1234567890,
         }
       );
     });
@@ -537,7 +537,7 @@ describe('useWorkoutFieldAnalytics', () => {
       value: 'strength',
       valueType: 'single-select',
       mode: 'quick',
-      timestamp: 1234567890,
+      eventTimestamp: 1234567890,
     });
   });
 
@@ -553,7 +553,7 @@ describe('useWorkoutFieldAnalytics', () => {
       value: 4,
       valueType: 'rating',
       mode: 'quick',
-      timestamp: 1234567890,
+      eventTimestamp: 1234567890,
     });
   });
 
@@ -569,7 +569,7 @@ describe('useWorkoutFieldAnalytics', () => {
       value: 3,
       valueType: 'rating',
       mode: 'detailed',
-      timestamp: 1234567890,
+      eventTimestamp: 1234567890,
     });
   });
 
@@ -585,7 +585,7 @@ describe('useWorkoutFieldAnalytics', () => {
       value: 30,
       valueType: 'duration',
       mode: 'quick',
-      timestamp: 1234567890,
+      eventTimestamp: 1234567890,
     });
   });
 
@@ -601,7 +601,7 @@ describe('useWorkoutFieldAnalytics', () => {
       value: 2, // Array length
       valueType: 'multi-select',
       mode: 'quick',
-      timestamp: 1234567890,
+      eventTimestamp: 1234567890,
     });
   });
 
@@ -617,7 +617,7 @@ describe('useWorkoutFieldAnalytics', () => {
       value: 2, // Array length
       valueType: 'multi-select',
       mode: 'detailed',
-      timestamp: 1234567890,
+      eventTimestamp: 1234567890,
     });
   });
 
@@ -633,7 +633,7 @@ describe('useWorkoutFieldAnalytics', () => {
       value: 5,
       valueType: 'rating',
       mode: 'detailed',
-      timestamp: 1234567890,
+      eventTimestamp: 1234567890,
     });
   });
 
@@ -649,7 +649,7 @@ describe('useWorkoutFieldAnalytics', () => {
       value: 2,
       valueType: 'rating',
       mode: 'detailed',
-      timestamp: 1234567890,
+      eventTimestamp: 1234567890,
     });
   });
 
@@ -665,7 +665,7 @@ describe('useWorkoutFieldAnalytics', () => {
       value: 2, // Array length
       valueType: 'multi-select',
       mode: 'detailed',
-      timestamp: 1234567890,
+      eventTimestamp: 1234567890,
     });
   });
 });
