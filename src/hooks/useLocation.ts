@@ -18,12 +18,23 @@ export function useLocation(): LocationState {
   const { isSignedIn } = useAuth();
   const queryClient = useQueryClient();
 
+  // console.log('🔧 useLocation: Hook called, isSignedIn:', isSignedIn, 'Service:', locationService.constructor.name);
+
   const query = useQuery<{ locations: Location[] }, unknown>({
     queryKey: ['locations'],
-    queryFn: () => locationService.getLocations(),
+    queryFn: () => {
+      return locationService.getLocations();
+    },
     enabled: isSignedIn === true,
     staleTime: 30_000,
   });
+
+  // console.log('🔧 useLocation: Query state:', {
+  //   isFetching: query.isFetching,
+  //   isFetched: query.isFetched,
+  //   error: query.error,
+  //   data: query.data
+  // });
 
   useEffect(() => {
     if (isSignedIn === false) {

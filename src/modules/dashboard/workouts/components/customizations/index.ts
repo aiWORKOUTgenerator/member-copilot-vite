@@ -14,7 +14,8 @@ import { CustomizationConfig } from '../types';
 import WorkoutDurationCustomization from './WorkoutDurationCustomization';
 import WorkoutFocusCustomization from './WorkoutFocusCustomization';
 // Enhanced components from PR #3, PR #4, and PR #5 modularization effort
-import AvailableEquipmentCustomization from './AvailableEquipmentCustomization';
+// import AvailableEquipmentCustomization from './AvailableEquipmentCustomization';
+import LocationAwareEquipmentCustomization from '../enhanced/LocationAwareEquipmentCustomization';
 import IncludeExercisesCustomization from './IncludeExercisesCustomization';
 import ExcludeExercisesCustomization from './ExcludeExercisesCustomization';
 
@@ -30,7 +31,7 @@ import {
 // Export individual components
 export { default as WorkoutDurationCustomization } from './WorkoutDurationCustomization';
 export { default as WorkoutFocusCustomization } from './WorkoutFocusCustomization';
-export { default as AvailableEquipmentCustomization } from './AvailableEquipmentCustomization';
+// export { default as AvailableEquipmentCustomization } from './AvailableEquipmentCustomization';
 export { default as IncludeExercisesCustomization } from './IncludeExercisesCustomization';
 export { default as ExcludeExercisesCustomization } from './ExcludeExercisesCustomization';
 
@@ -68,7 +69,7 @@ export const CUSTOMIZATION_CONFIG: CustomizationConfig[] = [
   },
   {
     key: 'customization_equipment',
-    component: AvailableEquipmentCustomization,
+    component: LocationAwareEquipmentCustomization,
     label: 'Available Equipment',
     icon: Activity,
     category: 'Physical Focus & Equipment',

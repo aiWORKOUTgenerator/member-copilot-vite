@@ -23,6 +23,14 @@ export class LocationServiceImpl implements LocationService {
    * @returns Promise resolving to locations with nested equipment and class schedules
    */
   async getLocations(): Promise<LocationsResponse> {
-    return this.apiService.get<LocationsResponse>(`${this.baseEndpoint}/`);
+    try {
+      const response = await this.apiService.get<LocationsResponse>(
+        `${this.baseEndpoint}/`
+      );
+      return response;
+    } catch (error) {
+      console.error('❌ LocationServiceImpl: API call failed:', error);
+      throw error;
+    }
   }
 }

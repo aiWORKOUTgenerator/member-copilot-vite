@@ -3,12 +3,13 @@ import { CUSTOMIZATION_FIELD_KEYS } from '../../constants/fieldKeys';
 import type { PerWorkoutOptions } from '../types';
 import { SelectionBadge } from '@/ui/shared/atoms';
 import { useWorkoutAnalytics } from '../../hooks/useWorkoutAnalytics';
-import { EnhancedAvailableEquipmentCustomization } from '../customizations/enhanced';
+import ProgressiveEquipmentCustomization from '../enhanced/ProgressiveEquipmentCustomization';
 // Keep legacy components for text input fields
 import {
   IncludeExercisesCustomization,
   ExcludeExercisesCustomization,
 } from '../customizations';
+import { useLocationBasedEquipmentOptions } from '../utils/locationBasedWorkoutUtils';
 
 export interface EquipmentPreferencesStepProps {
   options: PerWorkoutOptions;
@@ -22,6 +23,7 @@ export const EquipmentPreferencesStep: React.FC<
   EquipmentPreferencesStepProps
 > = ({ options, onChange, errors, disabled = false, variant = 'detailed' }) => {
   const { trackStepCompletion } = useWorkoutAnalytics();
+  const { hasLocationData } = useLocationBasedEquipmentOptions();
   const startTime = useRef(Date.now());
 
   // Track step completion
@@ -91,10 +93,22 @@ export const EquipmentPreferencesStep: React.FC<
         </p>
       </div>
 
+      {/* Location indicator */}
+      {hasLocationData && (
+        <div className="bg-base-200 rounded-lg p-4">
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 bg-success rounded-full"></div>
+            <span className="text-sm font-medium">
+              Using equipment data from your location
+            </span>
+          </div>
+        </div>
+      )}
+
       <div className="space-y-8">
-        {/* Equipment - Enhanced Component */}
+        {/* Equipment - Progressive Component */}
         <div className="space-y-4">
-          <EnhancedAvailableEquipmentCustomization
+          <ProgressiveEquipmentCustomization
             value={options.customization_equipment}
             onChange={(equipment) =>
               handleChange(CUSTOMIZATION_FIELD_KEYS.EQUIPMENT, equipment)
