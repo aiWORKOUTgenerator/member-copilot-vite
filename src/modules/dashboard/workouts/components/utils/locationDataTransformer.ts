@@ -95,28 +95,18 @@ function groupEquipmentByType(equipmentList: string[]): EquipmentGroup[] {
   return Object.values(groups);
 }
 
+// Extract regex pattern to constant to avoid duplication
+const WEIGHT_PATTERN = /(.+?)\s*-\s*(\d+(?:\.\d+)?)\s*lbs?$/i;
+
 function parseEquipmentName(equipmentName: string): {
   baseName: string;
   weight: number | null;
 } {
-  // Handle patterns like "Dumbbells - 5 lbs", "Kettlebells - 10 lbs", etc.
-  const weightMatch = equipmentName.match(
-    /(.+?)\s*-\s*(\d+(?:\.\d+)?)\s*lbs?$/i
-  );
-
-  if (weightMatch) {
-    const baseName = weightMatch[1].trim();
-    const weight = parseFloat(weightMatch[2]);
-    return { baseName, weight };
-  }
-
-  // Handle patterns like "Olympic Barbell - 45 lbs"
-  const barbellMatch = equipmentName.match(
-    /(.+?)\s*-\s*(\d+(?:\.\d+)?)\s*lbs?$/i
-  );
-  if (barbellMatch) {
-    const baseName = barbellMatch[1].trim();
-    const weight = parseFloat(barbellMatch[2]);
+  // Handle patterns like "Dumbbells - 5 lbs", "Kettlebells - 10 lbs", "Olympic Barbell - 45 lbs", etc.
+  const match = equipmentName.match(WEIGHT_PATTERN);
+  if (match) {
+    const baseName = match[1].trim();
+    const weight = parseFloat(match[2]);
     return { baseName, weight };
   }
 

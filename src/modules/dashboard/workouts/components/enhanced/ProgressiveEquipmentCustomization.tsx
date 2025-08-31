@@ -1,7 +1,7 @@
 import { memo, useMemo, useState, useEffect } from 'react';
 import { ProgressiveEquipmentSelector } from '@/ui/shared/molecules/ProgressiveEquipmentSelector';
 import { transformLocationToEquipmentZones } from '../utils/locationDataTransformer';
-import { useLocation } from '@/hooks/useLocation';
+import { useLocation, useDefaultLocation } from '@/hooks/useLocation';
 import { useWorkoutAnalytics } from '../../hooks/useWorkoutAnalytics';
 import type { CustomizationComponentProps } from '../types';
 
@@ -36,6 +36,7 @@ export default memo(function ProgressiveEquipmentCustomization({
   variant?: 'simple' | 'detailed';
 }) {
   const { locations, isLoading } = useLocation();
+  const defaultLocation = useDefaultLocation();
   const { trackSelection } = useWorkoutAnalytics();
 
   // Internal state to preserve complex equipment data with weights
@@ -99,7 +100,7 @@ export default memo(function ProgressiveEquipmentCustomization({
             id: equipment.id,
             name: equipment.name,
             weightType: 'individual' as const,
-            weight: [], // Start with no weights selected for multi-select
+            weight: undefined, // Start with no weight selected for individual type
           })),
       }))
       .filter((zoneSelection) => zoneSelection.equipment.length > 0);
@@ -140,7 +141,7 @@ export default memo(function ProgressiveEquipmentCustomization({
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 bg-success rounded-full"></div>
           <span className="text-sm font-medium">
-            Using equipment data from {locations[0]?.name}
+            Using equipment data from {defaultLocation?.name || 'your location'}
           </span>
         </div>
       </div>

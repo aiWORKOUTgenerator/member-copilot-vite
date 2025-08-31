@@ -297,7 +297,7 @@ export function ProgressiveEquipmentSelector({
                           <input
                             type="checkbox"
                             checked={isSelected}
-                            onChange={() => {}} // Handled by parent click
+                            readOnly={true}
                             disabled={disabled}
                             className="checkbox checkbox-sm"
                           />
