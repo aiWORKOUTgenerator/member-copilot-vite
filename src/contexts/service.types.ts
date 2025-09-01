@@ -1,5 +1,6 @@
 import { ApiService } from '@/domain/interfaces/api/ApiService';
 import { MemberService } from '@/domain/interfaces/services/MemberService';
+import { PromptService } from '@/domain/interfaces/services/PromptService';
 import { PusherService } from '@/domain/interfaces/services/PusherService';
 import { createContext } from 'react';
 
@@ -10,6 +11,7 @@ import { createContext } from 'react';
 export interface ServiceContainer {
   apiService: ApiService;
   memberService: MemberService;
+  promptService: PromptService;
   pusherService: PusherService;
   // Add more services here as they're created
 }

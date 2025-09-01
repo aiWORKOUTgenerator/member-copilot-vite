@@ -23,7 +23,6 @@ export class ClerkTokenProvider implements TokenProvider {
   async getToken(): Promise<string | null> {
     try {
       const token = await this.getTokenFn();
-      // Debug logging removed - authentication issue resolved
       return token;
     } catch (error) {
       console.error('Error getting authentication token:', error);

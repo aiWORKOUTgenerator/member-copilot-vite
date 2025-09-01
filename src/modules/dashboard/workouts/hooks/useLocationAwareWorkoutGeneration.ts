@@ -49,12 +49,26 @@ export function useLocationAwareWorkoutGeneration() {
       );
 
       // Add location context to prompt
-      const locationContext = defaultLocation
-        ? `\n\nLocation Context: User is at ${defaultLocation.name} with the following equipment available: ${allEquipment
-            .filter((eq) => eq.is_active)
-            .map((eq) => eq.zone)
-            .join(', ')}.`
-        : '';
+      const locationContext =
+        defaultLocation && defaultLocation.name
+          ? (() => {
+              // Ensure allEquipment is an array and filter/map safely
+              const activeZones = Array.isArray(allEquipment)
+                ? allEquipment
+                    .filter(
+                      (eq) =>
+                        eq &&
+                        eq.is_active &&
+                        typeof eq.zone === 'string' &&
+                        eq.zone.length > 0
+                    )
+                    .map((eq) => eq.zone)
+                : [];
+              const zonesString =
+                activeZones.length > 0 ? activeZones.join(', ') : 'None';
+              return `\n\nLocation Context: User is at ${defaultLocation.name} with the following equipment available: ${zonesString}.`;
+            })()
+          : '';
 
       const enhancedPrompt = prompt + locationContext;
 

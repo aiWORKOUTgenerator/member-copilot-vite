@@ -4,6 +4,8 @@ import { ApiServiceImpl } from '@/services/api/ApiServiceImpl';
 import { MockApiService } from '@/services/api/MockApiService';
 import { MemberServiceImpl } from '@/services/member/MemberServiceImpl';
 import { MockMemberService } from '@/services/member/MockMemberService';
+import { PromptServiceImpl } from '@/services/prompt/PromptServiceImpl';
+import { FakePromptService } from '@/services/prompt/FakePromptService';
 import { PusherServiceImpl } from '@/services/pusher/PusherServiceImpl';
 import { ReactNode } from 'react';
 import { ServiceContext, ServiceContainer } from './service.types';
@@ -49,6 +51,9 @@ const createServices = (): ServiceContainer => {
     memberService: useMocks
       ? new MockMemberService()
       : new MemberServiceImpl(apiService),
+    promptService: useMocks
+      ? new FakePromptService()
+      : new PromptServiceImpl(apiService),
     pusherService,
     // Add more services here as they're created
   };

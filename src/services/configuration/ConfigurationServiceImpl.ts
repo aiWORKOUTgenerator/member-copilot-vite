@@ -147,7 +147,9 @@ export class MockConfigurationService implements ConfigurationService {
         rudderDataPlaneUrl: 'https://mock.dataplane.rudderstack.com',
         favicon: 'https://via.placeholder.com/32x32?text=M',
         quickWorkoutConfigurationId: 'mock-quick-workout-config-id',
-        generatedWorkoutConfigurationId: 'mock-generated-workout-config-id',
+        generatedWorkoutConfigurationId:
+          import.meta.env.VITE_GENERATED_WORKOUT_CONFIGURATION_ID ||
+          'mock-generated-workout-config-id',
       },
       api_domain: 'tenant.aitenanttest.test',
     };
