@@ -1,7 +1,7 @@
 import { memo, useMemo, useState, useEffect } from 'react';
 import { ProgressiveEquipmentSelector } from '@/ui/shared/molecules/ProgressiveEquipmentSelector';
 import { transformLocationToEquipmentZones } from '../utils/locationDataTransformer';
-import { useLocation } from '@/hooks/useLocation';
+import { useLocation, useDefaultLocation } from '@/hooks/useLocation';
 import { useWorkoutAnalytics } from '../../hooks/useWorkoutAnalytics';
 import type { CustomizationComponentProps } from '../types';
 
@@ -11,8 +11,8 @@ interface EquipmentSelection {
   equipment: Array<{
     id: string;
     name: string;
-    weightType: 'individual' | 'range';
-    weight?: number | number[];
+    weightType?: 'individual' | 'range';
+    weight: number[];
     weightRange?: { min: number; max: number };
   }>;
 }
@@ -36,6 +36,7 @@ export default memo(function ProgressiveEquipmentCustomization({
   variant?: 'simple' | 'detailed';
 }) {
   const { locations, isLoading } = useLocation();
+  const defaultLocation = useDefaultLocation();
   const { trackSelection } = useWorkoutAnalytics();
 
   // Internal state to preserve complex equipment data with weights
@@ -82,7 +83,16 @@ export default memo(function ProgressiveEquipmentCustomization({
       const filteredInternalData = internalEquipmentData
         .map((zone) => ({
           ...zone,
-          equipment: zone.equipment.filter((eq) => value.includes(eq.id)),
+          equipment: zone.equipment
+            .filter((eq) => value.includes(eq.id))
+            .map((eq) => ({
+              ...eq,
+              weight: Array.isArray(eq.weight)
+                ? eq.weight
+                : eq.weight
+                  ? [eq.weight]
+                  : [],
+            })),
         }))
         .filter((zone) => zone.equipment.length > 0);
 
@@ -98,8 +108,12 @@ export default memo(function ProgressiveEquipmentCustomization({
           .map((equipment) => ({
             id: equipment.id,
             name: equipment.name,
-            weightType: 'individual' as const,
-            weight: [], // Start with no weights selected for multi-select
+            weightType:
+              equipment.availableWeights &&
+              equipment.availableWeights.length > 0
+                ? ('individual' as const)
+                : undefined,
+            weight: [], // Start with no weight selected
           })),
       }))
       .filter((zoneSelection) => zoneSelection.equipment.length > 0);
@@ -140,7 +154,7 @@ export default memo(function ProgressiveEquipmentCustomization({
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 bg-success rounded-full"></div>
           <span className="text-sm font-medium">
-            Using equipment data from {locations[0]?.name}
+            Using equipment data from {defaultLocation?.name || 'your location'}
           </span>
         </div>
       </div>
