@@ -502,23 +502,15 @@ export function ProgressiveEquipmentSelector({
                                               // Clicking a higher weight - set as new max
                                               newMax = availableWeight;
                                             } else {
-                                              // Clicking within the range - expand/contract appropriately
+                                              // Clicking within the range - just set the clicked weight as min or max
                                               if (availableWeight === newMin) {
-                                                // Clicking min - expand range down
-                                                newMin =
-                                                  availableWeight -
-                                                  (equipment
-                                                    .weightIncrements?.[0] ||
-                                                    5);
+                                                // Clicking min - set as new min
+                                                newMin = availableWeight;
                                               } else if (
                                                 availableWeight === newMax
                                               ) {
-                                                // Clicking max - expand range up
-                                                newMax =
-                                                  availableWeight +
-                                                  (equipment
-                                                    .weightIncrements?.[0] ||
-                                                    5);
+                                                // Clicking max - set as new max
+                                                newMax = availableWeight;
                                               }
                                             }
 
