@@ -51,23 +51,58 @@ export const useAutoScrollTiming = ({
       stepAdvance?: () => void;
       stepScroll?: () => void;
     }) => {
-      if (!enabled) return;
+      if (!enabled) {
+        if (import.meta.env.DEV) {
+          console.debug('Auto-scroll timing: Disabled, skipping sequence');
+        }
+        return;
+      }
 
       cancelTimeout(); // Cancel any existing timeout
 
       // Schedule initial action
       if (actions.initial) {
+        if (import.meta.env.DEV) {
+          console.debug('Auto-scroll timing: Scheduling initial action', {
+            initialDelay: config.initialDelay,
+            stepAdvanceDelay: config.stepAdvanceDelay,
+            stepScrollDelay: config.stepScrollDelay,
+          });
+        }
         timeoutRef.current = window.setTimeout(() => {
+          if (import.meta.env.DEV) {
+            console.debug('Auto-scroll timing: Executing initial action');
+          }
           actions.initial!();
 
           // Schedule step advance action
           if (actions.stepAdvance) {
+            if (import.meta.env.DEV) {
+              console.debug(
+                'Auto-scroll timing: Scheduling step advance action'
+              );
+            }
             timeoutRef.current = window.setTimeout(() => {
+              if (import.meta.env.DEV) {
+                console.debug(
+                  'Auto-scroll timing: Executing step advance action'
+                );
+              }
               actions.stepAdvance!();
 
               // Schedule step scroll action
               if (actions.stepScroll) {
+                if (import.meta.env.DEV) {
+                  console.debug(
+                    'Auto-scroll timing: Scheduling step scroll action'
+                  );
+                }
                 timeoutRef.current = window.setTimeout(() => {
+                  if (import.meta.env.DEV) {
+                    console.debug(
+                      'Auto-scroll timing: Executing step scroll action'
+                    );
+                  }
                   actions.stepScroll!();
                 }, config.stepScrollDelay);
               }

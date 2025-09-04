@@ -208,6 +208,20 @@ export const useFormAutoScroll = <TFormData = Record<string, unknown>>({
         !nextField && isStepComplete(currentStepId, updatedFormData);
       const nextStep = shouldAdvance ? getNextStep?.(currentStepId) : null;
 
+      // Enhanced debug logging
+      if (import.meta.env.DEV) {
+        console.debug(`${formId}: Field selection debug:`, {
+          fieldId,
+          currentStepId,
+          nextField,
+          nextFieldTarget,
+          shouldAdvance,
+          nextStep,
+          updatedFormData,
+          isStepComplete: isStepComplete(currentStepId, updatedFormData),
+        });
+      }
+
       // Schedule auto-scroll sequence
       scheduleAutoScrollSequence({
         initial: () => {
@@ -233,11 +247,24 @@ export const useFormAutoScroll = <TFormData = Record<string, unknown>>({
           }
         },
         stepAdvance: () => {
+          if (import.meta.env.DEV) {
+            console.debug(`${formId}: Step advance check:`, {
+              shouldAdvance,
+              nextStep,
+              enabled,
+            });
+          }
           if (shouldAdvance && nextStep) {
             if (import.meta.env.DEV) {
               console.debug(`${formId}: Advancing to step: ${nextStep}`);
             }
             setCurrentStep(nextStep);
+          } else if (import.meta.env.DEV) {
+            console.debug(`${formId}: Step advance prevented:`, {
+              shouldAdvance,
+              nextStep,
+              reason: !shouldAdvance ? 'step not complete' : 'no next step',
+            });
           }
         },
         stepScroll: () => {
