@@ -312,40 +312,9 @@ export default function GenerateWorkoutPage() {
         <div className="p-6">
           <h2 className="text-2xl font-bold">Generate a New Workout</h2>
 
-          {/* Contextual Mode Selection - Show only the opposite option */}
-          {activeTab === 'quick' && (
-            <div className="join mb-6 w-fit">
-              <button
-                type="button"
-                className="btn btn-sm md:btn-md join-item btn-primary btn-active"
-                onClick={() =>
-                  navigate('/dashboard/workouts/generate/detailed')
-                }
-              >
-                Switch to Detailed Workout Setup
-              </button>
-            </div>
-          )}
-
-          {activeTab === 'detailed' && (
-            <div className="join mb-6 w-fit">
-              <button
-                type="button"
-                className="btn btn-sm md:btn-md join-item btn-primary btn-active"
-                onClick={() => navigate('/dashboard/workouts/generate/quick')}
-              >
-                Switch to Quick Workout Setup
-              </button>
-            </div>
-          )}
-
           <form onSubmit={handleSubmit}>
             {activeTab === 'quick' ? (
               <>
-                <p className="text-sm text-base-content/70 mb-6">
-                  Set up a quick workout based on your profile and preferences
-                </p>
-
                 {/* Quick Workout - Only duration */}
                 <WorkoutCustomization
                   options={perWorkoutOptions}
@@ -359,11 +328,6 @@ export default function GenerateWorkoutPage() {
               </>
             ) : (
               <>
-                <p className="text-sm text-base-content/70 mb-6">
-                  Set up your detailed workout with the options below, then
-                  optionally describe additional requirements
-                </p>
-
                 {/* Workout Customization - Now above the textarea */}
                 <WorkoutCustomization
                   options={perWorkoutOptions}

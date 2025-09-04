@@ -23,6 +23,8 @@ export interface FormAutoScrollConfig<TFormData = Record<string, unknown>> {
   getNextField?: (currentField: string, currentStepId: string) => string | null;
   /** Function to get next step after current step */
   getNextStep?: (currentStepId: string) => string | null;
+  /** Enable/disable auto-scroll functionality */
+  enabled?: boolean;
   /** Custom timing overrides */
   timing?: {
     initialDelay?: number;
@@ -93,6 +95,7 @@ export const useFormAutoScroll = <TFormData = Record<string, unknown>>({
   isStepComplete,
   getNextField,
   getNextStep,
+  enabled = true,
   timing = {},
   scrollBehavior = { block: 'start', inline: 'nearest' },
 }: FormAutoScrollConfig<TFormData>): FormAutoScrollReturn<TFormData> => {
@@ -101,9 +104,11 @@ export const useFormAutoScroll = <TFormData = Record<string, unknown>>({
 
   // Auto-scroll hooks
   const { triggerAutoScroll } = useAutoScroll({
+    enabled,
     trackingContext: formId,
   });
   const { scheduleAutoScrollSequence } = useAutoScrollTiming({
+    enabled,
     timing,
   });
 
@@ -203,7 +208,29 @@ export const useFormAutoScroll = <TFormData = Record<string, unknown>>({
         !nextField && isStepComplete(currentStepId, updatedFormData);
       const nextStep = shouldAdvance ? getNextStep?.(currentStepId) : null;
 
+      // Enhanced debug logging
+      if (import.meta.env.DEV) {
+        console.debug(`${formId}: Field selection debug:`, {
+          fieldId,
+          currentStepId,
+          nextField,
+          nextFieldTarget,
+          shouldAdvance,
+          nextStep,
+          updatedFormData,
+          isStepComplete: isStepComplete(currentStepId, updatedFormData),
+        });
+      }
+
       // Schedule auto-scroll sequence
+      if (import.meta.env.DEV) {
+        console.debug(`${formId}: Scheduling auto-scroll sequence`, {
+          enabled,
+          hasInitial: true,
+          hasStepAdvance: true,
+          hasStepScroll: true,
+        });
+      }
       scheduleAutoScrollSequence({
         initial: () => {
           if (import.meta.env.DEV) {
@@ -228,18 +255,54 @@ export const useFormAutoScroll = <TFormData = Record<string, unknown>>({
           }
         },
         stepAdvance: () => {
-          if (shouldAdvance && nextStep) {
+          // Recalculate step completion status at execution time
+          const currentStepComplete = isStepComplete(
+            currentStepId,
+            updatedFormData
+          );
+          const nextStepId = currentStepComplete
+            ? getNextStep?.(currentStepId)
+            : null;
+
+          if (import.meta.env.DEV) {
+            console.debug(`${formId}: Step advance check:`, {
+              currentStepId,
+              currentStepComplete,
+              nextStepId,
+              enabled,
+              updatedFormData,
+            });
+          }
+
+          if (currentStepComplete && nextStepId) {
             if (import.meta.env.DEV) {
-              console.debug(`${formId}: Advancing to step: ${nextStep}`);
+              console.debug(`${formId}: Advancing to step: ${nextStepId}`);
             }
-            setCurrentStep(nextStep);
+            setCurrentStep(nextStepId);
+          } else if (import.meta.env.DEV) {
+            console.debug(`${formId}: Step advance prevented:`, {
+              currentStepComplete,
+              nextStepId,
+              reason: !currentStepComplete
+                ? 'step not complete'
+                : 'no next step',
+            });
           }
         },
         stepScroll: () => {
-          if (nextStep) {
+          // Recalculate next step at execution time
+          const currentStepComplete = isStepComplete(
+            currentStepId,
+            updatedFormData
+          );
+          const nextStepId = currentStepComplete
+            ? getNextStep?.(currentStepId)
+            : null;
+
+          if (nextStepId) {
             // Try to scroll to step's scroll target first, then fallback to step ID
-            const stepConfig = steps.find((step) => step.id === nextStep);
-            const scrollTargetId = stepConfig?.scrollTarget || nextStep;
+            const stepConfig = steps.find((step) => step.id === nextStepId);
+            const scrollTargetId = stepConfig?.scrollTarget || nextStepId;
             const scrollElement = getScrollTargetElement(scrollTargetId);
 
             if (scrollElement) {
@@ -254,7 +317,7 @@ export const useFormAutoScroll = <TFormData = Record<string, unknown>>({
               });
             } else if (import.meta.env.DEV) {
               console.warn(
-                `${formId}: No scroll target found for step: ${nextStep}`
+                `${formId}: No scroll target found for step: ${nextStepId}`
               );
             }
           }

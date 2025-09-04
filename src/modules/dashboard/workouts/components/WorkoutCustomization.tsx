@@ -7,9 +7,9 @@ import {
   DetailedSelector,
   SimpleDetailedViewSelector,
   ProgressBar,
-  HeroTitle,
 } from '@/ui/shared/molecules';
 import { SelectionBadge, ScrollTarget } from '@/ui/shared/atoms';
+import { ModernFormHeader } from '@/ui/shared/organisms';
 import { FieldValidationMessage } from './FieldValidationMessage';
 import { useDetailedWorkoutSteps } from './hooks/useDetailedWorkoutSteps';
 import { useQuickWorkoutProgress } from './hooks/useQuickWorkoutProgress';
@@ -47,7 +47,7 @@ export default function WorkoutCustomization({
   const [internalActiveQuickStep, setInternalActiveQuickStep] = useState<
     'focus-energy' | 'duration-equipment'
   >('focus-energy');
-  const [viewMode, setViewMode] = useState<'simple' | 'detailed'>('detailed');
+  const [viewMode, setViewMode] = useState<'simple' | 'detailed'>('simple');
 
   // Use enhanced options for consistent transformations
   const { focusOptions, energyOptions, durationOptions, equipmentOptions } =
@@ -95,6 +95,7 @@ export default function WorkoutCustomization({
     currentStepId: currentStep,
     setCurrentStep: (stepId: string) =>
       setCurrentStep(stepId as 'focus-energy' | 'duration-equipment'),
+    enabled: autoScrollEnabled,
     isStepComplete: (stepId, formData) => {
       if (stepId === 'focus-energy') {
         return !!(
@@ -191,38 +192,6 @@ export default function WorkoutCustomization({
       }
     }
     return undefined;
-  };
-
-  // Check if step has any validation errors for step indicator
-  const getStepValidationError = (
-    step: 'focus-energy' | 'duration-equipment'
-  ) => {
-    if (step === 'focus-energy') {
-      return (
-        getFieldValidationError(CUSTOMIZATION_FIELD_KEYS.FOCUS) ||
-        getFieldValidationError(CUSTOMIZATION_FIELD_KEYS.ENERGY)
-      );
-    } else if (step === 'duration-equipment') {
-      return (
-        getFieldValidationError(CUSTOMIZATION_FIELD_KEYS.DURATION) ||
-        getFieldValidationError(CUSTOMIZATION_FIELD_KEYS.EQUIPMENT)
-      );
-    }
-    return undefined;
-  };
-
-  // Simple step click handler without validation
-  const handleStepClick = (stepId: string) => {
-    if (stepId === 'focus-energy' || stepId === 'duration-equipment') {
-      const newStep = stepId as 'focus-energy' | 'duration-equipment';
-      const currentStepIndex = currentStep === 'focus-energy' ? 0 : 1;
-      const newStepIndex = newStep === 'focus-energy' ? 0 : 1;
-
-      // Only allow jumping backwards
-      if (newStepIndex < currentStepIndex) {
-        setCurrentStep(newStep);
-      }
-    }
   };
 
   const handleChange = (
@@ -393,92 +362,81 @@ export default function WorkoutCustomization({
   if (mode === 'quick') {
     return (
       <div className="mb-6 workout-customization-container">
-        <h3 className="text-lg font-semibold mb-4 flex items-center flex-wrap gap-2">
-          <Target className="w-5 h-5" />
-          <span>Quick Workout Setup</span>
-          <span className="text-sm font-normal text-base-content/70">
-            (all required)
-          </span>
-        </h3>
-
-        {/* Controls */}
-        <div className="mb-4 flex justify-between items-center">
-          <div className="flex items-center gap-4">
-            {/* Auto-scroll toggle */}
-            <div className="form-control">
-              <label className="label cursor-pointer justify-start gap-3 py-2">
-                <input
-                  type="checkbox"
-                  className="toggle toggle-primary toggle-sm"
-                  checked={autoScrollEnabled}
-                  onChange={(e) => setAutoScrollEnabled(e.target.checked)}
-                />
-                <span className="label-text text-sm">Auto-advance</span>
-              </label>
-            </div>
-          </div>
-
-          {/* View mode toggle */}
-          <SimpleDetailedViewSelector
-            value={viewMode}
-            onChange={setViewMode}
-            size="sm"
-            labels={{ simple: 'Simple', detailed: 'Detailed' }}
-          />
-        </div>
-
-        {/* Overall Progress Bar */}
-        <div className="mb-4">
-          <ProgressBar
-            progress={quickProgress.overallProgress}
-            label="Overall Progress"
-            showPercentage={true}
-            size="md"
-            variant="primary"
-            animated={true}
-            description={`${quickProgress.completedFields} of ${quickProgress.totalFields} required fields completed`}
-          />
-        </div>
-
-        {/* Step Indicator / Linear Stepper */}
-        <StepIndicator
+        <ModernFormHeader
+          title="Quick Workout Setup"
+          subtitle="Streamlined workout generation in just 2 steps"
+          icon={<Target className="w-6 h-6 text-white" />}
+          progress={quickProgress.overallProgress}
+          completedFields={quickProgress.completedFields}
+          totalFields={quickProgress.totalFields}
+          autoAdvanceEnabled={autoScrollEnabled}
+          onAutoAdvanceChange={setAutoScrollEnabled}
+          viewMode={{
+            value: viewMode,
+            options: [
+              { value: 'simple', label: 'Simple' },
+              { value: 'detailed', label: 'Detailed' },
+            ],
+            onChange: (value: string) =>
+              setViewMode(value as 'simple' | 'detailed'),
+          }}
           steps={[
             {
               id: 'focus-energy',
               label: 'Focus & Energy',
-              disabled: false, // First step is always enabled
-              hasErrors: !!getStepValidationError('focus-energy'),
+              description: 'Set your workout focus',
+              isActive: currentStep === 'focus-energy',
             },
             {
               id: 'duration-equipment',
               label: 'Duration & Equipment',
-              disabled: false, // Always enabled
-              hasErrors: !!getStepValidationError('duration-equipment'),
+              description: 'Configure your session',
+              isActive: currentStep === 'duration-equipment',
             },
           ]}
-          currentStep={currentStep}
-          onStepClick={handleStepClick}
-          disabled={disabled}
-          showConnectors={true}
-          size="md"
         />
 
-        {/* Workout Structure Section - matching Detailed mode */}
-        <div className="mt-section mb-6">
-          <HeroTitle
-            title="Workout Structure"
-            subtitle="Define your workout's core parameters: what your main focus is, how you are feeling today, how long you want to work out, and what equipment you have available."
-            align="left"
-            variant="default"
-            size="lg"
-            subtitleSize="sm"
-            showBackground={false}
-          />
+        {/* Scroll Down Indicator */}
+        <div className="flex justify-center mb-6">
+          <button
+            type="button"
+            className="animate-bounce focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 rounded-full p-2 transition-all duration-200 hover:scale-110"
+            onClick={() => {
+              // Scroll to the first form field
+              const firstField =
+                document.querySelector('[data-testid="focus-question"]') ||
+                document.querySelector('.scroll-mt-4');
+              if (firstField) {
+                firstField.scrollIntoView({
+                  behavior: 'smooth',
+                  block: 'start',
+                });
+              }
+            }}
+            aria-label="Scroll down to form questions"
+            title="Click to scroll to form questions"
+          >
+            <svg
+              className="w-8 h-8 text-primary/60 hover:text-primary/80 transition-colors duration-200"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 14l-7 7m0 0l-7-7m7 7V3"
+              />
+            </svg>
+          </button>
         </div>
 
         {/* Step content */}
         {currentStep === 'focus-energy' && (
-          <div className="space-y-8">
+          <div className="space-y-6 mt-4">
             <ScrollTarget
               targetId="focus-question"
               registerScrollTarget={registerScrollTarget}
@@ -546,7 +504,7 @@ export default function WorkoutCustomization({
         )}
 
         {currentStep === 'duration-equipment' && (
-          <div className="space-y-8">
+          <div className="space-y-6 mt-4">
             <ScrollTarget
               targetId="duration-question"
               registerScrollTarget={registerScrollTarget}

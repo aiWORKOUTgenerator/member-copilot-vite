@@ -173,12 +173,15 @@ describe('WorkoutStructureStep Integration', () => {
       ).toBeInTheDocument();
     });
 
-    it('displays step header with correct title and description', () => {
+    it('displays step content without header title and description', () => {
       render(<WorkoutStructureStep {...defaultProps} />);
 
-      expect(screen.getByText('Workout Structure')).toBeInTheDocument();
+      // Verify the step content is rendered (the heading was removed as per UI cleanup)
       expect(
-        screen.getByText(/Define your workout's core parameters/)
+        screen.getByText('How long do you want your workout to be?')
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText("What's your main focus for this workout session?")
       ).toBeInTheDocument();
     });
 
@@ -391,23 +394,23 @@ describe('WorkoutStructureStep Integration', () => {
         <WorkoutStructureStep {...defaultProps} variant="detailed" />
       );
 
-      // Verify detailed layout renders
-      expect(screen.getByText('Workout Structure')).toBeInTheDocument();
+      // Verify detailed layout renders (heading was removed as per UI cleanup)
       expect(
-        screen.getByText(
-          "Define your workout's core parameters: how long you want to work out, what your main focus is, and which body areas you'd like to target."
-        )
+        screen.getByText('How long do you want your workout to be?')
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText("What's your main focus for this workout session?")
       ).toBeInTheDocument();
 
       // Switch to simple layout
       rerender(<WorkoutStructureStep {...defaultProps} variant="simple" />);
 
-      // Verify simple layout still renders (component structure remains the same)
-      expect(screen.getByText('Workout Structure')).toBeInTheDocument();
+      // Verify simple layout still renders (component structure remains the same, heading was removed)
       expect(
-        screen.getByText(
-          "Define your workout's core parameters: how long you want to work out, what your main focus is, and which body areas you'd like to target."
-        )
+        screen.getByText('How long do you want your workout to be?')
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText("What's your main focus for this workout session?")
       ).toBeInTheDocument();
     });
 
