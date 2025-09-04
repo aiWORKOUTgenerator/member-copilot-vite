@@ -94,6 +94,7 @@ export default function WorkoutCustomization({
     currentStepId: currentStep,
     setCurrentStep: (stepId: string) =>
       setCurrentStep(stepId as 'focus-energy' | 'duration-equipment'),
+    enabled: autoScrollEnabled,
     isStepComplete: (stepId, formData) => {
       if (stepId === 'focus-energy') {
         return !!(
@@ -454,12 +455,17 @@ export default function WorkoutCustomization({
                     </p>
                   </div>
                   <div className="form-control">
-                    <label className="label cursor-pointer">
+                    <label
+                      className="label cursor-pointer"
+                      htmlFor="auto-advance-toggle"
+                    >
                       <input
+                        id="auto-advance-toggle"
                         type="checkbox"
                         className="toggle toggle-primary toggle-lg"
                         checked={autoScrollEnabled}
                         onChange={(e) => setAutoScrollEnabled(e.target.checked)}
+                        aria-label="Auto-advance"
                       />
                     </label>
                   </div>
