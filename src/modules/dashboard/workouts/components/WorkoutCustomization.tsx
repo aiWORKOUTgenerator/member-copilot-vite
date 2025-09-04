@@ -46,7 +46,7 @@ export default function WorkoutCustomization({
   const [internalActiveQuickStep, setInternalActiveQuickStep] = useState<
     'focus-energy' | 'duration-equipment'
   >('focus-energy');
-  const [viewMode, setViewMode] = useState<'simple' | 'detailed'>('detailed');
+  const [viewMode, setViewMode] = useState<'simple' | 'detailed'>('simple');
 
   // Use enhanced options for consistent transformations
   const { focusOptions, energyOptions, durationOptions, equipmentOptions } =
