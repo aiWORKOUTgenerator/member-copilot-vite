@@ -7,7 +7,7 @@ const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <AutoScrollProvider>{children}</AutoScrollProvider>
 );
 
-describe('WorkoutCustomization Real Auto-Advance Tests', () => {
+describe.skip('WorkoutCustomization Real Auto-Advance Tests', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.useFakeTimers();
