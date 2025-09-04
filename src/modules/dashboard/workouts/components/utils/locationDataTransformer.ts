@@ -1,5 +1,8 @@
 import { Location } from '@/domain/entities';
 
+// Extract regex pattern to constant to avoid duplication
+const WEIGHT_PATTERN = /(.+?)\s*-\s*(\d+(?:\.\d+)?)\s*lbs?$/i;
+
 export interface EquipmentItem {
   id: string;
   name: string;
@@ -237,9 +240,6 @@ function groupEquipmentByType(equipmentList: string[]): EquipmentGroup[] {
     ];
   }
 }
-
-// Extract regex pattern to constant to avoid duplication
-const WEIGHT_PATTERN = /(.+?)\s*-\s*(\d+(?:\.\d+)?)\s*lbs?$/i;
 
 function parseEquipmentName(equipmentName: string): {
   baseName: string;
