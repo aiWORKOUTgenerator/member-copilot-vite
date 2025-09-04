@@ -1,7 +1,5 @@
 import { useState, useMemo } from 'react';
-import { ChevronDown, ChevronRight, Dumbbell, Settings } from 'lucide-react';
-import { Card, CardBody } from '@/ui/shared/atoms/Card';
-import { Button } from '@/ui/shared/atoms/Button';
+import { ChevronDown, ChevronRight, Dumbbell } from 'lucide-react';
 
 interface EquipmentItem {
   id: string;
@@ -30,8 +28,8 @@ interface EquipmentSelection {
   equipment: Array<{
     id: string;
     name: string;
-    weightType: 'individual' | 'range';
-    weight?: number | number[]; // Support both single weight and array of weights
+    weightType?: 'individual' | 'range';
+    weight: number[];
     weightRange?: WeightRange;
   }>;
 }
@@ -44,12 +42,8 @@ interface ProgressiveEquipmentSelectorProps {
 }
 
 /**
- * Progressive Equipment Selector
- *
- * A three-level progressive disclosure interface that reduces cognitive overload:
- * 1. Zone Selection (single choice)
- * 2. Equipment Selection (multi-choice within zone)
- * 3. Weight Configuration (individual or range)
+ * NEW Progressive Equipment Selector - Built from scratch with DaisyUI only
+ * Simple, reliable, no nested components, no state synchronization hell
  */
 export function ProgressiveEquipmentSelector({
   zones,
@@ -58,22 +52,20 @@ export function ProgressiveEquipmentSelector({
   disabled = false,
 }: ProgressiveEquipmentSelectorProps) {
   const [selectedZone, setSelectedZone] = useState<string | null>(null);
-  const [expandedEquipment, setExpandedEquipment] = useState<Set<string>>(
-    new Set()
-  );
 
-  // Get current selection for selected zone
+  // Simple state - no complex validation, no transformations
   const currentZoneSelection = useMemo(() => {
-    return value.find((selection) => selection.zoneId === selectedZone);
+    const selection = value.find(
+      (selection) => selection.zoneId === selectedZone
+    );
+    return selection;
   }, [value, selectedZone]);
 
   const handleZoneSelect = (zoneId: string) => {
     if (selectedZone === zoneId) {
       setSelectedZone(null);
-      setExpandedEquipment(new Set());
     } else {
       setSelectedZone(zoneId);
-      setExpandedEquipment(new Set());
     }
   };
 
@@ -92,17 +84,22 @@ export function ProgressiveEquipmentSelector({
       // Remove equipment
       newEquipment = currentSelection.filter((e) => e.id !== equipmentId);
     } else {
-      // Add equipment with default weight configuration
+      // Add equipment - only include weight config if equipment has weight options
       const newItem = {
         id: equipmentId,
         name: equipment.name,
-        weightType: 'individual' as const,
+        weightType:
+          equipment.availableWeights && equipment.availableWeights.length > 0
+            ? ('individual' as const)
+            : undefined,
         weight:
           equipment.availableWeights && equipment.availableWeights.length > 0
-            ? [] // Start with no weights selected for multi-select
-            : equipment.defaultWeightRange?.min
-              ? [equipment.defaultWeightRange.min]
-              : [],
+            ? [equipment.availableWeights[0]]
+            : [],
+        weightRange:
+          equipment.availableWeights && equipment.availableWeights.length > 0
+            ? { min: 0, max: 0 }
+            : undefined,
       };
       newEquipment = [...currentSelection, newItem];
     }
@@ -122,7 +119,14 @@ export function ProgressiveEquipmentSelector({
 
     const zone = zones.find((z) => z.id === selectedZone);
     const zoneEquipment = zone?.equipment.find((e) => e.id === equipmentId);
-    const defaultRange = zoneEquipment?.defaultWeightRange;
+
+    // Only allow weight type changes if the equipment actually has weight options
+    if (
+      !zoneEquipment?.availableWeights ||
+      zoneEquipment.availableWeights.length === 0
+    ) {
+      return;
+    }
 
     const updatedEquipment = currentSelection.map((e) => {
       if (e.id === equipmentId) {
@@ -131,11 +135,11 @@ export function ProgressiveEquipmentSelector({
           weightType,
           weight:
             weightType === 'individual'
-              ? defaultRange?.min
-                ? [defaultRange.min]
-                : []
-              : undefined,
-          weightRange: weightType === 'range' ? defaultRange : undefined,
+              ? e.weight.length > 0
+                ? e.weight
+                : [zoneEquipment.availableWeights![0]]
+              : [],
+          weightRange: weightType === 'range' ? { min: 0, max: 0 } : undefined,
         };
       }
       return e;
@@ -144,10 +148,7 @@ export function ProgressiveEquipmentSelector({
     updateZoneSelection(selectedZone, updatedEquipment);
   };
 
-  const handleWeightChange = (
-    equipmentId: string,
-    weight: number | number[]
-  ) => {
+  const handleWeightChange = (equipmentId: string, weight: number[]) => {
     if (!selectedZone) return;
 
     const currentSelection = currentZoneSelection?.equipment || [];
@@ -186,16 +187,6 @@ export function ProgressiveEquipmentSelector({
     onChange(newValue);
   };
 
-  const toggleEquipmentExpansion = (equipmentId: string) => {
-    const newExpanded = new Set(expandedEquipment);
-    if (newExpanded.has(equipmentId)) {
-      newExpanded.delete(equipmentId);
-    } else {
-      newExpanded.add(equipmentId);
-    }
-    setExpandedEquipment(newExpanded);
-  };
-
   return (
     <div className="space-y-6">
       {/* Level 1: Zone Selection */}
@@ -208,51 +199,50 @@ export function ProgressiveEquipmentSelector({
               value.find((s) => s.zoneId === zone.id)?.equipment.length || 0;
 
             return (
-              <Card
+              <div
                 key={zone.id}
-                variant="path"
-                colorScheme={isSelected ? 'primary' : 'secondary'}
-                isSelected={isSelected}
+                className={`card cursor-pointer transition-all ${
+                  isSelected
+                    ? 'bg-primary text-primary-content'
+                    : 'bg-base-100 hover:bg-base-200'
+                } ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:scale-[1.02]'}`}
                 onClick={() => !disabled && handleZoneSelect(zone.id)}
-                className={`cursor-pointer transition-all ${
-                  disabled
-                    ? 'opacity-50 cursor-not-allowed'
-                    : 'hover:scale-[1.02]'
-                }`}
+                onKeyDown={(e) => {
+                  if ((e.key === 'Enter' || e.key === ' ') && !disabled) {
+                    e.preventDefault();
+                    handleZoneSelect(zone.id);
+                  }
+                }}
+                tabIndex={disabled ? -1 : 0}
+                role="button"
+                aria-pressed={isSelected}
+                aria-label={`Select ${zone.name} zone`}
               >
-                <CardBody padding="md">
-                  <div className="space-y-2">
-                    {/* Title row with badge inline */}
-                    <div className="flex items-center justify-between">
-                      <h4 className="font-semibold text-base-content">
-                        {zone.name}
-                      </h4>
-                      <div className="flex items-center gap-2">
-                        {hasEquipment > 0 && (
-                          <span className="badge badge-primary badge-sm">
-                            {hasEquipment} selected
-                          </span>
-                        )}
-                        {isSelected ? (
-                          <ChevronDown className="h-4 w-4" />
-                        ) : (
-                          <ChevronRight className="h-4 w-4" />
-                        )}
-                      </div>
+                <div className="card-body p-4">
+                  <div className="flex items-center justify-between">
+                    <h4 className="card-title text-base">{zone.name}</h4>
+                    <div className="flex items-center gap-2">
+                      {hasEquipment > 0 && (
+                        <div className="badge badge-primary badge-sm">
+                          {hasEquipment} selected
+                        </div>
+                      )}
+                      {isSelected ? (
+                        <ChevronDown className="h-4 w-4" />
+                      ) : (
+                        <ChevronRight className="h-4 w-4" />
+                      )}
                     </div>
-                    {/* Description on its own row */}
-                    <p className="text-sm text-base-content/70">
-                      {zone.description}
-                    </p>
                   </div>
-                </CardBody>
-              </Card>
+                  <p className="text-sm opacity-70">{zone.description}</p>
+                </div>
+              </div>
             );
           })}
         </div>
       </div>
 
-      {/* Level 2: Equipment Selection (only when zone is selected) */}
+      {/* Level 2: Equipment Selection */}
       {selectedZone && (
         <div className="space-y-4">
           <div className="flex items-center gap-2">
@@ -263,7 +253,10 @@ export function ProgressiveEquipmentSelector({
             </h3>
           </div>
 
-          <div className="space-y-3">
+          <div
+            className="grid grid-cols-1 md:grid-cols-2 gap-4"
+            data-testid="equipment-selection-grid"
+          >
             {zones
               .find((z) => z.id === selectedZone)
               ?.equipment.map((equipment) => {
@@ -271,7 +264,6 @@ export function ProgressiveEquipmentSelector({
                   currentZoneSelection?.equipment.some(
                     (e) => e.id === equipment.id
                   ) || false;
-                const isExpanded = expandedEquipment.has(equipment.id);
                 const selectedEquipment = currentZoneSelection?.equipment.find(
                   (e) => e.id === equipment.id
                 );
@@ -279,287 +271,365 @@ export function ProgressiveEquipmentSelector({
                 return (
                   <div
                     key={equipment.id}
-                    className="border border-base-300 rounded-lg"
+                    className={`card bg-base-100 border-2 min-h-[200px] transition-all ${
+                      isSelected ? 'ring-2 ring-primary ring-offset-2' : ''
+                    } ${disabled ? 'opacity-50' : ''}`}
                   >
-                    {/* Equipment Header */}
-                    <div
-                      className={`p-4 cursor-pointer transition-colors ${
-                        isSelected
-                          ? 'bg-primary/10 border-primary'
-                          : 'hover:bg-base-200'
-                      }`}
-                      onClick={() =>
-                        !disabled && handleEquipmentToggle(equipment.id)
-                      }
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <input
-                            type="checkbox"
-                            checked={isSelected}
-                            onChange={() => {}} // Handled by parent click
-                            disabled={disabled}
-                            className="checkbox checkbox-sm"
-                          />
-                          <div>
-                            <h4 className="font-medium">{equipment.name}</h4>
-                            <p className="text-sm text-base-content/70">
-                              {equipment.category}
-                            </p>
-                          </div>
+                    <div className="card-body p-4">
+                      {/* Equipment Header - Clickable */}
+                      <div
+                        className={`flex items-center gap-3 mb-4 cursor-pointer ${disabled ? 'cursor-not-allowed' : 'hover:bg-base-200 rounded p-2 -m-2'}`}
+                        onClick={() => {
+                          if (!disabled) {
+                            handleEquipmentToggle(equipment.id);
+                          }
+                        }}
+                        onKeyDown={(e) => {
+                          if (
+                            (e.key === 'Enter' || e.key === ' ') &&
+                            !disabled
+                          ) {
+                            e.preventDefault();
+                            handleEquipmentToggle(equipment.id);
+                          }
+                        }}
+                        tabIndex={disabled ? -1 : 0}
+                        role="button"
+                        aria-pressed={isSelected}
+                        aria-label={`Select ${equipment.name} equipment`}
+                      >
+                        <div
+                          className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
+                            isSelected
+                              ? 'bg-primary border-primary'
+                              : 'border-base-300'
+                          }`}
+                        >
+                          {isSelected && (
+                            <div className="w-2 h-2 bg-white rounded-full"></div>
+                          )}
                         </div>
-                        {isSelected && equipment.hasWeight && (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              toggleEquipmentExpansion(equipment.id);
-                            }}
-                          >
-                            <Settings className="h-4 w-4" />
-                            Configure
-                          </Button>
-                        )}
+                        <div>
+                          <h4 className="font-medium">{equipment.name}</h4>
+                          <p className="text-sm text-base-content/70">
+                            {equipment.category}
+                          </p>
+                        </div>
                       </div>
-                    </div>
 
-                    {/* Level 3: Weight Configuration (accordion) */}
-                    {isSelected && equipment.hasWeight && isExpanded && (
-                      <div className="border-t border-base-300 p-4 bg-base-50">
-                        <WeightConfiguration
-                          equipment={equipment}
-                          value={selectedEquipment}
-                          onChange={(weightType, weight, weightRange) => {
-                            if (weightType) {
-                              handleWeightTypeChange(equipment.id, weightType);
-                            }
-                            if (weight !== undefined) {
-                              handleWeightChange(equipment.id, weight);
-                            }
-                            if (weightRange) {
-                              handleWeightRangeChange(
-                                equipment.id,
-                                weightRange
-                              );
-                            }
-                          }}
-                          disabled={disabled}
-                        />
-                      </div>
-                    )}
+                      {/* Weight Configuration - ONLY SHOW WHEN EQUIPMENT HAS WEIGHT OPTIONS */}
+                      {isSelected && (
+                        <div className="space-y-4">
+                          {selectedEquipment?.weightType ? (
+                            <>
+                              <h5 className="font-medium text-sm">
+                                Weight Configuration
+                              </h5>
+
+                              {/* Weight Type Toggle */}
+                              <div className="tabs tabs-boxed">
+                                <button
+                                  className={`tab tab-sm ${selectedEquipment?.weightType === 'individual' ? 'tab-active' : ''}`}
+                                  onClick={() =>
+                                    handleWeightTypeChange(
+                                      equipment.id,
+                                      'individual'
+                                    )
+                                  }
+                                  disabled={disabled}
+                                >
+                                  Individual
+                                </button>
+                                <button
+                                  className={`tab tab-sm ${selectedEquipment?.weightType === 'range' ? 'tab-active' : ''}`}
+                                  onClick={() =>
+                                    handleWeightTypeChange(
+                                      equipment.id,
+                                      'range'
+                                    )
+                                  }
+                                  disabled={disabled}
+                                >
+                                  Range
+                                </button>
+                              </div>
+                            </>
+                          ) : (
+                            <div className="text-sm text-base-content/70 italic">
+                              No weight configuration needed for this equipment
+                            </div>
+                          )}
+
+                          {/* Individual Weight Selection */}
+                          {selectedEquipment?.weightType === 'individual' && (
+                            <div className="space-y-2">
+                              <div className="text-sm font-medium">
+                                Select weights
+                              </div>
+                              {equipment.availableWeights ? (
+                                <div className="grid grid-cols-4 gap-2">
+                                  {equipment.availableWeights.map(
+                                    (availableWeight) => {
+                                      const isSelected =
+                                        selectedEquipment.weight.includes(
+                                          availableWeight
+                                        );
+                                      return (
+                                        <button
+                                          key={availableWeight}
+                                          type="button"
+                                          onClick={() => {
+                                            const newWeights = isSelected
+                                              ? selectedEquipment.weight.filter(
+                                                  (w) => w !== availableWeight
+                                                )
+                                              : [
+                                                  ...selectedEquipment.weight,
+                                                  availableWeight,
+                                                ];
+                                            handleWeightChange(
+                                              equipment.id,
+                                              newWeights
+                                            );
+                                          }}
+                                          disabled={disabled}
+                                          className={`btn btn-xs ${isSelected ? 'btn-primary' : 'btn-outline'}`}
+                                        >
+                                          {availableWeight} lbs
+                                        </button>
+                                      );
+                                    }
+                                  )}
+                                </div>
+                              ) : (
+                                <div className="flex items-center gap-2">
+                                  <label
+                                    htmlFor={`weight-input-${equipment.id}`}
+                                    className="sr-only"
+                                  >
+                                    Weight in pounds
+                                  </label>
+                                  <input
+                                    id={`weight-input-${equipment.id}`}
+                                    type="number"
+                                    value={selectedEquipment.weight[0] || 0}
+                                    onChange={(e) =>
+                                      handleWeightChange(equipment.id, [
+                                        parseInt(e.target.value) || 0,
+                                      ])
+                                    }
+                                    disabled={disabled}
+                                    className="input input-bordered input-sm w-24"
+                                    min={0}
+                                    step={equipment.weightIncrements?.[0] || 5}
+                                  />
+                                  <span className="text-sm text-base-content/70">
+                                    lbs
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {/* Weight Range Selection */}
+                          {selectedEquipment?.weightType === 'range' && (
+                            <div className="space-y-2">
+                              <div className="text-sm font-medium">
+                                Select weight range
+                              </div>
+                              {equipment.availableWeights ? (
+                                <div className="grid grid-cols-4 gap-2">
+                                  {equipment.availableWeights.map(
+                                    (availableWeight) => {
+                                      const isInRange =
+                                        availableWeight >=
+                                          (selectedEquipment.weightRange?.min ||
+                                            0) &&
+                                        availableWeight <=
+                                          (selectedEquipment.weightRange?.max ||
+                                            0);
+                                      const isRangeStart =
+                                        availableWeight ===
+                                        selectedEquipment.weightRange?.min;
+                                      const isRangeEnd =
+                                        availableWeight ===
+                                        selectedEquipment.weightRange?.max;
+
+                                      let buttonClass = 'btn btn-xs ';
+                                      if (isInRange) {
+                                        if (isRangeStart || isRangeEnd) {
+                                          buttonClass +=
+                                            'btn-primary ring-2 ring-primary-content ring-offset-1';
+                                        } else {
+                                          buttonClass += 'btn-primary';
+                                        }
+                                      } else {
+                                        buttonClass += 'btn-outline';
+                                      }
+
+                                      return (
+                                        <button
+                                          key={availableWeight}
+                                          type="button"
+                                          onClick={() => {
+                                            let newMin =
+                                              selectedEquipment.weightRange
+                                                ?.min || 0;
+                                            let newMax =
+                                              selectedEquipment.weightRange
+                                                ?.max || 0;
+
+                                            // Simple range selection logic
+                                            if (newMin === 0 && newMax === 0) {
+                                              // First click - set start point
+                                              newMin = availableWeight;
+                                              newMax = availableWeight;
+                                            } else if (
+                                              availableWeight === newMin &&
+                                              availableWeight === newMax
+                                            ) {
+                                              // Clicking the same weight again - clear selection
+                                              newMin = 0;
+                                              newMax = 0;
+                                            } else if (
+                                              availableWeight < newMin
+                                            ) {
+                                              // Clicking a lower weight - set as new min
+                                              newMin = availableWeight;
+                                            } else if (
+                                              availableWeight > newMax
+                                            ) {
+                                              // Clicking a higher weight - set as new max
+                                              newMax = availableWeight;
+                                            } else {
+                                              // Clicking within the range - just set the clicked weight as min or max
+                                              if (availableWeight === newMin) {
+                                                // Clicking min - set as new min
+                                                newMin = availableWeight;
+                                              } else if (
+                                                availableWeight === newMax
+                                              ) {
+                                                // Clicking max - set as new max
+                                                newMax = availableWeight;
+                                              }
+                                            }
+
+                                            // Ensure min <= max
+                                            if (newMin > newMax) {
+                                              [newMin, newMax] = [
+                                                newMax,
+                                                newMin,
+                                              ];
+                                            }
+
+                                            // Don't allow negative weights
+                                            if (newMin < 0) newMin = 0;
+                                            if (newMax < 0) newMax = 0;
+
+                                            handleWeightRangeChange(
+                                              equipment.id,
+                                              { min: newMin, max: newMax }
+                                            );
+                                          }}
+                                          disabled={disabled}
+                                          className={buttonClass}
+                                        >
+                                          {availableWeight} lbs
+                                        </button>
+                                      );
+                                    }
+                                  )}
+                                </div>
+                              ) : (
+                                <div className="grid grid-cols-2 gap-4">
+                                  <div className="form-control">
+                                    <label
+                                      htmlFor={`min-weight-${equipment.id}`}
+                                      className="label"
+                                    >
+                                      <span className="label-text text-xs">
+                                        Min (lbs)
+                                      </span>
+                                    </label>
+                                    <input
+                                      id={`min-weight-${equipment.id}`}
+                                      type="number"
+                                      value={
+                                        selectedEquipment.weightRange?.min || 0
+                                      }
+                                      onChange={(e) =>
+                                        handleWeightRangeChange(equipment.id, {
+                                          min: parseInt(e.target.value) || 0,
+                                          max:
+                                            selectedEquipment.weightRange
+                                              ?.max || 0,
+                                        })
+                                      }
+                                      disabled={disabled}
+                                      className="input input-bordered input-sm"
+                                      min={0}
+                                      max={selectedEquipment.weightRange?.max}
+                                      step={
+                                        equipment.weightIncrements?.[0] || 5
+                                      }
+                                    />
+                                  </div>
+                                  <div className="form-control">
+                                    <label
+                                      htmlFor={`max-weight-${equipment.id}`}
+                                      className="label"
+                                    >
+                                      <span className="label-text text-xs">
+                                        Max (lbs)
+                                      </span>
+                                    </label>
+                                    <input
+                                      id={`max-weight-${equipment.id}`}
+                                      type="number"
+                                      value={
+                                        selectedEquipment.weightRange?.max || 0
+                                      }
+                                      onChange={(e) =>
+                                        handleWeightRangeChange(equipment.id, {
+                                          min:
+                                            selectedEquipment.weightRange
+                                              ?.min || 0,
+                                          max: parseInt(e.target.value) || 0,
+                                        })
+                                      }
+                                      disabled={disabled}
+                                      className="input input-bordered input-sm"
+                                      min={
+                                        selectedEquipment.weightRange?.min || 0
+                                      }
+                                      step={
+                                        equipment.weightIncrements?.[0] || 5
+                                      }
+                                    />
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* Range Display */}
+                              {selectedEquipment.weightRange &&
+                                selectedEquipment.weightRange.min > 0 &&
+                                selectedEquipment.weightRange.max > 0 && (
+                                  <div className="text-sm text-base-content/70">
+                                    Range: {selectedEquipment.weightRange.min} -{' '}
+                                    {selectedEquipment.weightRange.max} lbs
+                                  </div>
+                                )}
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Equipment Toggle Button - Removed since entire card is now clickable */}
+                    </div>
                   </div>
                 );
               })}
           </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-interface WeightConfigurationProps {
-  equipment: EquipmentItem;
-  value?: EquipmentSelection['equipment'][0];
-  onChange: (
-    weightType?: 'individual' | 'range',
-    weight?: number | number[],
-    weightRange?: WeightRange
-  ) => void;
-  disabled?: boolean;
-}
-
-function WeightConfiguration({
-  equipment,
-  value,
-  onChange,
-  disabled,
-}: WeightConfigurationProps) {
-  const weightType = value?.weightType || 'individual';
-  // Ensure weight is always an array for multi-select
-  const weight = Array.isArray(value?.weight)
-    ? value.weight
-    : value?.weight
-      ? [value.weight]
-      : equipment.defaultWeightRange?.min
-        ? [equipment.defaultWeightRange.min]
-        : [];
-  const weightRange = value?.weightRange ||
-    equipment.defaultWeightRange || { min: 0, max: 100 };
-
-  return (
-    <div className="space-y-4">
-      <h4 className="font-medium">Weight Configuration</h4>
-
-      {/* Weight Type Toggle */}
-      <div className="flex gap-2">
-        <Button
-          variant={weightType === 'individual' ? 'primary' : 'ghost'}
-          size="sm"
-          onClick={() => onChange('individual')}
-          disabled={disabled}
-        >
-          Individual Weight
-        </Button>
-        <Button
-          variant={weightType === 'range' ? 'primary' : 'ghost'}
-          size="sm"
-          onClick={() => onChange('range')}
-          disabled={disabled}
-        >
-          Weight Range
-        </Button>
-      </div>
-
-      {/* Individual Weight Selection */}
-      {weightType === 'individual' && (
-        <div className="space-y-2">
-          <label className="text-sm font-medium">
-            Select {equipment.name} weights
-          </label>
-          {equipment.availableWeights ? (
-            <div className="grid grid-cols-4 gap-2">
-              {equipment.availableWeights.map((availableWeight) => {
-                const isSelected = weight.includes(availableWeight);
-
-                return (
-                  <button
-                    key={availableWeight}
-                    type="button"
-                    onClick={() => {
-                      const newWeights = isSelected
-                        ? weight.filter((w) => w !== availableWeight)
-                        : [...weight, availableWeight];
-                      onChange(undefined, newWeights);
-                    }}
-                    disabled={disabled}
-                    className={`btn btn-sm text-xs ${
-                      isSelected ? 'btn-primary' : 'btn-outline'
-                    }`}
-                  >
-                    {availableWeight} lbs
-                  </button>
-                );
-              })}
-            </div>
-          ) : (
-            <div className="flex items-center gap-2">
-              <input
-                type="number"
-                value={weight[0] || 0}
-                onChange={(e) =>
-                  onChange(undefined, [parseInt(e.target.value) || 0])
-                }
-                disabled={disabled}
-                className="input input-bordered input-sm w-24"
-                min={0}
-                step={equipment.weightIncrements?.[0] || 5}
-              />
-              <span className="text-sm text-base-content/70">lbs</span>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Weight Range Selection */}
-      {weightType === 'range' && (
-        <div className="space-y-4">
-          {equipment.availableWeights ? (
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Select Weight Range</label>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label className="text-xs text-base-content/70">From</label>
-                  <select
-                    value={weightRange.min}
-                    onChange={(e) =>
-                      onChange(undefined, undefined, {
-                        ...weightRange,
-                        min: parseInt(e.target.value) || 0,
-                      })
-                    }
-                    disabled={disabled}
-                    className="select select-bordered select-sm w-full"
-                  >
-                    {equipment.availableWeights
-                      .filter((w) => w <= weightRange.max)
-                      .map((weight) => (
-                        <option key={weight} value={weight}>
-                          {weight} lbs
-                        </option>
-                      ))}
-                  </select>
-                </div>
-                <div className="space-y-2">
-                  <label className="text-xs text-base-content/70">To</label>
-                  <select
-                    value={weightRange.max}
-                    onChange={(e) =>
-                      onChange(undefined, undefined, {
-                        ...weightRange,
-                        max: parseInt(e.target.value) || 0,
-                      })
-                    }
-                    disabled={disabled}
-                    className="select select-bordered select-sm w-full"
-                  >
-                    {equipment.availableWeights
-                      .filter((w) => w >= weightRange.min)
-                      .map((weight) => (
-                        <option key={weight} value={weight}>
-                          {weight} lbs
-                        </option>
-                      ))}
-                  </select>
-                </div>
-              </div>
-              <div className="text-sm text-base-content/70">
-                Range: {weightRange.min} - {weightRange.max} lbs
-              </div>
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <label className="text-sm font-medium">
-                  Minimum Weight (lbs)
-                </label>
-                <input
-                  type="number"
-                  value={weightRange.min}
-                  onChange={(e) =>
-                    onChange(undefined, undefined, {
-                      ...weightRange,
-                      min: parseInt(e.target.value) || 0,
-                    })
-                  }
-                  disabled={disabled}
-                  className="input input-bordered input-sm w-full"
-                  min={0}
-                  max={weightRange.max}
-                  step={equipment.weightIncrements?.[0] || 5}
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium">
-                  Maximum Weight (lbs)
-                </label>
-                <input
-                  type="number"
-                  value={weightRange.max}
-                  onChange={(e) =>
-                    onChange(undefined, undefined, {
-                      ...weightRange,
-                      max: parseInt(e.target.value) || 0,
-                    })
-                  }
-                  disabled={disabled}
-                  className="input input-bordered input-sm w-full"
-                  min={weightRange.min}
-                  step={equipment.weightIncrements?.[0] || 5}
-                />
-              </div>
-            </div>
-          )}
         </div>
       )}
     </div>
