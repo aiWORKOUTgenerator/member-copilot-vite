@@ -223,6 +223,14 @@ export const useFormAutoScroll = <TFormData = Record<string, unknown>>({
       }
 
       // Schedule auto-scroll sequence
+      if (import.meta.env.DEV) {
+        console.debug(`${formId}: Scheduling auto-scroll sequence`, {
+          enabled,
+          hasInitial: true,
+          hasStepAdvance: true,
+          hasStepScroll: true,
+        });
+      }
       scheduleAutoScrollSequence({
         initial: () => {
           if (import.meta.env.DEV) {
@@ -247,31 +255,54 @@ export const useFormAutoScroll = <TFormData = Record<string, unknown>>({
           }
         },
         stepAdvance: () => {
+          // Recalculate step completion status at execution time
+          const currentStepComplete = isStepComplete(
+            currentStepId,
+            updatedFormData
+          );
+          const nextStepId = currentStepComplete
+            ? getNextStep?.(currentStepId)
+            : null;
+
           if (import.meta.env.DEV) {
             console.debug(`${formId}: Step advance check:`, {
-              shouldAdvance,
-              nextStep,
+              currentStepId,
+              currentStepComplete,
+              nextStepId,
               enabled,
+              updatedFormData,
             });
           }
-          if (shouldAdvance && nextStep) {
+
+          if (currentStepComplete && nextStepId) {
             if (import.meta.env.DEV) {
-              console.debug(`${formId}: Advancing to step: ${nextStep}`);
+              console.debug(`${formId}: Advancing to step: ${nextStepId}`);
             }
-            setCurrentStep(nextStep);
+            setCurrentStep(nextStepId);
           } else if (import.meta.env.DEV) {
             console.debug(`${formId}: Step advance prevented:`, {
-              shouldAdvance,
-              nextStep,
-              reason: !shouldAdvance ? 'step not complete' : 'no next step',
+              currentStepComplete,
+              nextStepId,
+              reason: !currentStepComplete
+                ? 'step not complete'
+                : 'no next step',
             });
           }
         },
         stepScroll: () => {
-          if (nextStep) {
+          // Recalculate next step at execution time
+          const currentStepComplete = isStepComplete(
+            currentStepId,
+            updatedFormData
+          );
+          const nextStepId = currentStepComplete
+            ? getNextStep?.(currentStepId)
+            : null;
+
+          if (nextStepId) {
             // Try to scroll to step's scroll target first, then fallback to step ID
-            const stepConfig = steps.find((step) => step.id === nextStep);
-            const scrollTargetId = stepConfig?.scrollTarget || nextStep;
+            const stepConfig = steps.find((step) => step.id === nextStepId);
+            const scrollTargetId = stepConfig?.scrollTarget || nextStepId;
             const scrollElement = getScrollTargetElement(scrollTargetId);
 
             if (scrollElement) {
@@ -286,7 +317,7 @@ export const useFormAutoScroll = <TFormData = Record<string, unknown>>({
               });
             } else if (import.meta.env.DEV) {
               console.warn(
-                `${formId}: No scroll target found for step: ${nextStep}`
+                `${formId}: No scroll target found for step: ${nextStepId}`
               );
             }
           }
