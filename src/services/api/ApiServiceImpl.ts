@@ -58,9 +58,21 @@ export class ApiServiceImpl implements ApiService {
       const token = await this.tokenProvider.getToken();
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
-        // Debug logging removed - authentication issue resolved
+        if (import.meta.env.DEV) {
+          console.debug('API Service: Token included in request', {
+            hasToken: !!token,
+            tokenLength: token.length,
+            baseUrl: this.baseUrl,
+          });
+        }
       } else {
-        // No token available
+        if (import.meta.env.DEV) {
+          console.warn('API Service: No authentication token available');
+        }
+      }
+    } else {
+      if (import.meta.env.DEV) {
+        console.warn('API Service: No token provider configured');
       }
     }
 
@@ -102,6 +114,15 @@ export class ApiServiceImpl implements ApiService {
     const url = this.formatUrl(endpoint);
     const headers = await this.getHeaders();
 
+    if (import.meta.env.DEV) {
+      console.debug('API Service: Making POST request', {
+        url,
+        endpoint,
+        hasAuth: !!headers['Authorization'],
+        dataKeys: Object.keys(data),
+      });
+    }
+
     const response = await fetch(url, {
       method: 'POST',
       headers,
@@ -109,6 +130,14 @@ export class ApiServiceImpl implements ApiService {
     });
 
     if (!response.ok) {
+      if (import.meta.env.DEV) {
+        console.error('API Service: Request failed', {
+          status: response.status,
+          statusText: response.statusText,
+          url,
+          hasAuth: !!headers['Authorization'],
+        });
+      }
       throw new Error(`API error: ${response.status} ${response.statusText}`);
     }
 
