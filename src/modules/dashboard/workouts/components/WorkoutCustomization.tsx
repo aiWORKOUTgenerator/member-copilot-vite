@@ -126,83 +126,17 @@ export default function WorkoutCustomization({
         },
       };
     } else {
-      // Detailed mode configuration - SIMPLIFIED TO WORK LIKE QUICK MODE
+      // Detailed mode configuration - AUTO-SCROLL DISABLED
+      // TODO: Implement auto-scroll for detailed workout setup in future iteration
       return {
         formId: 'detailed-workout-form',
-        steps: [
-          {
-            id: 'workout-structure',
-            label: 'Workout Structure',
-            fields: [
-              'customization_duration',
-              'customization_focus',
-              'customization_areas',
-            ],
-            scrollTarget: 'workout-structure-question',
-          },
-          {
-            id: 'equipment-preferences',
-            label: 'Equipment & Preferences',
-            fields: [
-              'customization_equipment',
-              'customization_include',
-              'customization_exclude',
-            ],
-            scrollTarget: 'equipment-preferences-question',
-          },
-          {
-            id: 'current-state',
-            label: 'Current State',
-            fields: [
-              'customization_energy',
-              'customization_stress',
-              'customization_sleep',
-              'customization_soreness',
-            ],
-            scrollTarget: 'current-state-question',
-          },
-        ],
+        steps: [],
         currentStepId: detailedSteps.currentStep,
         setCurrentStep: detailedSteps.setCurrentStep,
-        enabled: autoScrollEnabled,
-        isStepComplete: (
-          stepId: string,
-          formData: WorkoutCustomizationProps['options']
-        ) => {
-          // SIMPLE LOGIC - just check if any field in the step is filled
-          if (stepId === 'workout-structure') {
-            return !!(
-              formData.customization_duration ||
-              formData.customization_focus ||
-              formData.customization_areas
-            );
-          } else if (stepId === 'equipment-preferences') {
-            return !!(
-              formData.customization_equipment ||
-              formData.customization_include ||
-              formData.customization_exclude
-            );
-          } else if (stepId === 'current-state') {
-            return !!(
-              formData.customization_energy ||
-              formData.customization_stress ||
-              formData.customization_sleep ||
-              formData.customization_soreness
-            );
-          }
-          return false;
-        },
-        getNextField: () => {
-          // SIMPLE LOGIC - just return null to trigger step advance
-          return null;
-        },
-        getNextStep: (currentStepId: string) => {
-          // SIMPLE LOGIC - just go to next step
-          if (currentStepId === 'workout-structure')
-            return 'equipment-preferences';
-          if (currentStepId === 'equipment-preferences') return 'current-state';
-          return null;
-        },
+        enabled: false, // DISABLED - auto-scroll not implemented for detailed mode
+        isStepComplete: () => false,
+        getNextField: () => null,
+        getNextStep: () => null,
       };
     }
   };
@@ -414,7 +348,8 @@ export default function WorkoutCustomization({
     }
   };
 
-  // Wrapper function to handle field selection with universal auto-scroll
+  // Wrapper function to handle field selection with auto-scroll (QUICK MODE ONLY)
+  // TODO: Implement auto-scroll for detailed mode in future iteration
   const handleSelectionWithAutoScroll = (
     key: keyof WorkoutCustomizationProps['options'],
     value: unknown
@@ -696,8 +631,9 @@ export default function WorkoutCustomization({
           progress={detailedSteps.getOverallProgress()}
           completedFields={detailedSteps.getCompletedFieldsCount()}
           totalFields={detailedSteps.getTotalFieldsCount()}
-          autoAdvanceEnabled={autoScrollEnabled}
-          onAutoAdvanceChange={setAutoScrollEnabled}
+          autoAdvanceEnabled={false} // DISABLED - auto-scroll not implemented for detailed mode
+          onAutoAdvanceChange={() => {}} // No-op function
+          autoAdvanceDisabled={true} // DISABLED - auto-scroll not implemented for detailed mode
           viewMode={{
             value: viewMode,
             options: [
@@ -719,44 +655,8 @@ export default function WorkoutCustomization({
           })}
         />
 
-        {/* Scroll Down Indicator */}
-        <div className="flex justify-center mb-6">
-          <button
-            type="button"
-            className="animate-bounce focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 rounded-full p-2 transition-all duration-200 hover:scale-110"
-            onClick={() => {
-              // Scroll to the first form field
-              const firstField =
-                document.querySelector(
-                  '[data-testid="workout-structure-step"]'
-                ) || document.querySelector('.scroll-mt-4');
-              if (firstField) {
-                firstField.scrollIntoView({
-                  behavior: 'smooth',
-                  block: 'start',
-                });
-              }
-            }}
-            aria-label="Scroll down to form questions"
-            title="Click to scroll to form questions"
-          >
-            <svg
-              className="w-8 h-8 text-primary/60 hover:text-primary/80 transition-colors duration-200"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 14l-7 7m0 0l-7-7m7 7V3"
-              />
-            </svg>
-          </button>
-        </div>
+        {/* Scroll Down Indicator - DISABLED for detailed mode */}
+        {/* TODO: Re-enable when auto-scroll is implemented for detailed workout setup */}
 
         {/* Step Content */}
         <div className="mt-8">
@@ -764,7 +664,7 @@ export default function WorkoutCustomization({
             <div className="scroll-mt-4">
               <WorkoutStructureStep
                 options={options}
-                onChange={handleSelectionWithAutoScroll}
+                onChange={handleChange}
                 errors={errors}
                 disabled={disabled}
                 variant={viewMode}
@@ -776,7 +676,7 @@ export default function WorkoutCustomization({
             <div className="scroll-mt-4">
               <EquipmentPreferencesStep
                 options={options}
-                onChange={handleSelectionWithAutoScroll}
+                onChange={handleChange}
                 errors={errors}
                 disabled={disabled}
                 variant={viewMode}
@@ -788,7 +688,7 @@ export default function WorkoutCustomization({
             <div className="scroll-mt-4">
               <CurrentStateStep
                 options={options}
-                onChange={handleSelectionWithAutoScroll}
+                onChange={handleChange}
                 errors={errors}
                 disabled={disabled}
                 variant={viewMode}

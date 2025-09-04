@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { vi } from 'vitest';
 import WorkoutCustomization from '../WorkoutCustomization';
 import { AutoScrollProvider } from '@/contexts/AutoScrollContext';
@@ -42,7 +42,7 @@ describe('WorkoutCustomization Detailed Auto-Advance', () => {
     expect(screen.getByText('Detailed')).toBeInTheDocument();
   });
 
-  it('should allow toggling auto-advance on and off', () => {
+  it('should have auto-advance disabled in detailed mode', () => {
     const onChange = vi.fn();
 
     render(
@@ -56,16 +56,9 @@ describe('WorkoutCustomization Detailed Auto-Advance', () => {
       </TestWrapper>
     );
 
-    // Should have auto-advance toggle enabled by default
+    // Auto-advance should be disabled in detailed mode
     const toggle = screen.getByLabelText('Auto-advance');
-    expect(toggle).toBeChecked();
-
-    // Should be able to disable auto-advance
-    fireEvent.click(toggle);
     expect(toggle).not.toBeChecked();
-
-    // Should be able to re-enable auto-advance
-    fireEvent.click(toggle);
-    expect(toggle).toBeChecked();
+    expect(toggle).toBeDisabled();
   });
 });
