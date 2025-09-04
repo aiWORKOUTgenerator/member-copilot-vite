@@ -19,6 +19,10 @@ import { CUSTOMIZATION_FIELD_KEYS } from '../constants/fieldKeys';
 // Import enhanced options hook for consistent option transformations
 import { useEnhancedOptions } from './utils/optionEnhancers';
 
+// Auto-scroll configuration for detailed workout mode
+// TODO: Set to true when auto-scroll is implemented for detailed workout setup
+const AUTO_SCROLL_DETAILED_MODE_ENABLED = false;
+
 // Enhanced options with consistent transformations
 const useQuickWorkoutOptions = () => {
   const { focusOptions, energyOptions, durationOptions, equipmentOptions } =
@@ -133,7 +137,7 @@ export default function WorkoutCustomization({
         steps: [],
         currentStepId: detailedSteps.currentStep,
         setCurrentStep: detailedSteps.setCurrentStep,
-        enabled: false, // DISABLED - auto-scroll not implemented for detailed mode
+        enabled: AUTO_SCROLL_DETAILED_MODE_ENABLED,
         isStepComplete: () => false,
         getNextField: () => null,
         getNextStep: () => null,
@@ -631,9 +635,9 @@ export default function WorkoutCustomization({
           progress={detailedSteps.getOverallProgress()}
           completedFields={detailedSteps.getCompletedFieldsCount()}
           totalFields={detailedSteps.getTotalFieldsCount()}
-          autoAdvanceEnabled={false} // DISABLED - auto-scroll not implemented for detailed mode
+          autoAdvanceEnabled={AUTO_SCROLL_DETAILED_MODE_ENABLED}
           onAutoAdvanceChange={() => {}} // No-op function
-          autoAdvanceDisabled={true} // DISABLED - auto-scroll not implemented for detailed mode
+          autoAdvanceDisabled={!AUTO_SCROLL_DETAILED_MODE_ENABLED}
           viewMode={{
             value: viewMode,
             options: [
