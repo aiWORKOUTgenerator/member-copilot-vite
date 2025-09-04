@@ -82,10 +82,6 @@ export const WorkoutStructureStep: React.FC<WorkoutStructureStepProps> = ({
         <h3 className="text-xl font-semibold text-base-content mb-2">
           Workout Structure
         </h3>
-        <p className="text-base-content/70">
-          Define your workout's core parameters: how long you want to work out,
-          what your main focus is, and which body areas you'd like to target.
-        </p>
       </div>
 
       {/* Enhanced Customization Options */}

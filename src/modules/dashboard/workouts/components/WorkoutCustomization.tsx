@@ -467,11 +467,9 @@ export default function WorkoutCustomization({
         <div className="mt-section mb-6">
           <HeroTitle
             title="Workout Structure"
-            subtitle="Define your workout's core parameters: what your main focus is, how you are feeling today, how long you want to work out, and what equipment you have available."
             align="left"
             variant="default"
             size="lg"
-            subtitleSize="sm"
             showBackground={false}
           />
         </div>
