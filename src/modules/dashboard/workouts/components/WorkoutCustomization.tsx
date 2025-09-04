@@ -2,12 +2,7 @@ import { Target, Battery, Clock, Dumbbell } from 'lucide-react';
 import { WorkoutCustomizationProps } from './types';
 import { CUSTOMIZATION_CONFIG } from './customizations';
 import { useState, useEffect, useRef } from 'react';
-import {
-  StepIndicator,
-  DetailedSelector,
-  SimpleDetailedViewSelector,
-  ProgressBar,
-} from '@/ui/shared/molecules';
+import { DetailedSelector } from '@/ui/shared/molecules';
 import { SelectionBadge, ScrollTarget } from '@/ui/shared/atoms';
 import { ModernFormHeader } from '@/ui/shared/organisms';
 import { FieldValidationMessage } from './FieldValidationMessage';
@@ -23,6 +18,10 @@ import { CUSTOMIZATION_FIELD_KEYS } from '../constants/fieldKeys';
 
 // Import enhanced options hook for consistent option transformations
 import { useEnhancedOptions } from './utils/optionEnhancers';
+
+// Auto-scroll configuration for detailed workout mode
+// TODO: Set to true when auto-scroll is implemented for detailed workout setup
+const AUTO_SCROLL_DETAILED_MODE_ENABLED = false;
 
 // Enhanced options with consistent transformations
 const useQuickWorkoutOptions = () => {
@@ -67,66 +66,89 @@ export default function WorkoutCustomization({
   // Quick mode progress tracking
   const quickProgress = useQuickWorkoutProgress(options);
 
-  // Initialize universal auto-scroll pattern
+  // Unified auto-scroll configuration for both quick and detailed modes
+  const getAutoScrollConfig = () => {
+    if (mode === 'quick') {
+      return {
+        formId: 'workout-customization',
+        steps: [
+          {
+            id: 'focus-energy',
+            label: 'Focus & Energy',
+            fields: [
+              CUSTOMIZATION_FIELD_KEYS.FOCUS,
+              CUSTOMIZATION_FIELD_KEYS.ENERGY,
+            ],
+            scrollTarget: 'focus-question',
+          },
+          {
+            id: 'duration-equipment',
+            label: 'Duration & Equipment',
+            fields: [
+              CUSTOMIZATION_FIELD_KEYS.DURATION,
+              CUSTOMIZATION_FIELD_KEYS.EQUIPMENT,
+            ],
+            scrollTarget: 'duration-question',
+          },
+        ],
+        currentStepId: currentStep,
+        setCurrentStep: (stepId: string) =>
+          setCurrentStep(stepId as 'focus-energy' | 'duration-equipment'),
+        enabled: autoScrollEnabled,
+        isStepComplete: (
+          stepId: string,
+          formData: WorkoutCustomizationProps['options']
+        ) => {
+          if (stepId === 'focus-energy') {
+            return !!(
+              formData.customization_focus && formData.customization_energy
+            );
+          } else if (stepId === 'duration-equipment') {
+            return !!(
+              formData.customization_duration &&
+              Array.isArray(formData.customization_equipment) &&
+              formData.customization_equipment.length > 0
+            );
+          }
+          return false;
+        },
+        getNextField: (currentField: string, stepId: string) => {
+          if (stepId === 'focus-energy') {
+            return currentField === CUSTOMIZATION_FIELD_KEYS.FOCUS
+              ? CUSTOMIZATION_FIELD_KEYS.ENERGY
+              : null;
+          } else if (stepId === 'duration-equipment') {
+            return currentField === CUSTOMIZATION_FIELD_KEYS.DURATION
+              ? CUSTOMIZATION_FIELD_KEYS.EQUIPMENT
+              : null;
+          }
+          return null;
+        },
+        getNextStep: (currentStepId: string) => {
+          if (currentStepId === 'focus-energy') return 'duration-equipment';
+          return null;
+        },
+      };
+    } else {
+      // Detailed mode configuration - AUTO-SCROLL DISABLED
+      // TODO: Implement auto-scroll for detailed workout setup in future iteration
+      return {
+        formId: 'detailed-workout-form',
+        steps: [],
+        currentStepId: detailedSteps.currentStep,
+        setCurrentStep: detailedSteps.setCurrentStep,
+        enabled: AUTO_SCROLL_DETAILED_MODE_ENABLED,
+        isStepComplete: () => false,
+        getNextField: () => null,
+        getNextStep: () => null,
+      };
+    }
+  };
+
+  // Initialize unified auto-scroll pattern
   const { registerScrollTarget, handleFieldSelection } = useFormAutoScroll<
     WorkoutCustomizationProps['options']
-  >({
-    formId: 'workout-customization',
-    steps: [
-      {
-        id: 'focus-energy',
-        label: 'Focus & Energy',
-        fields: [
-          CUSTOMIZATION_FIELD_KEYS.FOCUS,
-          CUSTOMIZATION_FIELD_KEYS.ENERGY,
-        ],
-        scrollTarget: 'focus-question',
-      },
-      {
-        id: 'duration-equipment',
-        label: 'Duration & Equipment',
-        fields: [
-          CUSTOMIZATION_FIELD_KEYS.DURATION,
-          CUSTOMIZATION_FIELD_KEYS.EQUIPMENT,
-        ],
-        scrollTarget: 'duration-question',
-      },
-    ],
-    currentStepId: currentStep,
-    setCurrentStep: (stepId: string) =>
-      setCurrentStep(stepId as 'focus-energy' | 'duration-equipment'),
-    enabled: autoScrollEnabled,
-    isStepComplete: (stepId, formData) => {
-      if (stepId === 'focus-energy') {
-        return !!(
-          formData.customization_focus && formData.customization_energy
-        );
-      } else if (stepId === 'duration-equipment') {
-        return !!(
-          formData.customization_duration &&
-          Array.isArray(formData.customization_equipment) &&
-          formData.customization_equipment.length > 0
-        );
-      }
-      return false;
-    },
-    getNextField: (currentField, stepId) => {
-      if (stepId === 'focus-energy') {
-        return currentField === CUSTOMIZATION_FIELD_KEYS.FOCUS
-          ? CUSTOMIZATION_FIELD_KEYS.ENERGY
-          : null;
-      } else if (stepId === 'duration-equipment') {
-        return currentField === CUSTOMIZATION_FIELD_KEYS.DURATION
-          ? CUSTOMIZATION_FIELD_KEYS.EQUIPMENT
-          : null;
-      }
-      return null;
-    },
-    getNextStep: (currentStepId) => {
-      if (currentStepId === 'focus-energy') return 'duration-equipment';
-      return null;
-    },
-  });
+  >(getAutoScrollConfig());
 
   // Initialize auto-scroll hooks for backward compatibility
   const { showSelectionToast } = useToast();
@@ -330,7 +352,8 @@ export default function WorkoutCustomization({
     }
   };
 
-  // Wrapper function to handle field selection with universal auto-scroll
+  // Wrapper function to handle field selection with auto-scroll (QUICK MODE ONLY)
+  // TODO: Implement auto-scroll for detailed mode in future iteration
   const handleSelectionWithAutoScroll = (
     key: keyof WorkoutCustomizationProps['options'],
     value: unknown
@@ -344,11 +367,17 @@ export default function WorkoutCustomization({
       }
     }
 
-    // Use universal auto-scroll pattern
+    // Update the form data first
+    handleChange(key, value);
+
+    // Create updated form data for auto-scroll
+    const updatedFormData = { ...options, [key]: value };
+
+    // Use universal auto-scroll pattern with updated form data
     handleFieldSelection(
       key as string,
       value,
-      options,
+      updatedFormData,
       (fieldId: string, value: unknown) => {
         handleChange(
           fieldId as keyof WorkoutCustomizationProps['options'],
@@ -599,87 +628,112 @@ export default function WorkoutCustomization({
         className="mb-6"
         data-testid="detailed-workout-container"
       >
-        <div className="mb-6">
-          <h3 className="text-lg font-semibold mb-4 flex items-center flex-wrap gap-2">
-            <Target className="w-5 h-5" />
-            <span>Detailed Workout Setup</span>
-            <span className="text-sm font-normal text-base-content/70">
-              (all optional)
-            </span>
-          </h3>
-
-          {/* View Mode Toggle - matching Quick mode pattern */}
-          <div className="mb-4 flex justify-end">
-            <SimpleDetailedViewSelector
-              value={viewMode}
-              onChange={setViewMode}
-              size="sm"
-              labels={{ simple: 'Simple', detailed: 'Detailed' }}
-            />
-          </div>
-
-          {/* Overall Progress */}
-          <div className="mb-4">
-            <ProgressBar
-              progress={detailedSteps.getOverallProgress()}
-              label="Overall Progress"
-              showPercentage={true}
-              size="md"
-              variant="primary"
-              animated={true}
-            />
-          </div>
-        </div>
-
-        {/* Step Indicator */}
-        <StepIndicator
+        <ModernFormHeader
+          title="Detailed Workout Setup"
+          subtitle="Comprehensive workout customization with advanced options"
+          icon={<Target className="w-6 h-6 text-white" />}
+          progress={detailedSteps.getOverallProgress()}
+          completedFields={detailedSteps.getCompletedFieldsCount()}
+          totalFields={detailedSteps.getTotalFieldsCount()}
+          autoAdvanceEnabled={AUTO_SCROLL_DETAILED_MODE_ENABLED}
+          onAutoAdvanceChange={() => {}} // No-op function
+          autoAdvanceDisabled={!AUTO_SCROLL_DETAILED_MODE_ENABLED}
+          viewMode={{
+            value: viewMode,
+            options: [
+              { value: 'simple', label: 'Simple' },
+              { value: 'detailed', label: 'Detailed' },
+            ],
+            onChange: (value: string) =>
+              setViewMode(value as 'simple' | 'detailed'),
+          }}
           steps={detailedSteps.steps.map((step) => {
             const validation = detailedSteps.getStepValidation(step.id);
             return {
               id: step.id,
               label: step.label,
               description: `${validation.completionPercentage}% complete`,
-              disabled: false,
-              hasErrors: false, // All optional, so no errors
+              isActive: detailedSteps.currentStep === step.id,
+              isCompleted: validation.completionPercentage === 100,
             };
           })}
-          currentStep={detailedSteps.currentStep}
-          onStepClick={detailedSteps.setCurrentStep}
-          disabled={disabled}
-          showConnectors={true}
-          size="md"
         />
+
+        {/* Scroll Down Indicator */}
+        <div className="flex justify-center mb-6">
+          <button
+            type="button"
+            className="animate-bounce focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 rounded-full p-2 transition-all duration-200 hover:scale-110"
+            onClick={() => {
+              // Scroll to the first form field
+              const firstField =
+                document.querySelector(
+                  '[data-testid="workout-structure-step"]'
+                ) || document.querySelector('.scroll-mt-4');
+              if (firstField) {
+                firstField.scrollIntoView({
+                  behavior: 'smooth',
+                  block: 'start',
+                });
+              }
+            }}
+            aria-label="Scroll down to form questions"
+            title="Click to scroll to form questions"
+          >
+            <svg
+              className="w-8 h-8 text-primary/60 hover:text-primary/80 transition-colors duration-200"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 14l-7 7m0 0l-7-7m7 7V3"
+              />
+            </svg>
+          </button>
+        </div>
 
         {/* Step Content */}
         <div className="mt-8">
           {detailedSteps.currentStep === 'workout-structure' && (
-            <WorkoutStructureStep
-              options={options}
-              onChange={onChange}
-              errors={errors}
-              disabled={disabled}
-              variant={viewMode}
-            />
+            <div className="scroll-mt-4">
+              <WorkoutStructureStep
+                options={options}
+                onChange={handleChange}
+                errors={errors}
+                disabled={disabled}
+                variant={viewMode}
+              />
+            </div>
           )}
 
           {detailedSteps.currentStep === 'equipment-preferences' && (
-            <EquipmentPreferencesStep
-              options={options}
-              onChange={onChange}
-              errors={errors}
-              disabled={disabled}
-              variant={viewMode}
-            />
+            <div className="scroll-mt-4">
+              <EquipmentPreferencesStep
+                options={options}
+                onChange={handleChange}
+                errors={errors}
+                disabled={disabled}
+                variant={viewMode}
+              />
+            </div>
           )}
 
           {detailedSteps.currentStep === 'current-state' && (
-            <CurrentStateStep
-              options={options}
-              onChange={onChange}
-              errors={errors}
-              disabled={disabled}
-              variant={viewMode}
-            />
+            <div className="scroll-mt-4">
+              <CurrentStateStep
+                options={options}
+                onChange={handleChange}
+                errors={errors}
+                disabled={disabled}
+                variant={viewMode}
+              />
+            </div>
           )}
         </div>
 

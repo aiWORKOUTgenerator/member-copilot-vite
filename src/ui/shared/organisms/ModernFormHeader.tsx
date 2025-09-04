@@ -17,6 +17,8 @@ export interface ModernFormHeaderProps {
   autoAdvanceEnabled?: boolean;
   /** Auto-advance toggle change handler */
   onAutoAdvanceChange?: (enabled: boolean) => void;
+  /** Auto-advance toggle disabled state */
+  autoAdvanceDisabled?: boolean;
   /** View mode toggle (e.g., Simple/Detailed) */
   viewMode?: {
     value: string;
@@ -59,6 +61,7 @@ export const ModernFormHeader: React.FC<ModernFormHeaderProps> = ({
   totalFields = 0,
   autoAdvanceEnabled = false,
   onAutoAdvanceChange,
+  autoAdvanceDisabled = false,
   viewMode,
   steps = [],
   children,
@@ -163,7 +166,8 @@ export const ModernFormHeader: React.FC<ModernFormHeaderProps> = ({
                       type="checkbox"
                       className="toggle toggle-primary toggle-lg"
                       checked={autoAdvanceEnabled}
-                      onChange={(e) => onAutoAdvanceChange(e.target.checked)}
+                      disabled={autoAdvanceDisabled}
+                      onChange={(e) => onAutoAdvanceChange?.(e.target.checked)}
                       aria-label="Auto-advance"
                     />
                   </label>
