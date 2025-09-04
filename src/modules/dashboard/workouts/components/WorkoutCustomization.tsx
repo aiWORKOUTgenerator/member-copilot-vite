@@ -7,7 +7,6 @@ import {
   DetailedSelector,
   SimpleDetailedViewSelector,
   ProgressBar,
-  HeroTitle,
 } from '@/ui/shared/molecules';
 import { SelectionBadge, ScrollTarget } from '@/ui/shared/atoms';
 import { FieldValidationMessage } from './FieldValidationMessage';
@@ -567,20 +566,9 @@ export default function WorkoutCustomization({
           </div>
         </div>
 
-        {/* Workout Structure Section */}
-        <div className="mb-6">
-          <HeroTitle
-            title="Workout Structure"
-            align="left"
-            variant="default"
-            size="lg"
-            showBackground={false}
-          />
-        </div>
-
         {/* Step content */}
         {currentStep === 'focus-energy' && (
-          <div className="space-y-8">
+          <div className="space-y-6 mt-4">
             <ScrollTarget
               targetId="focus-question"
               registerScrollTarget={registerScrollTarget}
@@ -648,7 +636,7 @@ export default function WorkoutCustomization({
         )}
 
         {currentStep === 'duration-equipment' && (
-          <div className="space-y-8">
+          <div className="space-y-6 mt-4">
             <ScrollTarget
               targetId="duration-question"
               registerScrollTarget={registerScrollTarget}

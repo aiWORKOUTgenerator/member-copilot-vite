@@ -76,16 +76,9 @@ export const WorkoutStructureStep: React.FC<WorkoutStructureStepProps> = ({
   );
 
   return (
-    <div className="space-y-8" data-testid="workout-structure-step">
-      {/* Step Header - matching Quick mode pattern */}
-      <div className="mb-6">
-        <h3 className="text-xl font-semibold text-base-content mb-2">
-          Workout Structure
-        </h3>
-      </div>
-
+    <div className="space-y-6 mt-4" data-testid="workout-structure-step">
       {/* Enhanced Customization Options */}
-      <div className="space-y-8">
+      <div className="space-y-6">
         {/* Duration Selection */}
         <div className="space-y-4">
           <EnhancedWorkoutDurationCustomization
