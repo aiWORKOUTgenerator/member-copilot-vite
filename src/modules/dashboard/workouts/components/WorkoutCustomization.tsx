@@ -193,38 +193,6 @@ export default function WorkoutCustomization({
     return undefined;
   };
 
-  // Check if step has any validation errors for step indicator
-  const getStepValidationError = (
-    step: 'focus-energy' | 'duration-equipment'
-  ) => {
-    if (step === 'focus-energy') {
-      return (
-        getFieldValidationError(CUSTOMIZATION_FIELD_KEYS.FOCUS) ||
-        getFieldValidationError(CUSTOMIZATION_FIELD_KEYS.ENERGY)
-      );
-    } else if (step === 'duration-equipment') {
-      return (
-        getFieldValidationError(CUSTOMIZATION_FIELD_KEYS.DURATION) ||
-        getFieldValidationError(CUSTOMIZATION_FIELD_KEYS.EQUIPMENT)
-      );
-    }
-    return undefined;
-  };
-
-  // Simple step click handler without validation
-  const handleStepClick = (stepId: string) => {
-    if (stepId === 'focus-energy' || stepId === 'duration-equipment') {
-      const newStep = stepId as 'focus-energy' | 'duration-equipment';
-      const currentStepIndex = currentStep === 'focus-energy' ? 0 : 1;
-      const newStepIndex = newStep === 'focus-energy' ? 0 : 1;
-
-      // Only allow jumping backwards
-      if (newStepIndex < currentStepIndex) {
-        setCurrentStep(newStep);
-      }
-    }
-  };
-
   const handleChange = (
     key: keyof WorkoutCustomizationProps['options'],
     value: unknown
@@ -393,79 +361,210 @@ export default function WorkoutCustomization({
   if (mode === 'quick') {
     return (
       <div className="mb-6 workout-customization-container">
-        {/* Header Section */}
-        <div className="mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-xl font-semibold flex items-center gap-3">
-              <Target className="w-6 h-6 text-primary" />
-              <span>Quick Workout Setup</span>
-              <span className="text-sm font-normal text-base-content/60 bg-base-200 px-2 py-1 rounded-full">
-                all required
-              </span>
-            </h3>
+        {/* Modern Header Container with Glass Morphism */}
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/10 via-secondary/5 to-accent/10 backdrop-blur-sm border border-white/20 shadow-2xl shadow-primary/20 mb-8">
+          {/* Animated Background Elements */}
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5 animate-pulse"></div>
+          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-2xl"></div>
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-secondary/20 to-transparent rounded-full blur-xl"></div>
 
-            {/* View mode toggle */}
-            <SimpleDetailedViewSelector
-              value={viewMode}
-              onChange={setViewMode}
-              size="sm"
-              labels={{ simple: 'Simple', detailed: 'Detailed' }}
-            />
-          </div>
+          <div className="relative z-10 p-8">
+            {/* Header Section with Enhanced Typography */}
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-4">
+                <div className="relative">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-lg shadow-primary/30 transform hover:scale-105 transition-transform duration-200">
+                    <Target className="w-6 h-6 text-white" />
+                  </div>
+                  <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-accent to-accent/80 rounded-full animate-pulse"></div>
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold bg-gradient-to-r from-base-content to-base-content/80 bg-clip-text text-transparent">
+                    Quick Workout Setup
+                  </h3>
+                  <p className="text-sm text-base-content/70 mt-1">
+                    Streamlined workout generation in just 2 steps
+                  </p>
+                </div>
+              </div>
 
-          {/* Auto-scroll toggle */}
-          <div className="flex justify-start">
-            <div className="form-control">
-              <label className="label cursor-pointer justify-start gap-3 py-1">
-                <input
-                  type="checkbox"
-                  className="toggle toggle-primary toggle-sm"
-                  checked={autoScrollEnabled}
-                  onChange={(e) => setAutoScrollEnabled(e.target.checked)}
-                />
-                <span className="label-text text-sm text-base-content/70">
-                  Auto-advance
-                </span>
-              </label>
+              {/* Enhanced View Mode Toggle */}
+              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full p-1 border border-white/20">
+                <button
+                  type="button"
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                    viewMode === 'simple'
+                      ? 'bg-gradient-to-r from-primary to-primary/80 text-white shadow-lg shadow-primary/30 transform scale-105'
+                      : 'text-base-content/70 hover:text-base-content hover:bg-white/5'
+                  }`}
+                  onClick={() => setViewMode('simple')}
+                >
+                  Simple
+                </button>
+                <button
+                  type="button"
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                    viewMode === 'detailed'
+                      ? 'bg-gradient-to-r from-primary to-primary/80 text-white shadow-lg shadow-primary/30 transform scale-105'
+                      : 'text-base-content/70 hover:text-base-content hover:bg-white/5'
+                  }`}
+                  onClick={() => setViewMode('detailed')}
+                >
+                  Detailed
+                </button>
+              </div>
+            </div>
+
+            {/* Enhanced Progress Section */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              {/* Progress Card */}
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
+                <div className="flex items-center justify-between mb-4">
+                  <h4 className="text-lg font-semibold text-base-content">
+                    Overall Progress
+                  </h4>
+                  <div className="text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                    {Math.round(quickProgress.overallProgress)}%
+                  </div>
+                </div>
+                <div className="relative">
+                  <div className="w-full h-3 bg-white/20 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-primary via-primary/80 to-accent rounded-full transition-all duration-500 ease-out relative"
+                      style={{ width: `${quickProgress.overallProgress}%` }}
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse"></div>
+                    </div>
+                  </div>
+                  <p className="text-sm text-base-content/70 mt-2">
+                    {quickProgress.completedFields} of{' '}
+                    {quickProgress.totalFields} required fields completed
+                  </p>
+                </div>
+              </div>
+
+              {/* Auto-advance Toggle Card */}
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="text-lg font-semibold text-base-content mb-1">
+                      Auto-advance
+                    </h4>
+                    <p className="text-sm text-base-content/70">
+                      Automatically move to next step
+                    </p>
+                  </div>
+                  <div className="form-control">
+                    <label className="label cursor-pointer">
+                      <input
+                        type="checkbox"
+                        className="toggle toggle-primary toggle-lg"
+                        checked={autoScrollEnabled}
+                        onChange={(e) => setAutoScrollEnabled(e.target.checked)}
+                      />
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Enhanced Step Navigation */}
+            <div className="relative">
+              <div className="flex items-center justify-between">
+                {/* Step 1 */}
+                <div className="flex flex-col items-center">
+                  <div
+                    className={`relative w-16 h-16 rounded-2xl flex items-center justify-center transition-all duration-300 ${
+                      currentStep === 'focus-energy'
+                        ? 'bg-gradient-to-br from-primary to-primary/80 shadow-lg shadow-primary/30 transform scale-110'
+                        : 'bg-white/20 border border-white/30'
+                    }`}
+                  >
+                    <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                      <span
+                        className={`text-sm font-bold ${
+                          currentStep === 'focus-energy'
+                            ? 'text-white'
+                            : 'text-base-content/70'
+                        }`}
+                      >
+                        1
+                      </span>
+                    </div>
+                    {currentStep === 'focus-energy' && (
+                      <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-accent to-accent/80 rounded-full animate-pulse"></div>
+                    )}
+                  </div>
+                  <div className="mt-3 text-center">
+                    <h5
+                      className={`font-semibold ${
+                        currentStep === 'focus-energy'
+                          ? 'text-base-content'
+                          : 'text-base-content/70'
+                      }`}
+                    >
+                      Focus & Energy
+                    </h5>
+                    <p className="text-xs text-base-content/60 mt-1">
+                      Set your workout focus
+                    </p>
+                  </div>
+                </div>
+
+                {/* Connector Line */}
+                <div className="flex-1 mx-4 relative">
+                  <div className="h-1 bg-white/20 rounded-full overflow-hidden">
+                    <div
+                      className={`h-full bg-gradient-to-r from-primary to-accent rounded-full transition-all duration-500 ${
+                        currentStep === 'duration-equipment' ? 'w-full' : 'w-0'
+                      }`}
+                    ></div>
+                  </div>
+                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-3 h-3 bg-gradient-to-br from-primary to-accent rounded-full shadow-lg"></div>
+                </div>
+
+                {/* Step 2 */}
+                <div className="flex flex-col items-center">
+                  <div
+                    className={`relative w-16 h-16 rounded-2xl flex items-center justify-center transition-all duration-300 ${
+                      currentStep === 'duration-equipment'
+                        ? 'bg-gradient-to-br from-primary to-primary/80 shadow-lg shadow-primary/30 transform scale-110'
+                        : 'bg-white/20 border border-white/30'
+                    }`}
+                  >
+                    <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                      <span
+                        className={`text-sm font-bold ${
+                          currentStep === 'duration-equipment'
+                            ? 'text-white'
+                            : 'text-base-content/70'
+                        }`}
+                      >
+                        2
+                      </span>
+                    </div>
+                    {currentStep === 'duration-equipment' && (
+                      <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-accent to-accent/80 rounded-full animate-pulse"></div>
+                    )}
+                  </div>
+                  <div className="mt-3 text-center">
+                    <h5
+                      className={`font-semibold ${
+                        currentStep === 'duration-equipment'
+                          ? 'text-base-content'
+                          : 'text-base-content/70'
+                      }`}
+                    >
+                      Duration & Equipment
+                    </h5>
+                    <p className="text-xs text-base-content/60 mt-1">
+                      Configure your session
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-
-        {/* Progress Section */}
-        <div className="mb-6 space-y-4">
-          {/* Overall Progress Bar */}
-          <ProgressBar
-            progress={quickProgress.overallProgress}
-            label="Overall Progress"
-            showPercentage={true}
-            size="md"
-            variant="primary"
-            animated={true}
-            description={`${quickProgress.completedFields} of ${quickProgress.totalFields} required fields completed`}
-          />
-
-          {/* Step Indicator / Linear Stepper */}
-          <StepIndicator
-            steps={[
-              {
-                id: 'focus-energy',
-                label: 'Focus & Energy',
-                disabled: false, // First step is always enabled
-                hasErrors: !!getStepValidationError('focus-energy'),
-              },
-              {
-                id: 'duration-equipment',
-                label: 'Duration & Equipment',
-                disabled: false, // Always enabled
-                hasErrors: !!getStepValidationError('duration-equipment'),
-              },
-            ]}
-            currentStep={currentStep}
-            onStepClick={handleStepClick}
-            disabled={disabled}
-            showConnectors={true}
-            size="md"
-          />
         </div>
 
         {/* Workout Structure Section */}
