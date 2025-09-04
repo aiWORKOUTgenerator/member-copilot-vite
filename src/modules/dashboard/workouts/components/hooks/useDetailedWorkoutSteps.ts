@@ -5,6 +5,11 @@ import {
 } from '../constants/detailedWorkoutSteps';
 import type { PerWorkoutOptions } from '../types';
 
+// Estimated average fields per detailed workout step
+// Based on analysis: workout-structure (3), equipment-preferences (3), current-state (4)
+// Average: (3 + 3 + 4) / 3 = 3.33, rounded to 3 for simplicity
+const ESTIMATED_FIELDS_PER_STEP = 3;
+
 export interface UseDetailedWorkoutStepsReturn {
   currentStep: string;
   setCurrentStep: (stepId: string) => void;
@@ -75,11 +80,10 @@ export const useDetailedWorkoutSteps = (
       const validation = getStepValidation(step.id);
       // Estimate completed fields based on completion percentage
       // This is a rough approximation since detailed steps have varying field counts
-      const estimatedFieldsPerStep = 3; // Average fields per step
       return (
         count +
         Math.round(
-          (validation.completionPercentage / 100) * estimatedFieldsPerStep
+          (validation.completionPercentage / 100) * ESTIMATED_FIELDS_PER_STEP
         )
       );
     }, 0);
@@ -87,8 +91,7 @@ export const useDetailedWorkoutSteps = (
 
   const getTotalFieldsCount = useCallback(() => {
     // Estimate total fields across all detailed steps
-    const estimatedFieldsPerStep = 3; // Average fields per step
-    return DETAILED_WORKOUT_STEPS.length * estimatedFieldsPerStep;
+    return DETAILED_WORKOUT_STEPS.length * ESTIMATED_FIELDS_PER_STEP;
   }, []);
 
   return {
