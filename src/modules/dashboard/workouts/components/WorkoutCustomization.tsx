@@ -62,66 +62,133 @@ export default function WorkoutCustomization({
   // Quick mode progress tracking
   const quickProgress = useQuickWorkoutProgress(options);
 
-  // Initialize universal auto-scroll pattern
+  // Unified auto-scroll configuration for both quick and detailed modes
+  const getAutoScrollConfig = () => {
+    if (mode === 'quick') {
+      return {
+        formId: 'workout-customization',
+        steps: [
+          {
+            id: 'focus-energy',
+            label: 'Focus & Energy',
+            fields: [
+              CUSTOMIZATION_FIELD_KEYS.FOCUS,
+              CUSTOMIZATION_FIELD_KEYS.ENERGY,
+            ],
+            scrollTarget: 'focus-question',
+          },
+          {
+            id: 'duration-equipment',
+            label: 'Duration & Equipment',
+            fields: [
+              CUSTOMIZATION_FIELD_KEYS.DURATION,
+              CUSTOMIZATION_FIELD_KEYS.EQUIPMENT,
+            ],
+            scrollTarget: 'duration-question',
+          },
+        ],
+        currentStepId: currentStep,
+        setCurrentStep: (stepId: string) =>
+          setCurrentStep(stepId as 'focus-energy' | 'duration-equipment'),
+        enabled: autoScrollEnabled,
+        isStepComplete: (
+          stepId: string,
+          formData: WorkoutCustomizationProps['options']
+        ) => {
+          if (stepId === 'focus-energy') {
+            return !!(
+              formData.customization_focus && formData.customization_energy
+            );
+          } else if (stepId === 'duration-equipment') {
+            return !!(
+              formData.customization_duration &&
+              Array.isArray(formData.customization_equipment) &&
+              formData.customization_equipment.length > 0
+            );
+          }
+          return false;
+        },
+        getNextField: (currentField: string, stepId: string) => {
+          if (stepId === 'focus-energy') {
+            return currentField === CUSTOMIZATION_FIELD_KEYS.FOCUS
+              ? CUSTOMIZATION_FIELD_KEYS.ENERGY
+              : null;
+          } else if (stepId === 'duration-equipment') {
+            return currentField === CUSTOMIZATION_FIELD_KEYS.DURATION
+              ? CUSTOMIZATION_FIELD_KEYS.EQUIPMENT
+              : null;
+          }
+          return null;
+        },
+        getNextStep: (currentStepId: string) => {
+          if (currentStepId === 'focus-energy') return 'duration-equipment';
+          return null;
+        },
+      };
+    } else {
+      // Detailed mode configuration
+      return {
+        formId: 'detailed-workout-form',
+        steps: detailedSteps.steps.map((step) => ({
+          id: step.id,
+          label: step.label,
+          fields: step.fields,
+          scrollTarget: `${step.id}-question`,
+        })),
+        currentStepId: detailedSteps.currentStep,
+        setCurrentStep: detailedSteps.setCurrentStep,
+        enabled: autoScrollEnabled,
+        isStepComplete: (
+          stepId: string,
+          formData: WorkoutCustomizationProps['options']
+        ) => {
+          const step = detailedSteps.steps.find((s) => s.id === stepId);
+          if (!step) return false;
+
+          // Check if all fields in the step are completed
+          return step.fields.every((field) => {
+            const value = formData[field];
+            return (
+              value !== undefined &&
+              value !== null &&
+              (Array.isArray(value) ? value.length > 0 : value !== '')
+            );
+          });
+        },
+        getNextField: (currentField: string, stepId: string) => {
+          const step = detailedSteps.steps.find((s) => s.id === stepId);
+          if (!step) return null;
+
+          const currentIndex = step.fields.indexOf(
+            currentField as keyof PerWorkoutOptions
+          );
+          if (currentIndex === -1 || currentIndex >= step.fields.length - 1) {
+            return null; // No next field in this step
+          }
+
+          return step.fields[currentIndex + 1];
+        },
+        getNextStep: (currentStepId: string) => {
+          const currentIndex = detailedSteps.steps.findIndex(
+            (s) => s.id === currentStepId
+          );
+          if (
+            currentIndex === -1 ||
+            currentIndex >= detailedSteps.steps.length - 1
+          ) {
+            return null; // No next step
+          }
+
+          return detailedSteps.steps[currentIndex + 1].id;
+        },
+      };
+    }
+  };
+
+  // Initialize unified auto-scroll pattern
   const { registerScrollTarget, handleFieldSelection } = useFormAutoScroll<
     WorkoutCustomizationProps['options']
-  >({
-    formId: 'workout-customization',
-    steps: [
-      {
-        id: 'focus-energy',
-        label: 'Focus & Energy',
-        fields: [
-          CUSTOMIZATION_FIELD_KEYS.FOCUS,
-          CUSTOMIZATION_FIELD_KEYS.ENERGY,
-        ],
-        scrollTarget: 'focus-question',
-      },
-      {
-        id: 'duration-equipment',
-        label: 'Duration & Equipment',
-        fields: [
-          CUSTOMIZATION_FIELD_KEYS.DURATION,
-          CUSTOMIZATION_FIELD_KEYS.EQUIPMENT,
-        ],
-        scrollTarget: 'duration-question',
-      },
-    ],
-    currentStepId: currentStep,
-    setCurrentStep: (stepId: string) =>
-      setCurrentStep(stepId as 'focus-energy' | 'duration-equipment'),
-    enabled: autoScrollEnabled,
-    isStepComplete: (stepId, formData) => {
-      if (stepId === 'focus-energy') {
-        return !!(
-          formData.customization_focus && formData.customization_energy
-        );
-      } else if (stepId === 'duration-equipment') {
-        return !!(
-          formData.customization_duration &&
-          Array.isArray(formData.customization_equipment) &&
-          formData.customization_equipment.length > 0
-        );
-      }
-      return false;
-    },
-    getNextField: (currentField, stepId) => {
-      if (stepId === 'focus-energy') {
-        return currentField === CUSTOMIZATION_FIELD_KEYS.FOCUS
-          ? CUSTOMIZATION_FIELD_KEYS.ENERGY
-          : null;
-      } else if (stepId === 'duration-equipment') {
-        return currentField === CUSTOMIZATION_FIELD_KEYS.DURATION
-          ? CUSTOMIZATION_FIELD_KEYS.EQUIPMENT
-          : null;
-      }
-      return null;
-    },
-    getNextStep: (currentStepId) => {
-      if (currentStepId === 'focus-energy') return 'duration-equipment';
-      return null;
-    },
-  });
+  >(getAutoScrollConfig());
 
   // Initialize auto-scroll hooks for backward compatibility
   const { showSelectionToast } = useToast();
@@ -342,11 +409,14 @@ export default function WorkoutCustomization({
     // Update the form data first
     handleChange(key, value);
 
-    // Use universal auto-scroll pattern
+    // Create updated form data for auto-scroll
+    const updatedFormData = { ...options, [key]: value };
+
+    // Use universal auto-scroll pattern with updated form data
     handleFieldSelection(
       key as string,
       value,
-      { ...options, [key]: value }, // Updated options with new value
+      updatedFormData,
       (fieldId: string, value: unknown) => {
         handleChange(
           fieldId as keyof WorkoutCustomizationProps['options'],
@@ -355,66 +425,6 @@ export default function WorkoutCustomization({
       }
     );
   };
-
-  // Auto-scroll configuration for detailed mode
-  const detailedAutoScrollConfig = {
-    formId: 'detailed-workout-form',
-    steps: detailedSteps.steps.map((step) => ({
-      id: step.id,
-      label: step.label,
-      fields: step.fields,
-      scrollTarget: `${step.id}-question`,
-    })),
-    currentStepId: detailedSteps.currentStep,
-    setCurrentStep: detailedSteps.setCurrentStep,
-    enabled: autoScrollEnabled,
-    isStepComplete: (
-      stepId: string,
-      formData: WorkoutCustomizationProps['options']
-    ) => {
-      const step = detailedSteps.steps.find((s) => s.id === stepId);
-      if (!step) return false;
-
-      // Check if all fields in the step are completed
-      return step.fields.every((field) => {
-        const value = formData[field];
-        return (
-          value !== undefined &&
-          value !== null &&
-          (Array.isArray(value) ? value.length > 0 : value !== '')
-        );
-      });
-    },
-    getNextField: (currentField: string, stepId: string) => {
-      const step = detailedSteps.steps.find((s) => s.id === stepId);
-      if (!step) return null;
-
-      const currentIndex = step.fields.indexOf(
-        currentField as keyof PerWorkoutOptions
-      );
-      if (currentIndex === -1 || currentIndex >= step.fields.length - 1) {
-        return null; // No next field in this step
-      }
-
-      return step.fields[currentIndex + 1];
-    },
-    getNextStep: (currentStepId: string) => {
-      const currentIndex = detailedSteps.steps.findIndex(
-        (s) => s.id === currentStepId
-      );
-      if (
-        currentIndex === -1 ||
-        currentIndex >= detailedSteps.steps.length - 1
-      ) {
-        return null; // No next step
-      }
-
-      return detailedSteps.steps[currentIndex + 1].id;
-    },
-  };
-
-  // Initialize auto-scroll for detailed mode
-  useFormAutoScroll(detailedAutoScrollConfig);
 
   // For quick mode, show step indicator with 2 segments
   if (mode === 'quick') {
