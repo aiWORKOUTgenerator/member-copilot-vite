@@ -1,5 +1,5 @@
 import { Target, Battery, Clock, Dumbbell } from 'lucide-react';
-import { WorkoutCustomizationProps, PerWorkoutOptions } from './types';
+import { WorkoutCustomizationProps } from './types';
 import { CUSTOMIZATION_CONFIG } from './customizations';
 import { useState, useEffect, useRef } from 'react';
 import { DetailedSelector } from '@/ui/shared/molecules';
@@ -126,15 +126,42 @@ export default function WorkoutCustomization({
         },
       };
     } else {
-      // Detailed mode configuration
+      // Detailed mode configuration - SIMPLIFIED TO WORK LIKE QUICK MODE
       return {
         formId: 'detailed-workout-form',
-        steps: detailedSteps.steps.map((step) => ({
-          id: step.id,
-          label: step.label,
-          fields: step.fields,
-          scrollTarget: `${step.id}-question`,
-        })),
+        steps: [
+          {
+            id: 'workout-structure',
+            label: 'Workout Structure',
+            fields: [
+              'customization_duration',
+              'customization_focus',
+              'customization_areas',
+            ],
+            scrollTarget: 'workout-structure-question',
+          },
+          {
+            id: 'equipment-preferences',
+            label: 'Equipment & Preferences',
+            fields: [
+              'customization_equipment',
+              'customization_include',
+              'customization_exclude',
+            ],
+            scrollTarget: 'equipment-preferences-question',
+          },
+          {
+            id: 'current-state',
+            label: 'Current State',
+            fields: [
+              'customization_energy',
+              'customization_stress',
+              'customization_sleep',
+              'customization_soreness',
+            ],
+            scrollTarget: 'current-state-question',
+          },
+        ],
         currentStepId: detailedSteps.currentStep,
         setCurrentStep: detailedSteps.setCurrentStep,
         enabled: autoScrollEnabled,
@@ -142,44 +169,39 @@ export default function WorkoutCustomization({
           stepId: string,
           formData: WorkoutCustomizationProps['options']
         ) => {
-          const step = detailedSteps.steps.find((s) => s.id === stepId);
-          if (!step) return false;
-
-          // Check if all fields in the step are completed
-          return step.fields.every((field) => {
-            const value = formData[field];
-            return (
-              value !== undefined &&
-              value !== null &&
-              (Array.isArray(value) ? value.length > 0 : value !== '')
+          // SIMPLE LOGIC - just check if any field in the step is filled
+          if (stepId === 'workout-structure') {
+            return !!(
+              formData.customization_duration ||
+              formData.customization_focus ||
+              formData.customization_areas
             );
-          });
-        },
-        getNextField: (currentField: string, stepId: string) => {
-          const step = detailedSteps.steps.find((s) => s.id === stepId);
-          if (!step) return null;
-
-          const currentIndex = step.fields.indexOf(
-            currentField as keyof PerWorkoutOptions
-          );
-          if (currentIndex === -1 || currentIndex >= step.fields.length - 1) {
-            return null; // No next field in this step
+          } else if (stepId === 'equipment-preferences') {
+            return !!(
+              formData.customization_equipment ||
+              formData.customization_include ||
+              formData.customization_exclude
+            );
+          } else if (stepId === 'current-state') {
+            return !!(
+              formData.customization_energy ||
+              formData.customization_stress ||
+              formData.customization_sleep ||
+              formData.customization_soreness
+            );
           }
-
-          return step.fields[currentIndex + 1];
+          return false;
+        },
+        getNextField: () => {
+          // SIMPLE LOGIC - just return null to trigger step advance
+          return null;
         },
         getNextStep: (currentStepId: string) => {
-          const currentIndex = detailedSteps.steps.findIndex(
-            (s) => s.id === currentStepId
-          );
-          if (
-            currentIndex === -1 ||
-            currentIndex >= detailedSteps.steps.length - 1
-          ) {
-            return null; // No next step
-          }
-
-          return detailedSteps.steps[currentIndex + 1].id;
+          // SIMPLE LOGIC - just go to next step
+          if (currentStepId === 'workout-structure')
+            return 'equipment-preferences';
+          if (currentStepId === 'equipment-preferences') return 'current-state';
+          return null;
         },
       };
     }
