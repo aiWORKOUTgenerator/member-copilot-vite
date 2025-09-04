@@ -274,7 +274,7 @@ export const useFormAutoScroll = <TFormData = Record<string, unknown>>({
             });
           }
 
-          if (currentStepComplete && nextStepId) {
+          if (currentStepComplete && nextStepId && enabled) {
             if (import.meta.env.DEV) {
               console.debug(`${formId}: Advancing to step: ${nextStepId}`);
             }
@@ -283,9 +283,12 @@ export const useFormAutoScroll = <TFormData = Record<string, unknown>>({
             console.debug(`${formId}: Step advance prevented:`, {
               currentStepComplete,
               nextStepId,
+              enabled,
               reason: !currentStepComplete
                 ? 'step not complete'
-                : 'no next step',
+                : !enabled
+                  ? 'auto-scroll disabled'
+                  : 'no next step',
             });
           }
         },
@@ -330,6 +333,7 @@ export const useFormAutoScroll = <TFormData = Record<string, unknown>>({
       getNextField,
       getNextStep,
       isStepComplete,
+      enabled,
       scheduleAutoScrollSequence,
       triggerAutoScroll,
       getScrollTargetElement,
