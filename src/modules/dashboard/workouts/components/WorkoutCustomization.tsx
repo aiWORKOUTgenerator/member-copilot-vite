@@ -393,42 +393,47 @@ export default function WorkoutCustomization({
   if (mode === 'quick') {
     return (
       <div className="mb-6 workout-customization-container">
-        <h3 className="text-lg font-semibold mb-4 flex items-center flex-wrap gap-2">
-          <Target className="w-5 h-5" />
-          <span>Quick Workout Setup</span>
-          <span className="text-sm font-normal text-base-content/70">
-            (all required)
-          </span>
-        </h3>
+        {/* Header Section */}
+        <div className="mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-xl font-semibold flex items-center gap-3">
+              <Target className="w-6 h-6 text-primary" />
+              <span>Quick Workout Setup</span>
+              <span className="text-sm font-normal text-base-content/60 bg-base-200 px-2 py-1 rounded-full">
+                all required
+              </span>
+            </h3>
 
-        {/* Controls */}
-        <div className="mb-4 flex justify-between items-center">
-          <div className="flex items-center gap-4">
-            {/* Auto-scroll toggle */}
+            {/* View mode toggle */}
+            <SimpleDetailedViewSelector
+              value={viewMode}
+              onChange={setViewMode}
+              size="sm"
+              labels={{ simple: 'Simple', detailed: 'Detailed' }}
+            />
+          </div>
+
+          {/* Auto-scroll toggle */}
+          <div className="flex justify-start">
             <div className="form-control">
-              <label className="label cursor-pointer justify-start gap-3 py-2">
+              <label className="label cursor-pointer justify-start gap-3 py-1">
                 <input
                   type="checkbox"
                   className="toggle toggle-primary toggle-sm"
                   checked={autoScrollEnabled}
                   onChange={(e) => setAutoScrollEnabled(e.target.checked)}
                 />
-                <span className="label-text text-sm">Auto-advance</span>
+                <span className="label-text text-sm text-base-content/70">
+                  Auto-advance
+                </span>
               </label>
             </div>
           </div>
-
-          {/* View mode toggle */}
-          <SimpleDetailedViewSelector
-            value={viewMode}
-            onChange={setViewMode}
-            size="sm"
-            labels={{ simple: 'Simple', detailed: 'Detailed' }}
-          />
         </div>
 
-        {/* Overall Progress Bar */}
-        <div className="mb-4">
+        {/* Progress Section */}
+        <div className="mb-6 space-y-4">
+          {/* Overall Progress Bar */}
           <ProgressBar
             progress={quickProgress.overallProgress}
             label="Overall Progress"
@@ -438,33 +443,33 @@ export default function WorkoutCustomization({
             animated={true}
             description={`${quickProgress.completedFields} of ${quickProgress.totalFields} required fields completed`}
           />
+
+          {/* Step Indicator / Linear Stepper */}
+          <StepIndicator
+            steps={[
+              {
+                id: 'focus-energy',
+                label: 'Focus & Energy',
+                disabled: false, // First step is always enabled
+                hasErrors: !!getStepValidationError('focus-energy'),
+              },
+              {
+                id: 'duration-equipment',
+                label: 'Duration & Equipment',
+                disabled: false, // Always enabled
+                hasErrors: !!getStepValidationError('duration-equipment'),
+              },
+            ]}
+            currentStep={currentStep}
+            onStepClick={handleStepClick}
+            disabled={disabled}
+            showConnectors={true}
+            size="md"
+          />
         </div>
 
-        {/* Step Indicator / Linear Stepper */}
-        <StepIndicator
-          steps={[
-            {
-              id: 'focus-energy',
-              label: 'Focus & Energy',
-              disabled: false, // First step is always enabled
-              hasErrors: !!getStepValidationError('focus-energy'),
-            },
-            {
-              id: 'duration-equipment',
-              label: 'Duration & Equipment',
-              disabled: false, // Always enabled
-              hasErrors: !!getStepValidationError('duration-equipment'),
-            },
-          ]}
-          currentStep={currentStep}
-          onStepClick={handleStepClick}
-          disabled={disabled}
-          showConnectors={true}
-          size="md"
-        />
-
-        {/* Workout Structure Section - matching Detailed mode */}
-        <div className="mt-section mb-6">
+        {/* Workout Structure Section */}
+        <div className="mb-6">
           <HeroTitle
             title="Workout Structure"
             align="left"
