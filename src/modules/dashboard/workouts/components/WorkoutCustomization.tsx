@@ -1,5 +1,5 @@
 import { Target, Battery, Clock, Dumbbell } from 'lucide-react';
-import { WorkoutCustomizationProps } from './types';
+import { WorkoutCustomizationProps, PerWorkoutOptions } from './types';
 import { CUSTOMIZATION_CONFIG } from './customizations';
 import { useState, useEffect, useRef } from 'react';
 import { DetailedSelector } from '@/ui/shared/molecules';
@@ -339,11 +339,14 @@ export default function WorkoutCustomization({
       }
     }
 
+    // Update the form data first
+    handleChange(key, value);
+
     // Use universal auto-scroll pattern
     handleFieldSelection(
       key as string,
       value,
-      options,
+      { ...options, [key]: value }, // Updated options with new value
       (fieldId: string, value: unknown) => {
         handleChange(
           fieldId as keyof WorkoutCustomizationProps['options'],
@@ -356,13 +359,57 @@ export default function WorkoutCustomization({
   // Auto-scroll configuration for detailed mode
   const detailedAutoScrollConfig = {
     formId: 'detailed-workout-form',
-    steps: detailedSteps.steps,
+    steps: detailedSteps.steps.map((step) => ({
+      id: step.id,
+      label: step.label,
+      fields: step.fields,
+      scrollTarget: `${step.id}-question`,
+    })),
     currentStepId: detailedSteps.currentStep,
     setCurrentStep: detailedSteps.setCurrentStep,
     enabled: autoScrollEnabled,
-    isStepComplete: (stepId: string) => {
-      const validation = detailedSteps.getStepValidation(stepId);
-      return validation.completionPercentage === 100;
+    isStepComplete: (
+      stepId: string,
+      formData: WorkoutCustomizationProps['options']
+    ) => {
+      const step = detailedSteps.steps.find((s) => s.id === stepId);
+      if (!step) return false;
+
+      // Check if all fields in the step are completed
+      return step.fields.every((field) => {
+        const value = formData[field];
+        return (
+          value !== undefined &&
+          value !== null &&
+          (Array.isArray(value) ? value.length > 0 : value !== '')
+        );
+      });
+    },
+    getNextField: (currentField: string, stepId: string) => {
+      const step = detailedSteps.steps.find((s) => s.id === stepId);
+      if (!step) return null;
+
+      const currentIndex = step.fields.indexOf(
+        currentField as keyof PerWorkoutOptions
+      );
+      if (currentIndex === -1 || currentIndex >= step.fields.length - 1) {
+        return null; // No next field in this step
+      }
+
+      return step.fields[currentIndex + 1];
+    },
+    getNextStep: (currentStepId: string) => {
+      const currentIndex = detailedSteps.steps.findIndex(
+        (s) => s.id === currentStepId
+      );
+      if (
+        currentIndex === -1 ||
+        currentIndex >= detailedSteps.steps.length - 1
+      ) {
+        return null; // No next step
+      }
+
+      return detailedSteps.steps[currentIndex + 1].id;
     },
   };
 
