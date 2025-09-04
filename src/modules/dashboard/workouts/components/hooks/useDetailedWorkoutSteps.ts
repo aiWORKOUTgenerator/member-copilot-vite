@@ -18,6 +18,8 @@ export interface UseDetailedWorkoutStepsReturn {
     missingFields: string[];
   };
   getOverallProgress: () => number;
+  getCompletedFieldsCount: () => number;
+  getTotalFieldsCount: () => number;
   steps: typeof DETAILED_WORKOUT_STEPS;
   currentStepIndex: number;
   totalSteps: number;
@@ -68,6 +70,27 @@ export const useDetailedWorkoutSteps = (
     return Math.round(totalCompletion / DETAILED_WORKOUT_STEPS.length);
   }, [getStepValidation]);
 
+  const getCompletedFieldsCount = useCallback(() => {
+    return DETAILED_WORKOUT_STEPS.reduce((count, step) => {
+      const validation = getStepValidation(step.id);
+      // Estimate completed fields based on completion percentage
+      // This is a rough approximation since detailed steps have varying field counts
+      const estimatedFieldsPerStep = 3; // Average fields per step
+      return (
+        count +
+        Math.round(
+          (validation.completionPercentage / 100) * estimatedFieldsPerStep
+        )
+      );
+    }, 0);
+  }, [getStepValidation]);
+
+  const getTotalFieldsCount = useCallback(() => {
+    // Estimate total fields across all detailed steps
+    const estimatedFieldsPerStep = 3; // Average fields per step
+    return DETAILED_WORKOUT_STEPS.length * estimatedFieldsPerStep;
+  }, []);
+
   return {
     currentStep,
     setCurrentStep,
@@ -77,6 +100,8 @@ export const useDetailedWorkoutSteps = (
     canGoPrevious,
     getStepValidation,
     getOverallProgress,
+    getCompletedFieldsCount,
+    getTotalFieldsCount,
     steps: DETAILED_WORKOUT_STEPS,
     currentStepIndex,
     totalSteps,
