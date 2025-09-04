@@ -398,13 +398,31 @@ export default function WorkoutCustomization({
 
         {/* Scroll Down Indicator */}
         <div className="flex justify-center mb-6">
-          <div className="animate-bounce">
+          <button
+            type="button"
+            className="animate-bounce focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 rounded-full p-2 transition-all duration-200 hover:scale-110"
+            onClick={() => {
+              // Scroll to the first form field
+              const firstField =
+                document.querySelector('[data-testid="focus-question"]') ||
+                document.querySelector('.scroll-mt-4');
+              if (firstField) {
+                firstField.scrollIntoView({
+                  behavior: 'smooth',
+                  block: 'start',
+                });
+              }
+            }}
+            aria-label="Scroll down to form questions"
+            title="Click to scroll to form questions"
+          >
             <svg
               className="w-8 h-8 text-primary/60 hover:text-primary/80 transition-colors duration-200"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
             >
               <path
                 strokeLinecap="round"
@@ -413,7 +431,7 @@ export default function WorkoutCustomization({
                 d="M19 14l-7 7m0 0l-7-7m7 7V3"
               />
             </svg>
-          </div>
+          </button>
         </div>
 
         {/* Step content */}
