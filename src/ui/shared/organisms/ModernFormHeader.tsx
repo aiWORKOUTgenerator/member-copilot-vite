@@ -180,7 +180,7 @@ export const ModernFormHeader: React.FC<ModernFormHeaderProps> = ({
         {/* Step Navigation */}
         {steps.length > 0 && (
           <div className="relative">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-evenly">
               {steps.map((step, index) => (
                 <div key={step.id} className="flex flex-col items-center">
                   <div
@@ -226,10 +226,7 @@ export const ModernFormHeader: React.FC<ModernFormHeaderProps> = ({
               {steps.length > 1 && (
                 <>
                   {steps.slice(0, -1).map((_, index) => (
-                    <div
-                      key={`connector-${index}`}
-                      className="flex-1 mx-4 relative"
-                    >
+                    <div key={`connector-${index}`} className="w-16 relative">
                       <div className="h-1 bg-white/20 rounded-full overflow-hidden">
                         <div
                           className={`h-full bg-gradient-to-r from-primary to-accent rounded-full transition-all duration-500 ${
