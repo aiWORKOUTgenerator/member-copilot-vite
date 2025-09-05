@@ -10,11 +10,20 @@ import {
 import { formatTime } from '../utils/workouts.func';
 import { useExercisesForGeneratedWorkout } from '@/hooks/useExercises';
 import { useExerciseMedia } from '@/hooks/useExerciseMedia';
-import { ExerciseMediaWithAudio } from '@/ui/shared/molecules';
+import {
+  ExerciseTabNavigation,
+  TabItem,
+} from '@/ui/shared/molecules/ExerciseTabNavigation';
+import { ExerciseMediaTab } from '@/ui/shared/molecules/ExerciseMediaTab';
+import { ExerciseInstructionsTab } from '@/ui/shared/molecules/ExerciseInstructionsTab';
+import { ExerciseBasicInfoTab } from '@/ui/shared/molecules/ExerciseBasicInfoTab';
+import { ExerciseCategorizationTab } from '@/ui/shared/molecules/ExerciseCategorizationTab';
+import { ExerciseAdditionalDetailsTab } from '@/ui/shared/molecules/ExerciseAdditionalDetailsTab';
 import { Exercise } from '@/domain/entities/generatedWorkout';
 import { Exercise as CanonicalExercise } from '@/domain/entities/exercise';
+import { Image, FileText, Info, Tags, Settings } from 'lucide-react';
 
-// Component to render exercise with media
+// Component to render exercise with tabbed details
 const ExerciseCardWithMedia = ({
   exercise,
   availableExercises,
@@ -27,19 +36,86 @@ const ExerciseCardWithMedia = ({
     availableExercises
   );
 
+  // Find the canonical exercise data for rich details
+  const canonicalExercise = availableExercises.find(
+    (ex) => ex.name.toLowerCase() === exercise.name.toLowerCase()
+  );
+
+  // Create tabs for the exercise details
+  const tabs: TabItem[] = [
+    {
+      id: 'media',
+      label: 'Media',
+      icon: <Image className="w-4 h-4" />,
+      content: (
+        <ExerciseMediaTab
+          imageUrl={imageUrl}
+          audioUrl={audioUrl}
+          exerciseName={exercise.name}
+          size="md"
+        />
+      ),
+    },
+    {
+      id: 'instructions',
+      label: 'Instructions',
+      icon: <FileText className="w-4 h-4" />,
+      content: (
+        <ExerciseInstructionsTab
+          detailedInstructions={canonicalExercise?.detailedInstructions}
+          simpleInstructions={canonicalExercise?.simpleInstructions}
+          exerciseName={exercise.name}
+        />
+      ),
+    },
+    {
+      id: 'basic-info',
+      label: 'Basic Info',
+      icon: <Info className="w-4 h-4" />,
+      content: (
+        <ExerciseBasicInfoTab
+          primaryName={exercise.name}
+          alternateNames={canonicalExercise?.alternateNames}
+          bodyPart={canonicalExercise?.bodyPart}
+          difficultyLevel={canonicalExercise?.difficultyLevel}
+          exerciseType={canonicalExercise?.exerciseType}
+        />
+      ),
+    },
+    {
+      id: 'categorization',
+      label: 'Categories',
+      icon: <Tags className="w-4 h-4" />,
+      content: (
+        <ExerciseCategorizationTab
+          muscleGroups={canonicalExercise?.muscleGroups}
+          equipmentRequired={canonicalExercise?.equipmentRequired}
+          tags={canonicalExercise?.tags}
+          isCompound={canonicalExercise?.isCompound}
+        />
+      ),
+    },
+    {
+      id: 'additional-details',
+      label: 'Details',
+      icon: <Settings className="w-4 h-4" />,
+      content: <ExerciseAdditionalDetailsTab />,
+    },
+  ];
+
   return (
-    <div>
-      {(imageUrl || audioUrl) && (
-        <div className="mb-4">
-          <ExerciseMediaWithAudio
-            imageUrl={imageUrl}
-            audioUrl={audioUrl}
-            exerciseName={exercise.name}
-            size="md"
-          />
-        </div>
-      )}
+    <div className="space-y-4">
+      {/* Exercise Card with basic info */}
       <ExerciseCard exercise={exercise} />
+
+      {/* Tabbed Details */}
+      <div className="bg-base-100 border border-base-300 rounded-xl p-4 shadow-sm">
+        <ExerciseTabNavigation
+          tabs={tabs}
+          defaultTab="media"
+          className="w-full"
+        />
+      </div>
     </div>
   );
 };

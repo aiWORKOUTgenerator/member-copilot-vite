@@ -23,11 +23,6 @@ export const ExerciseAudio: React.FC<ExerciseAudioProps> = ({
   const [volume] = useState(1);
   const [isMuted, setIsMuted] = useState(false);
 
-  // No audio URL provided
-  if (!audioUrl) {
-    return null;
-  }
-
   const containerClasses = `
     bg-base-100 
     border 
@@ -39,6 +34,25 @@ export const ExerciseAudio: React.FC<ExerciseAudioProps> = ({
   `
     .trim()
     .replace(/\s+/g, ' ');
+
+  // No audio URL provided - show unavailable message
+  if (!audioUrl) {
+    return (
+      <div className={containerClasses}>
+        <div className="flex items-center gap-3 text-base-content/60">
+          <div className="w-10 h-10 rounded-full bg-base-200 flex items-center justify-center">
+            <VolumeX className="w-5 h-5" />
+          </div>
+          <div className="flex-1">
+            <p className="text-sm font-medium">Audio Currently Unavailable</p>
+            <p className="text-xs opacity-70">
+              Audio for {exerciseName} is not available at this time
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const handlePlayPause = () => {
     if (!audioRef.current) return;

@@ -17,8 +17,9 @@ export class MockExerciseService implements ExerciseService {
       difficulty_level: 'beginner',
       is_compound: true,
       tags: ['compound', 'upper body'],
-      audio_url: null,
-      image_url: null,
+      audio_url: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
+      image_url:
+        'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400',
     }),
     new Exercise({
       id: '2',
@@ -34,8 +35,9 @@ export class MockExerciseService implements ExerciseService {
       difficulty_level: 'beginner',
       is_compound: true,
       tags: ['compound', 'legs'],
-      audio_url: null,
-      image_url: null,
+      audio_url: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
+      image_url:
+        'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400',
     }),
     new Exercise({
       id: '3',
@@ -51,8 +53,9 @@ export class MockExerciseService implements ExerciseService {
       difficulty_level: 'intermediate',
       is_compound: false,
       tags: ['core', 'isometric'],
-      audio_url: null,
-      image_url: null,
+      audio_url: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
+      image_url:
+        'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400',
     }),
     new Exercise({
       id: '4',
@@ -69,8 +72,9 @@ export class MockExerciseService implements ExerciseService {
       difficulty_level: 'beginner',
       is_compound: true,
       tags: ['cardio', 'full body'],
-      audio_url: null,
-      image_url: null,
+      audio_url: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
+      image_url:
+        'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400',
     }),
     new Exercise({
       id: '5',
@@ -86,7 +90,55 @@ export class MockExerciseService implements ExerciseService {
       difficulty_level: 'intermediate',
       is_compound: true,
       tags: ['compound', 'legs'],
+      audio_url: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
+      image_url:
+        'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400',
+    }),
+    new Exercise({
+      id: '6',
+      name: '90/90 Hip Rotations',
+      alternate_names: [
+        '90/90 Hip Switches',
+        '90/90 Stretch',
+        '90/90 Hip Mobility Drill',
+        '90/90 Hip Stretch',
+      ],
+      detailed_instructions:
+        'Start by sitting on the floor with your legs bent at 90-degree angles, one leg in front of you and the other to the side. Keep your back straight and rotate your hips to switch the positions of your legs, moving the front leg to the side and the side leg to the front. Repeat this movement for the prescribed number of repetitions.',
+      simple_instructions:
+        'Sit on the floor with legs bent at 90 degrees, rotate your hips to switch leg positions, and repeat.',
+      muscle_groups: [
+        'Quadriceps',
+        'Core',
+        'Hip Flexors',
+        'Hamstrings',
+        'Glutes',
+      ],
+      body_part: 'lower body',
+      equipment_required: ['No Equipment'],
+      exercise_type: 'flexibility',
+      difficulty_level: 'intermediate',
+      is_compound: true,
+      tags: ['mobility', 'hip flexibility', 'rehabilitation'],
       audio_url: null,
+      image_url:
+        'http://localhost/media/exercises/01K3HXMPV05GZGTK0MG2ASB1J4_glute_bridge.png',
+    }),
+    new Exercise({
+      id: '7',
+      name: 'Bicep Curls',
+      alternate_names: ['Dumbbell Curls', 'Arm Curls'],
+      detailed_instructions:
+        'Stand with feet shoulder-width apart, holding dumbbells at your sides with palms facing forward. Keep your elbows close to your torso and your upper arms stationary. Curl the weights up by contracting your biceps, bringing the dumbbells up to shoulder level. Slowly lower the weights back to the starting position.',
+      simple_instructions: 'Curl weights up to shoulders and lower back down',
+      muscle_groups: ['Biceps', 'Forearms'],
+      body_part: 'upper body',
+      equipment_required: ['Dumbbells'],
+      exercise_type: 'strength',
+      difficulty_level: 'beginner',
+      is_compound: false,
+      tags: ['isolation', 'arms', 'strength'],
+      audio_url: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
       image_url: null,
     }),
   ];

@@ -14,16 +14,42 @@ vi.mock('../../../../ui/shared/molecules/ExerciseMedia', () => ({
     imageUrl?: string | null;
     alt: string;
     size?: 'sm' | 'md' | 'lg';
-  }) => (
-    <div
-      data-testid="exercise-media"
-      data-image-url={imageUrl}
-      data-alt={alt}
-      data-size={size}
-    >
-      Exercise Media: {alt}
-    </div>
-  ),
+  }) => {
+    if (!imageUrl) {
+      return (
+        <div
+          data-testid="exercise-media"
+          data-image-url={imageUrl}
+          data-alt={alt}
+          data-size={size}
+        >
+          <div className="bg-base-200 border border-base-300 rounded-xl p-4 shadow-sm">
+            <div className="flex items-center justify-center h-32 text-base-content/60">
+              <div className="text-center">
+                <p className="text-sm font-medium">
+                  Image Currently Unavailable
+                </p>
+                <p className="text-xs opacity-70">
+                  Image for {alt} is not available at this time
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div
+        data-testid="exercise-media"
+        data-image-url={imageUrl}
+        data-alt={alt}
+        data-size={size}
+      >
+        Exercise Media: {alt}
+      </div>
+    );
+  },
 }));
 
 vi.mock('../../../../ui/shared/molecules/ExerciseAudio', () => ({
@@ -35,16 +61,41 @@ vi.mock('../../../../ui/shared/molecules/ExerciseAudio', () => ({
     audioUrl?: string | null;
     exerciseName: string;
     autoPlay?: boolean;
-  }) => (
-    <div
-      data-testid="exercise-audio"
-      data-audio-url={audioUrl}
-      data-exercise-name={exerciseName}
-      data-auto-play={autoPlay}
-    >
-      Exercise Audio: {exerciseName}
-    </div>
-  ),
+  }) => {
+    if (!audioUrl) {
+      return (
+        <div
+          data-testid="exercise-audio"
+          data-audio-url={audioUrl}
+          data-exercise-name={exerciseName}
+          data-auto-play={autoPlay}
+        >
+          <div className="flex items-center gap-3 text-base-content/60">
+            <div className="w-10 h-10 rounded-full bg-base-200 flex items-center justify-center">
+              <span className="w-5 h-5">🔇</span>
+            </div>
+            <div className="flex-1">
+              <p className="text-sm font-medium">Audio Currently Unavailable</p>
+              <p className="text-xs opacity-70">
+                Audio for {exerciseName} is not available at this time
+              </p>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div
+        data-testid="exercise-audio"
+        data-audio-url={audioUrl}
+        data-exercise-name={exerciseName}
+        data-auto-play={autoPlay}
+      >
+        Exercise Audio: {exerciseName}
+      </div>
+    );
+  },
 }));
 
 // Mock audio for tests
@@ -68,14 +119,14 @@ describe('ExerciseMediaWithAudio Component', () => {
   };
 
   describe('when no media is provided', () => {
-    it('renders nothing when both imageUrl and audioUrl are undefined', () => {
+    it('returns null when both imageUrl and audioUrl are undefined', () => {
       const { container } = render(
         <ExerciseMediaWithAudio {...defaultProps} />
       );
       expect(container.firstChild).toBeNull();
     });
 
-    it('renders nothing when both imageUrl and audioUrl are null', () => {
+    it('returns null when both imageUrl and audioUrl are null', () => {
       const { container } = render(
         <ExerciseMediaWithAudio
           {...defaultProps}
@@ -86,7 +137,7 @@ describe('ExerciseMediaWithAudio Component', () => {
       expect(container.firstChild).toBeNull();
     });
 
-    it('renders nothing when both imageUrl and audioUrl are empty strings', () => {
+    it('returns null when both imageUrl and audioUrl are empty strings', () => {
       const { container } = render(
         <ExerciseMediaWithAudio {...defaultProps} imageUrl="" audioUrl="" />
       );
@@ -95,12 +146,15 @@ describe('ExerciseMediaWithAudio Component', () => {
   });
 
   describe('when only image is provided', () => {
-    it('renders only ExerciseMedia component', () => {
+    it('renders ExerciseMedia component and audio unavailable message', () => {
       const imageUrl = 'https://example.com/pushup.jpg';
       render(<ExerciseMediaWithAudio {...defaultProps} imageUrl={imageUrl} />);
 
       expect(screen.getByTestId('exercise-media')).toBeInTheDocument();
-      expect(screen.queryByTestId('exercise-audio')).not.toBeInTheDocument();
+      expect(screen.getByTestId('exercise-audio')).toBeInTheDocument();
+      expect(
+        screen.getByText('Audio Currently Unavailable')
+      ).toBeInTheDocument();
 
       const mediaElement = screen.getByTestId('exercise-media');
       expect(mediaElement).toHaveAttribute('data-image-url', imageUrl);
@@ -378,7 +432,10 @@ describe('ExerciseMediaWithAudio Component', () => {
       );
 
       expect(screen.getByTestId('exercise-media')).toBeInTheDocument();
-      expect(screen.queryByTestId('exercise-audio')).not.toBeInTheDocument();
+      expect(screen.getByTestId('exercise-audio')).toBeInTheDocument();
+      expect(
+        screen.getByText('Audio Currently Unavailable')
+      ).toBeInTheDocument();
 
       rerender(
         <ExerciseMediaWithAudio
