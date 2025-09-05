@@ -119,42 +119,29 @@ describe('ExerciseMediaWithAudio Component', () => {
   };
 
   describe('when no media is provided', () => {
-    it('renders unavailable messages when both imageUrl and audioUrl are undefined', () => {
-      render(<ExerciseMediaWithAudio {...defaultProps} />);
-      expect(
-        screen.getByText('Image Currently Unavailable')
-      ).toBeInTheDocument();
-      expect(
-        screen.getByText('Audio Currently Unavailable')
-      ).toBeInTheDocument();
+    it('returns null when both imageUrl and audioUrl are undefined', () => {
+      const { container } = render(
+        <ExerciseMediaWithAudio {...defaultProps} />
+      );
+      expect(container.firstChild).toBeNull();
     });
 
-    it('renders unavailable messages when both imageUrl and audioUrl are null', () => {
-      render(
+    it('returns null when both imageUrl and audioUrl are null', () => {
+      const { container } = render(
         <ExerciseMediaWithAudio
           {...defaultProps}
           imageUrl={null}
           audioUrl={null}
         />
       );
-      expect(
-        screen.getByText('Image Currently Unavailable')
-      ).toBeInTheDocument();
-      expect(
-        screen.getByText('Audio Currently Unavailable')
-      ).toBeInTheDocument();
+      expect(container.firstChild).toBeNull();
     });
 
-    it('renders unavailable messages when both imageUrl and audioUrl are empty strings', () => {
-      render(
+    it('returns null when both imageUrl and audioUrl are empty strings', () => {
+      const { container } = render(
         <ExerciseMediaWithAudio {...defaultProps} imageUrl="" audioUrl="" />
       );
-      expect(
-        screen.getByText('Image Currently Unavailable')
-      ).toBeInTheDocument();
-      expect(
-        screen.getByText('Audio Currently Unavailable')
-      ).toBeInTheDocument();
+      expect(container.firstChild).toBeNull();
     });
   });
 

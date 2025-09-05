@@ -26,19 +26,10 @@ export const ExerciseMediaWithAudio: React.FC<ExerciseMediaWithAudioProps> = ({
   const hasImage = Boolean(imageUrl);
   const hasAudio = Boolean(audioUrl);
 
-  // Debug logging
-  console.log('ExerciseMediaWithAudio Debug:', {
-    exerciseName,
-    imageUrl,
-    audioUrl,
-    hasImage,
-    hasAudio,
-  });
-
-  // Debug mode: always show containers even if no media
-  // if (!hasImage && !hasAudio) {
-  //   return null;
-  // }
+  // If no media is available, don't render the component
+  if (!hasImage && !hasAudio) {
+    return null;
+  }
 
   const containerClasses = `
     space-y-3
@@ -71,7 +62,7 @@ export const ExerciseMediaWithAudio: React.FC<ExerciseMediaWithAudioProps> = ({
         </div>
       )}
 
-      {/* Exercise Audio - Always show for debugging */}
+      {/* Exercise Audio */}
       <ExerciseAudio
         audioUrl={audioUrl}
         exerciseName={exerciseName}
