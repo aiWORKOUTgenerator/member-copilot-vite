@@ -11,6 +11,8 @@ export interface PerWorkoutOptions {
   customization_exclude?: string;
   // New field for quick workout focus selection
   customization_goal?: string; // "energizing_boost", "quick_sweat", etc.
+  // Additional context prompt for detailed workout setup
+  customization_prompt?: string;
 }
 
 export interface CustomizationComponentProps<T = unknown> {

@@ -22,7 +22,6 @@ export default function GenerateWorkoutPageWithLocation() {
   const [activeQuickStep, setActiveQuickStep] = useState<
     'focus-energy' | 'duration-equipment'
   >('focus-energy');
-  const [prompt, setPrompt] = useState('');
   const [perWorkoutOptions, setPerWorkoutOptions] = useState<PerWorkoutOptions>(
     {}
   );
@@ -80,9 +79,7 @@ export default function GenerateWorkoutPageWithLocation() {
         await generateWorkout();
       }
     } else {
-      // Detailed mode
-      const workoutPrompt = prompt.trim();
-      if (!workoutPrompt) return;
+      // Detailed mode - prompt is now optional and handled in the step
       await generateWorkout();
     }
   };
@@ -117,10 +114,12 @@ export default function GenerateWorkoutPageWithLocation() {
       }
 
       // Generate workout with location context
+      const workoutPrompt =
+        perWorkoutOptions.customization_prompt || 'Quick workout generation';
       const response = await generateLocationAwareWorkout(
         configId,
         perWorkoutOptions,
-        prompt || 'Quick workout generation'
+        workoutPrompt
       );
 
       // Redirect to the generated workout page
@@ -234,22 +233,6 @@ export default function GenerateWorkoutPageWithLocation() {
               activeQuickStep={activeQuickStep}
               onQuickStepChange={setActiveQuickStep}
             />
-
-            {/* Detailed Mode Prompt Input */}
-            {activeTab === 'detailed' && (
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text">Workout Description</span>
-                </label>
-                <textarea
-                  className="textarea textarea-bordered h-24"
-                  placeholder="Describe your ideal workout..."
-                  value={prompt}
-                  onChange={(e) => setPrompt(e.target.value)}
-                  disabled={isGenerating}
-                />
-              </div>
-            )}
 
             {/* Submit Button */}
             <div className="flex justify-end">

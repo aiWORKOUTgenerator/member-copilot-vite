@@ -28,6 +28,7 @@ export interface WorkoutOptions {
   customization_sleep?: number;
   customization_include?: string;
   customization_exclude?: string;
+  customization_prompt?: string;
 }
 
 /**
@@ -84,6 +85,9 @@ const STEP_VALIDATION_CONFIGS: Record<string, StepValidationConfig> = {
   'equipment-preferences': {
     requiredFields: ['customization_equipment'],
     optionalFields: ['customization_include', 'customization_exclude'],
+  },
+  'additional-context': {
+    optionalFields: ['customization_prompt'],
   },
 };
 
@@ -183,7 +187,11 @@ const validateWellnessGroup = (
  * Validate a specific step with progressive logic
  */
 export const validateDetailedStep = (
-  step: 'workout-structure' | 'current-state' | 'equipment-preferences',
+  step:
+    | 'workout-structure'
+    | 'current-state'
+    | 'equipment-preferences'
+    | 'additional-context',
   options: WorkoutOptions
 ): ValidationResult => {
   const config = STEP_VALIDATION_CONFIGS[step];
@@ -300,6 +308,27 @@ export const validateDetailedStep = (
     }
   }
 
+  // Special validation for additional-context step
+  if (step === 'additional-context') {
+    // Validate prompt length
+    if (
+      options.customization_prompt &&
+      options.customization_prompt.length > 1000
+    ) {
+      errors.customization_prompt =
+        DETAILED_VALIDATION_MESSAGES.PROMPT_MAX_LENGTH;
+    }
+
+    if (
+      options.customization_prompt &&
+      options.customization_prompt.trim().length > 0 &&
+      options.customization_prompt.trim().length < 10
+    ) {
+      errors.customization_prompt =
+        DETAILED_VALIDATION_MESSAGES.PROMPT_MIN_LENGTH;
+    }
+  }
+
   const isValid = Object.keys(errors).length === 0;
 
   return {
@@ -381,7 +410,11 @@ export const isStepComplete = (
  * Get step completion percentage
  */
 export const getStepCompletionPercentage = (
-  step: 'workout-structure' | 'current-state' | 'equipment-preferences',
+  step:
+    | 'workout-structure'
+    | 'current-state'
+    | 'equipment-preferences'
+    | 'additional-context',
   options: WorkoutOptions
 ): number => {
   const config = STEP_VALIDATION_CONFIGS[step];
