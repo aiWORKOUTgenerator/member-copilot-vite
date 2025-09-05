@@ -3,6 +3,7 @@ import { Announcement } from '@/domain/entities/announcement';
 import { useAnnouncements } from '@/hooks/useAnnouncements';
 import { AnnouncementCard } from './AnnouncementCard';
 import { AnnouncementModal } from './AnnouncementModal';
+import { Megaphone } from 'lucide-react';
 
 export function AnnouncementsSection() {
   const { announcements, isLoading, error } = useAnnouncements();
@@ -20,89 +21,114 @@ export function AnnouncementsSection() {
     setSelectedAnnouncement(null);
   };
 
+  // Glass morphism container component
+  const GlassMorphismContainer = ({
+    children,
+  }: {
+    children: React.ReactNode;
+  }) => (
+    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/10 via-secondary/5 to-accent/10 backdrop-blur-sm border border-white/20 shadow-2xl shadow-primary/20">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5 animate-pulse"></div>
+      <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-2xl"></div>
+      <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-secondary/20 to-transparent rounded-full blur-xl"></div>
+
+      <div className="relative z-10 p-8">{children}</div>
+    </div>
+  );
+
+  // Enhanced header component
+  const AnnouncementsHeader = () => (
+    <div className="flex items-center gap-4 mb-6">
+      <div className="relative">
+        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-lg shadow-primary/30 transform hover:scale-105 transition-transform duration-200">
+          <Megaphone className="w-6 h-6 text-white" />
+        </div>
+        <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-accent to-accent/80 rounded-full animate-pulse"></div>
+      </div>
+      <div>
+        <h2 className="text-2xl font-bold bg-gradient-to-r from-base-content to-base-content/80 bg-clip-text text-transparent">
+          Latest Announcements
+        </h2>
+        <p className="text-sm text-base-content/70 mt-1">
+          Stay updated with the latest gym news, challenges, and offers
+        </p>
+      </div>
+    </div>
+  );
+
   // Loading state
   if (isLoading) {
     return (
-      <div className="space-y-4">
-        <h2 className="text-2xl font-bold text-base-content">
-          Latest Announcements
-        </h2>
+      <GlassMorphismContainer>
+        <AnnouncementsHeader />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Loading skeletons */}
           {Array.from({ length: 4 }).map((_, index) => (
-            <div key={index} className="bg-base-200 shadow-md rounded-lg">
-              <div className="card-body p-4">
-                <div className="flex justify-between items-start mb-2">
-                  <div className="skeleton h-4 w-16"></div>
-                  <div className="skeleton h-3 w-12"></div>
-                </div>
-                <div className="skeleton h-5 w-3/4 mb-2"></div>
-                <div className="skeleton h-4 w-full mb-1"></div>
-                <div className="skeleton h-4 w-full mb-1"></div>
-                <div className="skeleton h-4 w-2/3 mb-4"></div>
-                <div className="card-actions justify-end">
-                  <div className="skeleton h-8 w-20"></div>
-                </div>
+            <div
+              key={index}
+              className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 p-4"
+            >
+              <div className="flex justify-between items-start mb-2">
+                <div className="skeleton h-4 w-16"></div>
+                <div className="skeleton h-3 w-12"></div>
+              </div>
+              <div className="skeleton h-5 w-3/4 mb-2"></div>
+              <div className="skeleton h-4 w-full mb-1"></div>
+              <div className="skeleton h-4 w-full mb-1"></div>
+              <div className="skeleton h-4 w-2/3 mb-4"></div>
+              <div className="flex justify-end">
+                <div className="skeleton h-8 w-20"></div>
               </div>
             </div>
           ))}
         </div>
-      </div>
+      </GlassMorphismContainer>
     );
   }
 
   // Error state
   if (error) {
     return (
-      <div className="space-y-4">
-        <h2 className="text-2xl font-bold text-base-content">
-          Latest Announcements
-        </h2>
-        <div className="alert alert-error">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="stroke-current shrink-0 h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-          <div>
-            <h3 className="font-bold">Error loading announcements</h3>
-            <div className="text-xs">{error}</div>
+      <GlassMorphismContainer>
+        <AnnouncementsHeader />
+        <div className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 p-6">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-error to-error/80 flex items-center justify-center shadow-lg shadow-error/30">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="stroke-current shrink-0 h-6 w-6 text-white"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </div>
+            <div>
+              <h3 className="font-bold text-base-content">
+                Error loading announcements
+              </h3>
+              <div className="text-sm text-base-content/70 mt-1">{error}</div>
+            </div>
           </div>
         </div>
-      </div>
+      </GlassMorphismContainer>
     );
   }
 
   // Empty state
   if (announcements.length === 0) {
     return (
-      <div className="space-y-4">
-        <h2 className="text-2xl font-bold text-base-content">
-          Latest Announcements
-        </h2>
-        <div className="text-center py-8">
-          <div className="text-base-content/60 mb-4">
-            <svg
-              className="mx-auto h-12 w-12 mb-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"
-              />
-            </svg>
+      <GlassMorphismContainer>
+        <AnnouncementsHeader />
+        <div className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 p-8 text-center">
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mx-auto mb-4 shadow-lg">
+            <Megaphone className="w-8 h-8 text-primary/60" />
           </div>
           <h3 className="text-lg font-medium text-base-content mb-2">
             No announcements
@@ -111,16 +137,14 @@ export function AnnouncementsSection() {
             There are no announcements to display at this time.
           </p>
         </div>
-      </div>
+      </GlassMorphismContainer>
     );
   }
 
   // Success state with announcements
   return (
-    <div className="space-y-4">
-      <h2 className="text-2xl font-bold text-base-content">
-        Latest Announcements
-      </h2>
+    <GlassMorphismContainer>
+      <AnnouncementsHeader />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {announcements.map((announcement) => (
@@ -138,6 +162,6 @@ export function AnnouncementsSection() {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
       />
-    </div>
+    </GlassMorphismContainer>
   );
 }

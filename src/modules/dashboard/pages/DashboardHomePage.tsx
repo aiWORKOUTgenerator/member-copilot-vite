@@ -219,55 +219,62 @@ export default function DashboardHomePage() {
         </div>
       )}
 
-      {/* Action Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-6">
-        <AccessAwareComponent showSkeleton={true} skeletonClassName="w-full">
-          <ActionCard
-            title="Generate New Workout"
-            description={
-              isWorkoutGenerationLimitReached
-                ? 'You have reached your workout generation limit. Upgrade your plan to generate more workouts.'
-                : 'Create a personalized workout based on your profile and preferences.'
-            }
-            actionText={
-              isWorkoutGenerationLimitReached
-                ? 'Upgrade Plan'
-                : 'Generate Workout'
-            }
-            onClick={navigateToWorkoutGeneration}
-            icon={
-              isWorkoutGenerationLimitReached ? (
-                <AlertTriangle className="w-5 h-5 text-warning" />
-              ) : (
-                <Dumbbell className="w-5 h-5" />
-              )
-            }
-            badgeText={
-              isWorkoutGenerationLimitReached ? 'Limit Reached' : undefined
-            }
-            badgeColor="badge-warning"
-          />
-        </AccessAwareComponent>
-
-        <ActionCard
-          title="Update Profile"
-          description="Complete your training profile to get more personalized workouts."
-          actionText="Update Profile"
-          onClick={navigateToProfileOverview}
-          icon={<UserCircle className="w-5 h-5" />}
-          badgeText={
-            incompleteAttributes.length > 0
-              ? incompleteAttributes.length.toString() + ' Incomplete'
-              : undefined
-          }
-          badgeColor="badge-accent"
-        />
-
-        <PhoneVerificationCard />
-      </div>
-      <div className="mt-4">
+      {/* Latest Announcements */}
+      <div className="mb-6">
         <AnnouncementsSection />
       </div>
+
+      {/* Action Cards */}
+      <div className="relative">
+        {/* Subtle background container for visual distinction */}
+        <div className="absolute inset-0 bg-gradient-to-br from-base-200/5 via-transparent to-base-200/5 rounded-3xl -m-4 p-4"></div>
+        <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-6">
+          <AccessAwareComponent showSkeleton={true} skeletonClassName="w-full">
+            <ActionCard
+              title="Generate New Workout"
+              description={
+                isWorkoutGenerationLimitReached
+                  ? 'You have reached your workout generation limit. Upgrade your plan to generate more workouts.'
+                  : 'Create a personalized workout based on your profile and preferences.'
+              }
+              actionText={
+                isWorkoutGenerationLimitReached
+                  ? 'Upgrade Plan'
+                  : 'Generate Workout'
+              }
+              onClick={navigateToWorkoutGeneration}
+              icon={
+                isWorkoutGenerationLimitReached ? (
+                  <AlertTriangle className="w-5 h-5 text-warning" />
+                ) : (
+                  <Dumbbell className="w-5 h-5" />
+                )
+              }
+              badgeText={
+                isWorkoutGenerationLimitReached ? 'Limit Reached' : undefined
+              }
+              badgeColor="badge-warning"
+            />
+          </AccessAwareComponent>
+
+          <ActionCard
+            title="Update Profile"
+            description="Complete your training profile to get more personalized workouts."
+            actionText="Update Profile"
+            onClick={navigateToProfileOverview}
+            icon={<UserCircle className="w-5 h-5" />}
+            badgeText={
+              incompleteAttributes.length > 0
+                ? incompleteAttributes.length.toString() + ' Incomplete'
+                : undefined
+            }
+            badgeColor="badge-accent"
+          />
+
+          <PhoneVerificationCard />
+        </div>
+      </div>
+
       {/* Floating Action Button for quick workout generation */}
       <FloatingClipboardFab
         href="/dashboard/workouts/generate"
