@@ -23,6 +23,18 @@ export const ExerciseAudio: React.FC<ExerciseAudioProps> = ({
   const [volume] = useState(1);
   const [isMuted, setIsMuted] = useState(false);
 
+  const containerClasses = `
+    bg-base-100 
+    border 
+    border-base-300 
+    rounded-xl 
+    p-4 
+    shadow-sm
+    ${className}
+  `
+    .trim()
+    .replace(/\s+/g, ' ');
+
   // No audio URL provided - show unavailable message
   if (!audioUrl) {
     return (
@@ -41,18 +53,6 @@ export const ExerciseAudio: React.FC<ExerciseAudioProps> = ({
       </div>
     );
   }
-
-  const containerClasses = `
-    bg-base-100 
-    border 
-    border-base-300 
-    rounded-xl 
-    p-4 
-    shadow-sm
-    ${className}
-  `
-    .trim()
-    .replace(/\s+/g, ' ');
 
   const handlePlayPause = () => {
     if (!audioRef.current) return;
