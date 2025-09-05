@@ -1,5 +1,10 @@
 import { Announcement } from '@/domain/entities/announcement';
 import { useEffect, useRef } from 'react';
+import {
+  getPriorityLabel,
+  getPriorityColor,
+  getPriorityIcon,
+} from '@/utils/announcementPriorityMapping';
 
 interface AnnouncementModalProps {
   announcement: Announcement | null;
@@ -60,19 +65,16 @@ export function AnnouncementModal({
     return null;
   }
 
-  // Priority-based styling
-  const getPriorityStyles = (priority: 'high' | 'medium' | 'low') => {
-    switch (priority) {
-      case 'high':
-        return 'badge-error';
-      case 'medium':
-        return 'badge-warning';
-      case 'low':
-        return 'badge-info';
-      default:
-        return 'badge-info';
-    }
-  };
+  // Get gym-relevant priority mapping
+  const priorityLabel = announcement
+    ? getPriorityLabel(announcement.priority)
+    : '';
+  const priorityColor = announcement
+    ? getPriorityColor(announcement.priority)
+    : '';
+  const priorityIcon = announcement
+    ? getPriorityIcon(announcement.priority)
+    : '';
 
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat('en-US', {
@@ -119,11 +121,10 @@ export function AnnouncementModal({
         <div className="flex justify-between items-start mb-4">
           <div className="flex items-center gap-3">
             <div
-              className={`badge ${getPriorityStyles(
-                announcement.priority
-              )} text-xs uppercase font-semibold`}
+              className={`badge ${priorityColor} text-xs uppercase font-semibold flex items-center gap-1`}
             >
-              {announcement.priority}
+              <span>{priorityIcon}</span>
+              <span>{priorityLabel}</span>
             </div>
             <div className="text-sm text-base-content/60">
               {formatDate(announcement.createdAt)}

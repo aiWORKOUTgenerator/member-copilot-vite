@@ -1,4 +1,9 @@
 import { Announcement } from '@/domain/entities/announcement';
+import {
+  getPriorityLabel,
+  getPriorityColor,
+  getPriorityIcon,
+} from '@/utils/announcementPriorityMapping';
 
 interface AnnouncementCardProps {
   announcement: Announcement;
@@ -9,33 +14,10 @@ export function AnnouncementCard({
   announcement,
   onViewMore,
 }: AnnouncementCardProps) {
-  // Priority-based styling configuration
-  const getPriorityStyles = (priority: 'high' | 'medium' | 'low') => {
-    switch (priority) {
-      case 'high':
-        return {
-          cardClass: 'card-bordered border-error',
-          badgeClass: 'badge-error',
-        };
-      case 'medium':
-        return {
-          cardClass: 'card-bordered border-warning',
-          badgeClass: 'badge-warning',
-        };
-      case 'low':
-        return {
-          cardClass: 'card-bordered border-info',
-          badgeClass: 'badge-info',
-        };
-      default:
-        return {
-          cardClass: 'card-bordered border-info',
-          badgeClass: 'badge-info',
-        };
-    }
-  };
-
-  const priorityStyles = getPriorityStyles(announcement.priority);
+  // Get gym-relevant priority mapping
+  const priorityLabel = getPriorityLabel(announcement.priority);
+  const priorityColor = getPriorityColor(announcement.priority);
+  const priorityIcon = getPriorityIcon(announcement.priority);
 
   const formatDate = (date: Date) => {
     const now = new Date();
@@ -56,15 +38,14 @@ export function AnnouncementCard({
   };
 
   return (
-    <div
-      className={`bg-base-100 shadow-md hover:shadow-lg transition-shadow rounded-lg ${priorityStyles.cardClass} w-full`}
-    >
+    <div className="bg-base-100 shadow-md hover:shadow-lg transition-shadow rounded-lg w-full">
       <div className="card-body p-4">
         <div className="flex justify-between items-start mb-2">
           <div
-            className={`badge ${priorityStyles.badgeClass} text-xs uppercase font-semibold`}
+            className={`badge ${priorityColor} text-xs uppercase font-semibold flex items-center gap-1`}
           >
-            {announcement.priority}
+            <span>{priorityIcon}</span>
+            <span>{priorityLabel}</span>
           </div>
           <div className="text-xs text-base-content/60">
             {formatDate(announcement.createdAt)}

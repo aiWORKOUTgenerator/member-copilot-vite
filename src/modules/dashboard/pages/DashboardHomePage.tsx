@@ -183,6 +183,11 @@ export default function DashboardHomePage() {
         />
       )}
 
+      {/* Latest Announcements */}
+      <div className="mb-6">
+        <AnnouncementsSection />
+      </div>
+
       {/* Incomplete Profile Alerts */}
       {incompleteAttributes.length > 0 && (
         <div className="space-y-4 mb-4">
@@ -265,9 +270,7 @@ export default function DashboardHomePage() {
 
         <PhoneVerificationCard />
       </div>
-      <div className="mt-4">
-        <AnnouncementsSection />
-      </div>
+
       {/* Floating Action Button for quick workout generation */}
       <FloatingClipboardFab
         href="/dashboard/workouts/generate"
