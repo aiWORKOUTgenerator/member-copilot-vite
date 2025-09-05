@@ -13,6 +13,7 @@ import {
   WorkoutStructureStep,
   EquipmentPreferencesStep,
   CurrentStateStep,
+  AdditionalContextStep,
 } from './steps';
 import { CUSTOMIZATION_FIELD_KEYS } from '../constants/fieldKeys';
 
@@ -727,6 +728,18 @@ export default function WorkoutCustomization({
           {detailedSteps.currentStep === 'current-state' && (
             <div className="scroll-mt-4">
               <CurrentStateStep
+                options={options}
+                onChange={handleChange}
+                errors={errors}
+                disabled={disabled}
+                variant={viewMode}
+              />
+            </div>
+          )}
+
+          {detailedSteps.currentStep === 'additional-context' && (
+            <div className="scroll-mt-4">
+              <AdditionalContextStep
                 options={options}
                 onChange={handleChange}
                 errors={errors}
