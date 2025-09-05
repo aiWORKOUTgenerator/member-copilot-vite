@@ -26,21 +26,29 @@ describe('ExerciseAudio Component - Basic Tests', () => {
   };
 
   describe('when no audioUrl is provided', () => {
-    it('renders nothing', () => {
-      const { container } = render(
-        <ExerciseAudio exerciseName={defaultProps.exerciseName} />
-      );
-      expect(container.firstChild).toBeNull();
+    it('renders unavailable message', () => {
+      render(<ExerciseAudio exerciseName={defaultProps.exerciseName} />);
+      expect(
+        screen.getByText('Audio Currently Unavailable')
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(/Audio for .* is not available at this time/)
+      ).toBeInTheDocument();
     });
 
-    it('renders nothing when audioUrl is null', () => {
-      const { container } = render(
+    it('renders unavailable message when audioUrl is null', () => {
+      render(
         <ExerciseAudio
           exerciseName={defaultProps.exerciseName}
           audioUrl={null}
         />
       );
-      expect(container.firstChild).toBeNull();
+      expect(
+        screen.getByText('Audio Currently Unavailable')
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(/Audio for .* is not available at this time/)
+      ).toBeInTheDocument();
     });
   });
 

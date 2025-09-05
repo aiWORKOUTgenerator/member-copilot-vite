@@ -47,7 +47,7 @@ export const ExerciseAdditionalDetailsTab: React.FC<
 
       <div className="space-y-4">
         {/* Calories per Minute */}
-        {caloriesPerMinute !== null && (
+        {caloriesPerMinute !== null && caloriesPerMinute !== undefined && (
           <div className="bg-base-100 border border-base-300 rounded-xl p-4 shadow-sm">
             <div className="flex items-center gap-2 mb-2">
               <div className="w-6 h-6 rounded-full bg-error/20 flex items-center justify-center">
