@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ChevronDown, ChevronRight } from 'lucide-react';
+import { ChevronDown, ChevronRight, Music } from 'lucide-react';
 
 interface ExerciseAdditionalDetailsTabProps {
   caloriesPerMinute?: number | null;
@@ -121,7 +121,7 @@ export const ExerciseAdditionalDetailsTab: React.FC<
           >
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center">
-                <span className="text-primary text-sm font-bold">🎵</span>
+                <Music className="w-4 h-4 text-primary" />
               </div>
               <h4 className="font-semibold text-base-content">Audio</h4>
             </div>
