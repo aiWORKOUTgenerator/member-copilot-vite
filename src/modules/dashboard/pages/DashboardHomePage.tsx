@@ -183,11 +183,6 @@ export default function DashboardHomePage() {
         />
       )}
 
-      {/* Latest Announcements */}
-      <div className="mb-6">
-        <AnnouncementsSection />
-      </div>
-
       {/* Incomplete Profile Alerts */}
       {incompleteAttributes.length > 0 && (
         <div className="space-y-4 mb-4">
@@ -223,6 +218,11 @@ export default function DashboardHomePage() {
           ))}
         </div>
       )}
+
+      {/* Latest Announcements */}
+      <div className="mb-6">
+        <AnnouncementsSection />
+      </div>
 
       {/* Action Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-6">
