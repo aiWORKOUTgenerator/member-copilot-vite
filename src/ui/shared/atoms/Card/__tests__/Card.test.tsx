@@ -11,9 +11,16 @@ describe('Card', () => {
       </Card>
     );
 
-    const card = screen.getByText('Card content').parentElement;
+    const card = screen
+      .getByText('Card content')
+      .closest('div[class*="relative overflow-hidden"]');
     expect(card).toBeInTheDocument();
-    expect(card).toHaveClass('bg-base-100', 'border-base-300');
+    expect(card).toHaveClass(
+      'bg-gradient-to-br',
+      'from-base-200/20',
+      'via-base-100/10',
+      'to-base-200/5'
+    );
   });
 
   it('renders selectable variant correctly', () => {
@@ -23,11 +30,14 @@ describe('Card', () => {
       </Card>
     );
 
-    const card = screen.getByText('Selectable content').parentElement;
+    const card = screen
+      .getByText('Selectable content')
+      .closest('div[class*="relative overflow-hidden"]');
     expect(card).toHaveClass(
       'bg-gradient-to-br',
       'from-base-200/20',
-      'to-base-200/10'
+      'via-base-100/10',
+      'to-base-200/5'
     );
   });
 
@@ -38,11 +48,14 @@ describe('Card', () => {
       </Card>
     );
 
-    const card = screen.getByText('Selected content').parentElement;
+    const card = screen
+      .getByText('Selected content')
+      .closest('div[class*="relative overflow-hidden"]');
     expect(card).toHaveClass(
       'bg-gradient-to-br',
       'from-primary/30',
-      'to-primary/20'
+      'via-primary/20',
+      'to-primary/10'
     );
     expect(card).toHaveAttribute('aria-pressed', 'true');
   });
@@ -54,11 +67,14 @@ describe('Card', () => {
       </Card>
     );
 
-    const card = screen.getByText('Path content').parentElement;
+    const card = screen
+      .getByText('Path content')
+      .closest('div[class*="relative overflow-hidden"]');
     expect(card).toHaveClass(
       'bg-gradient-to-br',
       'from-primary/20',
-      'to-primary/10'
+      'via-primary/10',
+      'to-primary/5'
     );
   });
 
@@ -70,7 +86,9 @@ describe('Card', () => {
       </Card>
     );
 
-    const card = screen.getByText('Clickable content').parentElement;
+    const card = screen
+      .getByText('Clickable content')
+      .closest('div[class*="relative overflow-hidden"]');
     fireEvent.click(card!);
     expect(handleClick).toHaveBeenCalledTimes(1);
   });
@@ -83,7 +101,9 @@ describe('Card', () => {
       </Card>
     );
 
-    const card = screen.getByText('Keyboard content').parentElement;
+    const card = screen
+      .getByText('Keyboard content')
+      .closest('div[class*="relative overflow-hidden"]');
     fireEvent.keyDown(card!, { key: 'Enter' });
     expect(handleClick).toHaveBeenCalledTimes(1);
   });
@@ -96,7 +116,9 @@ describe('Card', () => {
       </Card>
     );
 
-    const card = screen.getByText('Disabled content').parentElement;
+    const card = screen
+      .getByText('Disabled content')
+      .closest('div[class*="relative overflow-hidden"]');
     fireEvent.click(card!);
     expect(handleClick).not.toHaveBeenCalled();
     expect(card).toHaveAttribute('aria-disabled', 'true');
@@ -109,7 +131,9 @@ describe('Card', () => {
       </Card>
     );
 
-    const card = screen.getByText('Custom content').parentElement;
+    const card = screen
+      .getByText('Custom content')
+      .closest('div[class*="relative overflow-hidden"]');
     expect(card).toHaveClass('custom-class');
   });
 
@@ -120,7 +144,9 @@ describe('Card', () => {
       </Card>
     );
 
-    const card = screen.getByText('Interactive content').parentElement;
+    const card = screen
+      .getByText('Interactive content')
+      .closest('div[class*="relative overflow-hidden"]');
     expect(card).toHaveAttribute('data-interactive', 'true');
     expect(card).toHaveAttribute('tabIndex', '0');
   });
@@ -132,7 +158,9 @@ describe('Card', () => {
       </Card>
     );
 
-    const card = screen.getByText('Non-interactive content').parentElement;
+    const card = screen
+      .getByText('Non-interactive content')
+      .closest('div[class*="relative overflow-hidden"]');
     expect(card).not.toHaveAttribute('data-interactive');
     expect(card).not.toHaveAttribute('tabIndex');
   });

@@ -14,8 +14,9 @@ import { useAnalytics } from '@/hooks/useAnalytics';
 import AccessAwareComponent from '@/ui/shared/molecules/AccessAwareComponent';
 import { ActionCard } from '@/ui/shared/molecules/ActionCard';
 import { PhoneVerificationCard } from '@/components/PhoneVerificationCard';
+import { AITrainerActionCard } from '@/components/AITrainerActionCard';
 import { AnnouncementsSection } from '@/components/announcements/AnnouncementsSection';
-import { Info, AlertTriangle, Dumbbell, UserCircle } from 'lucide-react';
+import { Info, AlertTriangle, Dumbbell, UserCircle, Zap } from 'lucide-react';
 import { FreePlanBanner } from '@/modules/dashboard/components/FreePlanBanner';
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router';
@@ -220,15 +221,33 @@ export default function DashboardHomePage() {
       )}
 
       {/* Latest Announcements */}
-      <div className="mb-6">
+      <div className="mb-16">
         <AnnouncementsSection />
       </div>
 
       {/* Action Cards */}
       <div className="relative">
+        {/* Action Cards Header */}
+        <div className="flex items-center gap-4 mb-6">
+          <div className="relative">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-lg shadow-primary/30 transform hover:scale-105 transition-transform duration-200">
+              <Zap className="w-6 h-6 text-white" />
+            </div>
+            <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-accent to-accent/80 rounded-full animate-pulse"></div>
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold bg-gradient-to-r from-base-content to-base-content/80 bg-clip-text text-transparent">
+              Quick Actions
+            </h2>
+            <p className="text-sm text-base-content/70 mt-1">
+              Access your most important features and complete your setup
+            </p>
+          </div>
+        </div>
+
         {/* Subtle background container for visual distinction */}
         <div className="absolute inset-0 bg-gradient-to-br from-base-200/5 via-transparent to-base-200/5 rounded-3xl -m-4 p-4"></div>
-        <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-6">
+        <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-2 sm:gap-6">
           <AccessAwareComponent showSkeleton={true} skeletonClassName="w-full">
             <ActionCard
               title="Generate New Workout"
@@ -272,6 +291,8 @@ export default function DashboardHomePage() {
           />
 
           <PhoneVerificationCard />
+
+          <AITrainerActionCard />
         </div>
       </div>
 
