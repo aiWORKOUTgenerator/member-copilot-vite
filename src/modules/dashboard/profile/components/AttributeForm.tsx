@@ -5,7 +5,6 @@ import { useAttributeType } from '@/hooks/useAttributeTypes';
 import { useContact } from '@/hooks/useContact';
 import { usePrompts } from '@/hooks/usePrompts';
 import { usePromptService } from '@/hooks';
-import { ViewMode } from '@/contexts/ViewModeContext';
 
 import { PromptCard } from '@/ui';
 import { useEffect, useState } from 'react';
@@ -14,10 +13,8 @@ import { Link } from 'react-router';
 // Component to display the attribute form with access to context
 export function AttributeForm({
   attributeTypeId,
-  viewMode,
 }: {
   attributeTypeId: string;
-  viewMode: ViewMode;
 }) {
   const { formValues, isFormDirty, isValid, initFormValues, updateFormValue } =
     useAttributeForm();
@@ -117,100 +114,105 @@ export function AttributeForm({
   }
 
   return (
-    <form className="space-y-4" onSubmit={handleSubmit}>
-      {attributePrompts.length === 0 ? (
-        <div className="alert alert-info">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            className="stroke-current shrink-0 w-6 h-6"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-            ></path>
-          </svg>
-          <span>No prompts available for this attribute type.</span>
-        </div>
-      ) : (
-        attributePrompts.map((prompt, index) => (
-          <div
-            key={prompt.id}
-            data-scroll-target={index === 0 ? 'first-prompt' : undefined}
-            className={index === 0 ? 'scroll-mt-4' : ''}
-          >
-            <PromptCard
-              prompt={prompt}
-              value={formValues[prompt.id] || ''}
-              onChange={(value) => handleFormValueChange(prompt.id, value)}
-              validationMessage={''}
-              isValid={true}
-              viewMode={viewMode}
-            />
-          </div>
-        ))
-      )}
-
-      {saveSuccess && (
-        <div className="alert alert-success">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="stroke-current shrink-0 h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-          <span>Changes saved successfully!</span>
-        </div>
-      )}
-
-      {saveError && (
-        <div className="alert alert-error">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="stroke-current shrink-0 h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-          <span>{saveError}</span>
-        </div>
-      )}
-
-      <div className="card-actions justify-end mt-6 pt-4">
-        <Link to="/dashboard/profile" className="btn">
-          Cancel
-        </Link>
-        <button
-          type="submit"
-          className="btn btn-primary"
-          disabled={!isFormDirty || !isValid || isSaving}
-        >
-          {isSaving ? (
-            <>
-              <span className="loading loading-spinner loading-xs"></span>
-              Saving...
-            </>
+    <div className="relative">
+      {/* Glass morphism background container */}
+      <div className="absolute inset-0 bg-gradient-to-br from-base-200/5 via-transparent to-base-200/5 rounded-3xl -m-4 p-4"></div>
+      <div className="relative z-10">
+        <form className="space-y-4" onSubmit={handleSubmit}>
+          {attributePrompts.length === 0 ? (
+            <div className="alert alert-info">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                className="stroke-current shrink-0 w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
+              </svg>
+              <span>No prompts available for this attribute type.</span>
+            </div>
           ) : (
-            'Save Changes'
+            attributePrompts.map((prompt, index) => (
+              <div
+                key={prompt.id}
+                data-scroll-target={index === 0 ? 'first-prompt' : undefined}
+                className={index === 0 ? 'scroll-mt-4' : ''}
+              >
+                <PromptCard
+                  prompt={prompt}
+                  value={formValues[prompt.id] || ''}
+                  onChange={(value) => handleFormValueChange(prompt.id, value)}
+                  validationMessage={''}
+                  isValid={true}
+                />
+              </div>
+            ))
           )}
-        </button>
+
+          {saveSuccess && (
+            <div className="alert alert-success">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="stroke-current shrink-0 h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <span>Changes saved successfully!</span>
+            </div>
+          )}
+
+          {saveError && (
+            <div className="alert alert-error">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="stroke-current shrink-0 h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <span>{saveError}</span>
+            </div>
+          )}
+
+          <div className="card-actions justify-end mt-6 pt-4">
+            <Link to="/dashboard/profile" className="btn">
+              Cancel
+            </Link>
+            <button
+              type="submit"
+              className="btn btn-primary"
+              disabled={!isFormDirty || !isValid || isSaving}
+            >
+              {isSaving ? (
+                <>
+                  <span className="loading loading-spinner loading-xs"></span>
+                  Saving...
+                </>
+              ) : (
+                'Save Changes'
+              )}
+            </button>
+          </div>
+        </form>
       </div>
-    </form>
+    </div>
   );
 }

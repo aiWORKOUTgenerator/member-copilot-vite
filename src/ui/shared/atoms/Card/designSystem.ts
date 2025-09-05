@@ -17,35 +17,37 @@ export type ColorScheme =
 
 export type CardSize = 'sm' | 'md' | 'lg' | 'xl';
 
-// Base card styling
-const baseCardClasses = 'border-2 transition-all duration-200';
+// Base card styling with glass morphism
+const baseCardClasses =
+  'relative overflow-hidden rounded-2xl backdrop-blur-sm border border-white/10 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 group';
 
-// Default card variant
-const defaultCardClasses = 'bg-base-100 border-base-300';
+// Default card variant with glass morphism
+const defaultCardClasses =
+  'bg-gradient-to-br from-base-200/20 via-base-100/10 to-base-200/5';
 
-// Selectable card variants
+// Selectable card variants with glass morphism
 const selectableCardClasses = {
   unselected:
-    'bg-gradient-to-br from-base-200/20 to-base-200/10 border-base-300 hover:border-base-400',
+    'bg-gradient-to-br from-base-200/20 via-base-100/10 to-base-200/5 border-white/10 hover:border-white/20',
   selected: (colorScheme: ColorScheme) =>
-    `bg-gradient-to-br from-${colorScheme}/30 to-${colorScheme}/20 border-${colorScheme} shadow-sm`,
+    `bg-gradient-to-br from-${colorScheme}/30 via-${colorScheme}/20 to-${colorScheme}/10 border-${colorScheme}/30 shadow-${colorScheme}/20`,
 };
 
-// Path card variants - matching the existing PathCard design exactly
+// Path card variants with glass morphism
 const pathCardClasses = {
   primary:
-    'rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer border-2 bg-gradient-to-br from-primary/20 to-primary/10 border-primary/30 hover:border-primary/40',
+    'cursor-pointer bg-gradient-to-br from-primary/20 via-primary/10 to-primary/5 border-primary/30 hover:border-primary/40',
   secondary:
-    'rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer border-2 bg-gradient-to-br from-secondary/20 to-secondary/10 border-secondary/30 hover:border-secondary/40',
+    'cursor-pointer bg-gradient-to-br from-secondary/20 via-secondary/10 to-secondary/5 border-secondary/30 hover:border-secondary/40',
   accent:
-    'rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer border-2 bg-gradient-to-br from-accent/20 to-accent/10 border-accent/30 hover:border-accent/40',
+    'cursor-pointer bg-gradient-to-br from-accent/20 via-accent/10 to-accent/5 border-accent/30 hover:border-accent/40',
   success:
-    'rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer border-2 bg-gradient-to-br from-success/20 to-success/10 border-success/30 hover:border-success/40',
+    'cursor-pointer bg-gradient-to-br from-success/20 via-success/10 to-success/5 border-success/30 hover:border-success/40',
   warning:
-    'rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer border-2 bg-gradient-to-br from-warning/20 to-warning/10 border-warning/30 hover:border-warning/40',
-  info: 'rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer border-2 bg-gradient-to-br from-info/20 to-info/10 border-info/30 hover:border-info/40',
+    'cursor-pointer bg-gradient-to-br from-warning/20 via-warning/10 to-warning/5 border-warning/30 hover:border-warning/40',
+  info: 'cursor-pointer bg-gradient-to-br from-info/20 via-info/10 to-info/5 border-info/30 hover:border-info/40',
   error:
-    'rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer border-2 bg-gradient-to-br from-error/20 to-error/10 border-error/30 hover:border-error/40',
+    'cursor-pointer bg-gradient-to-br from-error/20 via-error/10 to-error/5 border-error/30 hover:border-error/40',
 };
 
 // Size variants for text and spacing

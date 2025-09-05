@@ -7,18 +7,17 @@ import { useTitle } from '@/hooks/useTitle';
 import { AttributeCompletion, ContactUtils } from '@/domain';
 
 import {
-  SimpleDetailedViewSelector,
   StepIndicator,
   ProgressBar,
   FloatingClipboardFab,
 } from '@/ui/shared/molecules';
-import { ViewModeProvider } from '@/contexts/ViewModeContext';
 import { useEffect, useMemo, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
 import { useAnalytics } from '@/hooks/useAnalytics';
 import { usePromptsData } from '@/hooks/usePrompts';
 import { useAutoScrollPreferences } from '@/hooks/useAutoScrollPreferences';
 import { AUTO_SCROLL_CONFIG } from '@/config/autoScroll';
+import { User } from 'lucide-react';
 
 export default function TrainingProfileLayout() {
   const { setTitle } = useTitle();
@@ -26,8 +25,6 @@ export default function TrainingProfileLayout() {
   const isAttributeTypesLoading = useAttributeTypesLoading();
   const navigate = useNavigate();
   const pathname = useLocation().pathname;
-
-  const [viewMode, setViewMode] = useState<'simple' | 'detailed'>('detailed');
 
   // Current step state for step indicator
   const [currentStep, setCurrentStep] = useState<string>(() => {
@@ -99,17 +96,6 @@ export default function TrainingProfileLayout() {
     });
   }, [analytics]);
 
-  // Handle view mode changes with analytics tracking
-  const handleViewModeChange = (newViewMode: 'simple' | 'detailed') => {
-    setViewMode(newViewMode);
-
-    // Track view mode changes
-    analytics.track('Profile View Mode Changed', {
-      viewMode: newViewMode,
-      tracked_at: new Date().toISOString(),
-    });
-  };
-
   // Handle step click navigation
   const handleStepClick = (stepId: string) => {
     // Track attribute selection for analytics (keeping original event name for continuity)
@@ -119,7 +105,6 @@ export default function TrainingProfileLayout() {
     analytics.track('Profile Attribute Card Selected', {
       attributeTypeId: stepId,
       attributeTypeName: attributeType?.name,
-      viewMode: viewMode,
       autoScrollEnabled,
     });
 
@@ -155,25 +140,22 @@ export default function TrainingProfileLayout() {
 
   // User is authenticated, show Training Profile page
   return (
-    <div className="p-3 sm:p-4 space-y-4">
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 sm:gap-4">
-        <div className="flex-1">
-          <h2 className="text-xl sm:text-2xl font-bold">Training Profile</h2>
-          <p className="text-xs sm:text-sm text-base-content/70 leading-relaxed">
-            Provide information about your fitness goals, injuries, preferences,
-            and other details that will help the AI generate better workouts for
-            you.
-          </p>
+    <div className="p-3 sm:p-4 space-y-6">
+      {/* Profile Header */}
+      <div className="flex items-center gap-4 mb-6">
+        <div className="relative">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-lg shadow-primary/30 transform hover:scale-105 transition-transform duration-200">
+            <User className="w-6 h-6 text-white" />
+          </div>
+          <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-accent to-accent/80 rounded-full animate-pulse"></div>
         </div>
-
-        {/* View Mode Toggle - Responsive positioning */}
-        <div className="flex justify-center sm:justify-end">
-          <SimpleDetailedViewSelector
-            value={viewMode}
-            onChange={handleViewModeChange}
-            size="sm"
-            labels={{ simple: 'Simple', detailed: 'Detailed' }}
-          />
+        <div className="flex-1">
+          <h2 className="text-2xl font-bold bg-gradient-to-r from-base-content to-base-content/80 bg-clip-text text-transparent">
+            Training Profile
+          </h2>
+          <p className="text-sm text-base-content/70 mt-1">
+            Complete your profile to get personalized workout recommendations
+          </p>
         </div>
       </div>
 
@@ -182,54 +164,55 @@ export default function TrainingProfileLayout() {
           <span className="loading loading-spinner loading-lg"></span>
         </div>
       ) : (
-        <div
-          className={`transition-all duration-200 ${
-            isAttributeTypesLoading ? 'opacity-50' : 'opacity-100'
-          }`}
-        >
-          {/* Overall Progress Bar */}
-          <div className="mb-4 sm:mb-6">
-            <ProgressBar
-              progress={overallProgress}
-              label="Overall Profile Completion"
-              showPercentage={true}
-              size="md"
-              variant="primary"
-              animated={true}
-              description={`Complete your training profile to get better workout recommendations`}
-            />
-          </div>
+        <div className="relative">
+          {/* Glass morphism background container */}
+          <div className="absolute inset-0 bg-gradient-to-br from-base-200/5 via-transparent to-base-200/5 rounded-3xl -m-4 p-4"></div>
+          <div className="relative z-10">
+            <div
+              className={`transition-all duration-200 ${
+                isAttributeTypesLoading ? 'opacity-50' : 'opacity-100'
+              }`}
+            >
+              {/* Overall Progress Bar */}
+              <div className="mb-6">
+                <ProgressBar
+                  progress={overallProgress}
+                  label="Overall Profile Completion"
+                  showPercentage={true}
+                  size="md"
+                  variant="primary"
+                  animated={true}
+                  description={`Complete your training profile to get better workout recommendations`}
+                />
+              </div>
 
-          {/* Step Indicator */}
-          <StepIndicator
-            steps={attributeTypes.map((attributeType) => {
-              const completion = attributeCompletions.find(
-                (c) => c.attributeType.id === attributeType.id
-              );
-              return {
-                id: attributeType.id.toString(),
-                label: attributeType.name,
-                description: `${completion?.percentComplete || 0}% complete`,
-                disabled: false,
-                hasErrors: false,
-              };
-            })}
-            currentStep={currentStep}
-            onStepClick={handleStepClick}
-            disabled={false}
-            showConnectors={true}
-            size="md"
-            responsive={true}
-          />
+              {/* Step Indicator */}
+              <StepIndicator
+                steps={attributeTypes.map((attributeType) => {
+                  const completion = attributeCompletions.find(
+                    (c) => c.attributeType.id === attributeType.id
+                  );
+                  return {
+                    id: attributeType.id.toString(),
+                    label: attributeType.name,
+                    description: `${completion?.percentComplete || 0}% complete`,
+                    disabled: false,
+                    hasErrors: false,
+                  };
+                })}
+                currentStep={currentStep}
+                onStepClick={handleStepClick}
+                disabled={false}
+                showConnectors={true}
+                size="md"
+                responsive={true}
+              />
+            </div>
+          </div>
         </div>
       )}
       <div>
-        <ViewModeProvider
-          viewMode={viewMode}
-          setViewMode={handleViewModeChange}
-        >
-          <Outlet />
-        </ViewModeProvider>
+        <Outlet />
       </div>
 
       {/* Floating Action Button for quick workout generation from profile */}

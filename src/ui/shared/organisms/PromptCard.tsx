@@ -5,7 +5,7 @@ import { Prompt, PromptType } from '@/domain/entities';
 import { PromptHeader } from '../molecules/PromptHeader';
 import { InputField } from '../molecules/InputField';
 import { ChoiceGroup } from '../molecules/ChoiceGroup';
-import { ViewMode } from '@/contexts/ViewModeContext';
+import { SimpleDetailedViewSelector } from '../molecules/SimpleDetailedViewSelector';
 
 interface PromptCardProps {
   prompt: Prompt;
@@ -13,7 +13,6 @@ interface PromptCardProps {
   onChange: (value: string | string[] | number) => void;
   validationMessage?: string;
   isValid?: boolean;
-  viewMode?: ViewMode;
 }
 
 export const PromptCard: React.FC<PromptCardProps> = ({
@@ -22,9 +21,9 @@ export const PromptCard: React.FC<PromptCardProps> = ({
   onChange,
   validationMessage,
   isValid = true,
-  viewMode = 'detailed',
 }) => {
   const [selectedValues, setSelectedValues] = useState<string[]>([]);
+  const [viewMode, setViewMode] = useState<'simple' | 'detailed'>('simple');
 
   // Convert value to array of selected IDs if choices type
   useEffect(() => {
@@ -68,16 +67,28 @@ export const PromptCard: React.FC<PromptCardProps> = ({
       : undefined;
 
   return (
-    <div className="bg-base-100 shadow-sm border border-base-300 w-full rounded-lg">
-      <div className="p-4">
-        <PromptHeader
-          text={prompt.text}
-          hintText={prompt.hintText}
-          popupText={prompt.popupText}
-          popupLinkText={prompt.popupLinkText}
-          isRequired={isRequired}
-          htmlFor={`prompt-${prompt.id}`}
-        />
+    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-base-200/20 via-base-100/10 to-base-200/5 backdrop-blur-sm border border-white/10 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 group w-full">
+      {/* Subtle animated background elements */}
+      <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5 opacity-50"></div>
+      <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-primary/10 to-transparent rounded-full blur-xl"></div>
+
+      <div className="relative z-10 p-6">
+        <div className="flex items-center justify-between mb-4">
+          <PromptHeader
+            text={prompt.text}
+            hintText={prompt.hintText}
+            popupText={prompt.popupText}
+            popupLinkText={prompt.popupLinkText}
+            isRequired={isRequired}
+            htmlFor={`prompt-${prompt.id}`}
+          />
+          <SimpleDetailedViewSelector
+            value={viewMode}
+            onChange={setViewMode}
+            size="sm"
+            labels={{ simple: 'Simple', detailed: 'Detailed' }}
+          />
+        </div>
 
         {prompt.type === PromptType.LIST ? (
           <ChoiceGroup
