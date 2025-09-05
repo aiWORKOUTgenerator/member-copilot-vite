@@ -99,13 +99,7 @@ const ExerciseCardWithMedia = ({
       id: 'additional-details',
       label: 'Details',
       icon: <Settings className="w-4 h-4" />,
-      content: (
-        <ExerciseAdditionalDetailsTab
-          caloriesPerMinute={null} // TODO: Add to Exercise entity
-          isActive={true} // TODO: Add to Exercise entity
-          createdFromWorkout={null} // TODO: Add to Exercise entity
-        />
-      ),
+      content: <ExerciseAdditionalDetailsTab />,
     },
   ];
 
