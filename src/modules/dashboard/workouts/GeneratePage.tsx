@@ -333,7 +333,7 @@ export default function GenerateWorkoutPage() {
                   onGenerateWorkout={() => {
                     const syntheticEvent = new Event(
                       'submit'
-                    ) as React.FormEvent<HTMLFormElement>;
+                    ) as unknown as React.FormEvent<HTMLFormElement>;
                     handleSubmit(syntheticEvent);
                   }}
                 />
