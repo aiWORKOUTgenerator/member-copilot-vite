@@ -23,7 +23,7 @@ export const ExerciseAudio: React.FC<ExerciseAudioProps> = ({
   const [volume] = useState(1);
   const [isMuted, setIsMuted] = useState(false);
 
-  // No audio URL provided - show debug container for testing
+  // No audio URL provided - show unavailable message
   if (!audioUrl) {
     return (
       <div className={containerClasses}>
@@ -32,9 +32,9 @@ export const ExerciseAudio: React.FC<ExerciseAudioProps> = ({
             <VolumeX className="w-5 h-5" />
           </div>
           <div className="flex-1">
-            <p className="text-sm font-medium">No audio URL provided</p>
+            <p className="text-sm font-medium">Audio Currently Unavailable</p>
             <p className="text-xs opacity-70">
-              Audio container (debug mode) for {exerciseName}
+              Audio for {exerciseName} is not available at this time
             </p>
           </div>
         </div>

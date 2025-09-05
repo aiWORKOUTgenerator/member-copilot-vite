@@ -62,8 +62,10 @@ export const ExerciseMediaWithAudio: React.FC<ExerciseMediaWithAudioProps> = ({
         <div className="bg-base-200 border border-base-300 rounded-xl p-4 shadow-sm">
           <div className="flex items-center justify-center h-32 text-base-content/60">
             <div className="text-center">
-              <p className="text-sm font-medium">No image available</p>
-              <p className="text-xs opacity-70">Image container (debug mode)</p>
+              <p className="text-sm font-medium">Image Currently Unavailable</p>
+              <p className="text-xs opacity-70">
+                Image for {exerciseName} is not available at this time
+              </p>
             </div>
           </div>
         </div>
