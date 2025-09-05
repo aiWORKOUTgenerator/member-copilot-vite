@@ -28,6 +28,7 @@ export interface UseDetailedWorkoutStepsReturn {
   steps: typeof DETAILED_WORKOUT_STEPS;
   currentStepIndex: number;
   totalSteps: number;
+  isLastStep: boolean;
 }
 
 export const useDetailedWorkoutSteps = (
@@ -43,6 +44,7 @@ export const useDetailedWorkoutSteps = (
 
   const canGoNext = currentStepIndex < totalSteps - 1;
   const canGoPrevious = currentStepIndex > 0;
+  const isLastStep = currentStepIndex === totalSteps - 1;
 
   const goToNextStep = useCallback(() => {
     if (canGoNext) {
@@ -108,5 +110,6 @@ export const useDetailedWorkoutSteps = (
     steps: DETAILED_WORKOUT_STEPS,
     currentStepIndex,
     totalSteps,
+    isLastStep,
   };
 };

@@ -330,6 +330,12 @@ export default function GenerateWorkoutPage() {
                   errors={errors}
                   disabled={isGenerating}
                   mode="detailed"
+                  onGenerateWorkout={() => {
+                    const syntheticEvent = new Event(
+                      'submit'
+                    ) as React.FormEvent<HTMLFormElement>;
+                    handleSubmit(syntheticEvent);
+                  }}
                 />
               </>
             )}
@@ -364,22 +370,24 @@ export default function GenerateWorkoutPage() {
                   />
                 )}
 
-                {/* Generate button - right side */}
-                <button
-                  type="submit"
-                  className={`btn btn-primary transition-all duration-200 order-3 ${buttonState.className}`}
-                  disabled={buttonState.disabled}
-                  title={buttonState.disabled ? buttonState.text : undefined}
-                >
-                  {isGenerating ? (
-                    <>
-                      <span className="loading loading-spinner"></span>
-                      Generating...
-                    </>
-                  ) : (
-                    buttonState.text
-                  )}
-                </button>
+                {/* Generate button - right side (only for quick mode) */}
+                {activeTab === 'quick' && (
+                  <button
+                    type="submit"
+                    className={`btn btn-primary transition-all duration-200 order-3 ${buttonState.className}`}
+                    disabled={buttonState.disabled}
+                    title={buttonState.disabled ? buttonState.text : undefined}
+                  >
+                    {isGenerating ? (
+                      <>
+                        <span className="loading loading-spinner"></span>
+                        Generating...
+                      </>
+                    ) : (
+                      buttonState.text
+                    )}
+                  </button>
+                )}
               </div>
             </div>
           </form>

@@ -39,6 +39,7 @@ export default function WorkoutCustomization({
   mode = 'quick',
   activeQuickStep,
   onQuickStepChange,
+  onGenerateWorkout,
 }: WorkoutCustomizationProps & {
   activeQuickStep?: 'focus-energy' | 'duration-equipment';
   onQuickStepChange?: (step: 'focus-energy' | 'duration-equipment') => void;
@@ -768,14 +769,25 @@ export default function WorkoutCustomization({
             </span>
           </div>
 
-          <button
-            type="button"
-            className="btn btn-primary btn-active"
-            onClick={detailedSteps.goToNextStep}
-            disabled={!detailedSteps.canGoNext || disabled}
-          >
-            Next
-          </button>
+          {detailedSteps.isLastStep ? (
+            <button
+              type="button"
+              className="btn btn-primary btn-active"
+              onClick={onGenerateWorkout}
+              disabled={disabled}
+            >
+              Generate Workout
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="btn btn-primary btn-active"
+              onClick={detailedSteps.goToNextStep}
+              disabled={!detailedSteps.canGoNext || disabled}
+            >
+              Next
+            </button>
+          )}
         </div>
       </div>
     );

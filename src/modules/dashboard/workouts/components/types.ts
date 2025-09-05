@@ -42,4 +42,6 @@ export interface WorkoutCustomizationProps {
   validateFocusAndEnergy?: (values: PerWorkoutOptions) => boolean;
   validateDurationAndEquipment?: (values: PerWorkoutOptions) => boolean;
   touchedFields?: Set<keyof PerWorkoutOptions>;
+  // Optional generate workout function for final step
+  onGenerateWorkout?: () => void;
 }
