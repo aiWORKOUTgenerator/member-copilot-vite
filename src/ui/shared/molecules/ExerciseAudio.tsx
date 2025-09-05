@@ -23,9 +23,23 @@ export const ExerciseAudio: React.FC<ExerciseAudioProps> = ({
   const [volume] = useState(1);
   const [isMuted, setIsMuted] = useState(false);
 
-  // No audio URL provided
+  // No audio URL provided - show debug container for testing
   if (!audioUrl) {
-    return null;
+    return (
+      <div className={containerClasses}>
+        <div className="flex items-center gap-3 text-base-content/60">
+          <div className="w-10 h-10 rounded-full bg-base-200 flex items-center justify-center">
+            <VolumeX className="w-5 h-5" />
+          </div>
+          <div className="flex-1">
+            <p className="text-sm font-medium">No audio URL provided</p>
+            <p className="text-xs opacity-70">
+              Audio container (debug mode) for {exerciseName}
+            </p>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   const containerClasses = `

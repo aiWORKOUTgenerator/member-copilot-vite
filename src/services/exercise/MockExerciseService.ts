@@ -17,8 +17,9 @@ export class MockExerciseService implements ExerciseService {
       difficulty_level: 'beginner',
       is_compound: true,
       tags: ['compound', 'upper body'],
-      audio_url: null,
-      image_url: null,
+      audio_url: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
+      image_url:
+        'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400',
     }),
     new Exercise({
       id: '2',
@@ -34,8 +35,9 @@ export class MockExerciseService implements ExerciseService {
       difficulty_level: 'beginner',
       is_compound: true,
       tags: ['compound', 'legs'],
-      audio_url: null,
-      image_url: null,
+      audio_url: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
+      image_url:
+        'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400',
     }),
     new Exercise({
       id: '3',
@@ -51,8 +53,9 @@ export class MockExerciseService implements ExerciseService {
       difficulty_level: 'intermediate',
       is_compound: false,
       tags: ['core', 'isometric'],
-      audio_url: null,
-      image_url: null,
+      audio_url: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
+      image_url:
+        'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400',
     }),
     new Exercise({
       id: '4',
@@ -69,8 +72,9 @@ export class MockExerciseService implements ExerciseService {
       difficulty_level: 'beginner',
       is_compound: true,
       tags: ['cardio', 'full body'],
-      audio_url: null,
-      image_url: null,
+      audio_url: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
+      image_url:
+        'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400',
     }),
     new Exercise({
       id: '5',
@@ -86,8 +90,9 @@ export class MockExerciseService implements ExerciseService {
       difficulty_level: 'intermediate',
       is_compound: true,
       tags: ['compound', 'legs'],
-      audio_url: null,
-      image_url: null,
+      audio_url: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
+      image_url:
+        'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400',
     }),
   ];
 

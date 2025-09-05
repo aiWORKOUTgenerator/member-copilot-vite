@@ -26,10 +26,19 @@ export const ExerciseMediaWithAudio: React.FC<ExerciseMediaWithAudioProps> = ({
   const hasImage = Boolean(imageUrl);
   const hasAudio = Boolean(audioUrl);
 
-  // If neither image nor audio is available, return null
-  if (!hasImage && !hasAudio) {
-    return null;
-  }
+  // Debug logging
+  console.log('ExerciseMediaWithAudio Debug:', {
+    exerciseName,
+    imageUrl,
+    audioUrl,
+    hasImage,
+    hasAudio,
+  });
+
+  // Debug mode: always show containers even if no media
+  // if (!hasImage && !hasAudio) {
+  //   return null;
+  // }
 
   const containerClasses = `
     space-y-3
@@ -41,7 +50,7 @@ export const ExerciseMediaWithAudio: React.FC<ExerciseMediaWithAudioProps> = ({
   return (
     <div className={containerClasses}>
       {/* Exercise Image */}
-      {hasImage && (
+      {hasImage ? (
         <ExerciseMedia
           imageUrl={imageUrl}
           alt={exerciseName}
@@ -49,16 +58,23 @@ export const ExerciseMediaWithAudio: React.FC<ExerciseMediaWithAudioProps> = ({
           rounded={rounded}
           showSkeleton={showImageSkeleton}
         />
+      ) : (
+        <div className="bg-base-200 border border-base-300 rounded-xl p-4 shadow-sm">
+          <div className="flex items-center justify-center h-32 text-base-content/60">
+            <div className="text-center">
+              <p className="text-sm font-medium">No image available</p>
+              <p className="text-xs opacity-70">Image container (debug mode)</p>
+            </div>
+          </div>
+        </div>
       )}
 
-      {/* Exercise Audio */}
-      {hasAudio && (
-        <ExerciseAudio
-          audioUrl={audioUrl}
-          exerciseName={exerciseName}
-          autoPlay={autoPlayAudio}
-        />
-      )}
+      {/* Exercise Audio - Always show for debugging */}
+      <ExerciseAudio
+        audioUrl={audioUrl}
+        exerciseName={exerciseName}
+        autoPlay={autoPlayAudio}
+      />
     </div>
   );
 };
