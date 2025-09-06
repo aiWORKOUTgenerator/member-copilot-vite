@@ -659,6 +659,7 @@ export default function WorkoutCustomization({
               isCompleted: validation.completionPercentage === 100,
             };
           })}
+          onStepClick={detailedSteps.setCurrentStep}
         />
 
         {/* Scroll Down Indicator */}

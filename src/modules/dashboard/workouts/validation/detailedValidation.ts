@@ -60,8 +60,7 @@ export interface StepValidationConfig {
  */
 const STEP_VALIDATION_CONFIGS: Record<string, StepValidationConfig> = {
   'workout-structure': {
-    requiredFields: ['customization_focus', 'customization_duration'],
-    optionalFields: ['customization_areas'],
+    optionalFields: ['customization_focus', 'customization_duration', 'customization_areas'],
   },
   'current-state': {
     optionalFields: [
@@ -83,8 +82,7 @@ const STEP_VALIDATION_CONFIGS: Record<string, StepValidationConfig> = {
     ],
   },
   'equipment-preferences': {
-    requiredFields: ['customization_equipment'],
-    optionalFields: ['customization_include', 'customization_exclude'],
+    optionalFields: ['customization_equipment', 'customization_include', 'customization_exclude'],
   },
   'additional-context': {
     optionalFields: ['customization_prompt'],
@@ -397,13 +395,15 @@ export const getFieldValidationState = (
 
 /**
  * Check if a step is complete (all required fields filled and valid)
+ * Since we removed required fields, all steps are considered complete for navigation
  */
 export const isStepComplete = (
-  step: 'workout-structure' | 'current-state' | 'equipment-preferences',
-  options: WorkoutOptions
+  _step: 'workout-structure' | 'current-state' | 'equipment-preferences' | 'additional-context',
+  _options: WorkoutOptions
 ): boolean => {
-  const validation = validateDetailedStep(step, options);
-  return validation.isValid;
+  // All steps are now considered complete for navigation purposes
+  // Validation still runs for field-level feedback, but doesn't block navigation
+  return true;
 };
 
 /**

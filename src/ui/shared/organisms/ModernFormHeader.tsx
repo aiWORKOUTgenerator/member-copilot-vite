@@ -33,6 +33,8 @@ export interface ModernFormHeaderProps {
     isActive: boolean;
     isCompleted?: boolean;
   }>;
+  /** Step click handler */
+  onStepClick?: (stepId: string) => void;
   /** Additional content to render in the header */
   children?: ReactNode;
   /** Custom CSS classes for the container */
@@ -64,6 +66,7 @@ export const ModernFormHeader: React.FC<ModernFormHeaderProps> = ({
   autoAdvanceDisabled = false,
   viewMode,
   steps = [],
+  onStepClick,
   children,
   className = '',
 }) => {
@@ -183,12 +186,15 @@ export const ModernFormHeader: React.FC<ModernFormHeaderProps> = ({
             <div className="flex items-center justify-evenly">
               {steps.map((step, index) => (
                 <div key={step.id} className="flex flex-col items-center">
-                  <div
+                  <button
+                    onClick={() => onStepClick?.(step.id)}
                     className={`relative w-16 h-16 rounded-2xl flex items-center justify-center transition-all duration-300 ${
                       step.isActive
                         ? 'bg-gradient-to-br from-primary to-primary/80 shadow-lg shadow-primary/30 transform scale-110'
-                        : 'bg-white/20 border border-white/30'
-                    }`}
+                        : 'bg-white/20 border border-white/30 hover:bg-white/30 hover:scale-105'
+                    } ${onStepClick ? 'cursor-pointer' : 'cursor-default'}`}
+                    disabled={!onStepClick}
+                    aria-label={`Step ${index + 1}: ${step.label}`}
                   >
                     <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
                       <span
@@ -202,7 +208,7 @@ export const ModernFormHeader: React.FC<ModernFormHeaderProps> = ({
                     {step.isActive && (
                       <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-accent to-accent/80 rounded-full animate-pulse"></div>
                     )}
-                  </div>
+                  </button>
                   <div className="mt-3 text-center">
                     <h5
                       className={`font-semibold ${
