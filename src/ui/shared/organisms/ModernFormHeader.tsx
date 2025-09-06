@@ -221,23 +221,6 @@ export const ModernFormHeader: React.FC<ModernFormHeaderProps> = ({
                   </div>
                 </div>
               ))}
-
-              {/* Connector Lines */}
-              {steps.length > 1 && (
-                <>
-                  {steps.slice(0, -1).map((_, index) => (
-                    <div key={`connector-${index}`} className="w-16 relative">
-                      <div className="h-1 bg-white/20 rounded-full overflow-hidden">
-                        <div
-                          className={`h-full bg-gradient-to-r from-primary to-accent rounded-full transition-all duration-500 ${
-                            steps[index + 1]?.isActive ? 'w-full' : 'w-0'
-                          }`}
-                        ></div>
-                      </div>
-                    </div>
-                  ))}
-                </>
-              )}
             </div>
           </div>
         )}
