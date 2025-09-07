@@ -109,111 +109,106 @@ export const AdditionalContextStep: React.FC<AdditionalContextStepProps> = ({
         </p>
       </div>
 
-      {/* Layout */}
-      <div className="md:grid md:grid-cols-12 md:gap-6 space-y-6 md:space-y-0">
-        {/* Editor */}
-        <div className="md:col-span-7">
-          <div className="card bg-base-100/60 backdrop-blur border border-white/20 shadow-xl">
-            <div className="card-body p-4 md:p-6">
-              <label htmlFor="additional-context" className="label">
-                <span className="label-text font-medium">
-                  Additional Context
-                </span>
-                <span className="label-text-alt text-base-content/60">
-                  10–1000 characters
-                </span>
-              </label>
-              <textarea
-                id="additional-context"
-                className="textarea textarea-bordered w-full h-40 md:h-48"
-                placeholder="e.g., Apartment-friendly, no jumping; prioritize mobility and core; avoid overhead pressing due to shoulder"
-                value={options.customization_prompt || ''}
-                onChange={(e) => handlePromptChange(e.target.value)}
-                disabled={disabled}
-                aria-describedby="additional-context-help"
-              />
-              <div className="flex items-center justify-between mt-2">
-                <p
-                  id="additional-context-help"
-                  className="text-xs text-base-content/60"
-                >
-                  You can insert suggestions below, then edit the text as you
-                  like.
-                </p>
-                <span className="text-xs text-base-content/60">
-                  {(options.customization_prompt || '').length} / 1000
-                </span>
-              </div>
-
-              {errors.customization_prompt && (
-                <div className="alert alert-error mt-3">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="stroke-current shrink-0 h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                  <span>{errors.customization_prompt}</span>
-                </div>
-              )}
-            </div>
-          </div>
+      {/* Suggestions Grid (3 columns) */}
+      <div className="space-y-4">
+        <div className="mb-3">
+          <h4 className="text-sm font-semibold text-base-content">
+            Suggestions & examples
+          </h4>
+          <p className="text-sm text-base-content/70">
+            Tap to insert, or use Add.
+          </p>
         </div>
-
-        {/* Suggestions */}
-        <div className="md:col-span-5">
-          <div className="mb-3">
-            <h4 className="text-sm font-semibold text-base-content">
-              Suggestions & examples
-            </h4>
-            <p className="text-sm text-base-content/70">
-              Tap to insert, or use Replace.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 gap-4">
-            {Object.entries(examplesByCategory).map(([category, items]) => (
-              <div
-                key={category}
-                className="card bg-base-100/60 backdrop-blur border border-white/20 shadow-xl"
-              >
-                <div className="card-body p-4 md:p-5">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium capitalize">
-                      {category}
-                    </span>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {items.map((text) => (
-                      <div key={text} className="join">
-                        <button
-                          type="button"
-                          className="btn btn-xs join-item btn-outline"
-                          onClick={() => insertSuggestion(text)}
-                          aria-label={`Insert suggestion: ${text}`}
-                        >
-                          {text}
-                        </button>
-                        <button
-                          type="button"
-                          className="btn btn-xs join-item btn-ghost"
-                          onClick={() => replaceWithSuggestion(text)}
-                          aria-label={`Add suggestion: ${text}`}
-                        >
-                          Add
-                        </button>
-                      </div>
-                    ))}
-                  </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {Object.entries(examplesByCategory).map(([category, items]) => (
+            <div
+              key={category}
+              className="card bg-base-100/60 backdrop-blur border border-white/20 shadow-xl"
+            >
+              <div className="card-body p-4 md:p-5">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium capitalize">
+                    {category}
+                  </span>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {items.map((text) => (
+                    <div key={text} className="join">
+                      <button
+                        type="button"
+                        className="btn btn-xs join-item btn-outline"
+                        onClick={() => insertSuggestion(text)}
+                        aria-label={`Insert suggestion: ${text}`}
+                      >
+                        {text}
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-xs join-item btn-ghost"
+                        onClick={() => replaceWithSuggestion(text)}
+                        aria-label={`Add suggestion: ${text}`}
+                      >
+                        Add
+                      </button>
+                    </div>
+                  ))}
                 </div>
               </div>
-            ))}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Full-width Editor below cards */}
+      <div>
+        <div className="card bg-base-100/60 backdrop-blur border border-white/20 shadow-xl">
+          <div className="card-body p-4 md:p-6">
+            <label htmlFor="additional-context" className="label">
+              <span className="label-text font-medium">Additional Context</span>
+              <span className="label-text-alt text-base-content/60">
+                10–1000 characters
+              </span>
+            </label>
+            <textarea
+              id="additional-context"
+              className="textarea textarea-bordered w-full h-40 md:h-48"
+              placeholder="e.g., Apartment-friendly, no jumping; prioritize mobility and core; avoid overhead pressing due to shoulder"
+              value={options.customization_prompt || ''}
+              onChange={(e) => handlePromptChange(e.target.value)}
+              disabled={disabled}
+              aria-describedby="additional-context-help"
+            />
+            <div className="flex items-center justify-between mt-2">
+              <p
+                id="additional-context-help"
+                className="text-xs text-base-content/60"
+              >
+                You can insert suggestions above, then edit the text as you
+                like.
+              </p>
+              <span className="text-xs text-base-content/60">
+                {(options.customization_prompt || '').length} / 1000
+              </span>
+            </div>
+
+            {errors.customization_prompt && (
+              <div className="alert alert-error mt-3">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="stroke-current shrink-0 h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <span>{errors.customization_prompt}</span>
+              </div>
+            )}
           </div>
         </div>
       </div>
