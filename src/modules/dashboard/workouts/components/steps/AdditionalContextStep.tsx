@@ -1,7 +1,6 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import type { PerWorkoutOptions } from '../types';
 import { useWorkoutAnalytics } from '../../hooks/useWorkoutAnalytics';
-import { PromptInputWithExamples } from '@/ui/shared/molecules/PromptInputWithExamples';
 import { WORKOUT_PROMPT_EXAMPLES } from '../../constants/promptExamples';
 
 export interface AdditionalContextStepProps {
@@ -63,64 +62,168 @@ export const AdditionalContextStep: React.FC<AdditionalContextStepProps> = ({
     [handleChange]
   );
 
+  // Group examples by category for rendering chips/cards
+  const examplesByCategory = useMemo(() => {
+    return WORKOUT_PROMPT_EXAMPLES.reduce<Record<string, string[]>>(
+      (acc, ex) => {
+        if (!acc[ex.category]) acc[ex.category] = [];
+        acc[ex.category].push(ex.text);
+        return acc;
+      },
+      {}
+    );
+  }, []);
+
+  // Insert/Replace helpers
+  const insertSuggestion = useCallback(
+    (text: string) => {
+      const current = (options.customization_prompt || '').trim();
+      const separator =
+        current.length > 0 && !current.endsWith(';') ? '; ' : '';
+      const next = `${current}${separator}${text}`.trim();
+      handlePromptChange(next);
+    },
+    [options.customization_prompt, handlePromptChange]
+  );
+
+  const replaceWithSuggestion = useCallback(
+    (text: string) => {
+      handlePromptChange(text);
+    },
+    [handlePromptChange]
+  );
+
   return (
     <div className="space-y-6" data-testid="additional-context-step">
-      {/* Step Header */}
-      <div className="text-center mb-6">
-        <h3 className="text-xl font-semibold text-base-content mb-2">
-          Additional Context
-        </h3>
-        <p className="text-base-content/70">
-          Add any specific requirements, modifications, or goals to customize
-          your workout
+      {/* Header */}
+      <div className="text-center mb-4">
+        <div className="inline-flex items-center gap-2">
+          <h3 className="text-xl font-semibold text-base-content">
+            Additional Context
+          </h3>
+          <span className="badge badge-ghost">Optional</span>
+        </div>
+        <p className="text-base-content/70 mt-1">
+          Add any details that don’t fit the previous steps. Pick a suggestion
+          or write your own.
         </p>
       </div>
 
-      {/* Prompt Input with Examples */}
-      <PromptInputWithExamples
-        value={options.customization_prompt || ''}
-        onChange={handlePromptChange}
-        examples={WORKOUT_PROMPT_EXAMPLES}
-        disabled={disabled}
-        placeholder="Describe any additional requirements, modifications, or specific goals..."
-        label="Workout Description"
-        optional={true}
-        description="Select from the examples below or type your own additional context to generate a personalized workout."
-        className="w-full"
-      />
+      {/* Layout */}
+      <div className="md:grid md:grid-cols-12 md:gap-6 space-y-6 md:space-y-0">
+        {/* Editor */}
+        <div className="md:col-span-7">
+          <div className="card bg-base-100/60 backdrop-blur border border-white/20 shadow-xl">
+            <div className="card-body p-4 md:p-6">
+              <label htmlFor="additional-context" className="label">
+                <span className="label-text font-medium">
+                  Additional Context
+                </span>
+                <span className="label-text-alt text-base-content/60">
+                  10–1000 characters
+                </span>
+              </label>
+              <textarea
+                id="additional-context"
+                className="textarea textarea-bordered w-full h-40 md:h-48"
+                placeholder="e.g., Apartment-friendly, no jumping; prioritize mobility and core; avoid overhead pressing due to shoulder"
+                value={options.customization_prompt || ''}
+                onChange={(e) => handlePromptChange(e.target.value)}
+                disabled={disabled}
+                aria-describedby="additional-context-help"
+              />
+              <div className="flex items-center justify-between mt-2">
+                <p
+                  id="additional-context-help"
+                  className="text-xs text-base-content/60"
+                >
+                  You can insert suggestions below, then edit the text as you
+                  like.
+                </p>
+                <span className="text-xs text-base-content/60">
+                  {(options.customization_prompt || '').length} / 1000
+                </span>
+              </div>
 
-      {/* Error Display */}
-      {errors.customization_prompt && (
-        <div className="alert alert-error">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="stroke-current shrink-0 h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-          <span>{errors.customization_prompt}</span>
+              {errors.customization_prompt && (
+                <div className="alert alert-error mt-3">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="stroke-current shrink-0 h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  <span>{errors.customization_prompt}</span>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
-      )}
 
-      {/* Help Text */}
+        {/* Suggestions */}
+        <div className="md:col-span-5">
+          <div className="card bg-base-100/60 backdrop-blur border border-white/20 shadow-xl">
+            <div className="card-body p-4 md:p-6">
+              <h4 className="card-title text-base">Suggestions & examples</h4>
+              <p className="text-sm text-base-content/70 mb-2">
+                Tap to insert, or use Replace.
+              </p>
+
+              <div className="space-y-4">
+                {Object.entries(examplesByCategory).map(([category, items]) => (
+                  <div key={category}>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium capitalize">
+                        {category}
+                      </span>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {items.map((text) => (
+                        <div key={text} className="join">
+                          <button
+                            type="button"
+                            className="btn btn-xs join-item btn-outline"
+                            onClick={() => insertSuggestion(text)}
+                            aria-label={`Insert suggestion: ${text}`}
+                          >
+                            {text}
+                          </button>
+                          <button
+                            type="button"
+                            className="btn btn-xs join-item btn-ghost"
+                            onClick={() => replaceWithSuggestion(text)}
+                            aria-label={`Replace with suggestion: ${text}`}
+                          >
+                            Replace
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Tips */}
       <div className="bg-base-200/50 rounded-lg p-4">
         <h4 className="font-medium text-base-content mb-2">
-          💡 Tips for Better Results
+          💡 Tips for better results
         </h4>
         <ul className="text-sm text-base-content/70 space-y-1">
-          <li>
-            • Be specific about your environment (apartment, gym, outdoor)
-          </li>
-          <li>• Mention any physical limitations or modifications needed</li>
-          <li>• Include your current energy level or mood</li>
-          <li>• Specify any equipment preferences or restrictions</li>
+          <li>• Be specific about environment (apartment, hotel, outdoor)</li>
+          <li>• Mention limitations or needed modifications</li>
+          <li>• Include current energy or mood if relevant</li>
+          <li>• Specify equipment preferences or restrictions</li>
         </ul>
       </div>
     </div>
