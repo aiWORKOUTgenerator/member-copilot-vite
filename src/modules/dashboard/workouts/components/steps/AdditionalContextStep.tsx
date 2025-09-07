@@ -207,7 +207,7 @@ export const AdditionalContextStep: React.FC<AdditionalContextStepProps> = ({
             <label htmlFor="additional-context" className="label">
               <span className="label-text font-medium">Additional Context</span>
               <span className="label-text-alt text-base-content/60">
-                10–1000 characters
+                10–500 characters
               </span>
             </label>
             <textarea
@@ -228,7 +228,7 @@ export const AdditionalContextStep: React.FC<AdditionalContextStepProps> = ({
                 like.
               </p>
               <span className="text-xs text-base-content/60">
-                {(options.customization_prompt || '').length} / 1000
+                {(options.customization_prompt || '').length} / 500
               </span>
             </div>
 
