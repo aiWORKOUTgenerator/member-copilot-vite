@@ -169,47 +169,51 @@ export const AdditionalContextStep: React.FC<AdditionalContextStepProps> = ({
 
         {/* Suggestions */}
         <div className="md:col-span-5">
-          <div className="card bg-base-100/60 backdrop-blur border border-white/20 shadow-xl">
-            <div className="card-body p-4 md:p-6">
-              <h4 className="card-title text-base">Suggestions & examples</h4>
-              <p className="text-sm text-base-content/70 mb-2">
-                Tap to insert, or use Replace.
-              </p>
-
-              <div className="space-y-4">
-                {Object.entries(examplesByCategory).map(([category, items]) => (
-                  <div key={category}>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium capitalize">
-                        {category}
-                      </span>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {items.map((text) => (
-                        <div key={text} className="join">
-                          <button
-                            type="button"
-                            className="btn btn-xs join-item btn-outline"
-                            onClick={() => insertSuggestion(text)}
-                            aria-label={`Insert suggestion: ${text}`}
-                          >
-                            {text}
-                          </button>
-                          <button
-                            type="button"
-                            className="btn btn-xs join-item btn-ghost"
-                            onClick={() => replaceWithSuggestion(text)}
-                            aria-label={`Replace with suggestion: ${text}`}
-                          >
-                            Replace
-                          </button>
-                        </div>
-                      ))}
-                    </div>
+          <div className="mb-3">
+            <h4 className="text-sm font-semibold text-base-content">
+              Suggestions & examples
+            </h4>
+            <p className="text-sm text-base-content/70">
+              Tap to insert, or use Replace.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 gap-4">
+            {Object.entries(examplesByCategory).map(([category, items]) => (
+              <div
+                key={category}
+                className="card bg-base-100/60 backdrop-blur border border-white/20 shadow-xl"
+              >
+                <div className="card-body p-4 md:p-5">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium capitalize">
+                      {category}
+                    </span>
                   </div>
-                ))}
+                  <div className="flex flex-wrap gap-2">
+                    {items.map((text) => (
+                      <div key={text} className="join">
+                        <button
+                          type="button"
+                          className="btn btn-xs join-item btn-outline"
+                          onClick={() => insertSuggestion(text)}
+                          aria-label={`Insert suggestion: ${text}`}
+                        >
+                          {text}
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-xs join-item btn-ghost"
+                          onClick={() => replaceWithSuggestion(text)}
+                          aria-label={`Replace with suggestion: ${text}`}
+                        >
+                          Replace
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>
