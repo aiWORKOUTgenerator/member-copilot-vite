@@ -162,18 +162,18 @@ export const AdditionalContextStep: React.FC<AdditionalContextStepProps> = ({
                     {items.map((text) => {
                       const isSelected = isSuggestionSelected(text);
                       return (
-                        <div key={text} className="join">
+                        <div key={text} className="join w-full">
                           <button
                             type="button"
-                            className="btn btn-xs join-item btn-outline"
+                            className="btn btn-xs join-item btn-outline flex-1 min-w-0"
                             onClick={() => insertSuggestion(text)}
                             aria-label={`Insert suggestion: ${text}`}
                           >
-                            {text}
+                            <span className="truncate text-left">{text}</span>
                           </button>
                           <button
                             type="button"
-                            className={`btn btn-xs join-item border border-base-300 ${
+                            className={`btn btn-xs join-item border border-base-300 flex-shrink-0 ${
                               isSelected ? 'btn-error btn-outline' : 'btn-ghost'
                             }`}
                             onClick={() =>
