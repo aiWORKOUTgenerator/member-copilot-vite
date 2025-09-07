@@ -122,14 +122,14 @@ export const AdditionalContextStep: React.FC<AdditionalContextStepProps> = ({
         <div className="carousel w-full h-80">
           {Object.entries(examplesByCategory).map(([category, items]) => (
             <div key={category} className="carousel-item w-full p-6">
-              <div className="card bg-base-100/60 backdrop-blur border border-white/20 shadow-xl w-full h-full">
+              <div className="card bg-base-100/60 backdrop-blur border border-white/20 shadow-xl w-4/5 mx-auto h-full">
                 <div className="card-body p-4 md:p-5">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-medium capitalize">
                       {category}
                     </span>
                   </div>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="grid grid-cols-2 gap-2">
                     {items.map((text) => (
                       <div key={text} className="join">
                         <button
