@@ -3,14 +3,32 @@ import type { PerWorkoutOptions } from '../types';
 import { useWorkoutAnalytics } from '../../hooks/useWorkoutAnalytics';
 import { WORKOUT_PROMPT_EXAMPLES } from '../../constants/promptExamples';
 
+/**
+ * Props for the AdditionalContextStep component
+ */
 export interface AdditionalContextStepProps {
+  /** Current workout options including customization prompt */
   options: PerWorkoutOptions;
+  /** Callback to handle option changes */
   onChange: (key: keyof PerWorkoutOptions, value: unknown) => void;
+  /** Validation errors for the step */
   errors: Partial<Record<keyof PerWorkoutOptions, string>>;
+  /** Whether the step is disabled */
   disabled?: boolean;
+  /** Display variant (currently unused) */
   variant?: 'simple' | 'detailed';
 }
 
+/**
+ * AdditionalContextStep component for the 4th step in detailed workout setup
+ *
+ * Allows users to add custom context to their workout generation request.
+ * Features a carousel of categorized suggestions and a textarea for custom input.
+ * Supports adding/removing suggestions with semicolon separation.
+ *
+ * @param props - Component props
+ * @returns JSX element for the additional context step
+ */
 export const AdditionalContextStep: React.FC<AdditionalContextStepProps> = ({
   options,
   onChange,
@@ -23,8 +41,9 @@ export const AdditionalContextStep: React.FC<AdditionalContextStepProps> = ({
 
   // Track step completion when component unmounts
   useEffect(() => {
+    const startTimeValue = startTime.current;
     return () => {
-      const duration = Date.now() - startTime.current;
+      const duration = Date.now() - startTimeValue;
       const fieldsCompleted = [
         options.customization_prompt &&
           options.customization_prompt.trim() !== '',
