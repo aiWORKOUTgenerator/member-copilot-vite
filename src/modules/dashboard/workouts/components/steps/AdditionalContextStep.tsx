@@ -86,13 +86,6 @@ export const AdditionalContextStep: React.FC<AdditionalContextStepProps> = ({
     [options.customization_prompt, handlePromptChange]
   );
 
-  const replaceWithSuggestion = useCallback(
-    (text: string) => {
-      handlePromptChange(text);
-    },
-    [handlePromptChange]
-  );
-
   return (
     <div className="space-y-6" data-testid="additional-context-step">
       {/* Header */}
@@ -116,7 +109,7 @@ export const AdditionalContextStep: React.FC<AdditionalContextStepProps> = ({
             Suggestions & examples
           </h4>
           <p className="text-sm text-base-content/70">
-            Tap to insert, or use Add.
+            Tap to add suggestions to your context.
           </p>
         </div>
         <div className="carousel w-full h-80">
@@ -143,7 +136,7 @@ export const AdditionalContextStep: React.FC<AdditionalContextStepProps> = ({
                         <button
                           type="button"
                           className="btn btn-xs join-item btn-ghost border border-base-300"
-                          onClick={() => replaceWithSuggestion(text)}
+                          onClick={() => insertSuggestion(text)}
                           aria-label={`Add suggestion: ${text}`}
                         >
                           Add
