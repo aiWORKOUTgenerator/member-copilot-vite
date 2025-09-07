@@ -204,9 +204,9 @@ export const AdditionalContextStep: React.FC<AdditionalContextStepProps> = ({
                           type="button"
                           className="btn btn-xs join-item btn-ghost"
                           onClick={() => replaceWithSuggestion(text)}
-                          aria-label={`Replace with suggestion: ${text}`}
+                          aria-label={`Add suggestion: ${text}`}
                         >
-                          Replace
+                          Add
                         </button>
                       </div>
                     ))}
