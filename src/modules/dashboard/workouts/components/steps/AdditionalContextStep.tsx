@@ -109,7 +109,7 @@ export const AdditionalContextStep: React.FC<AdditionalContextStepProps> = ({
         </p>
       </div>
 
-      {/* Suggestions Grid (3 columns) */}
+      {/* Suggestions Carousel (full width items) */}
       <div className="space-y-4">
         <div className="mb-3">
           <h4 className="text-sm font-semibold text-base-content">
@@ -119,39 +119,38 @@ export const AdditionalContextStep: React.FC<AdditionalContextStepProps> = ({
             Tap to insert, or use Add.
           </p>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="carousel w-full">
           {Object.entries(examplesByCategory).map(([category, items]) => (
-            <div
-              key={category}
-              className="card bg-base-100/60 backdrop-blur border border-white/20 shadow-xl"
-            >
-              <div className="card-body p-4 md:p-5">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium capitalize">
-                    {category}
-                  </span>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {items.map((text) => (
-                    <div key={text} className="join">
-                      <button
-                        type="button"
-                        className="btn btn-xs join-item btn-outline"
-                        onClick={() => insertSuggestion(text)}
-                        aria-label={`Insert suggestion: ${text}`}
-                      >
-                        {text}
-                      </button>
-                      <button
-                        type="button"
-                        className="btn btn-xs join-item btn-ghost"
-                        onClick={() => replaceWithSuggestion(text)}
-                        aria-label={`Add suggestion: ${text}`}
-                      >
-                        Add
-                      </button>
-                    </div>
-                  ))}
+            <div key={category} className="carousel-item w-full">
+              <div className="card bg-base-100/60 backdrop-blur border border-white/20 shadow-xl w-full">
+                <div className="card-body p-4 md:p-5">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium capitalize">
+                      {category}
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {items.map((text) => (
+                      <div key={text} className="join">
+                        <button
+                          type="button"
+                          className="btn btn-xs join-item btn-outline"
+                          onClick={() => insertSuggestion(text)}
+                          aria-label={`Insert suggestion: ${text}`}
+                        >
+                          {text}
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-xs join-item btn-ghost"
+                          onClick={() => replaceWithSuggestion(text)}
+                          aria-label={`Add suggestion: ${text}`}
+                        >
+                          Add
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
