@@ -74,7 +74,7 @@ export const AdditionalContextStep: React.FC<AdditionalContextStepProps> = ({
     );
   }, []);
 
-  // Insert/Replace helpers
+  // Insert/Remove helpers
   const insertSuggestion = useCallback(
     (text: string) => {
       const current = (options.customization_prompt || '').trim();
@@ -84,6 +84,42 @@ export const AdditionalContextStep: React.FC<AdditionalContextStepProps> = ({
       handlePromptChange(next);
     },
     [options.customization_prompt, handlePromptChange]
+  );
+
+  const removeSuggestion = useCallback(
+    (text: string) => {
+      const current = (options.customization_prompt || '').trim();
+      // Remove the text and any surrounding semicolons/spaces
+      const next = current
+        .replace(
+          new RegExp(
+            `;\\s*${text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`,
+            'g'
+          ),
+          ''
+        )
+        .replace(
+          new RegExp(
+            `${text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*;?`,
+            'g'
+          ),
+          ''
+        )
+        .replace(/;\s*$/, '') // Remove trailing semicolon
+        .replace(/^\s*;\s*/, '') // Remove leading semicolon
+        .trim();
+      handlePromptChange(next);
+    },
+    [options.customization_prompt, handlePromptChange]
+  );
+
+  // Check if a suggestion is already in the text
+  const isSuggestionSelected = useCallback(
+    (text: string) => {
+      const current = (options.customization_prompt || '').trim();
+      return current.includes(text);
+    },
+    [options.customization_prompt]
   );
 
   return (
@@ -123,26 +159,39 @@ export const AdditionalContextStep: React.FC<AdditionalContextStepProps> = ({
                     </span>
                   </div>
                   <div className="grid grid-cols-2 gap-2">
-                    {items.map((text) => (
-                      <div key={text} className="join">
-                        <button
-                          type="button"
-                          className="btn btn-xs join-item btn-outline"
-                          onClick={() => insertSuggestion(text)}
-                          aria-label={`Insert suggestion: ${text}`}
-                        >
-                          {text}
-                        </button>
-                        <button
-                          type="button"
-                          className="btn btn-xs join-item btn-ghost border border-base-300"
-                          onClick={() => insertSuggestion(text)}
-                          aria-label={`Add suggestion: ${text}`}
-                        >
-                          Add
-                        </button>
-                      </div>
-                    ))}
+                    {items.map((text) => {
+                      const isSelected = isSuggestionSelected(text);
+                      return (
+                        <div key={text} className="join">
+                          <button
+                            type="button"
+                            className="btn btn-xs join-item btn-outline"
+                            onClick={() => insertSuggestion(text)}
+                            aria-label={`Insert suggestion: ${text}`}
+                          >
+                            {text}
+                          </button>
+                          <button
+                            type="button"
+                            className={`btn btn-xs join-item border border-base-300 ${
+                              isSelected ? 'btn-error btn-outline' : 'btn-ghost'
+                            }`}
+                            onClick={() =>
+                              isSelected
+                                ? removeSuggestion(text)
+                                : insertSuggestion(text)
+                            }
+                            aria-label={
+                              isSelected
+                                ? `Remove suggestion: ${text}`
+                                : `Add suggestion: ${text}`
+                            }
+                          >
+                            {isSelected ? 'Remove' : 'Add'}
+                          </button>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               </div>
