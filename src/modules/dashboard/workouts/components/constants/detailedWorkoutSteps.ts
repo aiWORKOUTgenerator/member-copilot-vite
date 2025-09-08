@@ -1,4 +1,4 @@
-import { Target, Activity, Heart } from 'lucide-react';
+import { Target, Activity, Heart, MessageSquare } from 'lucide-react';
 import type { PerWorkoutOptions } from '../types';
 import type { ComponentType } from 'react';
 import { CUSTOMIZATION_FIELD_KEYS } from '../../constants/fieldKeys';
@@ -130,6 +130,36 @@ export const DETAILED_WORKOUT_STEPS: DetailedWorkoutStep[] = [
 
       return {
         isValid: true,
+        completionPercentage: Math.round(
+          (filledFields.length / fields.length) * 100
+        ),
+        missingFields: fields.filter((field) => !filledFields.includes(field)),
+      };
+    },
+  },
+  {
+    id: 'additional-context',
+    label: 'Additional Context',
+    description: 'Custom requirements and specific goals',
+    category: 'Custom Requirements & Goals',
+    fields: ['customization_prompt' as keyof PerWorkoutOptions],
+    icon: MessageSquare,
+    validation: (options) => {
+      const fields = [
+        'customization_prompt' as keyof PerWorkoutOptions,
+      ] as const;
+      const filledFields = fields.filter((field) => {
+        const value = options[field];
+        return (
+          value !== undefined &&
+          value !== null &&
+          typeof value === 'string' &&
+          value.trim() !== ''
+        );
+      });
+
+      return {
+        isValid: true, // Optional field, so always valid
         completionPercentage: Math.round(
           (filledFields.length / fields.length) * 100
         ),

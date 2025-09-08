@@ -33,6 +33,8 @@ export interface ModernFormHeaderProps {
     isActive: boolean;
     isCompleted?: boolean;
   }>;
+  /** Step click handler */
+  onStepClick?: (stepId: string) => void;
   /** Additional content to render in the header */
   children?: ReactNode;
   /** Custom CSS classes for the container */
@@ -64,6 +66,7 @@ export const ModernFormHeader: React.FC<ModernFormHeaderProps> = ({
   autoAdvanceDisabled = false,
   viewMode,
   steps = [],
+  onStepClick,
   children,
   className = '',
 }) => {
@@ -180,15 +183,18 @@ export const ModernFormHeader: React.FC<ModernFormHeaderProps> = ({
         {/* Step Navigation */}
         {steps.length > 0 && (
           <div className="relative">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-evenly">
               {steps.map((step, index) => (
                 <div key={step.id} className="flex flex-col items-center">
-                  <div
+                  <button
+                    onClick={() => onStepClick?.(step.id)}
                     className={`relative w-16 h-16 rounded-2xl flex items-center justify-center transition-all duration-300 ${
                       step.isActive
                         ? 'bg-gradient-to-br from-primary to-primary/80 shadow-lg shadow-primary/30 transform scale-110'
-                        : 'bg-white/20 border border-white/30'
-                    }`}
+                        : 'bg-white/20 border border-white/30 hover:bg-white/30 hover:scale-105'
+                    } ${onStepClick ? 'cursor-pointer' : 'cursor-default'}`}
+                    disabled={!onStepClick}
+                    aria-label={`Step ${index + 1}: ${step.label}`}
                   >
                     <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
                       <span
@@ -202,7 +208,7 @@ export const ModernFormHeader: React.FC<ModernFormHeaderProps> = ({
                     {step.isActive && (
                       <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-accent to-accent/80 rounded-full animate-pulse"></div>
                     )}
-                  </div>
+                  </button>
                   <div className="mt-3 text-center">
                     <h5
                       className={`font-semibold ${
@@ -221,27 +227,6 @@ export const ModernFormHeader: React.FC<ModernFormHeaderProps> = ({
                   </div>
                 </div>
               ))}
-
-              {/* Connector Lines */}
-              {steps.length > 1 && (
-                <>
-                  {steps.slice(0, -1).map((_, index) => (
-                    <div
-                      key={`connector-${index}`}
-                      className="flex-1 mx-4 relative"
-                    >
-                      <div className="h-1 bg-white/20 rounded-full overflow-hidden">
-                        <div
-                          className={`h-full bg-gradient-to-r from-primary to-accent rounded-full transition-all duration-500 ${
-                            steps[index + 1]?.isActive ? 'w-full' : 'w-0'
-                          }`}
-                        ></div>
-                      </div>
-                      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-3 h-3 bg-gradient-to-br from-primary to-accent rounded-full shadow-lg"></div>
-                    </div>
-                  ))}
-                </>
-              )}
             </div>
           </div>
         )}

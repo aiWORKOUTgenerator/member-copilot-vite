@@ -1,0 +1,281 @@
+import React, { useCallback, useEffect, useRef } from 'react';
+import type { PerWorkoutOptions } from '../types';
+import { useWorkoutAnalytics } from '../../hooks/useWorkoutAnalytics';
+import { WORKOUT_PROMPT_EXAMPLES } from '../../constants/promptExamples';
+
+// Group examples by category once at module level since WORKOUT_PROMPT_EXAMPLES is constant
+const EXAMPLES_BY_CATEGORY = WORKOUT_PROMPT_EXAMPLES.reduce<
+  Record<string, string[]>
+>((acc, ex) => {
+  if (!acc[ex.category]) acc[ex.category] = [];
+  acc[ex.category].push(ex.text);
+  return acc;
+}, {});
+
+/**
+ * Props for the AdditionalContextStep component
+ */
+export interface AdditionalContextStepProps {
+  /** Current workout options including customization prompt */
+  options: PerWorkoutOptions;
+  /** Callback to handle option changes */
+  onChange: (key: keyof PerWorkoutOptions, value: unknown) => void;
+  /** Validation errors for the step */
+  errors: Partial<Record<keyof PerWorkoutOptions, string>>;
+  /** Whether the step is disabled */
+  disabled?: boolean;
+  /** Display variant (currently unused) */
+  variant?: 'simple' | 'detailed';
+}
+
+/**
+ * AdditionalContextStep component for the 4th step in detailed workout setup
+ *
+ * Allows users to add custom context to their workout generation request.
+ * Features a carousel of categorized suggestions and a textarea for custom input.
+ * Supports adding/removing suggestions with semicolon separation.
+ *
+ * @param props - Component props
+ * @returns JSX element for the additional context step
+ */
+export const AdditionalContextStep: React.FC<AdditionalContextStepProps> = ({
+  options,
+  onChange,
+  errors,
+  disabled = false,
+}) => {
+  // Analytics integration for tracking user interactions
+  const { trackStepCompletion, trackValidationError } = useWorkoutAnalytics();
+  const startTime = useRef(Date.now());
+
+  // Track step completion when component unmounts
+  useEffect(() => {
+    const startTimeValue = startTime.current;
+    return () => {
+      const duration = Date.now() - startTimeValue;
+      const fieldsCompleted = [
+        options.customization_prompt &&
+          options.customization_prompt.trim() !== '',
+      ].filter(Boolean).length;
+
+      trackStepCompletion(
+        'additional-context',
+        duration,
+        'detailed',
+        (fieldsCompleted / 1) * 100,
+        fieldsCompleted
+      );
+    };
+  }, [options.customization_prompt, trackStepCompletion]);
+
+  // Enhanced onChange handler with validation integration
+  const handleChange = useCallback(
+    (key: keyof PerWorkoutOptions, value: unknown) => {
+      // Update the value
+      onChange(key, value);
+
+      // Track validation errors if any
+      if (errors[key]) {
+        trackValidationError(key, errors[key]!, 'detailed');
+      }
+    },
+    [onChange, errors, trackValidationError]
+  );
+
+  // Handle prompt input changes
+  const handlePromptChange = useCallback(
+    (value: string) => {
+      handleChange('customization_prompt', value);
+    },
+    [handleChange]
+  );
+
+  // Use pre-computed examples grouped by category
+  const examplesByCategory = EXAMPLES_BY_CATEGORY;
+
+  // Insert/Remove helpers
+  const insertSuggestion = useCallback(
+    (text: string) => {
+      const current = (options.customization_prompt || '').trim();
+      const separator =
+        current.length > 0 && !current.endsWith(';') ? '; ' : '';
+      const next = `${current}${separator}${text}`.trim();
+      handlePromptChange(next);
+    },
+    [options.customization_prompt, handlePromptChange]
+  );
+
+  const removeSuggestion = useCallback(
+    (text: string) => {
+      const current = (options.customization_prompt || '').trim();
+      // Remove the text and any surrounding semicolons/spaces
+      const escapedText = text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const next = current
+        .replace(new RegExp(`;\\s*${escapedText}`, 'g'), '')
+        .replace(new RegExp(`${escapedText}\\s*;?`, 'g'), '')
+        .replace(/;\s*$/, '') // Remove trailing semicolon
+        .replace(/^\s*;\s*/, '') // Remove leading semicolon
+        .trim();
+      handlePromptChange(next);
+    },
+    [options.customization_prompt, handlePromptChange]
+  );
+
+  // Check if a suggestion is already in the text
+  const isSuggestionSelected = useCallback(
+    (text: string) => {
+      const current = (options.customization_prompt || '').trim();
+      return current.includes(text);
+    },
+    [options.customization_prompt]
+  );
+
+  return (
+    <div className="space-y-6" data-testid="additional-context-step">
+      {/* Header */}
+      <div className="text-center mb-4">
+        <div className="inline-flex items-center gap-2">
+          <h3 className="text-xl font-semibold text-base-content">
+            Additional Context
+          </h3>
+          <span className="badge badge-ghost">Optional</span>
+        </div>
+        <p className="text-base-content/70 mt-1">
+          Add any details that don’t fit the previous steps. Pick a suggestion
+          or write your own.
+        </p>
+      </div>
+
+      {/* Suggestions Carousel (full width items) */}
+      <div className="space-y-4">
+        <div className="mb-3">
+          <h4 className="text-sm font-semibold text-base-content">
+            Suggestions & examples
+          </h4>
+          <p className="text-sm text-base-content/70">
+            Tap to add suggestions to your context.
+          </p>
+        </div>
+        <div className="carousel w-full h-80">
+          {Object.entries(examplesByCategory).map(([category, items]) => (
+            <div key={category} className="carousel-item w-full p-6">
+              <div className="card bg-base-100/60 backdrop-blur border border-white/20 shadow-xl w-4/5 mx-auto h-full">
+                <div className="card-body p-4 md:p-5">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium capitalize">
+                      {category}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    {items.map((text) => {
+                      const isSelected = isSuggestionSelected(text);
+                      return (
+                        <div key={text} className="join w-full">
+                          <button
+                            type="button"
+                            className="btn btn-xs join-item btn-outline flex-1 min-w-0"
+                            onClick={() => insertSuggestion(text)}
+                            aria-label={`Insert suggestion: ${text}`}
+                          >
+                            <span className="truncate text-left">{text}</span>
+                          </button>
+                          <button
+                            type="button"
+                            className={`btn btn-xs join-item border border-base-300 flex-shrink-0 ${
+                              isSelected ? 'btn-error btn-outline' : 'btn-ghost'
+                            }`}
+                            onClick={() =>
+                              isSelected
+                                ? removeSuggestion(text)
+                                : insertSuggestion(text)
+                            }
+                            aria-label={
+                              isSelected
+                                ? `Remove suggestion: ${text}`
+                                : `Add suggestion: ${text}`
+                            }
+                          >
+                            {isSelected ? 'Remove' : 'Add'}
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Full-width Editor below cards */}
+      <div>
+        <div className="card bg-base-100/60 backdrop-blur border border-white/20 shadow-xl">
+          <div className="card-body p-4 md:p-6">
+            <label htmlFor="additional-context" className="label">
+              <span className="label-text font-medium">Additional Context</span>
+              <span className="label-text-alt text-base-content/60">
+                10–500 characters
+              </span>
+            </label>
+            <textarea
+              id="additional-context"
+              className="textarea textarea-bordered w-full h-40 md:h-48"
+              placeholder="e.g., Apartment-friendly, no jumping; prioritize mobility and core; avoid overhead pressing due to shoulder"
+              value={options.customization_prompt || ''}
+              onChange={(e) => handlePromptChange(e.target.value)}
+              disabled={disabled}
+              aria-describedby="additional-context-help"
+            />
+            <div className="flex items-center justify-between mt-2">
+              <p
+                id="additional-context-help"
+                className="text-xs text-base-content/60"
+              >
+                You can insert suggestions above, then edit the text as you
+                like.
+              </p>
+              <span className="text-xs text-base-content/60">
+                {(options.customization_prompt || '').length} / 500
+              </span>
+            </div>
+
+            {errors.customization_prompt && (
+              <div className="alert alert-error mt-3">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="stroke-current shrink-0 h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <span>{errors.customization_prompt}</span>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Tips */}
+      <div className="bg-base-200/50 rounded-lg p-4">
+        <h4 className="font-medium text-base-content mb-2">
+          💡 Tips for better results
+        </h4>
+        <ul className="text-sm text-base-content/70 space-y-1">
+          <li>• Be specific about environment (apartment, hotel, outdoor)</li>
+          <li>• Mention limitations or needed modifications</li>
+          <li>• Include current energy or mood if relevant</li>
+          <li>• Specify equipment preferences or restrictions</li>
+        </ul>
+      </div>
+    </div>
+  );
+};
+
+export default AdditionalContextStep;

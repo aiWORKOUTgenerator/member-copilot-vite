@@ -8,7 +8,7 @@ import {
   validateDetailedStep,
   validateCompleteWorkoutSetup,
   getFieldValidationState,
-  isStepComplete,
+  isStepNavigable,
   getStepCompletionPercentage,
   getOverallCompletionPercentage,
   type WorkoutOptions,
@@ -195,13 +195,13 @@ describe('validateDetailedStep', () => {
       expect(Object.keys(result.errors)).toHaveLength(0);
     });
 
-    it('should require focus and duration', () => {
+    it('should allow empty focus and duration (now optional)', () => {
       const options: WorkoutOptions = {};
 
       const result = validateDetailedStep('workout-structure', options);
-      expect(result.isValid).toBe(false);
-      expect(result.errors.customization_focus).toBeDefined();
-      expect(result.errors.customization_duration).toBeDefined();
+      expect(result.isValid).toBe(true);
+      expect(result.errors.customization_focus).toBeUndefined();
+      expect(result.errors.customization_duration).toBeUndefined();
     });
 
     it('should validate areas count', () => {
@@ -314,12 +314,12 @@ describe('validateDetailedStep', () => {
       expect(Object.keys(result.errors)).toHaveLength(0);
     });
 
-    it('should require equipment selection', () => {
+    it('should allow empty equipment selection (now optional)', () => {
       const options: WorkoutOptions = {};
 
       const result = validateDetailedStep('equipment-preferences', options);
-      expect(result.isValid).toBe(false);
-      expect(result.errors.customization_equipment).toBeDefined();
+      expect(result.isValid).toBe(true);
+      expect(result.errors.customization_equipment).toBeUndefined();
     });
 
     it('should validate equipment count', () => {
@@ -382,16 +382,16 @@ describe('validateCompleteWorkoutSetup', () => {
     expect(Object.keys(result.errors)).toHaveLength(0);
   });
 
-  it('should collect errors from all steps', () => {
+  it('should allow empty options (all fields now optional)', () => {
     const options: WorkoutOptions = {
-      // Missing required fields from multiple steps
+      // All fields are now optional
     };
 
     const result = validateCompleteWorkoutSetup(options);
-    expect(result.isValid).toBe(false);
-    expect(result.errors.customization_focus).toBeDefined(); // workout-structure
-    expect(result.errors.customization_duration).toBeDefined(); // workout-structure
-    expect(result.errors.customization_equipment).toBeDefined(); // equipment-preferences
+    expect(result.isValid).toBe(true);
+    expect(result.errors.customization_focus).toBeUndefined(); // workout-structure
+    expect(result.errors.customization_duration).toBeUndefined(); // workout-structure
+    expect(result.errors.customization_equipment).toBeUndefined(); // equipment-preferences
   });
 
   it('should collect suggestions from all steps', () => {
@@ -438,33 +438,33 @@ describe('getFieldValidationState', () => {
   });
 });
 
-describe('isStepComplete', () => {
+describe('isStepNavigable', () => {
   it('should return true for complete workout-structure step', () => {
     const options: WorkoutOptions = {
       customization_focus: 'strength',
       customization_duration: 30,
     };
 
-    expect(isStepComplete('workout-structure', options)).toBe(true);
+    expect(isStepNavigable('workout-structure', options)).toBe(true);
   });
 
-  it('should return false for incomplete workout-structure step', () => {
+  it('should return true for incomplete workout-structure step (now optional)', () => {
     const options: WorkoutOptions = {
       customization_focus: 'strength',
-      // Missing duration
+      // Missing duration - now allowed
     };
 
-    expect(isStepComplete('workout-structure', options)).toBe(false);
+    expect(isStepNavigable('workout-structure', options)).toBe(true);
   });
 
   it('should return true for empty current-state step', () => {
     const options: WorkoutOptions = {};
-    expect(isStepComplete('current-state', options)).toBe(true);
+    expect(isStepNavigable('current-state', options)).toBe(true);
   });
 
-  it('should return false for incomplete equipment-preferences step', () => {
+  it('should return true for incomplete equipment-preferences step (now optional)', () => {
     const options: WorkoutOptions = {};
-    expect(isStepComplete('equipment-preferences', options)).toBe(false);
+    expect(isStepNavigable('equipment-preferences', options)).toBe(true);
   });
 });
 

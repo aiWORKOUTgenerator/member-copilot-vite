@@ -41,6 +41,8 @@ export const DETAILED_VALIDATION_MESSAGES = {
   INCLUDE_MAX_LENGTH: 'Exercise list is too long (max 500 characters)',
   EXCLUDE_MAX_LENGTH: 'Exercise list is too long (max 500 characters)',
   INVALID_EXERCISE_FORMAT: 'Please separate exercises with commas',
+  PROMPT_MAX_LENGTH: 'Additional context is too long (max 500 characters)',
+  PROMPT_MIN_LENGTH: 'Additional context must be at least 10 characters',
 
   // Progressive validation messages
   COMPLETE_WELLNESS_GROUP:

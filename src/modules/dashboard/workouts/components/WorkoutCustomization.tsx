@@ -13,6 +13,7 @@ import {
   WorkoutStructureStep,
   EquipmentPreferencesStep,
   CurrentStateStep,
+  AdditionalContextStep,
 } from './steps';
 import { CUSTOMIZATION_FIELD_KEYS } from '../constants/fieldKeys';
 
@@ -38,6 +39,7 @@ export default function WorkoutCustomization({
   mode = 'quick',
   activeQuickStep,
   onQuickStepChange,
+  onGenerateWorkout,
 }: WorkoutCustomizationProps & {
   activeQuickStep?: 'focus-energy' | 'duration-equipment';
   onQuickStepChange?: (step: 'focus-energy' | 'duration-equipment') => void;
@@ -138,7 +140,7 @@ export default function WorkoutCustomization({
         currentStepId: detailedSteps.currentStep,
         setCurrentStep: detailedSteps.setCurrentStep,
         enabled: AUTO_SCROLL_DETAILED_MODE_ENABLED,
-        isStepComplete: () => false,
+        isStepComplete: () => true, // All steps navigable in detailed mode
         getNextField: () => null,
         getNextStep: () => null,
       };
@@ -657,6 +659,7 @@ export default function WorkoutCustomization({
               isCompleted: validation.completionPercentage === 100,
             };
           })}
+          onStepClick={detailedSteps.setCurrentStep}
         />
 
         {/* Scroll Down Indicator */}
@@ -735,6 +738,18 @@ export default function WorkoutCustomization({
               />
             </div>
           )}
+
+          {detailedSteps.currentStep === 'additional-context' && (
+            <div className="scroll-mt-4">
+              <AdditionalContextStep
+                options={options}
+                onChange={handleChange}
+                errors={errors}
+                disabled={disabled}
+                variant={viewMode}
+              />
+            </div>
+          )}
         </div>
 
         {/* Navigation */}
@@ -755,14 +770,25 @@ export default function WorkoutCustomization({
             </span>
           </div>
 
-          <button
-            type="button"
-            className="btn btn-primary btn-active"
-            onClick={detailedSteps.goToNextStep}
-            disabled={!detailedSteps.canGoNext || disabled}
-          >
-            Next
-          </button>
+          {detailedSteps.isLastStep ? (
+            <button
+              type="button"
+              className="btn btn-primary btn-active"
+              onClick={onGenerateWorkout}
+              disabled={disabled}
+            >
+              Generate Workout
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="btn btn-primary btn-active"
+              onClick={detailedSteps.goToNextStep}
+              disabled={!detailedSteps.canGoNext || disabled}
+            >
+              Next
+            </button>
+          )}
         </div>
       </div>
     );

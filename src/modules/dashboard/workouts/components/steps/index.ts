@@ -10,3 +10,7 @@ export {
   CurrentStateStep,
   type CurrentStateStepProps,
 } from './CurrentStateStep';
+export {
+  AdditionalContextStep,
+  type AdditionalContextStepProps,
+} from './AdditionalContextStep';

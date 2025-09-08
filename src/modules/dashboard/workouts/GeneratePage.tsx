@@ -7,11 +7,7 @@ import { PerWorkoutOptions } from './components/types';
 import { useAnalytics } from '@/hooks/useAnalytics';
 import { ButtonStateLogic } from './selectionCountingLogic';
 import { useSelectionSummary } from './hooks/useSelectionSummary';
-import {
-  SelectionSummary,
-  PromptInputWithExamples,
-} from '@/ui/shared/molecules';
-import { WORKOUT_PROMPT_EXAMPLES } from './constants/promptExamples';
+import { SelectionSummary } from '@/ui/shared/molecules';
 import { useConfiguration } from '@/hooks/useConfiguration';
 import FloatingClipboardFab from '@/ui/shared/molecules/FloatingClipboardFab';
 import { WORKOUTS_GENERATE_ROUTE } from './constants';
@@ -25,7 +21,6 @@ export default function GenerateWorkoutPage() {
   const [activeQuickStep, setActiveQuickStep] = useState<
     'focus-energy' | 'duration-equipment'
   >('focus-energy');
-  const [prompt, setPrompt] = useState('');
   const [perWorkoutOptions, setPerWorkoutOptions] = useState<PerWorkoutOptions>(
     {}
   );
@@ -140,9 +135,7 @@ export default function GenerateWorkoutPage() {
         }
       }
     } else {
-      // Detailed mode - use existing logic
-      const workoutPrompt = prompt.trim();
-      if (!workoutPrompt) return;
+      // Detailed mode - prompt is now optional and handled in the step
 
       setIsGenerating(true);
 
@@ -163,6 +156,8 @@ export default function GenerateWorkoutPage() {
         // Submit string-formatted customization options
         const combinedParams = stringOptions;
 
+        const workoutPrompt =
+          perWorkoutOptions.customization_prompt || 'Quick workout generation';
         const response = await createWorkout(
           configId,
           combinedParams,
@@ -335,16 +330,12 @@ export default function GenerateWorkoutPage() {
                   errors={errors}
                   disabled={isGenerating}
                   mode="detailed"
-                />
-
-                {/* Prompt Input with Examples - Now as a separate container */}
-                <PromptInputWithExamples
-                  value={prompt}
-                  onChange={setPrompt}
-                  examples={WORKOUT_PROMPT_EXAMPLES}
-                  disabled={isGenerating}
-                  optional={false}
-                  className="mb-6"
+                  onGenerateWorkout={() => {
+                    const syntheticEvent = new Event(
+                      'submit'
+                    ) as unknown as React.FormEvent<HTMLFormElement>;
+                    handleSubmit(syntheticEvent);
+                  }}
                 />
               </>
             )}
@@ -379,22 +370,24 @@ export default function GenerateWorkoutPage() {
                   />
                 )}
 
-                {/* Generate button - right side */}
-                <button
-                  type="submit"
-                  className={`btn btn-primary transition-all duration-200 order-3 ${buttonState.className}`}
-                  disabled={buttonState.disabled}
-                  title={buttonState.disabled ? buttonState.text : undefined}
-                >
-                  {isGenerating ? (
-                    <>
-                      <span className="loading loading-spinner"></span>
-                      Generating...
-                    </>
-                  ) : (
-                    buttonState.text
-                  )}
-                </button>
+                {/* Generate button - right side (only for quick mode) */}
+                {activeTab === 'quick' && (
+                  <button
+                    type="submit"
+                    className={`btn btn-primary transition-all duration-200 order-3 ${buttonState.className}`}
+                    disabled={buttonState.disabled}
+                    title={buttonState.disabled ? buttonState.text : undefined}
+                  >
+                    {isGenerating ? (
+                      <>
+                        <span className="loading loading-spinner"></span>
+                        Generating...
+                      </>
+                    ) : (
+                      buttonState.text
+                    )}
+                  </button>
+                )}
               </div>
             </div>
           </form>

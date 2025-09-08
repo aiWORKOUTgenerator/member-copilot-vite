@@ -11,6 +11,8 @@ export interface PerWorkoutOptions {
   customization_exclude?: string;
   // New field for quick workout focus selection
   customization_goal?: string; // "energizing_boost", "quick_sweat", etc.
+  // Additional context prompt for detailed workout setup
+  customization_prompt?: string;
 }
 
 export interface CustomizationComponentProps<T = unknown> {
@@ -40,4 +42,6 @@ export interface WorkoutCustomizationProps {
   validateFocusAndEnergy?: (values: PerWorkoutOptions) => boolean;
   validateDurationAndEquipment?: (values: PerWorkoutOptions) => boolean;
   touchedFields?: Set<keyof PerWorkoutOptions>;
+  // Optional generate workout function for final step
+  onGenerateWorkout?: () => void;
 }

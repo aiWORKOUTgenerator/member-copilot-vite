@@ -17,7 +17,7 @@ export interface FormAutoScrollConfig<TFormData = Record<string, unknown>> {
   currentStepId: string;
   /** Function to set current step */
   setCurrentStep: (stepId: string) => void;
-  /** Function to check if step is complete */
+  /** Function to check if step is navigable (allowed to advance) */
   isStepComplete: (stepId: string, formData: TFormData) => boolean;
   /** Function to get next field within current step */
   getNextField?: (currentField: string, currentStepId: string) => string | null;
