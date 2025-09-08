@@ -8,7 +8,7 @@ import {
   validateDetailedStep,
   validateCompleteWorkoutSetup,
   getFieldValidationState,
-  isStepComplete,
+  isStepNavigable,
   getStepCompletionPercentage,
   getOverallCompletionPercentage,
   type WorkoutOptions,
@@ -438,14 +438,14 @@ describe('getFieldValidationState', () => {
   });
 });
 
-describe('isStepComplete', () => {
+describe('isStepNavigable', () => {
   it('should return true for complete workout-structure step', () => {
     const options: WorkoutOptions = {
       customization_focus: 'strength',
       customization_duration: 30,
     };
 
-    expect(isStepComplete('workout-structure', options)).toBe(true);
+    expect(isStepNavigable('workout-structure', options)).toBe(true);
   });
 
   it('should return true for incomplete workout-structure step (now optional)', () => {
@@ -454,17 +454,17 @@ describe('isStepComplete', () => {
       // Missing duration - now allowed
     };
 
-    expect(isStepComplete('workout-structure', options)).toBe(true);
+    expect(isStepNavigable('workout-structure', options)).toBe(true);
   });
 
   it('should return true for empty current-state step', () => {
     const options: WorkoutOptions = {};
-    expect(isStepComplete('current-state', options)).toBe(true);
+    expect(isStepNavigable('current-state', options)).toBe(true);
   });
 
   it('should return true for incomplete equipment-preferences step (now optional)', () => {
     const options: WorkoutOptions = {};
-    expect(isStepComplete('equipment-preferences', options)).toBe(true);
+    expect(isStepNavigable('equipment-preferences', options)).toBe(true);
   });
 });
 

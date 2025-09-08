@@ -1,7 +1,16 @@
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import type { PerWorkoutOptions } from '../types';
 import { useWorkoutAnalytics } from '../../hooks/useWorkoutAnalytics';
 import { WORKOUT_PROMPT_EXAMPLES } from '../../constants/promptExamples';
+
+// Group examples by category once at module level since WORKOUT_PROMPT_EXAMPLES is constant
+const EXAMPLES_BY_CATEGORY = WORKOUT_PROMPT_EXAMPLES.reduce<
+  Record<string, string[]>
+>((acc, ex) => {
+  if (!acc[ex.category]) acc[ex.category] = [];
+  acc[ex.category].push(ex.text);
+  return acc;
+}, {});
 
 /**
  * Props for the AdditionalContextStep component
@@ -81,17 +90,8 @@ export const AdditionalContextStep: React.FC<AdditionalContextStepProps> = ({
     [handleChange]
   );
 
-  // Group examples by category for rendering chips/cards
-  const examplesByCategory = useMemo(() => {
-    return WORKOUT_PROMPT_EXAMPLES.reduce<Record<string, string[]>>(
-      (acc, ex) => {
-        if (!acc[ex.category]) acc[ex.category] = [];
-        acc[ex.category].push(ex.text);
-        return acc;
-      },
-      {}
-    );
-  }, []);
+  // Use pre-computed examples grouped by category
+  const examplesByCategory = EXAMPLES_BY_CATEGORY;
 
   // Insert/Remove helpers
   const insertSuggestion = useCallback(

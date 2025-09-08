@@ -418,7 +418,7 @@ export const isStepComplete = (
   // Parameters are kept for API compatibility but not used for validation logic
 
   // Log step completion for debugging (using parameters to avoid ESLint warnings)
-  if (process.env.NODE_ENV === 'development') {
+  if (import.meta.env.DEV) {
     console.debug(
       `Step ${step} completion check:`,
       Object.keys(options).length > 0 ? 'has options' : 'no options'
@@ -427,6 +427,14 @@ export const isStepComplete = (
 
   return true;
 };
+
+/**
+ * Deprecated: Use `isStepNavigable` for clarity.
+ * This function indicates whether the step should allow navigation forward,
+ * not whether all fields are fully completed.
+ * @deprecated Use isStepNavigable(step, options)
+ */
+export const isStepNavigable = isStepComplete;
 
 /**
  * Get step completion percentage

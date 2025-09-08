@@ -140,7 +140,7 @@ export default function WorkoutCustomization({
         currentStepId: detailedSteps.currentStep,
         setCurrentStep: detailedSteps.setCurrentStep,
         enabled: AUTO_SCROLL_DETAILED_MODE_ENABLED,
-        isStepComplete: () => false,
+        isStepComplete: () => true, // All steps navigable in detailed mode
         getNextField: () => null,
         getNextStep: () => null,
       };
