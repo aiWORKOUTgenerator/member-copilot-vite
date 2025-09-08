@@ -109,21 +109,10 @@ export const AdditionalContextStep: React.FC<AdditionalContextStepProps> = ({
     (text: string) => {
       const current = (options.customization_prompt || '').trim();
       // Remove the text and any surrounding semicolons/spaces
+      const escapedText = text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       const next = current
-        .replace(
-          new RegExp(
-            `;\\s*${text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`,
-            'g'
-          ),
-          ''
-        )
-        .replace(
-          new RegExp(
-            `${text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*;?`,
-            'g'
-          ),
-          ''
-        )
+        .replace(new RegExp(`;\\s*${escapedText}`, 'g'), '')
+        .replace(new RegExp(`${escapedText}\\s*;?`, 'g'), '')
         .replace(/;\s*$/, '') // Remove trailing semicolon
         .replace(/^\s*;\s*/, '') // Remove leading semicolon
         .trim();
