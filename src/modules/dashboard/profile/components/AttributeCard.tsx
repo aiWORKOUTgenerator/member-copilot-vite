@@ -81,8 +81,8 @@ export function AttributeCard({
       tabIndex={0}
       aria-label={`${name} - ${getStatusText()} (${completionPercentage}% complete)`}
       onKeyDown={(e) => {
+        e.preventDefault();
         if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
           onClick();
         }
       }}
@@ -180,10 +180,6 @@ export function AttributeCard({
                   ? 'btn-outline btn-warning'
                   : 'btn-outline btn-primary'
             } transition-transform duration-200`}
-            onClick={(e) => {
-              e.stopPropagation();
-              onClick();
-            }}
           >
             {isComplete ? 'Review' : isIncomplete ? 'Continue' : 'Start'}
           </button>
