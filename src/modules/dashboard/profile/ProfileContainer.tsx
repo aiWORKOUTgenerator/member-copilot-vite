@@ -18,6 +18,7 @@ import { usePromptsData } from '@/hooks/usePrompts';
 import { useAutoScrollPreferences } from '@/hooks/useAutoScrollPreferences';
 import { AUTO_SCROLL_CONFIG } from '@/config/autoScroll';
 import { User } from 'lucide-react';
+import ProfileOverviewPage from './pages/ProfileOverviewPage';
 
 export default function TrainingProfileLayout() {
   const { setTitle } = useTitle();
@@ -144,7 +145,7 @@ export default function TrainingProfileLayout() {
       {/* Profile Header */}
       <div className="flex items-center gap-4 mb-6">
         <div className="relative">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-lg shadow-primary/30 transform hover:scale-105 transition-transform duration-200">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-lg shadow-primary/30 transition-transform duration-200">
             <User className="w-6 h-6 text-white" />
           </div>
           <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-accent to-accent/80 rounded-full animate-pulse"></div>
@@ -211,6 +212,14 @@ export default function TrainingProfileLayout() {
           </div>
         </div>
       )}
+
+      {/* Profile Overview Page - only show on main profile route */}
+      {pathname === '/dashboard/profile' && (
+        <div className="mt-8">
+          <ProfileOverviewPage />
+        </div>
+      )}
+
       <div>
         <Outlet />
       </div>
