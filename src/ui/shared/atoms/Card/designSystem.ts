@@ -19,7 +19,7 @@ export type CardSize = 'sm' | 'md' | 'lg' | 'xl';
 
 // Base card styling with glass morphism
 const baseCardClasses =
-  'relative overflow-hidden rounded-2xl backdrop-blur-sm border border-white/10 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 group';
+  'relative overflow-hidden rounded-2xl backdrop-blur-sm border border-white/10 shadow-lg hover:shadow-xl transition-all duration-300 group';
 
 // Default card variant with glass morphism
 const defaultCardClasses =

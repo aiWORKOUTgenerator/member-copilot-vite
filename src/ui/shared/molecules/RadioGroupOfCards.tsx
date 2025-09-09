@@ -148,7 +148,7 @@ export function RadioGroupOfCards<T extends SelectableItem>({
                 colorScheme={colorScheme}
                 isSelected={isSelected}
                 onClick={() => handleChange(item)}
-                className="hover:scale-[1.02]"
+                className=""
               >
                 <CardBody padding="md" className="flex flex-col">
                   <div className="flex-grow">
