@@ -13,15 +13,22 @@ export interface ClassSchedule {
   id: string;
   name: string;
   description: string;
-  /** @deprecated Use times_with_instructors instead */
-  instructor_names: string[];
-  /** @deprecated Use times_with_instructors instead */
-  times: string[];
-  /** New field combining instructor names with their specific times */
-  times_with_instructors?: InstructorTime[];
+  /** Instructor names with their specific times */
+  times_with_instructors: InstructorTime[];
   workout_type: string;
   frequency: string;
   is_active: boolean;
+}
+
+/**
+ * Class Schedule with location information for UI display
+ */
+export interface ClassScheduleWithLocation extends ClassSchedule {
+  /** Location information */
+  location: {
+    id: string | null;
+    name: string;
+  };
 }
 
 /**
@@ -36,6 +43,7 @@ export function isClassSchedule(obj: unknown): obj is ClassSchedule {
       'id' in obj &&
       'name' in obj &&
       'description' in obj &&
+      'times_with_instructors' in obj &&
       'workout_type' in obj &&
       'frequency' in obj &&
       'is_active' in obj &&
@@ -52,28 +60,16 @@ export function isClassSchedule(obj: unknown): obj is ClassSchedule {
 
   const schedule = obj as ClassSchedule;
 
-  // Check for new format first
-  if (schedule.times_with_instructors) {
-    return (
-      Array.isArray(schedule.times_with_instructors) &&
-      schedule.times_with_instructors.every(
-        (item) =>
-          item &&
-          typeof item === 'object' &&
-          typeof item.name === 'string' &&
-          typeof item.time === 'string'
-      )
-    );
-  }
-
-  // Fall back to legacy format validation
+  // Validate times_with_instructors format
   return (
-    'instructor_names' in schedule &&
-    'times' in schedule &&
-    Array.isArray(schedule.instructor_names) &&
-    schedule.instructor_names.every((name) => typeof name === 'string') &&
-    Array.isArray(schedule.times) &&
-    schedule.times.every((time) => typeof time === 'string')
+    Array.isArray(schedule.times_with_instructors) &&
+    schedule.times_with_instructors.every(
+      (item) =>
+        item &&
+        typeof item === 'object' &&
+        typeof item.name === 'string' &&
+        typeof item.time === 'string'
+    )
   );
 }
 
@@ -113,7 +109,7 @@ export const ClassScheduleUtils = {
   },
 
   /**
-   * Get schedules by instructor (supports both new and legacy formats)
+   * Get schedules by instructor
    */
   filterByInstructor(
     schedules: ClassSchedule[],
@@ -122,36 +118,22 @@ export const ClassScheduleUtils = {
     return schedules.filter((schedule) => {
       if (!schedule.is_active) return false;
 
-      // Use new format if available
-      if (schedule.times_with_instructors) {
-        return schedule.times_with_instructors.some(
-          (item) => item.name === instructorName
-        );
-      }
-
-      // Fall back to legacy format
-      return schedule.instructor_names.includes(instructorName);
+      return schedule.times_with_instructors.some(
+        (item) => item.name === instructorName
+      );
     });
   },
 
   /**
-   * Get all unique instructors from schedules (supports both new and legacy formats)
+   * Get all unique instructors from schedules
    */
   getUniqueInstructors(schedules: ClassSchedule[]): string[] {
     const instructors = new Set<string>();
 
     schedules.forEach((schedule) => {
-      // Use new format if available
-      if (schedule.times_with_instructors) {
-        schedule.times_with_instructors.forEach((item) => {
-          instructors.add(item.name);
-        });
-      } else {
-        // Fall back to legacy format
-        schedule.instructor_names.forEach((name) => {
-          instructors.add(name);
-        });
-      }
+      schedule.times_with_instructors.forEach((item) => {
+        instructors.add(item.name);
+      });
     });
 
     return Array.from(instructors);
@@ -161,56 +143,52 @@ export const ClassScheduleUtils = {
    * Get all instructor-time pairs for a schedule
    */
   getInstructorTimes(schedule: ClassSchedule): InstructorTime[] {
-    // Use new format if available
-    if (schedule.times_with_instructors) {
-      return schedule.times_with_instructors;
-    }
-
-    // Fall back to legacy format - create pairs from separate arrays
-    const pairs: InstructorTime[] = [];
-    const instructorCount = schedule.instructor_names.length;
-    const timeCount = schedule.times.length;
-
-    // If we have equal arrays, pair them up
-    if (instructorCount === timeCount) {
-      for (let i = 0; i < instructorCount; i++) {
-        pairs.push({
-          name: schedule.instructor_names[i],
-          time: schedule.times[i],
-        });
-      }
-    } else {
-      // If arrays don't match, create all combinations
-      schedule.instructor_names.forEach((instructor) => {
-        schedule.times.forEach((time) => {
-          pairs.push({ name: instructor, time });
-        });
-      });
-    }
-
-    return pairs;
+    return schedule.times_with_instructors;
   },
 
   /**
-   * Get all unique times from schedules (supports both new and legacy formats)
+   * Get all unique times from schedules
    */
   getUniqueTimes(schedules: ClassSchedule[]): string[] {
     const times = new Set<string>();
 
     schedules.forEach((schedule) => {
-      // Use new format if available
-      if (schedule.times_with_instructors) {
-        schedule.times_with_instructors.forEach((item) => {
-          times.add(item.time);
-        });
-      } else {
-        // Fall back to legacy format
-        schedule.times.forEach((time) => {
-          times.add(time);
-        });
-      }
+      schedule.times_with_instructors.forEach((item) => {
+        times.add(item.time);
+      });
     });
 
     return Array.from(times);
+  },
+
+  /**
+   * Get all unique locations from schedules with location info
+   */
+  getUniqueLocations(
+    schedules: ClassScheduleWithLocation[]
+  ): Array<{ id: string | null; name: string }> {
+    const locationMap = new Map<string, { id: string | null; name: string }>();
+
+    schedules.forEach((schedule) => {
+      const key = schedule.location.id || 'default';
+      if (!locationMap.has(key)) {
+        locationMap.set(key, schedule.location);
+      }
+    });
+
+    return Array.from(locationMap.values());
+  },
+
+  /**
+   * Filter schedules by location
+   */
+  filterByLocation(
+    schedules: ClassScheduleWithLocation[],
+    locationId: string | null
+  ): ClassScheduleWithLocation[] {
+    return schedules.filter((schedule) => {
+      if (!schedule.is_active) return false;
+      return schedule.location.id === locationId;
+    });
   },
 };

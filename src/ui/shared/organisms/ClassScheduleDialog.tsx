@@ -1,5 +1,6 @@
 import {
   ClassSchedule,
+  ClassScheduleWithLocation,
   ClassScheduleUtils,
 } from '@/domain/entities/classSchedule';
 import { ClassScheduleCard } from '@/ui/shared/molecules/ClassScheduleCard';
@@ -14,8 +15,8 @@ interface ClassScheduleDialogProps {
   isOpen: boolean;
   /** Function to close the dialog */
   onClose: () => void;
-  /** Array of class schedules to display */
-  schedules: ClassSchedule[];
+  /** Array of class schedules to display (with or without location info) */
+  schedules: ClassSchedule[] | ClassScheduleWithLocation[];
   /** Loading state */
   isLoading?: boolean;
   /** Error message */
@@ -25,7 +26,9 @@ interface ClassScheduleDialogProps {
   /** Dialog subtitle */
   subtitle?: string;
   /** Callback when a schedule is selected */
-  onScheduleSelect?: (schedule: ClassSchedule) => void;
+  onScheduleSelect?: (
+    schedule: ClassSchedule | ClassScheduleWithLocation
+  ) => void;
 }
 
 /**
@@ -44,6 +47,10 @@ export const ClassScheduleDialog: React.FC<ClassScheduleDialogProps> = ({
   const modalRef = useRef<HTMLDialogElement>(null);
   const [selectedWorkoutType, setSelectedWorkoutType] = useState<string>('all');
   const [selectedInstructor, setSelectedInstructor] = useState<string>('all');
+  const [selectedLocation, setSelectedLocation] = useState<string>('all');
+
+  // Check if schedules have location information
+  const hasLocationInfo = schedules.length > 0 && 'location' in schedules[0];
 
   // Get unique workout types and instructors for filtering
   const workoutTypes = useMemo(
@@ -55,6 +62,13 @@ export const ClassScheduleDialog: React.FC<ClassScheduleDialogProps> = ({
     () => ClassScheduleUtils.getUniqueInstructors(schedules),
     [schedules]
   );
+
+  const locations = useMemo(() => {
+    if (!hasLocationInfo) return [];
+    return ClassScheduleUtils.getUniqueLocations(
+      schedules as ClassScheduleWithLocation[]
+    );
+  }, [schedules, hasLocationInfo]);
 
   // Filter schedules based on selected filters
   const filteredSchedules = useMemo(() => {
@@ -74,20 +88,40 @@ export const ClassScheduleDialog: React.FC<ClassScheduleDialogProps> = ({
       );
     }
 
-    return filtered;
-  }, [schedules, selectedWorkoutType, selectedInstructor]);
+    if (selectedLocation !== 'all' && hasLocationInfo) {
+      const locationId =
+        selectedLocation === 'default' ? null : selectedLocation;
+      filtered = ClassScheduleUtils.filterByLocation(
+        filtered as ClassScheduleWithLocation[],
+        locationId
+      );
+    }
 
-  const handleScheduleClick = (schedule: ClassSchedule) => {
+    return filtered;
+  }, [
+    schedules,
+    selectedWorkoutType,
+    selectedInstructor,
+    selectedLocation,
+    hasLocationInfo,
+  ]);
+
+  const handleScheduleClick = (
+    schedule: ClassSchedule | ClassScheduleWithLocation
+  ) => {
     onScheduleSelect?.(schedule);
   };
 
   const clearFilters = () => {
     setSelectedWorkoutType('all');
     setSelectedInstructor('all');
+    setSelectedLocation('all');
   };
 
   const hasActiveFilters =
-    selectedWorkoutType !== 'all' || selectedInstructor !== 'all';
+    selectedWorkoutType !== 'all' ||
+    selectedInstructor !== 'all' ||
+    (hasLocationInfo && selectedLocation !== 'all');
 
   // Handle modal open/close state
   useEffect(() => {
@@ -227,6 +261,34 @@ export const ClassScheduleDialog: React.FC<ClassScheduleDialogProps> = ({
                   ))}
                 </select>
               </div>
+
+              {/* Location Filter */}
+              {hasLocationInfo && (
+                <div className="flex flex-col gap-1">
+                  <label
+                    htmlFor="location-filter"
+                    className="text-xs font-medium text-base-content/70"
+                  >
+                    Location
+                  </label>
+                  <select
+                    id="location-filter"
+                    value={selectedLocation}
+                    onChange={(e) => setSelectedLocation(e.target.value)}
+                    className="select select-sm select-bordered bg-base-100/20 backdrop-blur-xl border-white/10"
+                  >
+                    <option value="all">All Locations</option>
+                    {locations.map((location) => (
+                      <option
+                        key={location.id || 'default'}
+                        value={location.id || 'default'}
+                      >
+                        {location.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
             </div>
 
             {/* Active filters display */}
@@ -237,6 +299,15 @@ export const ClassScheduleDialog: React.FC<ClassScheduleDialogProps> = ({
                 )}
                 {selectedInstructor !== 'all' && (
                   <SelectionBadge value={selectedInstructor} />
+                )}
+                {hasLocationInfo && selectedLocation !== 'all' && (
+                  <SelectionBadge
+                    value={
+                      locations.find(
+                        (loc) => (loc.id || 'default') === selectedLocation
+                      )?.name || selectedLocation
+                    }
+                  />
                 )}
               </div>
             )}
@@ -282,6 +353,7 @@ export const ClassScheduleDialog: React.FC<ClassScheduleDialogProps> = ({
                       key={schedule.id}
                       schedule={schedule}
                       onClick={() => handleScheduleClick(schedule)}
+                      showLocationInChips={!hasLocationInfo}
                     />
                   ))}
                 </div>

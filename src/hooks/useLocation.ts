@@ -1,6 +1,7 @@
 import { LocationState } from '@/contexts/location.types';
 import {
   ClassSchedule,
+  ClassScheduleWithLocation,
   Equipment,
   Location,
   LocationUtils,
@@ -119,6 +120,29 @@ export function useAllEquipment(): Equipment[] {
 export function useAllClassSchedules(): ClassSchedule[] {
   const { getAllClassSchedules } = useLocation();
   return getAllClassSchedules();
+}
+
+/**
+ * Convenience hook to get all class schedules with location information
+ */
+export function useAllClassSchedulesWithLocation(): ClassScheduleWithLocation[] {
+  const { locations } = useLocation();
+
+  const schedulesWithLocation: ClassScheduleWithLocation[] = [];
+
+  locations.forEach((location) => {
+    location.class_schedules.forEach((schedule) => {
+      schedulesWithLocation.push({
+        ...schedule,
+        location: {
+          id: location.id,
+          name: location.name,
+        },
+      });
+    });
+  });
+
+  return schedulesWithLocation;
 }
 
 /**
