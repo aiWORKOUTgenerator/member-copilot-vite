@@ -37,9 +37,12 @@ import { useWorkoutInstances } from '@/hooks/useWorkoutInstances';
 import { useAnalytics } from '@/hooks/useAnalytics';
 import { useFeedbackModal } from './components/FeedbackModal.hooks';
 import { useExercisesForGeneratedWorkout } from '@/hooks/useExercises';
-import { useAllClassSchedules } from '@/hooks/useLocation';
+import { useAllClassSchedulesWithLocation } from '@/hooks/useLocation';
 import { ClassScheduleButton, ClassScheduleDialog } from '@/ui/shared';
-import { ClassSchedule } from '@/domain/entities/classSchedule';
+import {
+  ClassSchedule,
+  ClassScheduleWithLocation,
+} from '@/domain/entities/classSchedule';
 
 // Chunk data is now handled by GeneratedWorkoutChunksProvider
 
@@ -61,7 +64,7 @@ function WorkoutDetailContent() {
 
   // Class schedule state
   const [showClassScheduleDialog, setShowClassScheduleDialog] = useState(false);
-  const allClassSchedules = useAllClassSchedules();
+  const allClassSchedules = useAllClassSchedulesWithLocation();
 
   // Load exercises for this generated workout
   const { exercises } = useExercisesForGeneratedWorkout(generatedWorkoutId);
@@ -121,15 +124,26 @@ function WorkoutDetailContent() {
   }, [exercises]);
 
   // Handle class schedule selection
-  const handleScheduleSelect = (schedule: ClassSchedule) => {
+  const handleScheduleSelect = (
+    schedule: ClassScheduleWithLocation | ClassSchedule
+  ) => {
     // Track analytics
-    analytics.track('Class Schedule Selected', {
+    const analyticsData: Record<string, unknown> = {
       workoutId: generatedWorkout?.id,
       scheduleId: schedule.id,
       scheduleName: schedule.name,
       workoutType: schedule.workout_type,
+      instructorCount: schedule.times_with_instructors?.length || 0,
       tracked_at: new Date().toISOString(),
-    });
+    };
+
+    // Add location info if available
+    if ('location' in schedule) {
+      analyticsData.locationId = schedule.location.id;
+      analyticsData.locationName = schedule.location.name;
+    }
+
+    analytics.track('Class Schedule Selected', analyticsData);
 
     // Close dialog
     setShowClassScheduleDialog(false);

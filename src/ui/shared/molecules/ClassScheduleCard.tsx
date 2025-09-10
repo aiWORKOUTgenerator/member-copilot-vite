@@ -1,17 +1,20 @@
 import {
   ClassSchedule,
+  ClassScheduleWithLocation,
   ClassScheduleUtils,
 } from '@/domain/entities/classSchedule';
 import { ClassScheduleChip } from '@/ui/shared/atoms/ClassScheduleChip';
 import { Calendar, MapPin, Repeat } from 'lucide-react';
 
 interface ClassScheduleCardProps {
-  /** Class schedule data */
-  schedule: ClassSchedule;
+  /** Class schedule data (with or without location) */
+  schedule: ClassSchedule | ClassScheduleWithLocation;
   /** Additional CSS classes */
   className?: string;
   /** Click handler for the card */
   onClick?: () => void;
+  /** Whether to show location information in chips */
+  showLocationInChips?: boolean;
 }
 
 /**
@@ -21,8 +24,10 @@ export const ClassScheduleCard: React.FC<ClassScheduleCardProps> = ({
   schedule,
   className = '',
   onClick,
+  showLocationInChips = false,
 }) => {
   const instructorTimes = ClassScheduleUtils.getInstructorTimes(schedule);
+  const hasLocation = 'location' in schedule;
 
   return (
     <div
@@ -47,10 +52,20 @@ export const ClassScheduleCard: React.FC<ClassScheduleCardProps> = ({
     >
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
-        <div>
-          <h3 className="text-xl font-bold text-base-content mb-1">
-            {schedule.name}
-          </h3>
+        <div className="flex-1">
+          <div className="flex items-center gap-2 mb-1">
+            <h3 className="text-xl font-bold text-base-content">
+              {schedule.name}
+            </h3>
+            {hasLocation && (
+              <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-secondary/20 border border-secondary/30">
+                <MapPin className="w-3 h-3 text-secondary" />
+                <span className="text-xs font-medium text-secondary">
+                  {(schedule as ClassScheduleWithLocation).location.name}
+                </span>
+              </div>
+            )}
+          </div>
           <p className="text-base-content/70 text-sm leading-relaxed">
             {schedule.description}
           </p>
@@ -86,7 +101,16 @@ export const ClassScheduleCard: React.FC<ClassScheduleCardProps> = ({
         </div>
         <div className="flex flex-wrap gap-2">
           {instructorTimes.map((instructorTime, index) => (
-            <ClassScheduleChip key={index} instructorTime={instructorTime} />
+            <ClassScheduleChip
+              key={index}
+              instructorTime={instructorTime}
+              location={
+                hasLocation
+                  ? (schedule as ClassScheduleWithLocation).location
+                  : undefined
+              }
+              showLocation={showLocationInChips && hasLocation}
+            />
           ))}
         </div>
       </div>

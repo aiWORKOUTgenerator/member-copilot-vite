@@ -31,8 +31,9 @@ describe('LocationServiceImpl', () => {
             name: 'Yoga Flow',
             description:
               'Vinyasa-style class focusing on flexibility and breath',
-            instructor_names: ['Alex'],
-            times: ['Mon/Wed/Fri 6:00am'],
+            times_with_instructors: [
+              { name: 'Alex', time: 'Mon/Wed/Fri 6:00am' },
+            ],
             workout_type: 'yoga',
             frequency: 'weekly',
             is_active: true,

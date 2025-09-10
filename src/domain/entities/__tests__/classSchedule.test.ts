@@ -10,8 +10,7 @@ describe('ClassSchedule', () => {
     id: '01J2XY3IJKL1234567MNOP890',
     name: 'Yoga Flow',
     description: 'Vinyasa-style class focusing on flexibility and breath',
-    instructor_names: ['Alex'],
-    times: ['Mon/Wed/Fri 6:00am'],
+    times_with_instructors: [{ name: 'Alex', time: 'Mon/Wed/Fri 6:00am' }],
     workout_type: 'yoga',
     frequency: 'weekly',
     is_active: true,
@@ -29,19 +28,19 @@ describe('ClassSchedule', () => {
     id: '01J2XY3CDEF1234567GHIJ890',
     name: 'HIIT Bootcamp',
     description: 'High-intensity interval training for strength and cardio',
-    instructor_names: ['Jordan', 'Sam'],
-    times: ['Tue/Thu 7:00pm', 'Sat 9:00am'],
+    times_with_instructors: [
+      { name: 'Jordan', time: 'Tue/Thu 7:00pm' },
+      { name: 'Sam', time: 'Sat 9:00am' },
+    ],
     workout_type: 'hiit',
     frequency: 'weekly',
     is_active: true,
   };
 
-  const mockNewFormatSchedule: ClassSchedule = {
+  const mockPilatesSchedule: ClassSchedule = {
     id: '01J2XY3NEWF1234567ORMAT890',
     name: 'Pilates Plus',
     description: 'Core-focused pilates with strength training',
-    instructor_names: [], // Legacy fields still present but empty
-    times: [],
     times_with_instructors: [
       { name: 'Jenna S.', time: 'M/W 10am' },
       { name: 'Rick P.', time: 'Fri 7am' },
@@ -56,8 +55,8 @@ describe('ClassSchedule', () => {
       expect(isClassSchedule(mockClassSchedule)).toBe(true);
     });
 
-    it('returns true for new format with times_with_instructors', () => {
-      expect(isClassSchedule(mockNewFormatSchedule)).toBe(true);
+    it('returns true for pilates schedule', () => {
+      expect(isClassSchedule(mockPilatesSchedule)).toBe(true);
     });
 
     it('returns false for null', () => {
@@ -85,18 +84,18 @@ describe('ClassSchedule', () => {
       expect(isClassSchedule(invalidSchedule)).toBe(false);
     });
 
-    it('returns false when instructor_names is not an array', () => {
+    it('returns false when times_with_instructors is not an array', () => {
       const invalidSchedule = {
         ...mockClassSchedule,
-        instructor_names: 'Alex',
+        times_with_instructors: 'invalid',
       };
       expect(isClassSchedule(invalidSchedule)).toBe(false);
     });
 
-    it('returns false when times contains non-strings', () => {
+    it('returns false when times_with_instructors contains invalid objects', () => {
       const invalidSchedule = {
         ...mockClassSchedule,
-        times: ['Mon 6:00am', 123],
+        times_with_instructors: [{ name: 'Alex' }], // missing time
       };
       expect(isClassSchedule(invalidSchedule)).toBe(false);
     });
@@ -107,6 +106,7 @@ describe('ClassSchedule', () => {
       mockClassSchedule,
       mockInactiveSchedule,
       mockHiitSchedule,
+      mockPilatesSchedule,
     ];
 
     describe('filterByWorkoutType', () => {
@@ -129,11 +129,11 @@ describe('ClassSchedule', () => {
       });
 
       it('returns empty array when no schedules match workout type', () => {
-        const pilatesSchedules = ClassScheduleUtils.filterByWorkoutType(
+        const crossfitSchedules = ClassScheduleUtils.filterByWorkoutType(
           scheduleList,
-          'pilates'
+          'crossfit'
         );
-        expect(pilatesSchedules).toHaveLength(0);
+        expect(crossfitSchedules).toHaveLength(0);
       });
     });
 
@@ -143,9 +143,10 @@ describe('ClassSchedule', () => {
           scheduleList,
           'weekly'
         );
-        expect(weeklySchedules).toHaveLength(2);
+        expect(weeklySchedules).toHaveLength(3);
         expect(weeklySchedules).toContain(mockClassSchedule);
         expect(weeklySchedules).toContain(mockHiitSchedule);
+        expect(weeklySchedules).toContain(mockPilatesSchedule);
       });
 
       it('returns empty array when no schedules match frequency', () => {
@@ -163,7 +164,8 @@ describe('ClassSchedule', () => {
           ClassScheduleUtils.getUniqueWorkoutTypes(scheduleList);
         expect(workoutTypes).toContain('yoga');
         expect(workoutTypes).toContain('hiit');
-        expect(workoutTypes).toHaveLength(2);
+        expect(workoutTypes).toContain('pilates');
+        expect(workoutTypes).toHaveLength(3);
       });
 
       it('returns empty array for empty schedule list', () => {
@@ -216,7 +218,9 @@ describe('ClassSchedule', () => {
         expect(instructors).toContain('Alex');
         expect(instructors).toContain('Jordan');
         expect(instructors).toContain('Sam');
-        expect(instructors).toHaveLength(3);
+        expect(instructors).toContain('Jenna S.');
+        expect(instructors).toContain('Rick P.');
+        expect(instructors).toHaveLength(5);
       });
 
       it('returns empty array for empty schedule list', () => {
@@ -224,10 +228,10 @@ describe('ClassSchedule', () => {
         expect(instructors).toHaveLength(0);
       });
 
-      it('works with new format times_with_instructors', () => {
-        const scheduleListWithNew = [mockNewFormatSchedule, mockClassSchedule];
+      it('works with multiple schedules', () => {
+        const scheduleListSubset = [mockPilatesSchedule, mockClassSchedule];
         const instructors =
-          ClassScheduleUtils.getUniqueInstructors(scheduleListWithNew);
+          ClassScheduleUtils.getUniqueInstructors(scheduleListSubset);
         expect(instructors).toContain('Jenna S.');
         expect(instructors).toContain('Rick P.');
         expect(instructors).toContain('Alex');
@@ -236,71 +240,47 @@ describe('ClassSchedule', () => {
     });
 
     describe('getInstructorTimes', () => {
-      it('returns instructor-time pairs from new format', () => {
-        const pairs = ClassScheduleUtils.getInstructorTimes(
-          mockNewFormatSchedule
-        );
+      it('returns instructor-time pairs from pilates schedule', () => {
+        const pairs =
+          ClassScheduleUtils.getInstructorTimes(mockPilatesSchedule);
         expect(pairs).toHaveLength(2);
         expect(pairs[0]).toEqual({ name: 'Jenna S.', time: 'M/W 10am' });
         expect(pairs[1]).toEqual({ name: 'Rick P.', time: 'Fri 7am' });
       });
 
-      it('creates pairs from legacy format with equal arrays', () => {
+      it('returns instructor-time pairs from yoga schedule', () => {
         const pairs = ClassScheduleUtils.getInstructorTimes(mockClassSchedule);
         expect(pairs).toHaveLength(1);
         expect(pairs[0]).toEqual({ name: 'Alex', time: 'Mon/Wed/Fri 6:00am' });
       });
 
-      it('creates pairs from legacy format with equal arrays (HIIT example)', () => {
+      it('returns instructor-time pairs from HIIT schedule', () => {
         const pairs = ClassScheduleUtils.getInstructorTimes(mockHiitSchedule);
-        expect(pairs).toHaveLength(2); // Equal arrays: pair them up 1:1
+        expect(pairs).toHaveLength(2);
         expect(pairs).toContainEqual({
           name: 'Jordan',
           time: 'Tue/Thu 7:00pm',
         });
         expect(pairs).toContainEqual({ name: 'Sam', time: 'Sat 9:00am' });
       });
-
-      it('creates all combinations from legacy format with unequal arrays', () => {
-        const unequalSchedule: ClassSchedule = {
-          ...mockClassSchedule,
-          instructor_names: ['Alice', 'Bob'],
-          times: ['Mon 9am', 'Wed 6pm', 'Fri 5pm'], // 2 instructors, 3 times
-        };
-        const pairs = ClassScheduleUtils.getInstructorTimes(unequalSchedule);
-        expect(pairs).toHaveLength(6); // 2 instructors × 3 times = 6 combinations
-        expect(pairs).toContainEqual({ name: 'Alice', time: 'Mon 9am' });
-        expect(pairs).toContainEqual({ name: 'Alice', time: 'Wed 6pm' });
-        expect(pairs).toContainEqual({ name: 'Alice', time: 'Fri 5pm' });
-        expect(pairs).toContainEqual({ name: 'Bob', time: 'Mon 9am' });
-        expect(pairs).toContainEqual({ name: 'Bob', time: 'Wed 6pm' });
-        expect(pairs).toContainEqual({ name: 'Bob', time: 'Fri 5pm' });
-      });
     });
 
     describe('getUniqueTimes', () => {
-      it('returns unique times from new format', () => {
-        const times = ClassScheduleUtils.getUniqueTimes([
-          mockNewFormatSchedule,
-        ]);
+      it('returns unique times from pilates schedule', () => {
+        const times = ClassScheduleUtils.getUniqueTimes([mockPilatesSchedule]);
         expect(times).toContain('M/W 10am');
         expect(times).toContain('Fri 7am');
         expect(times).toHaveLength(2);
       });
 
-      it('returns unique times from legacy format', () => {
+      it('returns unique times from yoga schedule', () => {
         const times = ClassScheduleUtils.getUniqueTimes([mockClassSchedule]);
         expect(times).toContain('Mon/Wed/Fri 6:00am');
         expect(times).toHaveLength(1);
       });
 
-      it('combines times from both formats', () => {
-        const scheduleListMixed = [
-          mockNewFormatSchedule,
-          mockClassSchedule,
-          mockHiitSchedule,
-        ];
-        const times = ClassScheduleUtils.getUniqueTimes(scheduleListMixed);
+      it('combines times from multiple schedules', () => {
+        const times = ClassScheduleUtils.getUniqueTimes(scheduleList);
         expect(times).toContain('M/W 10am');
         expect(times).toContain('Fri 7am');
         expect(times).toContain('Mon/Wed/Fri 6:00am');
@@ -310,21 +290,19 @@ describe('ClassSchedule', () => {
       });
     });
 
-    describe('filterByInstructor with new format', () => {
-      it('filters by instructor using new format', () => {
-        const scheduleListWithNew = [mockNewFormatSchedule, mockClassSchedule];
+    describe('filterByInstructor', () => {
+      it('filters by instructor from pilates schedule', () => {
         const jennaSchedules = ClassScheduleUtils.filterByInstructor(
-          scheduleListWithNew,
+          scheduleList,
           'Jenna S.'
         );
         expect(jennaSchedules).toHaveLength(1);
-        expect(jennaSchedules[0].id).toBe(mockNewFormatSchedule.id);
+        expect(jennaSchedules[0].id).toBe(mockPilatesSchedule.id);
       });
 
-      it('filters by instructor using legacy format fallback', () => {
-        const scheduleListWithNew = [mockNewFormatSchedule, mockClassSchedule];
+      it('filters by instructor from yoga schedule', () => {
         const alexSchedules = ClassScheduleUtils.filterByInstructor(
-          scheduleListWithNew,
+          scheduleList,
           'Alex'
         );
         expect(alexSchedules).toHaveLength(1);
