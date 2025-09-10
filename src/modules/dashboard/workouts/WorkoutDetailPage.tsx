@@ -37,6 +37,9 @@ import { useWorkoutInstances } from '@/hooks/useWorkoutInstances';
 import { useAnalytics } from '@/hooks/useAnalytics';
 import { useFeedbackModal } from './components/FeedbackModal.hooks';
 import { useExercisesForGeneratedWorkout } from '@/hooks/useExercises';
+import { useAllClassSchedules } from '@/hooks/useLocation';
+import { ClassScheduleButton, ClassScheduleDialog } from '@/ui/shared';
+import { ClassSchedule } from '@/domain/entities/classSchedule';
 
 // Chunk data is now handled by GeneratedWorkoutChunksProvider
 
@@ -55,6 +58,10 @@ function WorkoutDetailContent() {
   const [isCreatingInstance, setIsCreatingInstance] = useState(false);
   const { canAccessFeature } = useUserAccess();
   const analytics = useAnalytics();
+
+  // Class schedule state
+  const [showClassScheduleDialog, setShowClassScheduleDialog] = useState(false);
+  const allClassSchedules = useAllClassSchedules();
 
   // Load exercises for this generated workout
   const { exercises } = useExercisesForGeneratedWorkout(generatedWorkoutId);
@@ -112,6 +119,27 @@ function WorkoutDetailContent() {
       console.log('Loaded exercises for workout:', exercises);
     }
   }, [exercises]);
+
+  // Handle class schedule selection
+  const handleScheduleSelect = (schedule: ClassSchedule) => {
+    // Track analytics
+    analytics.track('Class Schedule Selected', {
+      workoutId: generatedWorkout?.id,
+      scheduleId: schedule.id,
+      scheduleName: schedule.name,
+      workoutType: schedule.workout_type,
+      tracked_at: new Date().toISOString(),
+    });
+
+    // Close dialog
+    setShowClassScheduleDialog(false);
+
+    // You could add additional logic here like:
+    // - Navigate to a booking page
+    // - Show a confirmation modal
+    // - Add to calendar
+    console.log('Selected class schedule:', schedule);
+  };
 
   // Track workout start from detail page
   const handleStartWorkout = async () => {
@@ -308,6 +336,30 @@ function WorkoutDetailContent() {
         </div>
       </div>
 
+      {/* Class Schedule Section */}
+      {allClassSchedules.length > 0 && (
+        <div className="mb-4">
+          <div className="bg-base-100/5 backdrop-blur-xl border border-white/10 rounded-2xl p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-lg font-semibold text-base-content mb-1">
+                  Find a Matching Class
+                </h3>
+                <p className="text-sm text-base-content/70">
+                  Join a scheduled class that matches your workout type
+                </p>
+              </div>
+              <ClassScheduleButton
+                onClick={() => setShowClassScheduleDialog(true)}
+                size="md"
+              >
+                Browse Classes
+              </ClassScheduleButton>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Trainer Persona Section */}
       {trainerPersona && (
         <div className="mb-4">
@@ -499,6 +551,16 @@ function WorkoutDetailContent() {
           </>
         )}
       </FeedbackModal>
+
+      {/* Class Schedule Dialog */}
+      <ClassScheduleDialog
+        isOpen={showClassScheduleDialog}
+        onClose={() => setShowClassScheduleDialog(false)}
+        schedules={allClassSchedules}
+        onScheduleSelect={handleScheduleSelect}
+        title="Available Classes"
+        subtitle="Find a class that matches your workout"
+      />
     </div>
   );
 }
