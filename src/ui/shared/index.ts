@@ -11,6 +11,8 @@ export * from './atoms/Icon';
 export * from './atoms/IconSet';
 export { WarningIcon } from './atoms/Icons';
 export * from './atoms/NewBadge';
+export * from './atoms/ClassScheduleChip';
+export * from './atoms/ClassScheduleButton';
 
 // Molecules
 export * from './molecules/Card';
@@ -23,6 +25,7 @@ export * from './molecules/SignOutButton';
 export * from './molecules/TrainerPersonaCard';
 export * from './molecules/ErrorBoundary';
 export * from './molecules/PathCard';
+export * from './molecules/ClassScheduleCard';
 export * from './molecules';
 
 // Organisms
@@ -30,6 +33,7 @@ export * from './organisms/FormContainer';
 export * from './organisms/AlreadyLoggedIn';
 export * from './organisms/AuthRequired';
 export * from './organisms/PageHeader';
+export * from './organisms/ClassScheduleDialog';
 export * from './organisms';
 
 // Templates
