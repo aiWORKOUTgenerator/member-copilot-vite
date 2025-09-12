@@ -19,6 +19,7 @@ export function useGeneratedWorkouts(): GeneratedWorkoutState {
     queryFn: () => generatedWorkoutService.getGeneratedWorkouts(),
     enabled: isSignedIn === true,
     staleTime: 30_000,
+    refetchOnWindowFocus: true,
   });
 
   const createMutation = useMutation<

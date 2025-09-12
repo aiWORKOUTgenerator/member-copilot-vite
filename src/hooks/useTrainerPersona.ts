@@ -1,9 +1,12 @@
-import { useEffect } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { TrainerPersona } from '@/domain/entities/trainerPersona';
 import { TrainerPersonaState } from '@/contexts/trainer-persona.types';
-import { useTrainerPersonaService } from '@/hooks/useTrainerPersonaService';
+import {
+  GenerationStartResponse,
+  TrainerPersona,
+} from '@/domain/entities/trainerPersona';
 import { useAuth } from '@/hooks/auth';
+import { useTrainerPersonaService } from '@/hooks/useTrainerPersonaService';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useEffect } from 'react';
 
 /**
  * Hook to access trainer persona data using React Query
@@ -17,13 +20,18 @@ export function useTrainerPersona(): TrainerPersonaState {
     queryKey: ['trainerPersona'],
     queryFn: () => trainerPersonaService.getTrainerPersona(),
     enabled: isSignedIn === true,
+    retry: false,
+    refetchOnWindowFocus: true,
     staleTime: 30_000,
   });
 
-  const generateMutation = useMutation<void, unknown, void>({
+  const generateMutation = useMutation<GenerationStartResponse, unknown, void>({
     mutationFn: () => trainerPersonaService.generateTrainerPersona(),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['trainerPersona'] });
+      await queryClient.invalidateQueries({
+        queryKey: ['trainerPersonaStatus'],
+      });
     },
   });
 
@@ -31,6 +39,7 @@ export function useTrainerPersona(): TrainerPersonaState {
   useEffect(() => {
     if (isSignedIn === false) {
       queryClient.removeQueries({ queryKey: ['trainerPersona'] });
+      queryClient.removeQueries({ queryKey: ['trainerPersonaStatus'] });
     }
   }, [isSignedIn, queryClient]);
 
@@ -38,17 +47,34 @@ export function useTrainerPersona(): TrainerPersonaState {
     await query.refetch();
   };
 
-  const generateTrainerPersona = async (): Promise<void> => {
-    await generateMutation.mutateAsync();
-    await query.refetch();
+  const generateTrainerPersona = async (): Promise<GenerationStartResponse> => {
+    const result = await generateMutation.mutateAsync();
+    return result;
   };
+
+  // Determine if user has no persona based on the response structure
+  const hasNoPersona = query.data?.has_persona === false || query.isError;
+
+  // Check if persona is currently generating
+  const isGenerating = query.data?.generation_status?.status === 'generating';
 
   return {
     trainerPersona: query.data ?? null,
-    isLoading: query.isFetching,
-    error: query.error instanceof Error ? query.error.message : null,
+    isLoading: query.isFetching || generateMutation.isPending,
+    error:
+      query.error instanceof Error
+        ? query.error.message
+        : generateMutation.error instanceof Error
+          ? generateMutation.error.message
+          : null,
     isLoaded: query.isFetched,
-    hasNoPersona: query.isError === true,
+    hasNoPersona,
+    isGenerating,
+    isGenerationLoading: generateMutation.isPending,
+    generationError:
+      generateMutation.error instanceof Error
+        ? generateMutation.error.message
+        : null,
     refetch,
     generateTrainerPersona,
   };
@@ -95,9 +121,33 @@ export function useTrainerPersonaHasNoPersona(): boolean {
 }
 
 /**
+ * Convenience hook to check if trainer persona is currently generating
+ */
+export function useTrainerPersonaIsGenerating(): boolean {
+  const { isGenerating } = useTrainerPersona();
+  return isGenerating;
+}
+
+/**
+ * Convenience hook to check if trainer persona generation is loading
+ */
+export function useTrainerPersonaGenerationLoading(): boolean {
+  const { isGenerationLoading } = useTrainerPersona();
+  return isGenerationLoading;
+}
+
+/**
+ * Convenience hook to get trainer persona generation error
+ */
+export function useTrainerPersonaGenerationError(): string | null {
+  const { generationError } = useTrainerPersona();
+  return generationError;
+}
+
+/**
  * Convenience hook to generate a new trainer persona
  */
-export function useGenerateTrainerPersona(): () => Promise<void> {
+export function useGenerateTrainerPersona(): () => Promise<GenerationStartResponse> {
   const { generateTrainerPersona } = useTrainerPersona();
   return generateTrainerPersona;
 }

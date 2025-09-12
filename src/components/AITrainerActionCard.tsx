@@ -3,9 +3,12 @@ import {
   useTrainerPersonaData,
   useTrainerPersonaHasNoPersona,
   useTrainerPersonaLoading,
+  useTrainerPersonaIsGenerating,
+  useTrainerPersonaGenerationLoading,
 } from '@/hooks/useTrainerPersona';
+import { useIsProfileSufficientForGeneration } from '@/hooks/useProfileCompleteness';
 import { ActionCard } from '@/ui/shared/molecules/ActionCard';
-import { Bot, Brain, Crown } from 'lucide-react';
+import { Bot, Brain, Crown, Clock } from 'lucide-react';
 import { useNavigate } from 'react-router';
 
 /**
@@ -18,12 +21,15 @@ export function AITrainerActionCard() {
   const trainerPersona = useTrainerPersonaData();
   const hasNoPersona = useTrainerPersonaHasNoPersona();
   const isLoading = useTrainerPersonaLoading();
+  const isGenerating = useTrainerPersonaIsGenerating();
+  const isGenerationLoading = useTrainerPersonaGenerationLoading();
+  const canGenerate = useIsProfileSufficientForGeneration();
 
   // Check if user has access to trainer persona feature
   const hasTrainerAccess = canAccessFeature('ai_assistant_advanced');
 
   // Show loading state while checking access
-  if (isAccessLoading || isLoading) {
+  if (isAccessLoading || isLoading || isGenerationLoading) {
     return (
       <ActionCard
         title="AI Trainer"
@@ -51,17 +57,36 @@ export function AITrainerActionCard() {
     );
   }
 
+  // If trainer is currently generating
+  if (isGenerating) {
+    return (
+      <ActionCard
+        title="AI Trainer Generating"
+        description="Your personalized AI trainer is being created. This usually takes about 30 seconds to complete."
+        actionText="View Progress"
+        onClick={() => navigate('/dashboard/trainer/generating')}
+        icon={<Clock className="w-5 h-5" />}
+        badgeText="In Progress"
+        badgeColor="badge-warning"
+      />
+    );
+  }
+
   // If user has access but no trainer persona yet
   if (hasNoPersona) {
     return (
       <ActionCard
         title="Create Your AI Trainer"
-        description="Generate your personalized AI trainer persona tailored to your fitness goals, communication preferences, and training style."
-        actionText="Generate Trainer"
+        description={
+          canGenerate
+            ? 'Generate your personalized AI trainer persona tailored to your fitness goals, communication preferences, and training style.'
+            : 'Complete your profile to generate your personalized AI trainer persona.'
+        }
+        actionText={canGenerate ? 'Generate Trainer' : 'Complete Profile'}
         onClick={() => navigate('/dashboard/trainer')}
         icon={<Brain className="w-5 h-5" />}
-        badgeText="Ready to Create"
-        badgeColor="badge-primary"
+        badgeText={canGenerate ? 'Ready to Create' : 'Profile Incomplete'}
+        badgeColor={canGenerate ? 'badge-primary' : 'badge-warning'}
       />
     );
   }

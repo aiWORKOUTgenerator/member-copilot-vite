@@ -1,15 +1,15 @@
 'use client';
 
+import { Exercise as CanonicalExercise } from '@/domain/entities/exercise';
 import { Exercise, Section } from '@/domain/entities/generatedWorkout';
 import { ExerciseInstance } from '@/domain/entities/workoutInstance';
 import { RecommendedExercise } from '@/domain/interfaces/services/WorkoutInstanceService';
-import { Exercise as CanonicalExercise } from '@/domain/entities/exercise';
 import { useAnalytics } from '@/hooks/useAnalytics';
 import { useCurrentWorkoutInstance } from '@/hooks/useCurrentWorkoutInstance';
+import { useExerciseMedia } from '@/hooks/useExerciseMedia';
+import { useExercisesForGeneratedWorkout } from '@/hooks/useExercises';
 import { useTrainerPersonaData } from '@/hooks/useTrainerPersona';
 import { useWorkoutInstances } from '@/hooks/useWorkoutInstances';
-import { useExercisesForGeneratedWorkout } from '@/hooks/useExercises';
-import { useExerciseMedia } from '@/hooks/useExerciseMedia';
 import { ExerciseMediaWithAudio } from '@/ui/shared/molecules/ExerciseMediaWithAudio';
 import { Check, Clock, Target, X } from 'lucide-react';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
@@ -1407,7 +1407,7 @@ function RecommendedExercisesTab({
                     />
                   ) : (
                     <div className="bg-primary text-primary-content flex items-center justify-center w-full h-full text-xl font-bold">
-                      {trainerPersona.trainer_name.charAt(0)}
+                      {trainerPersona.trainer_name?.charAt(0)}
                     </div>
                   )}
                 </div>
@@ -1481,7 +1481,7 @@ function RecommendedExercisesTab({
                 />
               ) : (
                 <div className="bg-primary text-primary-content flex items-center justify-center w-full h-full text-sm font-bold">
-                  {trainerPersona.trainer_name.charAt(0)}
+                  {trainerPersona.trainer_name?.charAt(0)}
                 </div>
               )}
             </div>
@@ -1627,7 +1627,7 @@ function CustomExerciseTab({
                 />
               ) : (
                 <div className="bg-secondary text-secondary-content flex items-center justify-center w-full h-full text-lg font-bold">
-                  {trainerPersona.trainer_name.charAt(0)}
+                  {trainerPersona.trainer_name?.charAt(0)}
                 </div>
               )}
             </div>

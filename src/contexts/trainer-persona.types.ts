@@ -1,5 +1,8 @@
 import { createContext } from 'react';
-import { TrainerPersona } from '@/domain/entities/trainerPersona';
+import {
+  TrainerPersona,
+  GenerationStartResponse,
+} from '@/domain/entities/trainerPersona';
 
 /**
  * TrainerPersonaState interface defines the shape of our trainer persona context value.
@@ -10,8 +13,11 @@ export interface TrainerPersonaState {
   error: string | null;
   isLoaded: boolean;
   hasNoPersona: boolean;
+  isGenerating: boolean;
+  isGenerationLoading: boolean;
+  generationError: string | null;
   refetch: () => Promise<void>;
-  generateTrainerPersona: () => Promise<void>;
+  generateTrainerPersona: () => Promise<GenerationStartResponse>;
 }
 
 /**

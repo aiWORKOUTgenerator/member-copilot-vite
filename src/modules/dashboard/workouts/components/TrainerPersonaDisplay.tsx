@@ -31,7 +31,7 @@ export function TrainerPersonaDisplay({
               />
             ) : (
               <div className="bg-primary text-primary-content flex items-center justify-center w-full h-full text-lg font-bold">
-                {trainerPersona.trainer_name.charAt(0)}
+                {trainerPersona.trainer_name?.charAt(0)}
               </div>
             )}
           </div>
