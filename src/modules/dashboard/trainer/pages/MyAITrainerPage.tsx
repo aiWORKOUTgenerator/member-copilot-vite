@@ -71,6 +71,14 @@ const MyAITrainerPage = () => {
     }
   }, [generationError]);
 
+  // Clear error toast when generation starts loading
+  useEffect(() => {
+    if (isGenerationLoading) {
+      setShowErrorToast(false);
+      setErrorMessage('');
+    }
+  }, [isGenerationLoading]);
+
   // Handle loading states
   if (isAccessLoading || isProfileLoading) {
     return (
@@ -212,8 +220,14 @@ const MyAITrainerPage = () => {
                   await generateTrainerPersona();
                   navigate('/dashboard/trainer/generating');
                 } catch (error) {
-                  // Error is already handled by the useEffect above
                   console.error('Error starting trainer generation:', error);
+                  // Show error toast for any errors not handled by the mutation state
+                  const errorMsg =
+                    error instanceof Error
+                      ? error.message
+                      : 'Failed to start trainer generation. Please try again.';
+                  setErrorMessage(errorMsg);
+                  setShowErrorToast(true);
                 }
               }}
               disabled={!isSufficientForGeneration || isGenerationLoading}
