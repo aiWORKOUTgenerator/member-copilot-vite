@@ -1,20 +1,22 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { useParams, useNavigate } from 'react-router';
+import { ContactLoadedGuard } from '@/components/ContactLoadedGuard';
+import type { WorkoutParams } from '@/domain/entities/workoutParams';
 import { useAuth } from '@/hooks/auth';
-import { useAppConfig } from '@/hooks/useConfiguration';
 import { useAnalytics } from '@/hooks/useAnalytics';
-import { Button } from '@/ui';
-import { IntakeFullScreenLayout } from '../components/IntakeFullScreenLayout';
-import { StepTransition } from '../components/StepTransition';
-import { RadioCardGroupInput } from '@/ui/shared/molecules/RadioCardGroupInput';
+import { useAppConfig } from '@/hooks/useConfiguration';
 import { useGeneratedWorkouts } from '@/hooks/useGeneratedWorkouts';
-import { useQueryClient } from '@tanstack/react-query';
 import { useLocation as useLocationState } from '@/hooks/useLocation';
 import { usePusherService } from '@/hooks/useServices';
 import { ensureWorkoutChunkBinding } from '@/services/pusher/workoutChunkBinding';
-import type { WorkoutParams } from '@/domain/entities/workoutParams';
+import { Button } from '@/ui';
+import { RadioCardGroupInput } from '@/ui/shared/molecules/RadioCardGroupInput';
+import { useQueryClient } from '@tanstack/react-query';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useNavigate, useParams } from 'react-router';
+import { IntakeFullScreenLayout } from '../components/IntakeFullScreenLayout';
+import { IntakeLoadingFallback } from '../components/IntakeLoadingFallback';
+import { StepTransition } from '../components/StepTransition';
 import type {
   AgeRange,
   DurationIntensity,
@@ -284,293 +286,295 @@ export default function QuickWorkoutIntakePage() {
     );
 
   return (
-    <IntakeFullScreenLayout
-      title={stepOrder[currentStepIndex]?.title || 'Quick Workout'}
-      footer={footer}
-    >
-      {/* Location state handling */}
-      {!hasLocationId && (
-        <section className="text-center space-y-4">
-          <h2 className="text-xl font-semibold">Invalid Link</h2>
-          <p className="text-base-content/70">
-            The link is missing a valid location. Please try again.
-          </p>
-        </section>
-      )}
-
-      {hasLocationId && isLocationsLoading && (
-        <section className="min-h-[50vh] flex items-center justify-center">
-          <span
-            className="loading loading-ring loading-lg"
-            aria-label="Loading locations"
-          ></span>
-        </section>
-      )}
-
-      {hasLocationId && !isLocationsLoading && !selectedLocation && (
-        <section className="text-center space-y-4">
-          <h2 className="text-xl font-semibold">Location Not Found</h2>
-          <p className="text-base-content/70">
-            We could not find the location for this link. Please check the link
-            and try again.
-          </p>
-          {locationsError && (
-            <p className="text-error text-sm" role="alert">
-              {locationsError}
+    <ContactLoadedGuard fallback={<IntakeLoadingFallback />}>
+      <IntakeFullScreenLayout
+        title={stepOrder[currentStepIndex]?.title || 'Quick Workout'}
+        footer={footer}
+      >
+        {/* Location state handling */}
+        {!hasLocationId && (
+          <section className="text-center space-y-4">
+            <h2 className="text-xl font-semibold">Invalid Link</h2>
+            <p className="text-base-content/70">
+              The link is missing a valid location. Please try again.
             </p>
-          )}
-        </section>
-      )}
+          </section>
+        )}
 
-      {hasLocationId && !isLocationsLoading && selectedLocation && (
-        <>
-          {/* Welcome */}
-          {currentStep === 'welcome' && (
-            <StepTransition>
-              <section className="text-center space-y-6">
-                {appConfig?.logoUrl && (
-                  <img
-                    src={appConfig.logoUrl}
-                    alt="Brand Logo"
-                    className="h-16 w-auto mx-auto"
-                  />
-                )}
-                <h1 className="text-2xl font-bold">
-                  Get An AI Powered Workout For Today
-                </h1>
-                <p className="text-base-content/70">
-                  at {selectedLocation.name}
-                </p>
-                <p className="text-base-content/70">
-                  Answer a few quick questions and we will tailor a workout for
-                  you.
-                </p>
-                <Button
-                  variant="primary"
-                  size="lg"
-                  onClick={handleStart}
-                  aria-label="Start intake"
-                  fullWidth
-                >
-                  Start
-                </Button>
-              </section>
-            </StepTransition>
-          )}
+        {hasLocationId && isLocationsLoading && (
+          <section className="min-h-[50vh] flex items-center justify-center">
+            <span
+              className="loading loading-ring loading-lg"
+              aria-label="Loading locations"
+            ></span>
+          </section>
+        )}
 
-          {/* Age Range */}
-          {currentStep === 'ageRange' && (
-            <StepTransition>
-              <section>
-                <RadioCardGroupInput
-                  id="age-range"
-                  name="ageRange"
-                  legend=""
-                  legendRef={legendRef}
-                  options={AGE_OPTIONS.map((opt) => ({
-                    id: opt,
-                    value: opt,
-                    title: opt,
-                  }))}
-                  value={responses.ageRange}
-                  onChange={(value) => {
-                    setResponses((r) => ({
-                      ...r,
-                      ageRange: value as AgeRange,
-                    }));
-                    setAttemptedNext(false);
-                    setCurrentStepIndex((idx) =>
-                      Math.min(stepOrder.length - 1, idx + 1)
-                    );
-                    analytics.track('QuickWorkoutIntake Step Next', {
-                      stepName: 'ageRange',
-                    });
-                  }}
-                  isValid={!attemptedNext || Boolean(responses.ageRange)}
-                  validationMessage="Please select an age range."
-                />
-              </section>
-            </StepTransition>
-          )}
+        {hasLocationId && !isLocationsLoading && !selectedLocation && (
+          <section className="text-center space-y-4">
+            <h2 className="text-xl font-semibold">Location Not Found</h2>
+            <p className="text-base-content/70">
+              We could not find the location for this link. Please check the
+              link and try again.
+            </p>
+            {locationsError && (
+              <p className="text-error text-sm" role="alert">
+                {locationsError}
+              </p>
+            )}
+          </section>
+        )}
 
-          {/* Experience */}
-          {currentStep === 'experience' && (
-            <StepTransition>
-              <section>
-                <RadioCardGroupInput
-                  id="experience"
-                  name="experience"
-                  legend="What is your goal and activity level?"
-                  legendRef={legendRef}
-                  options={EXPERIENCE_OPTIONS.map((opt) => ({
-                    id: opt,
-                    value: opt,
-                    title:
-                      opt === 'goal_fatloss_low'
-                        ? 'Fat loss • Low activity'
-                        : opt === 'goal_fatloss_mod'
-                          ? 'Fat loss • Somewhat active'
-                          : opt === 'goal_fatloss_high'
-                            ? 'Fat loss • Consistently active'
-                            : opt === 'goal_muscle_low'
-                              ? 'Build muscle • Low activity'
-                              : opt === 'goal_muscle_mod'
-                                ? 'Build muscle • Somewhat active'
-                                : opt === 'goal_muscle_high'
-                                  ? 'Build muscle • Consistently active'
-                                  : opt === 'goal_endurance_low_mod'
-                                    ? 'Endurance • Light/Moderate activity'
-                                    : opt === 'goal_endurance_high'
-                                      ? 'Endurance • Consistently active'
-                                      : 'Strength/Power • Regular training',
-                  }))}
-                  value={responses.experience}
-                  onChange={(value) => {
-                    setResponses((r) => ({
-                      ...r,
-                      experience: value as ExperienceLevel,
-                    }));
-                    setAttemptedNext(false);
-                    setCurrentStepIndex((idx) =>
-                      Math.min(stepOrder.length - 1, idx + 1)
-                    );
-                    analytics.track('QuickWorkoutIntake Step Next', {
-                      stepName: 'experience',
-                    });
-                  }}
-                  isValid={!attemptedNext || Boolean(responses.experience)}
-                  validationMessage="Please select your experience."
-                />
-              </section>
-            </StepTransition>
-          )}
-
-          {/* Duration & Intensity */}
-          {currentStep === 'energy' && (
-            <StepTransition>
-              <section>
-                <RadioCardGroupInput
-                  id="duration-intensity"
-                  name="energy"
-                  legend="How much time do you have and at what intensity?"
-                  legendRef={legendRef}
-                  options={DURATION_INTENSITY_OPTIONS.map((opt) => ({
-                    id: opt,
-                    value: opt,
-                    title:
-                      opt === 'dur30_low'
-                        ? '30 min • Low intensity'
-                        : opt === 'dur30_mod'
-                          ? '30 min • Moderate intensity'
-                          : opt === 'dur30_high'
-                            ? '30 min • High intensity'
-                            : opt === 'dur45_low'
-                              ? '45 min • Low intensity'
-                              : opt === 'dur45_mod'
-                                ? '45 min • Moderate intensity'
-                                : opt === 'dur45_high'
-                                  ? '45 min • High intensity'
-                                  : '60 min • Low intensity',
-                  }))}
-                  value={responses.energy}
-                  onChange={(value) => {
-                    setResponses((r) => ({
-                      ...r,
-                      energy: value as DurationIntensity,
-                    }));
-                    setAttemptedNext(false);
-
-                    analytics.track('QuickWorkoutIntake Completed', {
-                      ...responses,
-                      energy: value,
-                      tracked_at: new Date().toISOString(),
-                    });
-                    setCurrentStepIndex(
-                      stepOrder.findIndex((s) => s.key === 'complete')
-                    );
-
-                    const params: WorkoutParams = {
-                      sex_and_age: mapSexAgeToText(responses.ageRange),
-                      goal_and_activity: mapExperienceToText(
-                        responses.experience
-                      ),
-                      duration_and_intensity: mapDurationIntensityToText(
-                        value as DurationIntensity
-                      ),
-                    };
-                    const configId = appConfig?.quickWorkoutConfigurationId;
-                    if (!configId) {
-                      console.error(
-                        'Missing quickWorkoutConfigurationId from configuration'
-                      );
-                      return;
-                    }
-
-                    createWorkout(configId, params, '')
-                      .then((workout) => {
-                        // Seed chunk cache immediately to avoid missing early messages
-                        queryClient.setQueryData<string[]>(
-                          ['generatedWorkoutChunks', workout.id],
-                          (prev) => prev ?? []
-                        );
-
-                        // Subscribe to real-time chunk updates ASAP (idempotent)
-                        ensureWorkoutChunkBinding(
-                          pusherService,
-                          queryClient,
-                          workout.id
-                        );
-
-                        analytics.track('Workout Generated from Intake', {
-                          workoutId: workout.id,
-                          tracked_at: new Date().toISOString(),
-                        });
-                        navigate(`/dashboard/workouts/${workout.id}`);
-                      })
-                      .catch((err) => {
-                        console.error(
-                          'Failed to generate workout from intake:',
-                          err
-                        );
-                      });
-                  }}
-                  isValid={!attemptedNext || Boolean(responses.energy)}
-                  validationMessage="Please select your energy level."
-                />
-              </section>
-            </StepTransition>
-          )}
-
-          {/* Complete */}
-          {currentStep === 'complete' && (
-            <StepTransition>
-              <section className="text-center space-y-4">
-                <h2 className="text-2xl font-semibold">You’re all set!</h2>
-                <p className="text-base-content/70">
-                  Thanks! We’re generating your workout now. You’ll be
-                  redirected automatically to your workout.
-                </p>
-                {isGenerating && (
-                  <div className="flex items-center justify-center gap-3">
-                    <span
-                      className="loading loading-spinner"
-                      aria-label="Generating"
+        {hasLocationId && !isLocationsLoading && selectedLocation && (
+          <>
+            {/* Welcome */}
+            {currentStep === 'welcome' && (
+              <StepTransition>
+                <section className="text-center space-y-6">
+                  {appConfig?.logoUrl && (
+                    <img
+                      src={appConfig.logoUrl}
+                      alt="Brand Logo"
+                      className="h-16 w-auto mx-auto"
                     />
-                    <span className="text-sm text-base-content/70">
-                      Generating your workout…
-                    </span>
-                  </div>
-                )}
-                {generationError && (
-                  <p className="text-error text-sm" role="alert">
-                    {generationError}
+                  )}
+                  <h1 className="text-2xl font-bold">
+                    Get An AI Powered Workout For Today
+                  </h1>
+                  <p className="text-base-content/70">
+                    at {selectedLocation.name}
                   </p>
-                )}
-              </section>
-            </StepTransition>
-          )}
-        </>
-      )}
-    </IntakeFullScreenLayout>
+                  <p className="text-base-content/70">
+                    Answer a few quick questions and we will tailor a workout
+                    for you.
+                  </p>
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    onClick={handleStart}
+                    aria-label="Start intake"
+                    fullWidth
+                  >
+                    Start
+                  </Button>
+                </section>
+              </StepTransition>
+            )}
+
+            {/* Age Range */}
+            {currentStep === 'ageRange' && (
+              <StepTransition>
+                <section>
+                  <RadioCardGroupInput
+                    id="age-range"
+                    name="ageRange"
+                    legend=""
+                    legendRef={legendRef}
+                    options={AGE_OPTIONS.map((opt) => ({
+                      id: opt,
+                      value: opt,
+                      title: opt,
+                    }))}
+                    value={responses.ageRange}
+                    onChange={(value) => {
+                      setResponses((r) => ({
+                        ...r,
+                        ageRange: value as AgeRange,
+                      }));
+                      setAttemptedNext(false);
+                      setCurrentStepIndex((idx) =>
+                        Math.min(stepOrder.length - 1, idx + 1)
+                      );
+                      analytics.track('QuickWorkoutIntake Step Next', {
+                        stepName: 'ageRange',
+                      });
+                    }}
+                    isValid={!attemptedNext || Boolean(responses.ageRange)}
+                    validationMessage="Please select an age range."
+                  />
+                </section>
+              </StepTransition>
+            )}
+
+            {/* Experience */}
+            {currentStep === 'experience' && (
+              <StepTransition>
+                <section>
+                  <RadioCardGroupInput
+                    id="experience"
+                    name="experience"
+                    legend="What is your goal and activity level?"
+                    legendRef={legendRef}
+                    options={EXPERIENCE_OPTIONS.map((opt) => ({
+                      id: opt,
+                      value: opt,
+                      title:
+                        opt === 'goal_fatloss_low'
+                          ? 'Fat loss • Low activity'
+                          : opt === 'goal_fatloss_mod'
+                            ? 'Fat loss • Somewhat active'
+                            : opt === 'goal_fatloss_high'
+                              ? 'Fat loss • Consistently active'
+                              : opt === 'goal_muscle_low'
+                                ? 'Build muscle • Low activity'
+                                : opt === 'goal_muscle_mod'
+                                  ? 'Build muscle • Somewhat active'
+                                  : opt === 'goal_muscle_high'
+                                    ? 'Build muscle • Consistently active'
+                                    : opt === 'goal_endurance_low_mod'
+                                      ? 'Endurance • Light/Moderate activity'
+                                      : opt === 'goal_endurance_high'
+                                        ? 'Endurance • Consistently active'
+                                        : 'Strength/Power • Regular training',
+                    }))}
+                    value={responses.experience}
+                    onChange={(value) => {
+                      setResponses((r) => ({
+                        ...r,
+                        experience: value as ExperienceLevel,
+                      }));
+                      setAttemptedNext(false);
+                      setCurrentStepIndex((idx) =>
+                        Math.min(stepOrder.length - 1, idx + 1)
+                      );
+                      analytics.track('QuickWorkoutIntake Step Next', {
+                        stepName: 'experience',
+                      });
+                    }}
+                    isValid={!attemptedNext || Boolean(responses.experience)}
+                    validationMessage="Please select your experience."
+                  />
+                </section>
+              </StepTransition>
+            )}
+
+            {/* Duration & Intensity */}
+            {currentStep === 'energy' && (
+              <StepTransition>
+                <section>
+                  <RadioCardGroupInput
+                    id="duration-intensity"
+                    name="energy"
+                    legend="How much time do you have and at what intensity?"
+                    legendRef={legendRef}
+                    options={DURATION_INTENSITY_OPTIONS.map((opt) => ({
+                      id: opt,
+                      value: opt,
+                      title:
+                        opt === 'dur30_low'
+                          ? '30 min • Low intensity'
+                          : opt === 'dur30_mod'
+                            ? '30 min • Moderate intensity'
+                            : opt === 'dur30_high'
+                              ? '30 min • High intensity'
+                              : opt === 'dur45_low'
+                                ? '45 min • Low intensity'
+                                : opt === 'dur45_mod'
+                                  ? '45 min • Moderate intensity'
+                                  : opt === 'dur45_high'
+                                    ? '45 min • High intensity'
+                                    : '60 min • Low intensity',
+                    }))}
+                    value={responses.energy}
+                    onChange={(value) => {
+                      setResponses((r) => ({
+                        ...r,
+                        energy: value as DurationIntensity,
+                      }));
+                      setAttemptedNext(false);
+
+                      analytics.track('QuickWorkoutIntake Completed', {
+                        ...responses,
+                        energy: value,
+                        tracked_at: new Date().toISOString(),
+                      });
+                      setCurrentStepIndex(
+                        stepOrder.findIndex((s) => s.key === 'complete')
+                      );
+
+                      const params: WorkoutParams = {
+                        sex_and_age: mapSexAgeToText(responses.ageRange),
+                        goal_and_activity: mapExperienceToText(
+                          responses.experience
+                        ),
+                        duration_and_intensity: mapDurationIntensityToText(
+                          value as DurationIntensity
+                        ),
+                      };
+                      const configId = appConfig?.quickWorkoutConfigurationId;
+                      if (!configId) {
+                        console.error(
+                          'Missing quickWorkoutConfigurationId from configuration'
+                        );
+                        return;
+                      }
+
+                      createWorkout(configId, params, '')
+                        .then((workout) => {
+                          // Seed chunk cache immediately to avoid missing early messages
+                          queryClient.setQueryData<string[]>(
+                            ['generatedWorkoutChunks', workout.id],
+                            (prev) => prev ?? []
+                          );
+
+                          // Subscribe to real-time chunk updates ASAP (idempotent)
+                          ensureWorkoutChunkBinding(
+                            pusherService,
+                            queryClient,
+                            workout.id
+                          );
+
+                          analytics.track('Workout Generated from Intake', {
+                            workoutId: workout.id,
+                            tracked_at: new Date().toISOString(),
+                          });
+                          navigate(`/dashboard/workouts/${workout.id}`);
+                        })
+                        .catch((err) => {
+                          console.error(
+                            'Failed to generate workout from intake:',
+                            err
+                          );
+                        });
+                    }}
+                    isValid={!attemptedNext || Boolean(responses.energy)}
+                    validationMessage="Please select your energy level."
+                  />
+                </section>
+              </StepTransition>
+            )}
+
+            {/* Complete */}
+            {currentStep === 'complete' && (
+              <StepTransition>
+                <section className="text-center space-y-4">
+                  <h2 className="text-2xl font-semibold">You’re all set!</h2>
+                  <p className="text-base-content/70">
+                    Thanks! We’re generating your workout now. You’ll be
+                    redirected automatically to your workout.
+                  </p>
+                  {isGenerating && (
+                    <div className="flex items-center justify-center gap-3">
+                      <span
+                        className="loading loading-spinner"
+                        aria-label="Generating"
+                      />
+                      <span className="text-sm text-base-content/70">
+                        Generating your workout…
+                      </span>
+                    </div>
+                  )}
+                  {generationError && (
+                    <p className="text-error text-sm" role="alert">
+                      {generationError}
+                    </p>
+                  )}
+                </section>
+              </StepTransition>
+            )}
+          </>
+        )}
+      </IntakeFullScreenLayout>
+    </ContactLoadedGuard>
   );
 }
