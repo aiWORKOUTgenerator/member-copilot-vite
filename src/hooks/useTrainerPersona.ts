@@ -21,6 +21,8 @@ export function useTrainerPersona(): TrainerPersonaState {
     queryFn: () => trainerPersonaService.getTrainerPersona(),
     enabled: isSignedIn === true,
     retry: false,
+    refetchOnWindowFocus: true,
+    staleTime: 30_000,
   });
 
   const generateMutation = useMutation<GenerationStartResponse, unknown, void>({
@@ -47,7 +49,6 @@ export function useTrainerPersona(): TrainerPersonaState {
 
   const generateTrainerPersona = async (): Promise<GenerationStartResponse> => {
     const result = await generateMutation.mutateAsync();
-    await query.refetch();
     return result;
   };
 

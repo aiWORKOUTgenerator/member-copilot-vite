@@ -176,8 +176,6 @@ const MyAITrainerPage = () => {
   if (hasNoPersona) {
     return (
       <div className="p-4 space-y-6">
-        <h1 className="text-3xl font-bold">My AI Trainer</h1>
-
         {/* Show profile incomplete alert if profile is not sufficient */}
         {!isSufficientForGeneration && (
           <ProfileIncompleteAlert
@@ -256,43 +254,6 @@ const MyAITrainerPage = () => {
             onDismiss={() => setShowErrorToast(false)}
           />
         )}
-
-        <div className="bg-base-100 shadow-sm border border-base-300 rounded-lg">
-          <div className="p-4">
-            <h3 className="card-title text-lg">
-              What is an AI Trainer Persona?
-            </h3>
-            <div className="space-y-3 text-base-content/80">
-              <p>
-                Your AI Trainer Persona is a personalized virtual coach designed
-                specifically for you. It includes:
-              </p>
-              <ul className="list-disc list-inside space-y-2 ml-4">
-                <li>
-                  <strong>Personality Traits:</strong> Communication style that
-                  matches your preferences
-                </li>
-                <li>
-                  <strong>Expertise Areas:</strong> Specialized knowledge in
-                  your areas of interest
-                </li>
-                <li>
-                  <strong>Training Approach:</strong> Coaching methods tailored
-                  to your learning style
-                </li>
-                <li>
-                  <strong>Motivational Style:</strong> Encouragement and
-                  feedback that resonates with you
-                </li>
-              </ul>
-              <p>
-                Once generated, your AI trainer will provide personalized
-                workout plans, nutrition advice, and motivation that feels
-                natural and effective for your unique fitness journey.
-              </p>
-            </div>
-          </div>
-        </div>
       </div>
     );
   }
@@ -357,7 +318,9 @@ const MyAITrainerPage = () => {
                               .replace(/_/g, ' ')
                               .replace(/\b\w/g, (l) => l.toUpperCase())}
                           </h4>
-                          <p className="text-base-content/90">{value}</p>
+                          <p className="text-base-content/90">
+                            {value as string}
+                          </p>
                         </div>
                       </div>
                     ))}
