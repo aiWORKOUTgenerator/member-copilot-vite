@@ -1,4 +1,8 @@
-import { TrainerPersona } from '@/domain/entities';
+import {
+  TrainerPersona,
+  TrainerPersonaStatus,
+  GenerationStartResponse,
+} from '@/domain/entities';
 
 /**
  * TrainerPersonaService interface defines operations for trainer persona management.
@@ -12,8 +16,14 @@ export interface TrainerPersonaService {
   getTrainerPersona(): Promise<TrainerPersona>;
 
   /**
-   * Generates a new trainer persona for the current user
-   * @returns Promise that resolves when the trainer persona generation is complete
+   * Gets the current status of trainer persona generation
+   * @returns Promise resolving to the generation status
    */
-  generateTrainerPersona(): Promise<void>;
+  getTrainerPersonaStatus(): Promise<TrainerPersonaStatus>;
+
+  /**
+   * Generates a new trainer persona for the current user
+   * @returns Promise that resolves with generation start response
+   */
+  generateTrainerPersona(): Promise<GenerationStartResponse>;
 }

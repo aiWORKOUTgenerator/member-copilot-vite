@@ -1,4 +1,8 @@
-import { TrainerPersona } from '@/domain';
+import {
+  TrainerPersona,
+  TrainerPersonaStatus,
+  GenerationStartResponse,
+} from '@/domain';
 import { ApiService } from '@/domain/interfaces/api/ApiService';
 import { TrainerPersonaService } from '@/domain/interfaces/services/TrainerPersonaService';
 
@@ -27,13 +31,23 @@ export class TrainerPersonaServiceImpl implements TrainerPersonaService {
   }
 
   /**
-   * Generates a new trainer persona for the current user
-   * @returns Promise that resolves when the trainer persona generation is complete
+   * Gets the current status of trainer persona generation
+   * @returns Promise resolving to the generation status
    */
-  async generateTrainerPersona(): Promise<void> {
-    return this.apiService.post<void, Record<string, unknown>>(
-      `${this.baseEndpoint}/`,
-      {}
+  async getTrainerPersonaStatus(): Promise<TrainerPersonaStatus> {
+    return this.apiService.get<TrainerPersonaStatus>(
+      `${this.baseEndpoint}/status/`
     );
+  }
+
+  /**
+   * Generates a new trainer persona for the current user
+   * @returns Promise that resolves with generation start response
+   */
+  async generateTrainerPersona(): Promise<GenerationStartResponse> {
+    return this.apiService.post<
+      GenerationStartResponse,
+      Record<string, unknown>
+    >(`${this.baseEndpoint}/`, {});
   }
 }
