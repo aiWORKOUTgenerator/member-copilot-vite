@@ -2,29 +2,18 @@
 
 import { Section, WorkoutStructure } from '@/domain/entities/generatedWorkout';
 import { useState } from 'react';
-import {
-  ExerciseCard,
-  InvalidWorkoutCard,
-  EmptySectionsCard,
-} from './WorkoutComponents';
+import { InvalidWorkoutCard, EmptySectionsCard } from './WorkoutComponents';
 import { formatTime } from '../utils/workouts.func';
 import { useExercisesForGeneratedWorkout } from '@/hooks/useExercises';
 import { useExerciseMedia } from '@/hooks/useExerciseMedia';
-import {
-  ExerciseTabNavigation,
-  TabItem,
-} from '@/ui/shared/molecules/ExerciseTabNavigation';
-import { ExerciseMediaTab } from '@/ui/shared/molecules/ExerciseMediaTab';
-import { ExerciseInstructionsTab } from '@/ui/shared/molecules/ExerciseInstructionsTab';
-import { ExerciseBasicInfoTab } from '@/ui/shared/molecules/ExerciseBasicInfoTab';
-import { ExerciseCategorizationTab } from '@/ui/shared/molecules/ExerciseCategorizationTab';
-import { ExerciseAdditionalDetailsTab } from '@/ui/shared/molecules/ExerciseAdditionalDetailsTab';
+
 import { Exercise } from '@/domain/entities/generatedWorkout';
 import { Exercise as CanonicalExercise } from '@/domain/entities/exercise';
-import { Image, FileText, Info, Tags, Settings } from 'lucide-react';
 
-// Component to render exercise with tabbed details
-const ExerciseCardWithMedia = ({
+// (Removed legacy tabbed ExerciseCardWithMedia in favor of simplified basic viewer)
+
+// Simplified Gen Z/Millennial friendly viewer combining image, basic instructions, and categories
+const ExerciseCardWithMediaBasic = ({
   exercise,
   availableExercises,
 }: {
@@ -36,85 +25,160 @@ const ExerciseCardWithMedia = ({
     availableExercises
   );
 
-  // Find the canonical exercise data for rich details
   const canonicalExercise = availableExercises.find(
     (ex) => ex.name.toLowerCase() === exercise.name.toLowerCase()
   );
 
-  // Create tabs for the exercise details
-  const tabs: TabItem[] = [
-    {
-      id: 'media',
-      label: 'Media',
-      icon: <Image className="w-4 h-4" />,
-      content: (
-        <ExerciseMediaTab
-          imageUrl={imageUrl}
-          audioUrl={audioUrl}
-          exerciseName={exercise.name}
-          size="md"
-        />
-      ),
-    },
-    {
-      id: 'instructions',
-      label: 'Instructions',
-      icon: <FileText className="w-4 h-4" />,
-      content: (
-        <ExerciseInstructionsTab
-          detailedInstructions={canonicalExercise?.detailedInstructions}
-          simpleInstructions={canonicalExercise?.simpleInstructions}
-          exerciseName={exercise.name}
-        />
-      ),
-    },
-    {
-      id: 'basic-info',
-      label: 'Basic Info',
-      icon: <Info className="w-4 h-4" />,
-      content: (
-        <ExerciseBasicInfoTab
-          primaryName={exercise.name}
-          alternateNames={canonicalExercise?.alternateNames}
-          bodyPart={canonicalExercise?.bodyPart}
-          difficultyLevel={canonicalExercise?.difficultyLevel}
-          exerciseType={canonicalExercise?.exerciseType}
-        />
-      ),
-    },
-    {
-      id: 'categorization',
-      label: 'Categories',
-      icon: <Tags className="w-4 h-4" />,
-      content: (
-        <ExerciseCategorizationTab
-          muscleGroups={canonicalExercise?.muscleGroups}
-          equipmentRequired={canonicalExercise?.equipmentRequired}
-          tags={canonicalExercise?.tags}
-          isCompound={canonicalExercise?.isCompound}
-        />
-      ),
-    },
-    {
-      id: 'additional-details',
-      label: 'Details',
-      icon: <Settings className="w-4 h-4" />,
-      content: <ExerciseAdditionalDetailsTab />,
-    },
-  ];
+  const primaryName = exercise.name;
+
+  const simpleInstructions = canonicalExercise?.simpleInstructions;
+  const detailedInstructions = canonicalExercise?.detailedInstructions;
+  const instructions = simpleInstructions || detailedInstructions || '';
+  const muscleGroups = canonicalExercise?.muscleGroups || [];
+  const equipment = canonicalExercise?.equipmentRequired || [];
 
   return (
-    <div className="space-y-4">
-      {/* Exercise Card with basic info */}
-      <ExerciseCard exercise={exercise} />
+    <div className="bg-base-100/10 backdrop-blur-xl border border-white/10 rounded-2xl shadow-sm">
+      {/* Title */}
+      <div className="p-4 pb-0">
+        <h4 className="text-2xl font-bold text-base-content">{primaryName}</h4>
+        {exercise.description && (
+          <p className="text-sm text-base-content/70 mt-2">
+            {exercise.description}
+          </p>
+        )}
+      </div>
 
-      {/* Tabbed Details */}
-      <div className="bg-base-100 border border-base-300 rounded-xl p-4 shadow-sm">
-        <ExerciseTabNavigation
-          tabs={tabs}
-          defaultTab="media"
-          className="w-full"
-        />
+      {/* Exercise Stats - directly under title */}
+      <div className="p-4 pt-3">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {exercise.sets !== undefined && (
+            <div className="bg-base-100/10 backdrop-blur-xl border border-primary/30 rounded-2xl p-4 flex flex-col items-center shadow-[0_4px_30px_rgba(0,0,0,0.2)] hover:shadow-[0_0_20px_var(--color-primary)] transition-all duration-300">
+              <span className="text-xs uppercase tracking-wide text-primary font-bold mb-1">
+                Sets
+              </span>
+              <span className="text-2xl font-bold text-primary">
+                {exercise.sets}
+              </span>
+            </div>
+          )}
+          {exercise.reps !== undefined && (
+            <div className="bg-base-100/10 backdrop-blur-xl border border-secondary/30 rounded-2xl p-4 flex flex-col items-center shadow-[0_4px_30px_rgba(0,0,0,0.2)] hover:shadow-[0_0_20px_var(--color-secondary)] transition-all duration-300">
+              <span className="text-xs uppercase tracking-wide text-secondary font-bold mb-1">
+                Reps
+              </span>
+              <span className="text-2xl font-bold text-secondary">
+                {exercise.reps}
+              </span>
+            </div>
+          )}
+          {exercise.weight !== undefined && (
+            <div className="bg-base-100/10 backdrop-blur-xl border border-accent/30 rounded-2xl p-4 flex flex-col items-center shadow-[0_4px_30px_rgba(0,0,0,0.2)] hover:shadow-[0_0_20px_var(--color-accent)] transition-all duration-300">
+              <span className="text-xs uppercase tracking-wide text-accent font-bold mb-1">
+                Weight
+              </span>
+              <span className="text-2xl font-bold text-accent">
+                {exercise.weight > 0 ? `${exercise.weight} lbs` : 'Bodyweight'}
+              </span>
+            </div>
+          )}
+          {exercise.duration !== undefined && (
+            <div className="bg-base-100/10 backdrop-blur-xl border border-warning/30 rounded-2xl p-4 flex flex-col items-center shadow-[0_4px_30px_rgba(0,0,0,0.2)] hover:shadow-[0_0_20px_var(--color-warning)] transition-all duration-300">
+              <span className="text-xs uppercase tracking-wide text-warning font-bold mb-1">
+                Duration
+              </span>
+              <span className="text-2xl font-bold text-warning">
+                {formatTime(exercise.duration)}
+              </span>
+            </div>
+          )}
+          {exercise.rest !== undefined && exercise.rest > 0 && (
+            <div className="bg-base-100/10 backdrop-blur-xl border border-info/30 rounded-2xl p-4 flex flex-col items-center shadow-[0_4px_30px_rgba(0,0,0,0.2)] hover:shadow-[0_0_20px_var(--color-info)] transition-all duration-300">
+              <span className="text-xs uppercase tracking-wide text-info font-bold mb-1">
+                Rest
+              </span>
+              <span className="text-2xl font-bold text-info">
+                {formatTime(exercise.rest)}
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Image */}
+      {imageUrl && (
+        <div className="w-full bg-base-200/60 border-b border-white/10 flex items-center justify-center p-3">
+          <img
+            src={imageUrl}
+            alt={`${primaryName} preview`}
+            className="w-full max-h-56 sm:max-h-64 object-contain rounded-xl"
+            loading="lazy"
+          />
+        </div>
+      )}
+
+      {/* Content */}
+      <div className="p-4 space-y-4">
+        {/* Audio (optional) */}
+        {audioUrl && (
+          <div className="bg-base-100/60 border border-white/10 rounded-xl p-3">
+            <div className="text-xs uppercase tracking-wide text-base-content/60 mb-2">
+              Audio Guide
+            </div>
+            <audio controls preload="none" className="w-full">
+              <source src={audioUrl} />
+              Your browser does not support the audio element.
+            </audio>
+          </div>
+        )}
+        {/* Instructions */}
+        {instructions && (
+          <div className="bg-base-100/60 border border-white/10 rounded-xl p-4">
+            <div className="text-sm leading-relaxed text-base-content/80 whitespace-pre-line">
+              {instructions}
+            </div>
+          </div>
+        )}
+
+        {/* Categories */}
+        {(muscleGroups.length > 0 || equipment.length > 0) && (
+          <div className="space-y-3">
+            {muscleGroups.length > 0 && (
+              <div>
+                <div className="text-xs uppercase tracking-wide text-base-content/60 mb-2">
+                  Muscle Groups
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {muscleGroups.map((m, idx) => (
+                    <span
+                      key={`m-${idx}`}
+                      className="badge badge-primary badge-sm"
+                    >
+                      {m}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+            {equipment.length > 0 && (
+              <div>
+                <div className="text-xs uppercase tracking-wide text-base-content/60 mb-2">
+                  Equipment
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {equipment.map((e, idx) => (
+                    <span
+                      key={`e-${idx}`}
+                      className="badge badge-secondary badge-sm"
+                    >
+                      {e}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -156,7 +220,16 @@ const SectionCard = ({
     <div className={`${cardBgClass} rounded-lg shadow-sm mb-6 ${indentClass}`}>
       <div
         className="p-4 flex justify-between items-center cursor-pointer"
+        role="button"
+        tabIndex={0}
+        aria-expanded={isExpanded}
         onClick={() => setIsExpanded(!isExpanded)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            setIsExpanded(!isExpanded);
+          }
+        }}
       >
         <div>
           <h3
@@ -218,7 +291,7 @@ const SectionCard = ({
                           {/* Exercises for this round */}
                           {exercises.map((exercise, idx) => (
                             <div key={`round-${round}-exercise-${idx}`}>
-                              <ExerciseCardWithMedia
+                              <ExerciseCardWithMediaBasic
                                 exercise={exercise}
                                 availableExercises={availableExercises}
                               />
