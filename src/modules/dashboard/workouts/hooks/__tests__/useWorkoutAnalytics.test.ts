@@ -8,7 +8,7 @@ import {
   useWorkoutAnalytics,
   useWorkoutFieldAnalytics,
 } from '../useWorkoutAnalytics';
-import { useAnalytics } from '@/hooks/useAnalytics';
+import { useAnalyticsWithTenant } from '@/hooks/useAnalytics';
 import { CUSTOMIZATION_FIELD_KEYS } from '../../constants/fieldKeys';
 
 // Mock the analytics service
@@ -22,14 +22,14 @@ const mockAnalytics = {
   initialize: vi.fn(),
 };
 
-const mockedUseAnalytics = useAnalytics as ReturnType<
-  typeof vi.mocked<typeof useAnalytics>
+const mockedUseAnalyticsWithTenant = useAnalyticsWithTenant as ReturnType<
+  typeof vi.mocked<typeof useAnalyticsWithTenant>
 >;
 
 describe('useWorkoutAnalytics', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockedUseAnalytics.mockReturnValue(mockAnalytics);
+    mockedUseAnalyticsWithTenant.mockReturnValue(mockAnalytics);
     // Mock Date.now() for consistent timestamps
     vi.spyOn(Date, 'now').mockReturnValue(1234567890);
   });
@@ -517,7 +517,7 @@ describe('useWorkoutAnalytics', () => {
 describe('useWorkoutFieldAnalytics', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockedUseAnalytics.mockReturnValue(mockAnalytics);
+    mockedUseAnalyticsWithTenant.mockReturnValue(mockAnalytics);
     vi.spyOn(Date, 'now').mockReturnValue(1234567890);
   });
 
