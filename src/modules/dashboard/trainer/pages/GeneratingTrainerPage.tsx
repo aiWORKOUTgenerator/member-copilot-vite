@@ -31,9 +31,9 @@ const GeneratingTrainerPage = () => {
   useEffect(() => {
     if (isGenerationComplete) {
       // Refetch trainer persona data to get the latest data
-      refetchTrainerPersona().then((updatedPersona) => {
+      refetchTrainerPersona().then(() => {
         // Track trainer persona creation
-        trackTrainerPersonaCreated(updatedPersona?.id || 'unknown');
+        trackTrainerPersonaCreated('unknown');
         // Small delay to show success state before redirect
         navigate('/dashboard/trainer', { replace: true });
       });
