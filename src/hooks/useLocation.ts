@@ -27,7 +27,6 @@ export function useLocation(): LocationState {
       return locationService.getLocations();
     },
     enabled: isSignedIn === true,
-    staleTime: 30_000,
   });
 
   // console.log('🔧 useLocation: Query state:', {

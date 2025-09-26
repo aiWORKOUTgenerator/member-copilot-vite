@@ -20,7 +20,6 @@ export function useWorkoutFeedback(): WorkoutFeedbackState {
     queryKey: ['workoutFeedback'],
     queryFn: () => workoutFeedbackService.getUserFeedback(),
     enabled: isSignedIn === true,
-    staleTime: 30_000,
   });
 
   const submitMutation = useMutation<

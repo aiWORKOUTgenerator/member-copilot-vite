@@ -17,7 +17,6 @@ export function useContact(): ContactState {
     queryKey: ['contact'],
     queryFn: () => contactService.getOrCreateContact(),
     enabled: isSignedIn === true,
-    staleTime: 30_000,
   });
 
   useEffect(() => {

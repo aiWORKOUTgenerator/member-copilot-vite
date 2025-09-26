@@ -33,7 +33,6 @@ export function useExercises(options: UseExercisesOptions = {}): ExerciseState {
       return Promise.resolve([]);
     },
     enabled: shouldFetch,
-    staleTime: 30_000,
   });
 
   useEffect(() => {

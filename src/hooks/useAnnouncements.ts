@@ -17,7 +17,6 @@ export function useAnnouncements(): AnnouncementState {
     queryKey: ['announcements'],
     queryFn: () => announcementService.getAnnouncements(),
     enabled: isSignedIn === true,
-    staleTime: 30_000,
   });
 
   useEffect(() => {

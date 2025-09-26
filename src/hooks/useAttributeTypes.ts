@@ -21,7 +21,6 @@ export function useAttributeTypes(): AttributeTypeState {
       return [...data].sort((a, b) => a.display_order - b.display_order);
     },
     enabled: isSignedIn === true,
-    staleTime: 30_000,
   });
 
   useEffect(() => {

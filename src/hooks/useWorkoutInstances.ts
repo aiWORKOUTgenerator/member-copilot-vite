@@ -18,7 +18,6 @@ export function useWorkoutInstances(): WorkoutInstancesState {
     queryKey: ['workoutInstances'],
     queryFn: () => workoutInstanceService.getWorkoutInstances(),
     enabled: isSignedIn === true,
-    staleTime: 30_000,
   });
 
   const createMutation = useMutation<

@@ -17,7 +17,6 @@ export function useAttributes(): AttributeState {
     queryKey: ['attributes'],
     queryFn: () => attributeService.getAllAttributes(),
     enabled: isSignedIn === true,
-    staleTime: 30_000,
   });
 
   useEffect(() => {

@@ -17,7 +17,6 @@ export function usePrompts(): PromptState {
     queryKey: ['prompts'],
     queryFn: () => promptService.getAllPrompts(),
     enabled: isSignedIn === true,
-    staleTime: 30_000,
   });
 
   useEffect(() => {
