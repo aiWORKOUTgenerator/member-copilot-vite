@@ -4,13 +4,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import WorkoutCustomization from './components/WorkoutCustomization';
 import { PerWorkoutOptions } from './components/types';
-import { useAnalytics } from '@/hooks/useAnalytics';
+import { useAnalyticsWithTenant } from '@/hooks/useAnalytics';
 import { ButtonStateLogic } from './selectionCountingLogic';
 import { useSelectionSummary } from './hooks/useSelectionSummary';
 import { SelectionSummary } from '@/ui/shared/molecules';
 import { useConfiguration } from '@/hooks/useConfiguration';
 import FloatingClipboardFab from '@/ui/shared/molecules/FloatingClipboardFab';
 import { WORKOUTS_GENERATE_ROUTE } from './constants';
+import { useWorkoutAnalytics } from './hooks/useWorkoutAnalytics';
 
 export default function GenerateWorkoutPage() {
   const { mode } = useParams<{ mode: string }>();
@@ -35,27 +36,32 @@ export default function GenerateWorkoutPage() {
 
   const { createWorkout } = useGeneratedWorkouts();
   const navigate = useNavigate();
-  const analytics = useAnalytics();
+  const analytics = useAnalyticsWithTenant();
   const { configuration } = useConfiguration();
+  const {
+    trackWorkoutSetupStarted,
+    trackWorkoutPathSelected,
+    trackWorkoutGenerated,
+    trackSetupStepCompleted,
+  } = useWorkoutAnalytics();
 
   // Selection summary for Quick Workout Setup
   const { selections, hasSelections } = useSelectionSummary(perWorkoutOptions);
 
-  // Track workout generation page views
+  // Track workout setup started
   useEffect(() => {
-    analytics.track('Workout Generation Page Viewed', {
-      tracked_at: new Date().toISOString(),
-    });
-  }, [analytics]);
+    trackWorkoutSetupStarted(activeTab);
+  }, [trackWorkoutSetupStarted, activeTab]);
 
   // Update activeTab when mode parameter changes
   useEffect(() => {
-    if (mode === 'detailed') {
-      setActiveTab('detailed');
-    } else {
-      setActiveTab('quick');
+    const newTab = mode === 'detailed' ? 'detailed' : 'quick';
+    if (activeTab !== newTab) {
+      setActiveTab(newTab);
+      // Track workout path selection when user changes modes
+      trackWorkoutPathSelected(newTab);
     }
-  }, [mode]);
+  }, [mode, activeTab, trackWorkoutPathSelected]);
 
   // Helper function to convert options to string format for API submission
   const convertOptionsToStrings = (
@@ -87,13 +93,17 @@ export default function GenerateWorkoutPage() {
     // For quick workout, handle step navigation
     if (activeTab === 'quick') {
       if (activeQuickStep === 'focus-energy') {
+        // Track step completion
+        trackSetupStepCompleted('focus-energy', 0, 'quick'); // Duration tracking would need more complex implementation
         // Simply advance to next step without validation
         setActiveQuickStep('duration-equipment');
         return;
       } else {
-        // Proceed with workout generation without validation
+        // Track final step completion
+        trackSetupStepCompleted('duration-equipment', 0, 'quick');
 
         // Proceed with workout generation
+        const generationStartTime = Date.now();
         setIsGenerating(true);
 
         try {
@@ -117,6 +127,16 @@ export default function GenerateWorkoutPage() {
             configId,
             combinedParams,
             '' // No prompt for quick workout
+          );
+
+          // Track successful workout generation
+          const generationDuration = Date.now() - generationStartTime;
+          const totalFields = Object.keys(perWorkoutOptions).length;
+          trackWorkoutGenerated(
+            'quick',
+            generationDuration,
+            totalFields,
+            response.id
           );
 
           // Redirect to the generated workout page

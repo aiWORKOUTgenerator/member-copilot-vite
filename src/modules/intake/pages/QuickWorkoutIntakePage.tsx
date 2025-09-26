@@ -3,7 +3,7 @@
 import { ContactLoadedGuard } from '@/components/ContactLoadedGuard';
 import type { WorkoutParams } from '@/domain/entities/workoutParams';
 import { useAuth } from '@/hooks/auth';
-import { useAnalytics } from '@/hooks/useAnalytics';
+import { useAnalyticsWithTenant } from '@/hooks/useAnalytics';
 import { useAppConfig } from '@/hooks/useConfiguration';
 import { useGeneratedWorkouts } from '@/hooks/useGeneratedWorkouts';
 import { useLocation as useLocationState } from '@/hooks/useLocation';
@@ -58,7 +58,7 @@ const DURATION_INTENSITY_OPTIONS: DurationIntensity[] = [
 
 export default function QuickWorkoutIntakePage() {
   const { isLoaded, isSignedIn } = useAuth();
-  const analytics = useAnalytics();
+  const analytics = useAnalyticsWithTenant();
   const navigate = useNavigate();
   const { locationId } = useParams<{ locationId: string }>();
   const appConfig = useAppConfig();

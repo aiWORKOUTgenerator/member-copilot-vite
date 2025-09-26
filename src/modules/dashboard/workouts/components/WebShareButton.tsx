@@ -8,6 +8,7 @@ interface WebShareProps {
   children: React.ReactNode;
   disabled?: boolean;
   className?: string;
+  onShare?: (shareMethod: 'copy' | 'social') => void;
 }
 
 const WebShareButton = ({
@@ -16,6 +17,7 @@ const WebShareButton = ({
   children,
   disabled,
   className,
+  onShare,
 }: WebShareProps) => {
   const [copied, setCopied] = useState(false);
 
@@ -27,6 +29,7 @@ const WebShareButton = ({
           title: title || 'Shared Content',
           text: text,
         });
+        onShare?.('social');
         console.log('Content shared successfully');
       } catch (error) {
         console.log('Error sharing content:', error);
@@ -37,6 +40,7 @@ const WebShareButton = ({
         await navigator.clipboard.writeText(text);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
+        onShare?.('copy');
       } catch (err) {
         console.log('Failed to copy: ', err);
         alert('Unable to share or copy. Please copy the text manually.');

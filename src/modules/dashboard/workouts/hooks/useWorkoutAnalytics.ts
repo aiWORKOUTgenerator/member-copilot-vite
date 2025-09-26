@@ -7,7 +7,7 @@
  */
 
 import { useCallback } from 'react';
-import { useAnalytics } from '@/hooks/useAnalytics';
+import { useAnalyticsWithTenant } from '@/hooks/useAnalytics';
 import type { AnalyticsService } from '@/services/analytics';
 import { getFieldType } from '../constants/fieldTypes';
 
@@ -68,13 +68,113 @@ export interface WorkoutAnalyticsEvents {
     completionRate: number;
     timestamp: number;
   };
+
+  // Additional essential tracking events
+  workout_setup_started: {
+    mode: 'quick' | 'detailed';
+    timestamp: number;
+  };
+
+  workout_generated: {
+    mode: 'quick' | 'detailed';
+    workoutId?: string;
+    duration: number;
+    totalFields: number;
+    timestamp: number;
+  };
+
+  trainer_persona_created: {
+    personaId?: string;
+    timestamp: number;
+  };
+
+  user_satisfaction_rating: {
+    rating: number;
+    context: string;
+    workoutId?: string;
+    timestamp: number;
+  };
+
+  // Engagement and feature adoption events
+  workout_path_selected: {
+    path: 'quick' | 'detailed';
+    timestamp: number;
+  };
+
+  setup_step_completed: {
+    step: string;
+    stepTiming: number;
+    mode: 'quick' | 'detailed';
+    timestamp: number;
+  };
+
+  workout_regenerated: {
+    workoutId?: string;
+    previousWorkoutId?: string;
+    mode: 'quick' | 'detailed';
+    timestamp: number;
+  };
+
+  exercise_swapped: {
+    workoutId?: string;
+    exerciseName: string;
+    newExerciseName: string;
+    timestamp: number;
+  };
+
+  workout_log_started: {
+    workoutId: string;
+    timestamp: number;
+  };
+
+  exercise_marked_as_complete: {
+    workoutId: string;
+    exerciseName: string;
+    sets?: number;
+    reps?: number;
+    timestamp: number;
+  };
+
+  audio_play_started: {
+    exerciseName: string;
+    workoutId?: string;
+    timestamp: number;
+  };
+
+  audio_play_finished: {
+    exerciseName: string;
+    duration: number;
+    workoutId?: string;
+    timestamp: number;
+  };
+
+  structured_workout_viewed: {
+    workoutId: string;
+    timestamp: number;
+  };
+
+  short_workout_viewed: {
+    workoutId: string;
+    timestamp: number;
+  };
+
+  step_by_step_workout_viewed: {
+    workoutId: string;
+    timestamp: number;
+  };
+
+  workout_shared: {
+    workoutId: string;
+    shareMethod: 'copy' | 'social' | 'email';
+    timestamp: number;
+  };
 }
 
 /**
  * Hook for tracking workout-specific analytics events
  */
 export const useWorkoutAnalytics = () => {
-  const analytics: AnalyticsService = useAnalytics();
+  const analytics: AnalyticsService = useAnalyticsWithTenant();
 
   /**
    * Track field selection events
@@ -223,12 +323,323 @@ export const useWorkoutAnalytics = () => {
     [analytics]
   );
 
+  /**
+   * Track workout setup start
+   */
+  const trackWorkoutSetupStarted = useCallback(
+    (mode: 'quick' | 'detailed') => {
+      try {
+        analytics.track('workout_setup_started', {
+          mode,
+          eventTimestamp: Date.now(),
+        });
+      } catch (error) {
+        console.warn('Failed to track workout setup start:', error);
+      }
+    },
+    [analytics]
+  );
+
+  /**
+   * Track workout generation
+   */
+  const trackWorkoutGenerated = useCallback(
+    (
+      mode: 'quick' | 'detailed',
+      duration: number,
+      totalFields: number,
+      workoutId?: string
+    ) => {
+      try {
+        analytics.track('workout_generated', {
+          mode,
+          workoutId,
+          duration,
+          totalFields,
+          eventTimestamp: Date.now(),
+        });
+      } catch (error) {
+        console.warn('Failed to track workout generation:', error);
+      }
+    },
+    [analytics]
+  );
+
+  /**
+   * Track trainer persona creation
+   */
+  const trackTrainerPersonaCreated = useCallback(
+    (personaId?: string) => {
+      try {
+        analytics.track('trainer_persona_created', {
+          personaId,
+          eventTimestamp: Date.now(),
+        });
+      } catch (error) {
+        console.warn('Failed to track trainer persona creation:', error);
+      }
+    },
+    [analytics]
+  );
+
+  /**
+   * Track user satisfaction rating
+   */
+  const trackUserSatisfactionRating = useCallback(
+    (rating: number, context: string, workoutId?: string) => {
+      try {
+        analytics.track('user_satisfaction_rating', {
+          rating,
+          context,
+          workoutId,
+          eventTimestamp: Date.now(),
+        });
+      } catch (error) {
+        console.warn('Failed to track user satisfaction rating:', error);
+      }
+    },
+    [analytics]
+  );
+
+  /**
+   * Track workout path selection
+   */
+  const trackWorkoutPathSelected = useCallback(
+    (path: 'quick' | 'detailed') => {
+      try {
+        analytics.track('workout_path_selected', {
+          path,
+          eventTimestamp: Date.now(),
+        });
+      } catch (error) {
+        console.warn('Failed to track workout path selection:', error);
+      }
+    },
+    [analytics]
+  );
+
+  /**
+   * Track setup step completion with timing
+   */
+  const trackSetupStepCompleted = useCallback(
+    (step: string, stepTiming: number, mode: 'quick' | 'detailed') => {
+      try {
+        analytics.track('setup_step_completed', {
+          step,
+          stepTiming,
+          mode,
+          eventTimestamp: Date.now(),
+        });
+      } catch (error) {
+        console.warn('Failed to track setup step completion:', error);
+      }
+    },
+    [analytics]
+  );
+
+  /**
+   * Track workout regeneration
+   */
+  const trackWorkoutRegenerated = useCallback(
+    (
+      mode: 'quick' | 'detailed',
+      workoutId?: string,
+      previousWorkoutId?: string
+    ) => {
+      try {
+        analytics.track('workout_regenerated', {
+          workoutId,
+          previousWorkoutId,
+          mode,
+          eventTimestamp: Date.now(),
+        });
+      } catch (error) {
+        console.warn('Failed to track workout regeneration:', error);
+      }
+    },
+    [analytics]
+  );
+
+  /**
+   * Track exercise swap
+   */
+  const trackExerciseSwapped = useCallback(
+    (exerciseName: string, newExerciseName: string, workoutId?: string) => {
+      try {
+        analytics.track('exercise_swapped', {
+          workoutId,
+          exerciseName,
+          newExerciseName,
+          eventTimestamp: Date.now(),
+        });
+      } catch (error) {
+        console.warn('Failed to track exercise swap:', error);
+      }
+    },
+    [analytics]
+  );
+
+  /**
+   * Track workout log started
+   */
+  const trackWorkoutLogStarted = useCallback(
+    (workoutId: string) => {
+      try {
+        analytics.track('workout_log_started', {
+          workoutId,
+          eventTimestamp: Date.now(),
+        });
+      } catch (error) {
+        console.warn('Failed to track workout log start:', error);
+      }
+    },
+    [analytics]
+  );
+
+  /**
+   * Track exercise marked as complete
+   */
+  const trackExerciseMarkedAsComplete = useCallback(
+    (workoutId: string, exerciseName: string, sets?: number, reps?: number) => {
+      try {
+        analytics.track('exercise_marked_as_complete', {
+          workoutId,
+          exerciseName,
+          sets,
+          reps,
+          eventTimestamp: Date.now(),
+        });
+      } catch (error) {
+        console.warn('Failed to track exercise completion:', error);
+      }
+    },
+    [analytics]
+  );
+
+  /**
+   * Track audio play events
+   */
+  const trackAudioPlayStarted = useCallback(
+    (exerciseName: string, workoutId?: string) => {
+      try {
+        analytics.track('audio_play_started', {
+          exerciseName,
+          workoutId,
+          eventTimestamp: Date.now(),
+        });
+      } catch (error) {
+        console.warn('Failed to track audio play start:', error);
+      }
+    },
+    [analytics]
+  );
+
+  const trackAudioPlayFinished = useCallback(
+    (exerciseName: string, duration: number, workoutId?: string) => {
+      try {
+        analytics.track('audio_play_finished', {
+          exerciseName,
+          duration,
+          workoutId,
+          eventTimestamp: Date.now(),
+        });
+      } catch (error) {
+        console.warn('Failed to track audio play finish:', error);
+      }
+    },
+    [analytics]
+  );
+
+  /**
+   * Track workout view events
+   */
+  const trackStructuredWorkoutViewed = useCallback(
+    (workoutId: string) => {
+      try {
+        analytics.track('structured_workout_viewed', {
+          workoutId,
+          eventTimestamp: Date.now(),
+        });
+      } catch (error) {
+        console.warn('Failed to track structured workout view:', error);
+      }
+    },
+    [analytics]
+  );
+
+  const trackShortWorkoutViewed = useCallback(
+    (workoutId: string) => {
+      try {
+        analytics.track('short_workout_viewed', {
+          workoutId,
+          eventTimestamp: Date.now(),
+        });
+      } catch (error) {
+        console.warn('Failed to track short workout view:', error);
+      }
+    },
+    [analytics]
+  );
+
+  const trackStepByStepWorkoutViewed = useCallback(
+    (workoutId: string) => {
+      try {
+        analytics.track('step_by_step_workout_viewed', {
+          workoutId,
+          eventTimestamp: Date.now(),
+        });
+      } catch (error) {
+        console.warn('Failed to track step by step workout view:', error);
+      }
+    },
+    [analytics]
+  );
+
+  /**
+   * Track workout sharing
+   */
+  const trackWorkoutShared = useCallback(
+    (workoutId: string, shareMethod: 'copy' | 'social' | 'email') => {
+      try {
+        analytics.track('workout_shared', {
+          workoutId,
+          shareMethod,
+          eventTimestamp: Date.now(),
+        });
+      } catch (error) {
+        console.warn('Failed to track workout share:', error);
+      }
+    },
+    [analytics]
+  );
+
   return {
+    // Existing functions
     trackSelection,
     trackStepCompletion,
     trackValidationError,
     trackWorkoutSetupCompleted,
     trackWorkoutSetupAbandoned,
+
+    // Essential tracking events
+    trackWorkoutSetupStarted,
+    trackWorkoutGenerated,
+    trackTrainerPersonaCreated,
+    trackUserSatisfactionRating,
+
+    // Engagement and feature adoption events
+    trackWorkoutPathSelected,
+    trackSetupStepCompleted,
+    trackWorkoutRegenerated,
+    trackExerciseSwapped,
+    trackWorkoutLogStarted,
+    trackExerciseMarkedAsComplete,
+    trackAudioPlayStarted,
+    trackAudioPlayFinished,
+    trackStructuredWorkoutViewed,
+    trackShortWorkoutViewed,
+    trackStepByStepWorkoutViewed,
+    trackWorkoutShared,
   };
 };
 

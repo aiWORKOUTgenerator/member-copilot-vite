@@ -27,13 +27,6 @@ export default function SignUpPage() {
   const navigate = useNavigate();
   const analytics = useAnalytics();
 
-  // Track sign-up page views
-  useEffect(() => {
-    analytics.track('Sign Up Page Viewed', {
-      tracked_at: new Date().toISOString(),
-    });
-  }, [analytics]);
-
   // Track form field interactions
   const handleFieldFocus = (fieldName: string) => {
     analytics.track('Sign Up Field Focused', {

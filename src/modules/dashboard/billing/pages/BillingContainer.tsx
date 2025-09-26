@@ -5,12 +5,14 @@ import { StripeProvider } from '@/contexts/StripeContext';
 import TabBar, { TabOption } from '@/ui/shared/molecules/TabBar';
 import { useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
+import { useAnalyticsWithTenant } from '@/hooks/useAnalytics';
 
 export default function BillingLayout() {
   const pathname = useLocation();
   const navigate = useNavigate();
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const analytics = useAnalyticsWithTenant();
 
   // Map pathname to tab ID
   const getSelectedTabFromPathname = (path: string): string => {
@@ -51,6 +53,12 @@ export default function BillingLayout() {
 
   // Handle tab change by navigating to the corresponding route
   const handleTabChange = (tabId: string) => {
+    // Track billing tab selection
+    analytics.track('billing_tab_selected', {
+      tab: tabId,
+      eventTimestamp: Date.now(),
+    });
+
     switch (tabId) {
       case 'subscription':
         navigate('/dashboard/billing');

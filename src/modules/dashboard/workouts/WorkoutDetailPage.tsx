@@ -34,7 +34,7 @@ import VerySimpleFormatWorkoutViewer from './components/VerySimpleFormatWorkoutV
 import WebShareButton from './components/WebShareButton';
 import WorkoutFeedbackForm from './components/WorkoutFeedbackForm';
 import { useWorkoutInstances } from '@/hooks/useWorkoutInstances';
-import { useAnalytics } from '@/hooks/useAnalytics';
+import { useAnalyticsWithTenant } from '@/hooks/useAnalytics';
 import { useFeedbackModal } from './components/FeedbackModal.hooks';
 import { useExercisesForGeneratedWorkout } from '@/hooks/useExercises';
 import { useAllClassSchedulesWithLocation } from '@/hooks/useLocation';
@@ -43,6 +43,7 @@ import {
   ClassSchedule,
   ClassScheduleWithLocation,
 } from '@/domain/entities/classSchedule';
+import { useWorkoutAnalytics } from './hooks/useWorkoutAnalytics';
 
 // Chunk data is now handled by GeneratedWorkoutChunksProvider
 
@@ -60,7 +61,13 @@ function WorkoutDetailContent() {
   const trainerPersona = useTrainerPersonaData();
   const [isCreatingInstance, setIsCreatingInstance] = useState(false);
   const { canAccessFeature } = useUserAccess();
-  const analytics = useAnalytics();
+  const analytics = useAnalyticsWithTenant();
+  const {
+    trackStructuredWorkoutViewed,
+    trackShortWorkoutViewed,
+    trackStepByStepWorkoutViewed,
+    trackWorkoutShared,
+  } = useWorkoutAnalytics();
 
   // Class schedule state
   const [showClassScheduleDialog, setShowClassScheduleDialog] = useState(false);
@@ -342,6 +349,11 @@ function WorkoutDetailContent() {
             disabled={!verySimpleFormat && !simpleFormat}
             title="Workout Plan"
             text={verySimpleFormat || simpleFormat || ''}
+            onShare={(shareMethod) => {
+              if (generatedWorkout?.id) {
+                trackWorkoutShared(generatedWorkout.id, shareMethod);
+              }
+            }}
           >
             <ShareIcon className="w-4 h-4 mr-2" />
             <span className="hidden sm:inline">Share Workout</span>
@@ -386,16 +398,32 @@ function WorkoutDetailContent() {
 
       <TabBar
         selectedTab={workoutFormat}
-        onTabChange={(tabId) =>
-          setWorkoutFormat(
-            tabId as
-              | 'plain'
-              | 'structured'
-              | 'step-by-step'
-              | 'simple'
-              | 'very-simple'
-          )
-        }
+        onTabChange={(tabId) => {
+          const newFormat = tabId as
+            | 'plain'
+            | 'structured'
+            | 'step-by-step'
+            | 'simple'
+            | 'very-simple';
+
+          setWorkoutFormat(newFormat);
+
+          // Track workout view events
+          if (generatedWorkout?.id) {
+            switch (newFormat) {
+              case 'structured':
+                trackStructuredWorkoutViewed(generatedWorkout.id);
+                break;
+              case 'step-by-step':
+                trackStepByStepWorkoutViewed(generatedWorkout.id);
+                break;
+              case 'simple':
+              case 'very-simple':
+                trackShortWorkoutViewed(generatedWorkout.id);
+                break;
+            }
+          }
+        }}
         tabs={tabs}
         backgroundClassName="bg-base-200"
       />

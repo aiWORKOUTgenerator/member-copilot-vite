@@ -1,6 +1,7 @@
 'use client';
 
 import { SubscriptionTier } from '@/domain/entities/subscriptionTier';
+import { useAnalyticsWithTenant } from '@/hooks/useAnalytics';
 
 interface PricingComponentProps {
   tiers: SubscriptionTier[];
@@ -19,6 +20,23 @@ export default function PricingComponent({
   isProcessing,
   onSelectTier,
 }: PricingComponentProps) {
+  const analytics = useAnalyticsWithTenant();
+
+  const handleTierClick = (stripePriceId: string, tier: SubscriptionTier) => {
+    // Track pricing tier click
+    analytics.track('billing_pricing_tier_clicked', {
+      clickedPlan: tier.name,
+      clickedPlanPrice: tier.price,
+      clickedPlanId: tier.id,
+      currentPlan: selectedTier?.name || null,
+      isUpgrade: selectedTier ? tier.price > selectedTier.price : null,
+      isDowngrade: selectedTier ? tier.price < selectedTier.price : null,
+      stripePriceId: stripePriceId,
+      eventTimestamp: Date.now(),
+    });
+
+    onSelectTier(stripePriceId);
+  };
   // Helper function to format tier for display
   const formatTierForDisplay = (tier: SubscriptionTier) => {
     return {
@@ -40,106 +58,115 @@ export default function PricingComponent({
     <div className="py-2 sm:py-4">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="isolate mx-auto grid max-w-md grid-cols-1 gap-4 sm:gap-8 lg:mx-0 lg:max-w-none lg:grid-cols-2">
-          {formattedTiers.map((tier) => (
-            <div
-              key={tier.id}
-              className={classNames(
-                tier.featured ? 'bg-primary ring-primary' : 'ring-base-300',
-                'rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 ring-1'
-              )}
-            >
-              <h3
-                id={tier.id}
+          {formattedTiers.map((tier, index) => {
+            const originalTier = tiers[index];
+            return (
+              <div
+                key={tier.id}
                 className={classNames(
-                  tier.featured ? 'text-primary-content' : 'text-base-content',
-                  'text-base sm:text-lg font-semibold'
+                  tier.featured ? 'bg-primary ring-primary' : 'ring-base-300',
+                  'rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 ring-1'
                 )}
               >
-                {tier.name}
-              </h3>
-              <p
-                className={classNames(
-                  tier.featured
-                    ? 'text-primary-content/80'
-                    : 'text-base-content/70',
-                  'mt-2 sm:mt-4 text-xs sm:text-sm'
-                )}
-              >
-                {tier.description}
-              </p>
-              <p className="mt-4 sm:mt-6 flex items-baseline gap-x-1">
-                <span
+                <h3
+                  id={tier.id}
                   className={classNames(
                     tier.featured
                       ? 'text-primary-content'
                       : 'text-base-content',
-                    'text-2xl sm:text-3xl lg:text-4xl font-semibold tracking-tight'
+                    'text-base sm:text-lg font-semibold'
                   )}
                 >
-                  {tier.price}
-                </span>
-                <span
+                  {tier.name}
+                </h3>
+                <p
                   className={classNames(
                     tier.featured
                       ? 'text-primary-content/80'
                       : 'text-base-content/70',
-                    'text-xs sm:text-sm font-semibold'
+                    'mt-2 sm:mt-4 text-xs sm:text-sm'
                   )}
                 >
-                  /month
-                </span>
-              </p>
-              <button
-                onClick={() => onSelectTier(tier.stripePriceId)}
-                disabled={selectedTier?.id === tier.id || isProcessing}
-                aria-describedby={tier.id}
-                className={classNames(
-                  tier.featured
-                    ? 'btn btn-secondary text-secondary-content'
-                    : 'btn btn-primary',
-                  'mt-4 sm:mt-6 w-full text-sm sm:text-base',
-                  selectedTier?.id === tier.id || isProcessing
-                    ? 'btn-disabled'
-                    : ''
-                )}
-              >
-                {selectedTier?.id === tier.id
-                  ? 'Current Plan'
-                  : isProcessing
-                    ? 'Processing...'
-                    : tier.cta}
-              </button>
-              <ul
-                className={classNames(
-                  tier.featured
-                    ? 'text-primary-content/80'
-                    : 'text-base-content/70',
-                  'mt-6 sm:mt-8 space-y-2 sm:space-y-3 text-xs sm:text-sm'
-                )}
-              >
-                {tier.features.map((feature) => (
-                  <li key={feature} className="flex gap-x-2 sm:gap-x-3">
-                    <svg
-                      className={classNames(
-                        tier.featured ? 'text-primary-content' : 'text-primary',
-                        'h-4 w-4 sm:h-5 sm:w-6 flex-none'
-                      )}
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                      aria-hidden="true"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+                  {tier.description}
+                </p>
+                <p className="mt-4 sm:mt-6 flex items-baseline gap-x-1">
+                  <span
+                    className={classNames(
+                      tier.featured
+                        ? 'text-primary-content'
+                        : 'text-base-content',
+                      'text-2xl sm:text-3xl lg:text-4xl font-semibold tracking-tight'
+                    )}
+                  >
+                    {tier.price}
+                  </span>
+                  <span
+                    className={classNames(
+                      tier.featured
+                        ? 'text-primary-content/80'
+                        : 'text-base-content/70',
+                      'text-xs sm:text-sm font-semibold'
+                    )}
+                  >
+                    /month
+                  </span>
+                </p>
+                <button
+                  onClick={() =>
+                    handleTierClick(tier.stripePriceId, originalTier)
+                  }
+                  disabled={selectedTier?.id === tier.id || isProcessing}
+                  aria-describedby={tier.id}
+                  className={classNames(
+                    tier.featured
+                      ? 'btn btn-secondary text-secondary-content'
+                      : 'btn btn-primary',
+                    'mt-4 sm:mt-6 w-full text-sm sm:text-base',
+                    selectedTier?.id === tier.id || isProcessing
+                      ? 'btn-disabled'
+                      : ''
+                  )}
+                >
+                  {selectedTier?.id === tier.id
+                    ? 'Current Plan'
+                    : isProcessing
+                      ? 'Processing...'
+                      : tier.cta}
+                </button>
+                <ul
+                  className={classNames(
+                    tier.featured
+                      ? 'text-primary-content/80'
+                      : 'text-base-content/70',
+                    'mt-6 sm:mt-8 space-y-2 sm:space-y-3 text-xs sm:text-sm'
+                  )}
+                >
+                  {tier.features.map((feature) => (
+                    <li key={feature} className="flex gap-x-2 sm:gap-x-3">
+                      <svg
+                        className={classNames(
+                          tier.featured
+                            ? 'text-primary-content'
+                            : 'text-primary',
+                          'h-4 w-4 sm:h-5 sm:w-6 flex-none'
+                        )}
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

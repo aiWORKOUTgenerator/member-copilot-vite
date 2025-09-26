@@ -32,13 +32,6 @@ export default function PhoneOtpPage() {
   const [codeValidationError, setCodeValidationError] = useState('');
   const [success, setSuccess] = useState(false);
 
-  // Track phone authentication page views
-  useEffect(() => {
-    analytics.track('Sign In Phone Page Viewed', {
-      tracked_at: new Date().toISOString(),
-    });
-  }, [analytics]);
-
   // Pre-fill from URL params if provided
   useEffect(() => {
     const phoneParam = searchParams?.get('phone');

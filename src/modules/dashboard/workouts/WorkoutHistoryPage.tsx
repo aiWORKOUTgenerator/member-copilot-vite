@@ -17,7 +17,7 @@ import {
   List,
   Shield,
 } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { TrainerPersonaDisplay } from './components/TrainerPersonaDisplay';
 import WorkoutInstanceModal from './components/WorkoutInstanceModal';
@@ -56,14 +56,6 @@ export default function WorkoutHistoryPage() {
 
   // Calculate statistics
   const stats = useMemo(() => calculateStats(recentWorkouts), [recentWorkouts]);
-
-  // Track workout history page views
-  useEffect(() => {
-    analytics.track('Workout History Viewed', {
-      totalWorkouts: instances?.length || 0,
-      tracked_at: new Date().toISOString(),
-    });
-  }, [instances, analytics]);
 
   const handleWorkoutClick = (workout: WorkoutInstance) => {
     analytics.track('Historical Workout Clicked', {

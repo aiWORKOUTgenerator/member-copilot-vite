@@ -14,7 +14,6 @@ import { Plus, AlertTriangle, History } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import WorkoutList from './components/WorkoutList';
 import { useAnalytics } from '@/hooks/useAnalytics';
-import { useEffect } from 'react';
 import { FloatingClipboardFab } from '@/ui/shared/molecules';
 
 export default function AIWorkouts() {
@@ -32,14 +31,6 @@ export default function AIWorkouts() {
   const isLoading = isLoadingGeneratedWorkouts || isLoadingMeteredUsage;
 
   const analytics = useAnalytics();
-
-  // Track workouts page views
-  useEffect(() => {
-    analytics.track('Workouts Library Viewed', {
-      workoutCount: workouts?.length || 0,
-      tracked_at: new Date().toISOString(),
-    });
-  }, [analytics, workouts]);
 
   if (isLoading) {
     return <LoadingState />;

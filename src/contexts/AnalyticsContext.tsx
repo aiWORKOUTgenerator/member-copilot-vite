@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { getAnalytics } from '@/services/analytics';
 import { useAuth } from '@/hooks/auth';
 import { useLocation, useSearchParams } from 'react-router';
+import { useTenant } from '@/hooks/useConfiguration';
 
 interface AnalyticsProviderProps {
   children: React.ReactNode;
@@ -20,6 +21,8 @@ export function AnalyticsProvider({ children }: AnalyticsProviderProps) {
   const { user, isLoaded, isSignedIn } = useAuth();
   const location = useLocation();
   const searchParams = useSearchParams();
+  const tenant = useTenant();
+  const lastTrackedPageRef = useRef<string>('');
 
   // Initialize analytics
   useEffect(() => {
@@ -41,19 +44,25 @@ export function AnalyticsProvider({ children }: AnalyticsProviderProps) {
       const search = searchParams ? searchParams.toString() : '';
       const url = `${location.pathname}${search ? `?${search}` : ''}`;
 
-      // Track page view with path and URL
-      analytics.page({
-        path: location.pathname,
-        url: url,
-        search: search,
-        title: document.title,
-      });
+      // Only track if this is a different page than the last one tracked
+      if (lastTrackedPageRef.current !== url) {
+        lastTrackedPageRef.current = url;
 
-      console.log(`Page view tracked: ${url}`);
+        // Track page view with path and URL
+        analytics.page({
+          path: location.pathname,
+          url: url,
+          search: search,
+          title: document.title,
+          tenant: tenant,
+        });
+
+        console.log(`Page view tracked: ${url}`);
+      }
     } catch (error) {
       console.error('Failed to track page view:', error);
     }
-  }, [location.pathname, searchParams]);
+  }, [location.pathname, searchParams, tenant]);
 
   // Handle user authentication state changes
   useEffect(() => {
@@ -69,6 +78,7 @@ export function AnalyticsProvider({ children }: AnalyticsProviderProps) {
         firstName: user.firstName,
         lastName: user.lastName,
         createdAt: user.createdAt,
+        tenant: tenant,
         // Add any other relevant user traits here
       };
 
@@ -79,7 +89,7 @@ export function AnalyticsProvider({ children }: AnalyticsProviderProps) {
       analytics.reset();
       console.log('Analytics reset after user sign out');
     }
-  }, [isLoaded, isSignedIn, user]);
+  }, [isLoaded, isSignedIn, user, tenant]);
 
   return <>{children}</>;
 }

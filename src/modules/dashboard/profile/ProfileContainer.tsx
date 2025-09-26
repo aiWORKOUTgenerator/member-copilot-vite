@@ -90,13 +90,6 @@ export default function TrainingProfileLayout() {
   const analytics = useAnalytics();
   const { enabled: autoScrollEnabled } = useAutoScrollPreferences();
 
-  // Track profile page views
-  useEffect(() => {
-    analytics.track('Profile Page Viewed', {
-      tracked_at: new Date().toISOString(),
-    });
-  }, [analytics]);
-
   // Handle step click navigation
   const handleStepClick = (stepId: string) => {
     // Track attribute selection for analytics (keeping original event name for continuity)

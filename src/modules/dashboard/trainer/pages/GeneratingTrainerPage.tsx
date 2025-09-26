@@ -3,11 +3,13 @@ import { useTrainerPersonaStatus } from '@/hooks/useTrainerPersonaStatus';
 import { AlertTriangle, Bot, CheckCircle, Clock, Sparkles } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
+import { useWorkoutAnalytics } from '@/modules/dashboard/workouts/hooks/useWorkoutAnalytics';
 
 const GeneratingTrainerPage = () => {
   const navigate = useNavigate();
   const { trainerPersona, refetch: refetchTrainerPersona } =
     useTrainerPersona();
+  const { trackTrainerPersonaCreated } = useWorkoutAnalytics();
 
   // Use React Query's built-in polling - much simpler!
   const { status, error, isGenerationComplete } = useTrainerPersonaStatus(true); // Enable polling
@@ -29,12 +31,19 @@ const GeneratingTrainerPage = () => {
   useEffect(() => {
     if (isGenerationComplete) {
       // Refetch trainer persona data to get the latest data
-      refetchTrainerPersona().then(() => {
+      refetchTrainerPersona().then((updatedPersona) => {
+        // Track trainer persona creation
+        trackTrainerPersonaCreated(updatedPersona?.id || 'unknown');
         // Small delay to show success state before redirect
         navigate('/dashboard/trainer', { replace: true });
       });
     }
-  }, [isGenerationComplete, refetchTrainerPersona, navigate]);
+  }, [
+    isGenerationComplete,
+    refetchTrainerPersona,
+    navigate,
+    trackTrainerPersonaCreated,
+  ]);
 
   useEffect(() => {
     console.log('trainerPersona', trainerPersona);

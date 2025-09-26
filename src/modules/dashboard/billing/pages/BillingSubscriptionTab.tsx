@@ -1,7 +1,7 @@
 'use client';
 
 import { useSubscription } from '@/hooks/useSubscription';
-import { useAnalytics } from '@/hooks/useAnalytics';
+import { useAnalyticsWithTenant } from '@/hooks/useAnalytics';
 import { useBillingContext } from '@/hooks/useBillingContext';
 import PricingComponent from '@/ui/shared/organisms/PricingComponent';
 import { ContentCard } from '@/ui';
@@ -12,14 +12,22 @@ export default function SubscriptionPage() {
     useSubscription();
   const [isProcessing, setIsProcessing] = useState(false);
   const { setSuccessMessage, setErrorMessage } = useBillingContext();
-  const analytics = useAnalytics();
+  const analytics = useAnalyticsWithTenant();
 
-  // Track billing page views
+  // Track billing page views and pricing tiers
   useEffect(() => {
-    analytics.track('Billing Page Viewed', {
-      tracked_at: new Date().toISOString(),
+    analytics.track('billing_subscription_page_viewed', {
+      currentPlan: selectedTier?.name || null,
+      currentPlanPrice: selectedTier?.price || null,
+      availablePlans: tiers.map((tier) => ({
+        id: tier.id,
+        name: tier.name,
+        price: tier.price,
+        isPopular: tier.isPopular,
+      })),
+      eventTimestamp: Date.now(),
     });
-  }, [analytics]);
+  }, [analytics, selectedTier, tiers]);
 
   const handleSubscriptionChange = async (stripePriceId: string) => {
     if (isProcessing) return;
@@ -30,12 +38,14 @@ export default function SubscriptionPage() {
     );
 
     // Track upgrade start
-    analytics.track('Subscription Upgrade Started', {
+    analytics.track('billing_subscription_upgrade_started', {
+      fromPlan: selectedTier?.name || null,
+      fromPlanPrice: selectedTier?.price || null,
+      toPlan: selectedPlan?.name,
+      toPlanPrice: selectedPlan?.price,
       planId: selectedPlan?.id,
-      planName: selectedPlan?.name,
-      planPrice: selectedPlan?.price,
       stripePriceId,
-      tracked_at: new Date().toISOString(),
+      eventTimestamp: Date.now(),
     });
 
     setIsProcessing(true);
@@ -49,11 +59,12 @@ export default function SubscriptionPage() {
 
       if (url) {
         // Track successful checkout session creation
-        analytics.track('Checkout Session Created', {
+        analytics.track('billing_checkout_session_created', {
+          fromPlan: selectedTier?.name || null,
+          toPlan: selectedPlan?.name,
           planId: selectedPlan?.id,
-          planName: selectedPlan?.name,
           stripePriceId,
-          tracked_at: new Date().toISOString(),
+          eventTimestamp: Date.now(),
         });
 
         // Redirect the user to the Stripe Checkout page
@@ -65,12 +76,13 @@ export default function SubscriptionPage() {
       console.error('Failed to change subscription:', error);
 
       // Track upgrade failure
-      analytics.track('Subscription Upgrade Failed', {
+      analytics.track('billing_subscription_upgrade_failed', {
+        fromPlan: selectedTier?.name || null,
+        toPlan: selectedPlan?.name,
         planId: selectedPlan?.id,
-        planName: selectedPlan?.name,
         stripePriceId,
         error: error instanceof Error ? error.message : 'Unknown error',
-        tracked_at: new Date().toISOString(),
+        eventTimestamp: Date.now(),
       });
 
       // Display error message to user

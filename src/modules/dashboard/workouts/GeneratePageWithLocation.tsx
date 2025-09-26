@@ -46,16 +46,6 @@ export default function GenerateWorkoutPageWithLocation() {
     defaultLocation,
   } = useLocationAwareWorkoutGeneration();
 
-  // Track workout generation page views with location context
-  useEffect(() => {
-    analytics.track('Workout Generation Page Viewed', {
-      tracked_at: new Date().toISOString(),
-      hasLocationData,
-      locationName: defaultLocation?.name || 'unknown',
-      mode: activeTab,
-    });
-  }, [analytics, hasLocationData, defaultLocation, activeTab]);
-
   // Update activeTab when mode parameter changes
   useEffect(() => {
     if (mode === 'detailed') {
