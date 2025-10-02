@@ -4,6 +4,26 @@ interface TestModeWrapperProps {
   children: ReactNode;
 }
 
+// Extend the Window interface to include Clerk
+declare global {
+  interface Window {
+    Clerk?: {
+      user?: {
+        id: string;
+        emailAddresses: Array<{ emailAddress: string }>;
+        firstName: string;
+        lastName: string;
+      };
+      isSignedIn?: () => boolean;
+      isLoaded?: () => boolean;
+      session?: {
+        id: string;
+        status: string;
+      };
+    };
+  }
+}
+
 /**
  * TestModeWrapper - Provides mocked authentication when in test mode
  * This component sets up the same authentication mocks used in the test environment
