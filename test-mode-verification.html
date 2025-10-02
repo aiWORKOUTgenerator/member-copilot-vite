@@ -19,10 +19,10 @@
         .then((response) => response.text())
         .then((html) => {
           console.log('App is accessible');
-          if (html.includes('TestModeWrapper')) {
-            console.log('TestModeWrapper is included in the app');
+          if (html.includes('data-testid="test-mode-wrapper"')) {
+            console.log('Test mode wrapper marker is included in the app');
           } else {
-            console.log('TestModeWrapper not found in HTML');
+            console.log('Test mode wrapper marker not found in HTML');
           }
         })
         .catch((error) => {

@@ -87,5 +87,5 @@ export const TestModeWrapper: React.FC<TestModeWrapperProps> = ({
     }
   }, []);
 
-  return <>{children}</>;
+  return <div data-testid="test-mode-wrapper">{children}</div>;
 };
