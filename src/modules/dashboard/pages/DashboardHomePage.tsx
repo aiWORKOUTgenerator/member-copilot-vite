@@ -5,9 +5,10 @@ import {
   useAttributeTypesData,
   useAttributeTypesLoaded,
 } from '@/hooks/useAttributeTypes';
-import { useContactData } from '@/hooks/useContact';
+import { useContactData, useIsPhoneVerified } from '@/hooks/useContact';
 import { usePromptsData, usePromptsLoaded } from '@/hooks/usePrompts';
 import { useTitle } from '@/hooks/useTitle';
+import { useTrainerPersonaHasNoPersona } from '@/hooks/useTrainerPersona';
 import { AttributeCompletion, ContactUtils, License } from '@/domain';
 import { useUserAccess } from '@/hooks';
 import { useAnalytics } from '@/hooks/useAnalytics';
@@ -44,6 +45,10 @@ export default function DashboardHomePage() {
     getTotalAggregatedValueForMeter,
     getHighestLimitForMeter,
   } = useUserAccess();
+
+  // Check completion status for conditional rendering
+  const isPhoneVerified = useIsPhoneVerified();
+  const hasNoTrainerPersona = useTrainerPersonaHasNoPersona();
 
   const isWorkoutGenerationLimitReached = isMeterLimitReached(
     MeteredFeature.WORKOUTS_GENERATED
@@ -290,9 +295,11 @@ export default function DashboardHomePage() {
             badgeColor="badge-accent"
           />
 
-          <PhoneVerificationCard />
+          {/* Only show phone verification card if phone is not verified */}
+          {!isPhoneVerified && <PhoneVerificationCard />}
 
-          <AITrainerActionCard />
+          {/* Only show AI trainer card if user doesn't have a trainer persona */}
+          {hasNoTrainerPersona && <AITrainerActionCard />}
         </div>
       </div>
 
