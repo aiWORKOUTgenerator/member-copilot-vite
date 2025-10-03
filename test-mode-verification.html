@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test Mode Verification</title>
+  </head>
+  <body>
+    <h1>Test Mode Verification</h1>
+    <p>Open the browser console to see test mode logs.</p>
+    <p>
+      Navigate to <a href="http://localhost:5173">http://localhost:5173</a> to
+      test the app.
+    </p>
+
+    <script>
+      // Test if we can access the app
+      fetch('http://localhost:5173')
+        .then((response) => response.text())
+        .then((html) => {
+          console.log('App is accessible');
+          if (html.includes('data-testid="test-mode-wrapper"')) {
+            console.log('Test mode wrapper marker is included in the app');
+          } else {
+            console.log('Test mode wrapper marker not found in HTML');
+          }
+        })
+        .catch((error) => {
+          console.error('Error accessing app:', error);
+        });
+    </script>
+  </body>
+</html>
