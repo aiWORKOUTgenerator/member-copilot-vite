@@ -4,30 +4,237 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Test Mode Verification</title>
+    <style>
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        line-height: 1.6;
+      }
+      .container {
+        background: #f8f9fa;
+        padding: 30px;
+        border-radius: 8px;
+        border: 1px solid #e9ecef;
+      }
+      h1 {
+        color: #2c3e50;
+        margin-bottom: 20px;
+      }
+      .status {
+        padding: 15px;
+        border-radius: 5px;
+        margin: 20px 0;
+        font-weight: bold;
+      }
+      .success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+      .error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+      .info {
+        background: #d1ecf1;
+        color: #0c5460;
+        border: 1px solid #bee5eb;
+      }
+      .code {
+        background: #f8f9fa;
+        padding: 10px;
+        border-radius: 4px;
+        font-family: 'Monaco', 'Menlo', monospace;
+        border: 1px solid #e9ecef;
+        margin: 10px 0;
+      }
+      button {
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        margin: 10px 5px;
+      }
+      button:hover {
+        background: #0056b3;
+      }
+      .test-results {
+        margin-top: 20px;
+      }
+      .test-item {
+        padding: 10px;
+        margin: 5px 0;
+        border-radius: 4px;
+        border-left: 4px solid #007bff;
+        background: white;
+      }
+      .test-pass {
+        border-left-color: #28a745;
+        background: #f8fff9;
+      }
+      .test-fail {
+        border-left-color: #dc3545;
+        background: #fff8f8;
+      }
+    </style>
   </head>
   <body>
-    <h1>Test Mode Verification</h1>
-    <p>Open the browser console to see test mode logs.</p>
-    <p>
-      Navigate to <a href="http://localhost:5173">http://localhost:5173</a> to
-      test the app.
-    </p>
+    <div class="container">
+      <h1>🧪 Test Mode Verification</h1>
+
+      <div id="status" class="status info">
+        Initializing test mode verification...
+      </div>
+
+      <h2>Test Environment Setup</h2>
+      <p>
+        This page verifies that the test mode environment is working correctly.
+      </p>
+
+      <div class="code">
+        VITE_TEST_MODE = <span id="test-mode-value">checking...</span>
+      </div>
+
+      <h2>Authentication Mock Tests</h2>
+      <div id="test-results" class="test-results">
+        <div class="test-item">
+          <strong>Test 1:</strong> Clerk object availability
+          <span id="test-clerk-obj">⏳ Testing...</span>
+        </div>
+        <div class="test-item">
+          <strong>Test 2:</strong> User object mock
+          <span id="test-user-obj">⏳ Testing...</span>
+        </div>
+        <div class="test-item">
+          <strong>Test 3:</strong> Authentication methods
+          <span id="test-auth-methods">⏳ Testing...</span>
+        </div>
+        <div class="test-item">
+          <strong>Test 4:</strong> Session object mock
+          <span id="test-session-obj">⏳ Testing...</span>
+        </div>
+      </div>
+
+      <button onclick="runTests()">🔄 Run Tests Again</button>
+      <button onclick="clearResults()">🗑️ Clear Results</button>
+
+      <h2>Instructions</h2>
+      <ol>
+        <li>Set <code>VITE_TEST_MODE=true</code> in your environment</li>
+        <li>Load this page in your browser</li>
+        <li>Verify all tests pass</li>
+        <li>Check browser console for detailed logs</li>
+      </ol>
+
+      <h2>Expected Results</h2>
+      <ul>
+        <li>✅ All authentication mocks should be properly set</li>
+        <li>✅ User should be signed in with test credentials</li>
+        <li>✅ Session should be active</li>
+        <li>✅ Console should show successful mock setup</li>
+      </ul>
+    </div>
 
     <script>
-      // Test if we can access the app
-      fetch('http://localhost:5173')
-        .then((response) => response.text())
-        .then((html) => {
-          console.log('App is accessible');
-          if (html.includes('data-testid="test-mode-wrapper"')) {
-            console.log('Test mode wrapper marker is included in the app');
+      function updateStatus(message, type = 'info') {
+        const statusEl = document.getElementById('status');
+        statusEl.textContent = message;
+        statusEl.className = `status ${type}`;
+      }
+
+      function updateTestResult(testId, result, message) {
+        const testEl = document.getElementById(testId);
+        testEl.textContent = message;
+        testEl.className = result ? 'test-pass' : 'test-fail';
+      }
+
+      function runTests() {
+        updateStatus('Running test mode verification...', 'info');
+
+        // Check VITE_TEST_MODE
+        const testMode = import.meta?.env?.VITE_TEST_MODE || 'not set';
+        document.getElementById('test-mode-value').textContent = testMode;
+
+        if (testMode !== 'true') {
+          updateStatus('❌ VITE_TEST_MODE is not set to "true"', 'error');
+          return;
+        }
+
+        // Test 1: Clerk object availability
+        if (window.Clerk) {
+          updateTestResult('test-clerk-obj', true, '✅ Clerk object found');
+        } else {
+          updateTestResult('test-clerk-obj', false, '❌ Clerk object not found');
+        }
+
+        // Test 2: User object mock
+        if (window.Clerk?.user) {
+          const user = window.Clerk.user;
+          if (user.id === 'user-123' && user.firstName === 'Test') {
+            updateTestResult('test-user-obj', true, '✅ User mock correctly set');
           } else {
-            console.log('Test mode wrapper marker not found in HTML');
+            updateTestResult('test-user-obj', false, '❌ User mock incorrect');
           }
-        })
-        .catch((error) => {
-          console.error('Error accessing app:', error);
+        } else {
+          updateTestResult('test-user-obj', false, '❌ User object not mocked');
+        }
+
+        // Test 3: Authentication methods
+        if (window.Clerk?.isSignedIn && window.Clerk?.isLoaded) {
+          const isSignedIn = window.Clerk.isSignedIn();
+          const isLoaded = window.Clerk.isLoaded();
+          if (isSignedIn && isLoaded) {
+            updateTestResult('test-auth-methods', true, '✅ Auth methods working');
+          } else {
+            updateTestResult('test-auth-methods', false, '❌ Auth methods not working');
+          }
+        } else {
+          updateTestResult('test-auth-methods', false, '❌ Auth methods not mocked');
+        }
+
+        // Test 4: Session object mock
+        if (window.Clerk?.session) {
+          const session = window.Clerk.session;
+          if (session.id === 'sess-123' && session.status === 'active') {
+            updateTestResult('test-session-obj', true, '✅ Session mock correctly set');
+          } else {
+            updateTestResult('test-session-obj', false, '❌ Session mock incorrect');
+          }
+        } else {
+          updateTestResult('test-session-obj', false, '❌ Session object not mocked');
+        }
+
+        // Check overall results
+        const allTests = document.querySelectorAll('.test-item');
+        const passedTests = document.querySelectorAll('.test-pass');
+
+        if (passedTests.length === allTests.length) {
+          updateStatus('🎉 All tests passed! Test mode is working correctly.', 'success');
+        } else {
+          updateStatus(`⚠️ ${passedTests.length}/${allTests.length} tests passed. Check console for details.`, 'error');
+        }
+      }
+
+      function clearResults() {
+        const tests = ['test-clerk-obj', 'test-user-obj', 'test-auth-methods', 'test-session-obj'];
+        tests.forEach(testId => {
+          const testEl = document.getElementById(testId);
+          testEl.textContent = '⏳ Testing...';
+          testEl.className = '';
         });
+        updateStatus('Results cleared. Click "Run Tests Again" to verify.', 'info');
+      }
+
+      // Auto-run tests on page load
+      window.addEventListener('load', () => {
+        setTimeout(runTests, 1000); // Wait a bit for any async setup
+      });
     </script>
   </body>
 </html>
